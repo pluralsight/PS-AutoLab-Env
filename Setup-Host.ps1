@@ -1,6 +1,10 @@
 ﻿## Trying a new direction
 
-Write-Warning "This will reboot your computer"
+Write-Warning @"
+    You must restart this computer
+    when the initial setup is complete.
+    From Powershell: Restart-Computer
+"@
 Start-Sleep 5
 
 
@@ -20,11 +24,5 @@ Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBoot
 Install-Module -Name Lability
 
 # SEtup host Env.
-Start-LabHostConfiguration -verbose
-
-# Restart-Computer
-Write-Warning @"
-    You must restart this computer
-    From Powershell: Restart-Computer
-"@
+Start-LabHostConfiguration # -verbose
 
