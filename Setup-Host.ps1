@@ -1,4 +1,4 @@
-﻿# Trying a new direction
+﻿## Trying a new direction
 
 Write-Warning "This will reboot your computer"
 Start-Sleep 5
