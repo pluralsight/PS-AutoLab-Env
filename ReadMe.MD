@@ -1,6 +1,6 @@
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab envroment build tool to support Authors and students in desinging and building a virutal lab environement to support courses.  
-The configurations for the VM are writting in Microsoft DSC and deploy using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
+The configurations for the VM are writting in Microsoft DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
 
 
 ## This Lab tool currently supports running on:
