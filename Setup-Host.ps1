@@ -14,6 +14,7 @@ Start-Sleep 5
 
 
 # For remoting commands to VM's - have the host set trustedhosts to *
+# Dev Note: Should wire up with If statement to test for this first
 Write-Output "Setting TrustedHosts to * so that remoting commands to VM's work properly"
 Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value * -Force
 
@@ -23,6 +24,7 @@ Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBoot
 Install-Module -Name Lability
 
 # SEtup host Env.
+# Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
 Write-Output "Initializing host"
 Start-LabHostConfiguration # -verbose
 
