@@ -1,7 +1,26 @@
-# Just Enough Administration Samples and Resources
-Just Enough Administration (JEA) is a PowerShell security technology that provides a role based access control platform for anything that can be managed with PowerShell.
-It enables authorized users to run specific commands in an elevated context on a remote machine, complete with full PowerShell transcription and logging.
-JEA is included in PowerShell version 5 and higher on Windows 10 and Windows Server 2016, and older OSes with the Windows Management Framework updates.
+# Pluralsight PowerShell Automated Lab Environment
+This is an automated lab envroment build tool to support Authors and students in desinging and building a virutal lab environement to support courses.  
+The configurations for the VM are writting in Microsoft DSC and deploy using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
 
-This repository contains sample role capabilities created by the Microsoft IT team and the official DSC resource that can be used to deploy JEA across your enterprise.
-General information and documentation for JEA has migrated to [MSDN](http://aka.ms/JEAdocs).# Just Enough Administration Samples and Resources
+
+## This Lab tool currently supports running on:
+* Windows Server 2012 R2
+* Windows Server 2016
+* Windows 10 client
+
+## The lab tool will build virutal environements using:
+* Windows Server 2012 R2
+* Windows Server 2016
+* Windows 10 clients
+
+## Virtual enviroments will include:
+* DC - Domain Control with ADCS and DHCP, firewall and GPO settings, certificates, and other domain essentials.
+    * Domain name - **Company.Pri**
+    * Network - **192.168.3.0/24**
+    * Administrators password - **P@ssw0rd**
+* Client - Windwos 10 client VM
+* Additional servers
+
+
+
+    
