@@ -1,4 +1,4 @@
-Configuration TestLabGuide {
+Configuration TestLab {
 <#
     Requires the following custom DSC resources:
         xComputerManagement (v1.4.0.0 or later): https://github.com/PowerShell/xComputerManagement
@@ -9,9 +9,11 @@ Configuration TestLabGuide {
         xDnsServer (v1.5.0 or later):            https://github.com/PowerShell/xDnsServer
 #>
     param (
-        [Parameter()] [ValidateNotNull()] [PSCredential] $Credential = (Get-Credential -Credential 'Administrator')
+        [Parameter()] 
+        [ValidateNotNull()] 
+        [PSCredential] $Credential = (Get-Credential -Credential 'Administrator')
     )
-   Import-Dscresource -Module xWebAdministration
+   Import-Dscresource -Module xWebAdministration, PSDesiredStateConfiguration ,xComputermanagement, xNetworking
    # Import-DscResource -Module xComputerManagement, xNetworking, xActiveDirectory;
    # Import-DscResource -Module xSmbShare, PSDesiredStateConfiguration;
    # Import-DscResource -Module xDHCPServer, xDnsServer;
@@ -106,4 +108,5 @@ Configuration TestLabGuide {
     
  
 } #end Configuration Example
-TestLabGuide
+
+TestLab -OutputPath .\ -ConfigurationData .\TestLab.psd1

@@ -39,8 +39,8 @@
            # EnvironmentPrefix = 'TLG-';
             Media = @();
             Network = @(
-                @{ Name = 'LaNet'; Type = 'Internal'; }
-                @{ Name = 'Internet'; Type = 'Internal'; }
+                @{ Name = 'LabNet'; Type = 'Internal'; }
+                #@{ Name = 'Internet'; Type = 'Internal'; }
                 # @{ Name = 'Corpnet'; Type = 'External'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
                 <#
                     IPAddress: The desired IP address.
@@ -53,10 +53,10 @@
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery
                 @{ Name = 'xWebAdministration'; MinimumVersion = '1.13.0.0'; Provider = 'PSGallery'; }
-               # @{ Name = 'xComputerManagement'; MinimumVersion = '1.3.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xComputerManagement'; MinimumVersion = '1.3.0.0'; Provider = 'PSGallery'; }
                 ## If not specified, the provider defaults to the PSGallery.
                # @{ Name = 'xSmbShare'; MinimumVersion = '1.1.0.0'; }
-               # @{ Name = 'xNetworking'; MinimumVersion = '2.7.0.0'; }
+                @{ Name = 'xNetworking'; MinimumVersion = '2.7.0.0'; }
                # @{ Name = 'xActiveDirectory'; MinimumVersion = '2.9.0.0'; }
                # @{ Name = 'xDnsServer'; MinimumVersion = '1.5.0.0'; }
                # @{ Name = 'xDhcpServer'; MinimumVersion = '1.3.0.0'; }
