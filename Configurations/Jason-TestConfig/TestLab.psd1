@@ -39,7 +39,7 @@
            # EnvironmentPrefix = 'TLG-';
             Media = @();
             Network = @(
-                @{ Name = 'LabNet'; Type = 'Internal'; IPAddress = '192.168.3.1'; PrefixLength = '24'}
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'}
                 #@{ Name = 'Internet'; Type = 'Internal'; }
                 # @{ Name = 'Corpnet'; Type = 'External'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
                 <#

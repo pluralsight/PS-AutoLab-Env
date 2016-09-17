@@ -16,3 +16,5 @@ Start-Sleep 5
 # Creates the lab environement without making a Hyper Snapshot
 Start-LabConfiguration -ConfigurationData .\TestLab.psd1 -Verbose -path .\ -NoSnapshot
 
+
+
