@@ -1,6 +1,8 @@
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab envroment build tool to support Authors and students in desinging and building a virutal lab environement to support courses.  
 The configurations for the VM are writting in Microsoft DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
+This tool will completely build a lab environement from scratch, however if you want to build your own
+environement and have the VM's configure for you, see the section on StandAlone.
 
 
 ## This Lab tool currently supports running on a host:
@@ -37,6 +39,10 @@ The configurations for the VM are writting in Microsoft DSC and deployed using [
 7. Optional - if you want the vm's to have internet access, run PS> .\Setup-Internet.ps1
 8. Optional - To wipe the lab env. PS> .\Wipe-Lab.ps1, then rebuild with Setup-Lab.ps1
 
+# StandAlone
+In the Santalone folder, a variety of DSC configurations have been included for authors and students
+that wish to build thier on VM Infrastructure, (Like on VMWare) but still wish the VM's configured for
+a course. The DSC Configuration may be applied to your own VM's.
 
 # Special notes and issues
 When the lab build is complete, I do not start the VM's automatically. I can, or create an option to do so.
