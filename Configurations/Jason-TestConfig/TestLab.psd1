@@ -14,7 +14,7 @@
             PSDscAllowDomainUser = $true; # Removes 'It is not recommended to use domain credential for node X' messages
             Lability_SwitchName = 'LabNet';
             Lability_ProcessorCount = 1;
-            Lability_StartupMemory = 2GB;
+            Lability_StartupMemory = 1GB;
             Lability_Media = '2016TP5_x64_Standard_EN';
         }
         @{
@@ -39,7 +39,7 @@
            # EnvironmentPrefix = 'TLG-';
             Media = @();
             Network = @(
-                @{ Name = 'LabNet'; Type = 'Internal'; }
+                @{ Name = 'LabNet'; Type = 'Internal'; IPAddress = '192.168.3.1'; PrefixLength = '24'}
                 #@{ Name = 'Internet'; Type = 'Internal'; }
                 # @{ Name = 'Corpnet'; Type = 'External'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
                 <#
