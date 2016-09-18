@@ -2,16 +2,29 @@
     AllNodes = @(
         @{
             NodeName = '*';
+            # Common networking
             InterfaceAlias = 'Ethernet';
             DefaultGateway = '192.168.3.1';
             SubnetMask = 24;
             AddressFamily = 'IPv4';
             DnsServerAddress = '192.168.3.10';
-            DomainName = 'company.pri';
+            # Domain and Domain Controller information
+            Domain = "Company.Pri";
+            DomainDN = "DC=Company,DC=Pri";
+            DCDatabasePath = "C:\NTDS"
+            DCLogPath = "C:\NTDS"
+            SysvolPath = "C:\Sysvol"
             PSDscAllowPlainTextPassword = $true;
+            PSDscAllowDomainUser = $true; 
+            # ADCS Certificate Services information
+            CACN = 'Company.Pri'
+            CADNSuffix = "C=US,L=Phoenix,S=Arizona,O=Company"
+            CADatabasePath = "C:\windows\system32\CertLog"
+            CALogPath = "C:\CA_Logs"
+            # How to install certificates on machines
             #CertificateFile = "$env:AllUsersProfile\Lability\Certificates\LabClient.cer";
             #Thumbprint = 'AAC41ECDDB3B582B133527E4DE0D2F8FEB17AAB2';
-            PSDscAllowDomainUser = $true; # Removes 'It is not recommended to use domain credential for node X' messages
+            # LAbility custom settings
             Lability_SwitchName = 'LabNet';
             Lability_ProcessorCount = 1;
             Lability_StartupMemory = 1GB;
@@ -20,25 +33,29 @@
             #2016TP5_x64_Standard_Core_EN
         }
         @{
-            NodeName = 'web1';
-            IPAddress = '192.168.3.50';
-            DnsServerAddress = '4.2.2.2';
+            NodeName = 'DC';
+            IPAddress = '192.168.3.10';
             Role = 'web';
             Lability_ProcessorCount = 1;
             Lability_Media = '2016TP5_x64_Standard_EN';
         }
         @{
-            NodeName = 'web2';
-            IPAddress = '192.168.3.51';
-            DnsServerAddress = '4.2.2.2';
+            NodeName = 'S1';
+            IPAddress = '192.168.3.50';
             Role = 'web';
             Lability_ProcessorCount = 1;
-            Lability_Media = '2016TP5_x64_Standard_Core_EN';
+            Lability_Media = '2016TP5_x64_Standard_EN';
+        }
+        @{
+            NodeName = 'S2';
+            IPAddress = '192.168.3.51';
+            Role = 'web';
+            Lability_ProcessorCount = 1;
+            Lability_Media = '2016TP5_x64_Standard_EN';
         }
         @{
             NodeName = 'Client';
             IPAddress = '192.168.3.100';
-            DnsServerAddress = '4.2.2.2';
             Role = 'Client';
             Lability_ProcessorCount = 2;
             Lability_StartupMemory = 2GB;
@@ -49,32 +66,25 @@
     );
     NonNodeData = @{
         Lability = @{
-           # EnvironmentPrefix = 'TLG-';
-            Media = @();
+            EnvironmentPrefix = 'PS-'; # this will prefix the VM names if using multiple lab environemnts
+                                       # at the same time.
+            Media = @(); # Custom media additions that are different than the supplied defaults (media.json)
             Network = @(
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'}
-                #@{ Name = 'Internet'; Type = 'Internal'; }
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true;}
+                # Can create Multiple switches
                 # @{ Name = 'Corpnet'; Type = 'External'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
-                <#
-                    IPAddress: The desired IP address.
-                    InterfaceAlias: Alias of the network interface for which the IP address should be set. <- Use NetAdapterName
-                    DefaultGateway: Specifies the IP address of the default gateway for the host. <- Not needed for internal switch
-                    Subnet: Local subnet CIDR (used for cloud routing).
-                    AddressFamily: IP address family: { IPv4 | IPv6 }
-                #>
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery
-                @{ Name = 'xWebAdministration'; MinimumVersion = '1.13.0.0'; Provider = 'PSGallery'; }
-                @{ Name = 'xComputerManagement'; MinimumVersion = '1.3.0.0'; Provider = 'PSGallery'; }
-                ## If not specified, the provider defaults to the PSGallery.
-               # @{ Name = 'xSmbShare'; MinimumVersion = '1.1.0.0'; }
-                @{ Name = 'xNetworking'; MinimumVersion = '2.7.0.0'; }
-               # @{ Name = 'xActiveDirectory'; MinimumVersion = '2.9.0.0'; }
-               # @{ Name = 'xDnsServer'; MinimumVersion = '1.5.0.0'; }
-               # @{ Name = 'xDhcpServer'; MinimumVersion = '1.3.0.0'; }
                 ## The 'GitHub# provider can download modules directly from a GitHub repository, for example:
                 ## @{ Name = 'Lability'; Provider = 'GitHub'; Owner = 'VirtualEngine'; Repository = 'Lability'; Branch = 'dev'; }
+        
+                @{ Name = 'xActiveDirectory'; MinimumVersion="2.13.0.0"; Provider = 'PSGallery'; },
+                @{ Name = 'xComputerManagement'; MinimumVersion = '1.8.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xNetworking'; MinimumVersion = '2.11.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xADCSDeployment'; MinimumVersion = '1.0.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xDhcpServer'; MinimumVersion = '1.5.0.0'; Provider = 'PSGallery';  }
+
             );
         };
     };
