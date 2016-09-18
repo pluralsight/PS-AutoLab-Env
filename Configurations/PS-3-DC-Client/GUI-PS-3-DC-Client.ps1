@@ -24,7 +24,7 @@ Configuration GUILab {
 
 #endregion
   
-#region IPaddress settings and computer anme 
+#region IPaddress settings 
 
  
 

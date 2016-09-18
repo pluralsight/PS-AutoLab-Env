@@ -57,7 +57,7 @@
         @{
             NodeName = 'DC'
             IPAddress = '192.168.3.10'
-            Role = 'DC', 'DHCP', 'ADCS'
+            #Role = 'DC', 'DHCP', 'ADCS'
             Lability_ProcessorCount = 1
             Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 10
@@ -67,7 +67,7 @@
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
-            Role = 'Server'
+            #Role = 'Server'
             Lability_ProcessorCount = 1
             Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 20
@@ -76,7 +76,7 @@
         @{
             NodeName = 'S2'
             IPAddress = '192.168.3.51'
-            Role = 'Server'
+            #Role = 'Server'
             Lability_ProcessorCount = 1
             Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 20
@@ -86,11 +86,11 @@
         @{
             NodeName = 'Client'
             IPAddress = '192.168.3.100'
-            Role = 'Client'
+            #Role = 'Client'
             Lability_ProcessorCount = 2
             Lability_StartupMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
-            Lability_BootOrder = 10
+            Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
         
