@@ -61,6 +61,8 @@
             Lability_ProcessorCount = 1
             Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 10
+            Lability_BootDelay = 180 # Number of seconds to delay before others
+            Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
         @{
             NodeName = 'S1'
@@ -69,6 +71,7 @@
             Lability_ProcessorCount = 1
             Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 20
+            Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
         @{
             NodeName = 'S2'
@@ -77,6 +80,8 @@
             Lability_ProcessorCount = 1
             Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 20
+            Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+
         }
         @{
             NodeName = 'Client'
@@ -85,7 +90,8 @@
             Lability_ProcessorCount = 2
             Lability_StartupMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
-            Lability_BootOrder = 30
+            Lability_BootOrder = 10
+            Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
         
         
