@@ -49,7 +49,7 @@
     );
     NonNodeData = @{
         Lability = @{
-           # EnvironmentPrefix = 'TLG-';
+           EnvironmentPrefix = 'Prefix-';
             Media = @();
             Network = @(
                 @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'}
