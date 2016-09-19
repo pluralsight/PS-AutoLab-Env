@@ -5,12 +5,15 @@ Configuration GUILab {
         [ValidateNotNull()] 
         [PSCredential] $Credential = (Get-Credential -Credential 'Administrator')
     )
+
+#region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
         @{ModuleName="xNetworking";ModuleVersion="2.11.0.0"},
         @{ModuleName="XADCSDeployment";ModuleVersion="1.0.0.0"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"}
+#endregion
 
     node $AllNodes.Where({$true}).NodeName {
 #region LCM configuration
@@ -62,37 +65,37 @@ Configuration GUILab {
 #endregion
 
 #region Firewall Rules
-        
-        xFirewall 'FPS-ICMP4-ERQ-In' {
-            Name = 'FPS-ICMP4-ERQ-In'
-            DisplayName = 'File and Printer Sharing (Echo Request - ICMPv4-In)'
-            Description = 'Echo request messages are sent as ping requests to other nodes.'
-            Direction = 'Inbound'
-            Action = 'Allow'
-            Enabled = 'True'
-            Profile = 'Any'
-        }
-
-        xFirewall 'FPS-ICMP6-ERQ-In' {
-            Name = 'FPS-ICMP6-ERQ-In';
-            DisplayName = 'File and Printer Sharing (Echo Request - ICMPv6-In)'
-            Description = 'Echo request messages are sent as ping requests to other nodes.'
-            Direction = 'Inbound'
-            Action = 'Allow'
-            Enabled = 'True'
-            Profile = 'Any'
-        }
-
-        xFirewall 'FPS-SMB-In-TCP' {
-            Name = 'FPS-SMB-In-TCP'
-            DisplayName = 'File and Printer Sharing (SMB-In)'
-            Description = 'Inbound rule for File and Printer Sharing to allow Server Message Block transmission and reception via Named Pipes. [TCP 445]'
-            Direction = 'Inbound'
-            Action = 'Allow'
-            Enabled = 'True'
-            Profile = 'Any'
-        }
-#Endregion
+#        
+#        xFirewall 'FPS-ICMP4-ERQ-In' {
+#            Name = 'FPS-ICMP4-ERQ-In'
+#            DisplayName = 'File and Printer Sharing (Echo Request - ICMPv4-In)'
+#            Description = 'Echo request messages are sent as ping requests to other nodes.'
+#            Direction = 'Inbound'
+#            Action = 'Allow'
+#            Enabled = 'True'
+#            Profile = 'Any'
+#        }
+#
+#        xFirewall 'FPS-ICMP6-ERQ-In' {
+#            Name = 'FPS-ICMP6-ERQ-In';
+#            DisplayName = 'File and Printer Sharing (Echo Request - ICMPv6-In)'
+#            Description = 'Echo request messages are sent as ping requests to other nodes.'
+#            Direction = 'Inbound'
+#            Action = 'Allow'
+#            Enabled = 'True'
+#            Profile = 'Any'
+#        }
+#
+#        xFirewall 'FPS-SMB-In-TCP' {
+#            Name = 'FPS-SMB-In-TCP'
+#            DisplayName = 'File and Printer Sharing (SMB-In)'
+#            Description = 'Inbound rule for File and Printer Sharing to allow Server Message Block transmission and reception via Named Pipes. [TCP 445]'
+#            Direction = 'Inbound'
+#            Action = 'Allow'
+#            Enabled = 'True'
+#            Profile = 'Any'
+#        }
+#endregion
                   
     } #end nodes ALL
 
@@ -133,7 +136,7 @@ Configuration GUILab {
                 DependsOn = '[WindowsFeature]ADDomainServices'
             }  
         
-    #region - Add OU, Groups, and Users
+        #Add OU, Groups, and Users
 
             xWaitForADDomain DscForestWait {
                 DomainName = $Node.DomainName
@@ -520,7 +523,8 @@ Configuration GUILab {
     } #end DHCP Config
  #endregion
 
- #region ADCS
+#region ADCS
+
     node $AllNodes.Where({$_.Role -in 'ADCS'}).NodeName {
  
         $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
@@ -563,7 +567,7 @@ Configuration GUILab {
             ValidityPeriodUnits = $Node.ValidityPeriodUnits
             DependsOn = '[WindowsFeature]ADCSCertAuthority'    
         }
- #region - Add GPO for PKI AutoEnroll
+    #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
         {
             Credential = $DomainCredential
@@ -674,7 +678,7 @@ Configuration GUILab {
     } #end ADCS Config
  #endregion
 
- #region Server config
+#region Server config
    node $AllNodes.Where({$_.Role -in 'Server'}).NodeName {
         ## Flip credential into username@domain.com
         $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
@@ -715,6 +719,35 @@ Configuration GUILab {
         }
     }#end Server Config
 #endregion
+
+#region Test config
+   node $AllNodes.Where({$_.Role -in 'Test'}).NodeName {
+        ## Flip credential into username@domain.com
+        $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
+ 
+         xComputer 'Hostname' {
+            Name = $node.NodeName
+        }
+        
+        ## Hack to fix DependsOn with hypens "bug" :(
+        foreach ($feature in @(
+                'web-Server'
+                #'GPMC',
+                #'RSAT-AD-Tools',
+                #'DHCP',
+                #'RSAT-DHCP'
+            )) {
+            WindowsFeature $feature.Replace('-','') {
+                Ensure = 'Present'
+                Name = $feature
+                IncludeAllSubFeature = $False
+            }
+        }
+        
+    }#end Server Config
+#endregion
+
+
 } #end Configuration Example
 
 GUILab -OutputPath .\ -ConfigurationData .\GUI-PS-3-DC-Client.psd1
