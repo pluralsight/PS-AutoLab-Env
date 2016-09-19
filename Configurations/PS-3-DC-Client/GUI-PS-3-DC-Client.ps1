@@ -51,8 +51,13 @@ Configuration GUILab {
             AddressFamily  = $node.AddressFamily
         }
     }
+<<<<<<< HEAD
 
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {        
+=======
+            
+    If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
+>>>>>>> origin/master
         xDnsConnectionSuffix 'PrimaryConnectionSuffix' {
             InterfaceAlias = $node.InterfaceAlias
             ConnectionSpecificSuffix = $node.DnsConnectionSuffix
