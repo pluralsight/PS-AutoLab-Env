@@ -34,35 +34,30 @@ Configuration GUILab {
             SubnetMask     = $node.SubnetMask
             AddressFamily  = $node.AddressFamily
         }
-    }
 
-    If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {     
-        xDefaultGatewayAddress 'PrimaryDefaultGateway' {
-            InterfaceAlias = $node.InterfaceAlias
-            Address = $node.DefaultGateway
-            AddressFamily = $node.AddressFamily
+        If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {     
+            xDefaultGatewayAddress 'PrimaryDefaultGateway' {
+                InterfaceAlias = $node.InterfaceAlias
+                Address = $node.DefaultGateway
+                AddressFamily = $node.AddressFamily
+            }
         }
-    }
 
-    If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {                    
-        xDnsServerAddress 'PrimaryDNSClient' {
-            Address        = $node.DnsServerAddress
-            InterfaceAlias = $node.InterfaceAlias
-            AddressFamily  = $node.AddressFamily
+        If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {                    
+            xDnsServerAddress 'PrimaryDNSClient' {
+                Address        = $node.DnsServerAddress
+                InterfaceAlias = $node.InterfaceAlias
+                AddressFamily  = $node.AddressFamily
+            }
         }
-    }
-<<<<<<< HEAD
 
-    If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {        
-=======
-            
-    If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
->>>>>>> origin/master
-        xDnsConnectionSuffix 'PrimaryConnectionSuffix' {
-            InterfaceAlias = $node.InterfaceAlias
-            ConnectionSpecificSuffix = $node.DnsConnectionSuffix
+        If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
+            xDnsConnectionSuffix 'PrimaryConnectionSuffix' {
+                InterfaceAlias = $node.InterfaceAlias
+                ConnectionSpecificSuffix = $node.DnsConnectionSuffix
+            }
         }
-    }
+    } #End IF
             
 #endregion
 
