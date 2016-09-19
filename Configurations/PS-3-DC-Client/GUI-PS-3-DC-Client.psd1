@@ -1,16 +1,16 @@
 @{
     AllNodes = @(
         @{
-            NodeName = '*';
+            NodeName = '*'
             
             # Common networking
-            InterfaceAlias = 'Ethernet';
-            DefaultGateway = '192.168.3.1';
-            SubnetMask = 24;
-            AddressFamily = 'IPv4';
-            DnsServerAddress = '192.168.3.10';
+            InterfaceAlias = 'Ethernet'
+            DefaultGateway = '192.168.3.1'
+            SubnetMask = 24
+            AddressFamily = 'IPv4'
+            DnsServerAddress = '192.168.3.10'
             
-            # DHCP DATA
+            # DHCP Server Data
             DHCPName = 'LabNet'
             DHCPIPStartRange = '192.168.3.200'
             DHCPIPEndRange = '192.168.3.250'
@@ -23,13 +23,13 @@
             DHCPRouter = '192.168.3.1'
             
             # Domain and Domain Controller information
-            DomainName = "Company.Pri";
-            DomainDN = "DC=Company,DC=Pri";
+            DomainName = "Company.Pri"
+            DomainDN = "DC=Company,DC=Pri"
             DCDatabasePath = "C:\NTDS"
             DCLogPath = "C:\NTDS"
             SysvolPath = "C:\Sysvol"
-            PSDscAllowPlainTextPassword = $true;
-            PSDscAllowDomainUser = $true; 
+            PSDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser = $true 
             
             # ADCS Certificate Services information
             CACN = 'Company.Pri'
@@ -46,20 +46,19 @@
             # How to install certificates on machines
             #CertificateFile = "$env:AllUsersProfile\Lability\Certificates\LabClient.cer";
             #Thumbprint = 'AAC41ECDDB3B582B133527E4DE0D2F8FEB17AAB2';
+            
             # LAbility custom settings
-            Lability_SwitchName = 'LabNet';
-            Lability_ProcessorCount = 1;
-            Lability_StartupMemory = 1GB;
-            #Lability_Media = '2016TP5_x64_Standard_EN';
-            #WIN10_x64_Enterprise_EN_Eval
-            #2016TP5_x64_Standard_Core_EN
+            Lability_SwitchName = 'LabNet'
+            Lability_ProcessorCount = 1
+            Lability_StartupMemory = 1GB
+            Lability_Media = '2016TP5_x64_Standard_EN' # Can be Core,Win10,2012R2,nano
+                                                       # 2016TP5_x64_Standard_Core_EN
+                                                       # WIN10_x64_Enterprise_EN_Eval
         }
         @{
             NodeName = 'DC'
             IPAddress = '192.168.3.10'
             #Role = 'DC', 'DHCP', 'ADCS'
-            Lability_ProcessorCount = 1
-            Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 10
             Lability_BootDelay = 180 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -68,8 +67,6 @@
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
             #Role = 'Server'
-            Lability_ProcessorCount = 1
-            Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
@@ -77,8 +74,6 @@
             NodeName = 'S2'
             IPAddress = '192.168.3.51'
             #Role = 'Server'
-            Lability_ProcessorCount = 1
-            Lability_Media = '2016TP5_x64_Standard_EN'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
 
@@ -98,7 +93,7 @@
     );
     NonNodeData = @{
         Lability = @{
-            EnvironmentPrefix = 'PS-'; # this will prefix the VM names if using multiple lab environemnts
+            EnvironmentPrefix = 'PS-GUI-'; # this will prefix the VM names if using multiple lab environemnts
                                        # at the same time.
             Media = @(); # Custom media additions that are different than the supplied defaults (media.json)
             Network = @(
