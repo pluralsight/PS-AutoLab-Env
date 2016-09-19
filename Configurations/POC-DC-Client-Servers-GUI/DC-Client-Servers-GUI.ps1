@@ -129,7 +129,7 @@ Configuration GUILab {
             xADDomain FirstDC {
                 DomainName = $Node.DomainName
                 DomainAdministratorCredential = $DomainCredential
-                SafemodeAdministratorPassword = $DomainCrednetial
+                SafemodeAdministratorPassword = $DomainCredential
                 DatabasePath = $Node.DCDatabasePath
                 LogPath = $Node.DCLogPath
                 SysvolPath = $Node.SysvolPath 
