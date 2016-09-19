@@ -750,4 +750,4 @@ Configuration GUILab {
 
 } #end Configuration Example
 
-GUILab -OutputPath .\ -ConfigurationData .\GUI-PS-3-DC-Client.psd1
+GUILab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-GUI.psd1
