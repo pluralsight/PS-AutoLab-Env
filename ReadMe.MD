@@ -51,7 +51,7 @@ Until the first time they are start - causing a delay for the installations to f
   
 #issues
 * Do we really need folder under Confugiration.....?? So.. if we use the cmdlets instead of stupid custom scripts... we dont need this.
-* We would need a naming convention
+* We would need a naming convention -- COUSE URL should be Psd1 name.
 * We would need a Prefix convention
 
 * the lab cmdlets are so easy -- let use those -- please....

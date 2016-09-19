@@ -1,5 +1,5 @@
 ﻿# Run the config to generate the .mof files
-.\GUI-PS-3-DC-Client.ps1
+.\DC-Client-Servers-GUI.ps1
 
 # Build the lab without a snapshot
 #
@@ -15,7 +15,7 @@ Write-Warning @"
 Start-Sleep 5
 
 # Creates the lab environement without making a Hyper Snapshot
-Start-LabConfiguration -ConfigurationData .\GUI-PS-3-DC-Client.psd1 -Verbose -path .\ -NoSnapshot
+Start-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -Verbose -path .\ -NoSnapshot
 
 
 
