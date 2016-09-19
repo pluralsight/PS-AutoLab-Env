@@ -49,3 +49,28 @@ When the lab build is complete, I do not start the VM's automatically. I can, or
 One reason to consider starting them is that the DSC configs (to configure the servers) doesn;t exeucte
 Until the first time they are start - causing a delay for the installations to finish. This is an open discussion topic
   
+#issues
+* Do we really need folder under Confugiration.....?? So.. if we use the cmdlets instead of stupid custom scripts... we dont need this.
+* We would need a naming convention
+* We would need a Prefix convention
+
+* the lab cmdlets are so easy -- let use those -- please....
+    * Start-LabConfiguration
+    * Start-Lab -ConfigurationName X
+    * Stop-Lab -Configuration X
+    * Remove-LAbConfiguration -Configuration X
+    etc -- only a few more -- can provide instructions.
+
+* It is possible to Preload a download of requirements before the lab build....we can teach this if we stop with the shitty scripts.
+
+* What should the folder structure naming be?
+
+* The Naming of cofigs should be very clear - with out the need of a read.me
+
+* Can offer a prebuild of downloads for a lab before config if we teach the cmdlets.
+
+* Can offer Bootstrap option that load things like PowerShell V6 , RAST tools for Win10 and other things.
+
+* Can offer Linux versions as well -- although not currently supported -- have a way arounf them
+
+* 
