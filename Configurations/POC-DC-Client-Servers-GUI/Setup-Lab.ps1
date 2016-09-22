@@ -15,7 +15,7 @@ Write-Warning @"
 Start-Sleep 5
 
 # Creates the lab environement without making a Hyper Snapshot
-Start-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -Verbose -path .\ -NoSnapshot
+Start-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -Verbose -path .\
 
 
 

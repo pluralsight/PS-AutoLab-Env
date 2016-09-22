@@ -36,7 +36,7 @@
             CADNSuffix = "C=US,L=Phoenix,S=Arizona,O=Company"
             CADatabasePath = "C:\windows\system32\CertLog"
             CALogPath = "C:\CA_Logs"
-            CAType = 'EnterpriseRootCA'
+            ADCSCAType = 'EnterpriseRootCA'
             ADCSCryptoProviderName = 'RSA#Microsoft Software Key Storage Provider'
             ADCSHashAlgorithmName = 'SHA256'
             ADCSKeyLength = 2048
@@ -56,9 +56,9 @@
                                                        # WIN10_x64_Enterprise_EN_Eval
         }
         @{
-            NodeName = 'DC'
+            NodeName = 'Server'
             IPAddress = '192.168.3.10'
-            Role = 'DC' #, 'DHCP', 'ADCS'
+            Role = @('DC', 'DHCP', 'ADCS')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()

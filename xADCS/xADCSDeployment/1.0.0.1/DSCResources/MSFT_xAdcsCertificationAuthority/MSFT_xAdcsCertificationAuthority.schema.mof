@@ -1,0 +1,28 @@
+[ClassVersion("0.1.0.0"), FriendlyName("xAdcsCertificationAuthority")]
+class MSFT_xAdcsCertificationAuthority : OMI_BaseResource
+{
+    [key, Description("Specifies the type of certification authority to install. The possible values are EnterpriseRootCA, EnterpriseSubordinateCA, StandaloneRootCA, or StandaloneSubordinateCA."), ValueMap{"EnterpriseRootCA","EnterpriseSubordinateCA","StandaloneRootCA","StandaloneSubordinateCA"}, Values{"EnterpriseRootCA","EnterpriseSubordinateCA","StandaloneRootCA","StandaloneSubordinateCA"}] String CAType;
+    [Required, Description("To install an enterprise certification authority, the computer must be joined to an Active Directory Domain Services domain and a user account that is a member of the Enterprise Admin group is required. To install a standalone certification authority, the computer can be in a workgroup or AD DS domain. If the computer is in a workgroup, a user account that is a member of Administrators is required. If the computer is in an AD DS domain, a user account that is a member of Domain Admins is required."), EmbeddedInstance("MSFT_Credential")] String Credential;
+    [write, Description("Specifies whether the Certificate Authority should be installed or uninstalled."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [write, Description("Specifies the certification authority common name.")] String CACommonName;
+    [write, Description("Specifies the certification authority distinguished name suffix.")] String CADistinguishedNameSuffix;
+    [write, Description("Specifies the file name of certification authority PKCS 12 formatted certificate file.")] String CertFile;
+    [write, Description("Specifies the password for certification authority certificate file."), EmbeddedInstance("MSFT_Credential")] String CertFilePassword;
+    [write, Description("Specifies the thumbprint or serial number of certification authority certificate.")] String CertificateID;
+    [write, Description("The name of the cryptographic service provider  or key storage provider that is used to generate or store the private key for the CA.")] String CryptoProviderName;
+    [write, Description("Specifies the folder location of the certification authority database.")] String DatabaseDirectory;
+    [write, Description("Specifies the signature hash algorithm used by the certification authority.")] String HashAlgorithmName;
+    [write, Description("Specifies that Unicode characters are allowed in certification authority name string.")] Boolean IgnoreUnicode;
+    [write, Description("Specifies the name of an existing private key container.")] String KeyContainerName;
+    [write, Description("Specifies the name of an existing private key container.")] Uint32 KeyLength;
+    [write, Description("Specifies the folder location of the certification authority database log.")] String LogDirectory;
+    [write, Description("Specifies the folder location for certificate request file.")] String OutputCertRequestFile;
+    [write, Description("Specifies that the computer object in the Active Directory Domain Service domain should be overwritten with the same computer name.")] Boolean OverwriteExistingCAinDS;
+    [write, Description("Specifies that the existing certification authority database should be overwritten.")] Boolean OverwriteExistingDatabase;
+    [write, Description("Overwrite existing key container with the same name")] Boolean OverwriteExistingKey;
+    [write, Description("Specifies the configuration string of the parent certification authority that will certify this CA.")] String ParentCA;
+    [write, Description("Specifies the validity period of the certification authority certificate in hours, days, weeks, months or years. If this is a subordinate CA, do not use this parameter, because the validity period is determined by the parent CA."), ValueMap{"Hours","Days","Months","Years"}, Values{"Hours","Days","Months","Years"}] String ValidityPeriod;
+    [write, Description("Validity period of the certification authority certificate. If this is a subordinate CA, do not specify this parameter because the validity period is determined by the parent CA.")] Uint32 ValidityPeriodUnits;
+    [read, Description("Specifies if the target has the certification authority configured.")] Boolean IsCA;
+};
+

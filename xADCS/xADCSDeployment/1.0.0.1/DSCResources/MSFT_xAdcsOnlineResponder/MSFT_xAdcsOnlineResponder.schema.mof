@@ -1,0 +1,7 @@
+[ClassVersion("0.1.0.0"), FriendlyName("xAdcsOnlineResponder")]
+class MSFT_xAdcsOnlineResponder : OMI_BaseResource
+{
+    [Key, Description("Specifies the resource is a single instance, the value must be 'Yes'"), ValueMap{"Yes"}, Values{"Yes"}] String IsSingleInstance;
+    [Required, Description("If the Online Responder service is configured to use Standalone certification authority, then an account that is a member of the local Administrators on the CA is required. If the Online Responder service is configured to use an Enterprise CA, then an account that is a member of Domain Admins is required."), EmbeddedInstance("MSFT_Credential")] String Credential;
+    [Required, Description("Specifies whether the Online Responder feature should be installed or uninstalled."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
