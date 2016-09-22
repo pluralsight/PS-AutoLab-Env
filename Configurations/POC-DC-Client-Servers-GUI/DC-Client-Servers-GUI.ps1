@@ -128,8 +128,8 @@ Configuration GUILab {
         }
 #endregion
 
-
-$Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$node.DomainName", $Credential.Password)
+# Creating domain credentails for other services
+        $Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
                 
     } #end nodes ALL
 
@@ -502,14 +502,6 @@ $Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSC
 
 #region DHCP
     node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
- 
-        xWaitForADDomain 'DscForestWaitDHCP' {
-            DomainName = $Node.DomainName
-            DomainUserCredential = $DomainCredential
-            RetryCount = '60'
-            RetryIntervalSec = '60'
-        }
- 
 
         foreach ($feature in @(
                 'DHCP',
@@ -520,7 +512,7 @@ $Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSC
                 Ensure = 'Present';
                 Name = $feature;
                 IncludeAllSubFeature = $False;
-                DependsOn = '[xWaitForADDomain]DSCForestWaitDHCP'
+                DependsOn = '[xWaitForADDomain]DscForestWait'
             }
         } #End foreach  
         
@@ -554,13 +546,6 @@ $Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSC
 #region ADCS
 
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
-                        
-        xWaitForADDomain DscForestWaitADCS {
-            DomainName = $Node.DomainName
-            DomainUserCredential = $DomainCredential
-            RetryCount = '60'
-            RetryIntervalSec = '60'
-        }
  
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
@@ -576,7 +561,7 @@ $Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSC
                 Ensure = 'Present';
                 Name = $feature;
                 IncludeAllSubFeature = $False;
-                DependsOn = '[xWaitForADDomain]DSCForestWaitADCS'
+                DependsOn = '[xWaitForADDomain]DscForestWait'
             }
         } #End foreach  
         

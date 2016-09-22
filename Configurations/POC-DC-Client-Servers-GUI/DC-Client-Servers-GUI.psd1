@@ -106,11 +106,11 @@
                 ## The 'GitHub# provider can download modules directly from a GitHub repository, for example:
                 ## @{ Name = 'Lability'; Provider = 'GitHub'; Owner = 'VirtualEngine'; Repository = 'Lability'; Branch = 'dev'; }
         
-                @{ Name = 'xActiveDirectory'; MinimumVersion="2.13.0.0"; Provider = 'PSGallery'; },
-                @{ Name = 'xComputerManagement'; MinimumVersion = '1.8.0.0'; Provider = 'PSGallery'; }
-                @{ Name = 'xNetworking'; MinimumVersion = '2.11.0.0'; Provider = 'PSGallery'; }
-                @{ Name = 'xADCSDeployment'; MinimumVersion = '1.0.0.0'; Provider = 'PSGallery'; }
-                @{ Name = 'xDhcpServer'; MinimumVersion = '1.5.0.0'; Provider = 'PSGallery';  }
+                @{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
+                @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  }
 
             );
         };
