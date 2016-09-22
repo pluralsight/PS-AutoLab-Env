@@ -32,14 +32,14 @@ Configuration GUILab {
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
-        @{ModuleName="xNetworking";ModuleVersion="2.11.0.0"},
+        @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
         @{ModuleName="XADCSDeployment";ModuleVersion="1.0.0.1"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"}
 #endregion
 
     node $AllNodes.Where({$true}).NodeName {
 #region LCM configuration
-        
+       
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
@@ -127,15 +127,16 @@ Configuration GUILab {
             Profile = 'Any'
         }
 #endregion
-                  
+
+
+$Global:DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$node.DomainName", $Credential.Password)
+                
     } #end nodes ALL
 
 #region Domain Controller config
 
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
- 
-    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
-        
+         
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
                 'DNS',
@@ -502,8 +503,6 @@ Configuration GUILab {
 #region DHCP
     node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
  
-        $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
-
         xWaitForADDomain 'DscForestWaitDHCP' {
             DomainName = $Node.DomainName
             DomainUserCredential = $DomainCredential
@@ -555,8 +554,6 @@ Configuration GUILab {
 #region ADCS
 
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
-
-        $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
                         
         xWaitForADDomain DscForestWaitADCS {
             DomainName = $Node.DomainName
@@ -1004,3 +1001,4 @@ Configuration GUILab {
 } #end Configuration Example
 
 GUILab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-GUI.psd1
+
