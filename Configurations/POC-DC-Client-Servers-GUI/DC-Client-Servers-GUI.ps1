@@ -14,7 +14,7 @@ Goal - Create a Domain Controller, Populute with OU's Groups and Users.
 
 Disclaimer
 
-This example code is provided without copyright and “AS IS”.  It is free for you to use and modify.
+This example code is provided without copyright and ï¿½AS ISï¿½.  It is free for you to use and modify.
 Note: These demos should not be run as a script. These are the commands that I use in the 
 demonstrations and would need to be modified for your environment.
 
@@ -544,7 +544,7 @@ Configuration GUILab {
         foreach ($feature in @(
                 'ADCS-Cert-Authority',
                 'ADCS-Enroll-Web-Pol',
-                'ADCS-Enroll-Wev-Dsv',
+                'ADCS-Enroll-Web-Svc',
                 'ADCS-Web-Enrollment',
                 'RSAT-ADCS',
                 'RSAT-ADCS-Mgmt'
