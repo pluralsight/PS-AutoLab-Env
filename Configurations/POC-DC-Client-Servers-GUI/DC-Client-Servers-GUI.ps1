@@ -168,20 +168,13 @@ Configuration GUILab {
         
         #Add OU, Groups, and Users
 
-            xWaitForADDomain DscForestWait {
-                DomainName = $Node.DomainName
-                DomainUserCredential = $DomainCredential
-                RetryCount = '60'
-                RetryIntervalSec = '60'
-                DependsOn = "[xADDomain]FirstDC"
-            }
 
             xADOrganizationalUnit IT {
                 Name = 'IT'
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Dev {
@@ -189,7 +182,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Marketing {
@@ -197,7 +190,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Sales {
@@ -205,7 +198,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Accounting {
@@ -213,7 +206,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit JEA_Operators {
@@ -221,7 +214,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             # Users
@@ -237,7 +230,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser IT2 {
@@ -252,7 +245,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser IT3 {
@@ -267,7 +260,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Dev1 {
@@ -282,7 +275,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Acct1 {
@@ -297,7 +290,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Acct2 {
@@ -312,7 +305,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Acct3 {
@@ -327,7 +320,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Sales1 {
@@ -342,7 +335,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Sales2 {
@@ -357,7 +350,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Sales3 {
@@ -372,7 +365,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Market1 {
@@ -387,7 +380,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Market2 {
@@ -402,7 +395,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Market3 {
@@ -417,7 +410,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser JEA1 {
@@ -432,7 +425,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser JEA2 {
@@ -447,7 +440,7 @@ Configuration GUILab {
                 Enabled = $true
                 Password = $Credential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
  
             #Groups
@@ -457,7 +450,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'DonJ', 'Jasonh', 'GregS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup SalesG1 {
@@ -466,7 +459,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'SamS', 'SonyaS', 'SamanthaS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup MKG1 {
@@ -475,7 +468,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'MarkS', 'MonicaS', 'MattS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup AccountG1 {
@@ -484,7 +477,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'AaronS', 'AndreaS', 'AndyS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup JEAG1 {
@@ -493,7 +486,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'JimJ', 'JillJ'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
        
     } #end nodes DC
@@ -512,7 +505,7 @@ Configuration GUILab {
                 Ensure = 'Present';
                 Name = $feature;
                 IncludeAllSubFeature = $False;
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
         } #End foreach  
         
@@ -561,7 +554,7 @@ Configuration GUILab {
                 Ensure = 'Present';
                 Name = $feature;
                 IncludeAllSubFeature = $False;
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
         } #End foreach  
         
