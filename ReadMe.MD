@@ -48,3 +48,20 @@ that wish to build their environments on their own VM Infrastructure.
 The DSC Configurations may be applied to your own VMs.
 You will need to deploy the configs and DSC resources yourself.
 
+# Known Issues
+Excepted convergence of all the configurations for the first time run is 60 minutes.
+The DC may require an addiitonal reboot to complete its configuration. Tracking this issue now.
+If after 30 minutes, you still do not see users (ADUC), then reboot the system or run the following:
+Start-DscConfiguration -UseExisting
+
+# Current and Future Development
+These are things currently being worked on and/or in testing.
+
+1. Additional Role configurations including:
+        * DHCP (current)
+        * ADCS (plus certificattes and autoenroll) (current)
+        * Web servers and Websites (current)
+        * Exchange (future)
+        * SQL (future)
+2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
+3. Bootstrapping and automatically installing PowerShell 6 (future)
