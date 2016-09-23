@@ -7,7 +7,7 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #>
 #Requires -version 5.0
 #Requires -runasadministrator
-
+Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Setup-Host script. This script will perform the following:
@@ -17,6 +17,7 @@ Write-Host -ForegroundColor Green -Object @"
     * Create the C:\Lability folder (DO NOT DELETE)
     * Copy configurations and resources to C:\Lability
     * You will then need to reboot the host before continuing
+
 "@
 
 Pause
@@ -24,7 +25,7 @@ Pause
 
 # For remoting commands to VM's - have the host set trustedhosts to *
 
-Write-Output "Setting TrustedHosts to * so that remoting commands to VM's work properly"
+Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts to * so that remoting commands to VM's work properly"
 $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts 
 If ($trust.value -eq "" -or $trust.value -eq "*"){
     Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value * -Force
@@ -35,7 +36,7 @@ If ($trust.value -eq "" -or $trust.value -eq "*"){
 }
 
 # Lability install
-Write-Output "Installong LAbility for the lab build"
+Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
 Install-Module -Name Lability -RequiredVersion 0.10.0
 
@@ -43,22 +44,24 @@ Install-Module -Name Lability -RequiredVersion 0.10.0
 # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
 $HostStatus=Test-LabHostConfiguration
 If ($HostStatus -eq $False) {
-    Write-Host "Initializing host"
-    Start-LabHostConfiguration
+    Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V" 
+    Start-LabHostConfiguration -ErrorAction SilentlyContinue
 }
 
-###### COPY Configs to host machine 
+###### COPY Configs to host machine
+Write-Host -ForegroundColor Cyan -Object "Copying configs to c:\Lability\Configurations" 
 Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
 
 
-Write-Host -ForegroundColor Yellow -Object @"
+Write-Host -ForegroundColor Green -Object @"
 
-    The Host must be reboot before continuing.
+    The Host is about to reboot.
     After the reboot, open Powershell, navigate to a configuration directory
-    c:\Lability\Configuration\<yourconfigfolder>
-    And run either:
+    C:\Lability\Configuration\<yourconfigfolder>
+    And run:
     
     PS> .\Setup-Lab
+
 "@
 
 Pause
