@@ -1,4 +1,28 @@
-﻿
+﻿<#
+Disclaimer
+
+This code is provided without copyright and “AS IS”.  It is free for you to use and modify under the MIT license.
+Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run as Administrator"
+
+#>
+#Requires -version 5.0
+#Requires -runasadministrator
+
+Clear-Host
+Write-Host -ForegroundColor Green -Object @"
+
+    This is the Enable-Internet script. This script will perform the following:
+    
+    * Enable Internet to the VM's 
+    
+    * Note! - If this generates and error, you are already enabled, or one of the default settings below
+                does not match you .PSD1 configuration
+   
+    *DevNote! - Currently working on a better solution to pull those values
+
+"@
+
+Pause
 
 Function Set-Internet {
     Param(

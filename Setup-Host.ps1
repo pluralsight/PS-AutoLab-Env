@@ -18,6 +18,9 @@ Write-Host -ForegroundColor Green -Object @"
     * Copy configurations and resources to C:\Lability
     * You will then need to reboot the host before continuing
 
+    Note! - You may delete the folder c:\PS-AutoLab-Env when this setup finished and the system
+            has been rebooted.
+
 "@
 
 Pause
@@ -60,9 +63,12 @@ Write-Host -ForegroundColor Green -Object @"
     C:\Lability\Configuration\<yourconfigfolder>
     And run:
     
-    PS> .\Setup-Lab
+    PS C:\Lability\Configuration\<yourconfigfolder>.\Setup-Lab
 
 "@
+
+Write-Host -ForegroundColor Yellow -Object "Note! - You may delete the folder c:\PS-AutoLab-Env when this setup finished and the system
+            has been rebooted."
 
 Pause
 Restart-Computer

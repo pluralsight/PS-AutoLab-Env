@@ -11,34 +11,45 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
-    This is the wipe-Lab script. This script will perform the following:
+    This is the Refresh-Lab script. This script will perform the following:
     
-    * wipe the lab adn VM's from you system 
+    * Refresh the lab from a previose Snapshot 
     
+    Note! This can only be done if you created a snapshot!
+    .\Snapshot-lab.ps1
 
     Next Steps:
 
     To start the lab environment, run:
-    .\Setup-lab.ps1
+    .\run-lab.ps1
 
+    To stop the lab environment, run:
+    .\shutdown-lab.ps1
+
+    To destroy this lab, run:
+    .\Wipe-Lab.ps1
 
 "@
 
 Pause
 
-Write-Host -ForegroundColor Cyan -Object 'Removing the lab environment'
+Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
 # Creates the lab environement without making a Hyper Snapshot
 Stop-Lab -ConfigurationData .\DC-Client-Servers-GUI.psd1 
-Remove-Item -Path .\*.mof
-Remove-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -RemoveSwitch
-Remove-Item -Path C:\Lability\VMVirtualHardDisks\* -Recurse -Force 
+Restore-Lab -ConfigurationData .\DC-Client-Servers-GUI.psd1 -SnapshotName LabConfigured -force
 
 Write-Host -ForegroundColor Green -Object @"
 
     Next Steps:
 
     To start the lab environment, run:
-    .\Setup-lab.ps1
+    .\run-lab.ps1
+
+    To stop the lab environment, run:
+    .\shutdown-lab.ps1
+
+    To destroy this lab, run:
+    .\Wipe-Lab.ps1
 
 "@
 
