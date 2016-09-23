@@ -106,11 +106,19 @@
                 @{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; }
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; }
-                #@{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; Provider = 'PSGallery'; }
                 @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  }
-                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.1'; Provider = 'GitHub'; Owner = 'theJasonHelmick'; Repository = 'PS-AutoLab-Modules'; branch = 'master' }
+                #@{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.1'; Provider = 'GitHub'; Owner = 'theJasonHelmick'; Repository = 'PS-AutoLab-Modules'; branch = 'master' }
 
             );
+ #            Resource = @(
+ #               @{
+ #                   Id = 'xADCSDeploymentv1.0.0.1';
+ #                   Filename = 'xAdcsDeploymentv1.0.0.1.zip';
+ #                   Expand = $true
+ #                   DestinationPath = 'C:\Program Files\WindowsPowerShell\Modules'
+ #               }
+ #           )
         };
     };
 };

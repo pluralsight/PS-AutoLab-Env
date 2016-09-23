@@ -33,7 +33,7 @@ Configuration GUILab {
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
         @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
-        @{ModuleName="XADCSDeployment";ModuleVersion="1.0.0.1"},
+        @{ModuleName="XADCSDeployment";ModuleVersion="1.0.0.0"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"}
 #endregion
 
@@ -229,6 +229,7 @@ Configuration GUILab {
                 Department = 'IT'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -244,6 +245,7 @@ Configuration GUILab {
                 Department = 'IT'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -259,6 +261,7 @@ Configuration GUILab {
                 Department = 'IT'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -274,6 +277,7 @@ Configuration GUILab {
                 Department = 'Dev'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -289,6 +293,7 @@ Configuration GUILab {
                 Department = 'Accounting'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -304,6 +309,7 @@ Configuration GUILab {
                 Department = 'Accounting'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -319,6 +325,7 @@ Configuration GUILab {
                 Department = 'Accounting'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -334,6 +341,7 @@ Configuration GUILab {
                 Department = 'Sales'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -349,6 +357,7 @@ Configuration GUILab {
                 Department = 'Sales'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -364,6 +373,7 @@ Configuration GUILab {
                 Department = 'Sales'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -379,6 +389,7 @@ Configuration GUILab {
                 Department = 'Marketing'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -394,6 +405,7 @@ Configuration GUILab {
                 Department = 'Marketing'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -409,6 +421,7 @@ Configuration GUILab {
                 Department = 'Marketing'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -424,6 +437,7 @@ Configuration GUILab {
                 Department = 'IT'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
@@ -439,6 +453,7 @@ Configuration GUILab {
                 Department = 'IT'
                 Enabled = $true
                 Password = $Credential
+                DomainAdministratorCredential = $Credential
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
