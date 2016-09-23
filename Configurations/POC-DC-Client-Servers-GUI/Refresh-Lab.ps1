@@ -13,7 +13,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     This is the Refresh-Lab script. This script will perform the following:
     
-    * Refresh the lab from a previose Snapshot 
+    * Refresh the lab from a previous Snapshot 
     
     Note! This can only be done if you created a snapshot!
     .\Snapshot-lab.ps1
@@ -34,7 +34,7 @@ Write-Host -ForegroundColor Green -Object @"
 Pause
 
 Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
-# Creates the lab environement without making a Hyper Snapshot
+# Creates the lab environment without making a Hyper-V Snapshot
 Stop-Lab -ConfigurationData .\*.psd1 
 Restore-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured -force
 

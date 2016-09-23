@@ -15,8 +15,8 @@ Write-Host -ForegroundColor Green -Object @"
     
     * Enable Internet to the VM's 
     
-    * Note! - If this generates and error, you are already enabled, or one of the default settings below
-                does not match you .PSD1 configuration
+    * Note! - If this generates an error, you are already enabled, or one of the default settings below
+                does not match your .PSD1 configuration
    
     *DevNote! - Currently working on a better solution to pull those values
 

@@ -13,7 +13,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     This is the wipe-Lab script. This script will perform the following:
     
-    * Wipe the lab and VM's from you system 
+    * Wipe the lab and VM's from your system 
     
 
     Next Steps:
@@ -27,7 +27,7 @@ Write-Host -ForegroundColor Green -Object @"
 Pause
 
 Write-Host -ForegroundColor Cyan -Object 'Removing the lab environment'
-# Creates the lab environement without making a Hyper Snapshot
+# Creates the lab environment without making a Hyper-V Snapshot
 Stop-Lab -ConfigurationData .\*.psd1 
 Remove-Item -Path .\*.mof
 Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch

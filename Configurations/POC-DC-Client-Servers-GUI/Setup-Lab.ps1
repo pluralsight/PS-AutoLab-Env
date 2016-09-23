@@ -18,12 +18,12 @@ Write-Host -ForegroundColor Green -Object @"
     * Run the lab setup
     Note! If this is the first time you have run this, it can take several
     hours to downlaod the .ISO's and resources.
-    This only occures the first time.
+    This only occurs the first time.
 
     *You will be able to wipe and rebuild this lab without needing to perform
     the downloads again.
 
-    Note! You will need to provide an Administrator password TWICE - on for the ocnfig, one for the localmachine account.
+    Note! You will need to provide an Administrator password TWICE - on for the config, one for the localmachine account.
 
     Next Steps:
     When complete, run:
@@ -53,7 +53,7 @@ Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fa
 # Build the lab without a snapshot
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
-# Creates the lab environement without making a Hyper Snapshot
+# Creates the lab environment without making a Hyper-V Snapshot
 Start-LabConfiguration -ConfigurationData .\*.psd1 -Verbose -path .\ -IgnorePendingReboot
 
 Write-Host -ForegroundColor Green -Object @"

@@ -17,7 +17,7 @@ Write-Host -ForegroundColor Green -Object @"
     
     Note! If this is the first time you have run this, it can take up to an hour
     for the DSC configs to apply. 
-    This only occures the first time.
+    This only occurs the first time.
 
     *You will be able to wipe and rebuild this lab without needing to perform
     the configuration process again if you:
@@ -35,7 +35,7 @@ Write-Host -ForegroundColor Green -Object @"
 Pause
 
 Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
-# Creates the lab environement without making a Hyper Snapshot
+# Creates the lab environment without making a Hyper-V Snapshot
 Start-Lab -ConfigurationData .\*.psd1 
 
 Write-Host -ForegroundColor Green -Object @"
