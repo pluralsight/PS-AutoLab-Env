@@ -13,7 +13,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     This is the wipe-Lab script. This script will perform the following:
     
-    * wipe the lab adn VM's from you system 
+    * Wipe the lab and VM's from you system 
     
 
     Next Steps:

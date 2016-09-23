@@ -13,7 +13,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     This is the Run-Lab script. This script will perform the following:
     
-    * Start the Lab environement
+    * Start the Lab environment
     
     Note! If this is the first time you have run this, it can take up to an hour
     for the DSC configs to apply. 

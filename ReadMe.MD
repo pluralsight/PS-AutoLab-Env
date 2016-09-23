@@ -20,37 +20,31 @@ The host computer must have the following:
 * Windows 8.1 clients
 * Windows 10 clients
 
-## Primary (1st defined) Virtual environments will include:
-* DC - Domain Controller with ADCS and DHCP, firewall and GPO settings, certificates, and other domain essentials.
-    * Domain name - **Company.Pri**
-    * Network - **192.168.3.0/24**
-    * Administrator password - **P@ssw0rd**
-* Client - Windows 10 client VM
-* 2 Additional domain-joined servers
-
-
-# Current Instructions (Need revision and sample commands)
+# Current Instructions 
 1. Download the ZIP of this repository to the Host computer.
-1. Extract the zip of PS-AutoLab-Env to your c:\ drive (C:\PS-AutoLab-Env)
-2. Open Powershell with administrative privileges
-3. Change to folder c:\PS-Auto-Lab-Env
-4. Run PS> .\Setup-Host.ps1
-5. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
-6. In Powershell, run the script PS> .\Setup-Lab.ps1
+2. Extract the zip of PS-AutoLab-Env to your c:\ drive (C:\PS-AutoLab-Env)
+3. Open Powershell with administrative privileges
+4. Change to folder c:\PS-Auto-Lab-Env
+5. Run PS> .\Setup-Host.ps1
+6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
+7. Check the Readme.md to find a decscription of what this config will do.
+8. In Powershell, run the script PS> .\Setup-Lab.ps1
         * Note - the first time you run this, it will download all required files including ISO and DSCResources.
         * Note - this may require several hours depending on your Internet connection
         * Note - This only happens the first time -- you will be able to build and wipe the 
                 Lab quickly in future.
-7. Optional - if you want the vms to have internet access, run PS> .\Setup-Internet.ps1
-8. Optional - To wipe the lab env. PS> .\Wipe-Lab.ps1, then rebuild with Setup-Lab.ps1
+
+# Other scripts you will need:
+You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
+1. .\Run-Lab.ps1 * Starts the Lab environment
+2. .\Snapshot-Lab * Snapshot the lab environment for easy and fast rebuilding
+3. .\Refresh-lab.ps1 * Refresh the lab from a previose Snapshot
+4. .\Wipe-Lab.ps1 * Wipe the lab and VM's from you system
+5. .\Enable-Internet * Enable Internet to the VM's 
 
 # StandAlone
 In the Standalone folder, a variety of DSC configurations have been included for authors and students
-that wish to build their environments on VM Infrastructure, (Like on VMWare) but still wish the VMs configured for
-a course. The DSC Configuration may be applied to your own VMs.
+that wish to build their environments on their own VM Infrastructure.
+The DSC Configurations may be applied to your own VMs.
+You will need to deploy the configs and DSC resources yourself.
 
-# Special notes and issues
-When the lab build is complete, I do not start the VMs automatically. I can, or create an option to do so.
-One reason to consider starting them is that the DSC configs (to configure the servers) don't execute
-until the first time they are started - causing a delay for the installations to finish. This is an open discussion topic.
-  
