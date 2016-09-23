@@ -46,15 +46,6 @@ Configuration AutoLab {
         }
 
 #endregion
-
-#region Set ComputerName
-
-        xComputer ComputerName { 
-            Name = $Node.NodeName 
-        } 
-            
-#endregion
-
   
 #region IPaddress settings 
 
@@ -132,6 +123,10 @@ Configuration AutoLab {
 
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
          
+        xComputer ComputerName { 
+            Name = $Node.NodeName 
+        }            
+
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
                 'DNS',
@@ -502,10 +497,26 @@ Configuration AutoLab {
     } #end nodes DC
 
 #endregion 
-} # End AllNodes
 
-#region Server config
-   node $AllNodes.Where({$_.Role -eq 'Server'}).NodeName {
+#region Web config
+   node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
+        
+        foreach ($feature in @(
+                'web-Server'
+ 
+            )) {
+            WindowsFeature $feature.Replace('-','') {
+                Ensure = 'Present'
+                Name = $feature
+                IncludeAllSubFeature = $False
+            }
+        }
+        
+    }#end Web Config
+
+
+#region DomainJoin config
+   node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
  
         xWaitForADDomain DscForestWait {
             DomainName = $Node.DomainName
@@ -520,26 +531,10 @@ Configuration AutoLab {
             Credential = $Credential
             DependsOn = '[xWaitForADDomain]DSCForestWait'
         }
-    }#end Server Config
+    }#end DomianJoin Config
 #endregion
 
-#region Client config
-   node $AllNodes.Where({$_.Role -eq 'Client'}).NodeName {
- 
-        xWaitForADDomain DscForestWait {
-            DomainName = $Node.DomainName
-            DomainUserCredential = $DomainCredential
-            RetryCount = '20'
-            RetryIntervalSec = '60'
-        }
-
-         xComputer JoinDC {
-            Name = $Node.NodeName
-            DomainName = $Node.DomainName
-            Credential = $DomainCredential
-            DependsOn = '[xWaitForADDomain]DSCForestWait'
-        }
-    }#end Server Config
+} # End AllNodes
 #endregion
 
 AutoLab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-GUI.psd1

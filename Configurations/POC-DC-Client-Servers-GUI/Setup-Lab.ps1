@@ -23,6 +23,8 @@ Write-Host -ForegroundColor Green -Object @"
     *You will be able to wipe and rebuild this lab without needing to perform
     the downloads again.
 
+    Note! You will need to provide an Administrator password TWICE - on for the ocnfig, one for the localmachine account.
+
     Next Steps:
     When complete, run:
     .\Run-Lab.ps1
@@ -52,7 +54,7 @@ Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fa
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environement without making a Hyper Snapshot
-Start-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -Verbose -path .\
+Start-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -Verbose -path .\ -IgnorePendingReboot
 
 Write-Host -ForegroundColor Green -Object @"
 

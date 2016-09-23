@@ -60,14 +60,14 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
-            Role = 'Server'
+            Role = @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
         @{
             NodeName = 'Client'
             IPAddress = '192.168.3.100'
-            Role = 'Client'
+            Role = 'DominJoin'
             Lability_ProcessorCount = 2
             Lability_StartupMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
