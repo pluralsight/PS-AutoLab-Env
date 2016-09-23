@@ -28,9 +28,9 @@ Pause
 
 Write-Host -ForegroundColor Cyan -Object 'Removing the lab environment'
 # Creates the lab environement without making a Hyper Snapshot
-Stop-Lab -ConfigurationData .\DC-Client-Servers-GUI.psd1 
+Stop-Lab -ConfigurationData .\*.psd1 
 Remove-Item -Path .\*.mof
-Remove-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -RemoveSwitch
+Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch
 Remove-Item -Path C:\Lability\VMVirtualHardDisks\* -Recurse -Force 
 
 Write-Host -ForegroundColor Green -Object @"

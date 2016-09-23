@@ -537,5 +537,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-GUI.psd1
+AutoLab -OutputPath .\ -ConfigurationData .\*.psd1
 

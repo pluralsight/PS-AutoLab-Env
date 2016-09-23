@@ -54,7 +54,7 @@ Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fa
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environement without making a Hyper Snapshot
-Start-LabConfiguration -ConfigurationData .\DC-Client-Servers-GUI.psd1 -Verbose -path .\ -IgnorePendingReboot
+Start-LabConfiguration -ConfigurationData .\*.psd1 -Verbose -path .\ -IgnorePendingReboot
 
 Write-Host -ForegroundColor Green -Object @"
 

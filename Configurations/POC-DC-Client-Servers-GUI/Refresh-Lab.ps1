@@ -35,8 +35,8 @@ Pause
 
 Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
 # Creates the lab environement without making a Hyper Snapshot
-Stop-Lab -ConfigurationData .\DC-Client-Servers-GUI.psd1 
-Restore-Lab -ConfigurationData .\DC-Client-Servers-GUI.psd1 -SnapshotName LabConfigured -force
+Stop-Lab -ConfigurationData .\*.psd1 
+Restore-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured -force
 
 Write-Host -ForegroundColor Green -Object @"
 
