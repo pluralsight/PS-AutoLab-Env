@@ -5,16 +5,16 @@ This tool will completely build a lab environment from scratch, however if you w
 environment and have the VMs configured for you, see the section on StandAlone.
 
 ## requirements
-The host ocmputer must have WMF 5 (Windows Management Framework) and an internet connection.
-
-
+The host computer must have the following:
+* WMF 5 (Windows Management Framework 5)
+* An internet connection
 
 ## This Lab tool currently supports running on a host:
 * Windows Server 2012 R2
 * Windows Server 2016
 * Windows 10 client
 
-## The lab tool will build virtual environments using:
+## The lab tool will build virtual environments with the following OS's:
 * Windows Server 2012 R2
 * Windows Server 2016
 * Windows 8.1 clients
@@ -30,16 +30,17 @@ The host ocmputer must have WMF 5 (Windows Management Framework) and an internet
 
 
 # Current Instructions (Need revision and sample commands)
-1. Extract the zip of PS-Auto-Lab to your c: drive
+1. Download the ZIP of this repository to the Host computer.
+1. Extract the zip of PS-AutoLab-Env to your c:\ drive (C:\PS-AutoLab-Env)
 2. Open Powershell with administrative privileges
 3. Change to folder c:\PS-Auto-Lab-Env
 4. Run PS> .\Setup-Host.ps1
-5. Change to the configuration folder and choose a configuration i.e. c:\Lability\Jason-TestConfig
+5. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
 6. In Powershell, run the script PS> .\Setup-Lab.ps1
         * Note - the first time you run this, it will download all required files including ISO and DSCResources.
         * Note - this may require several hours depending on your Internet connection
         * Note - This only happens the first time -- you will be able to build and wipe the 
-                Lab within a minute or so in the future.
+                Lab quickly in future.
 7. Optional - if you want the vms to have internet access, run PS> .\Setup-Internet.ps1
 8. Optional - To wipe the lab env. PS> .\Wipe-Lab.ps1, then rebuild with Setup-Lab.ps1
 
@@ -53,28 +54,3 @@ When the lab build is complete, I do not start the VMs automatically. I can, or 
 One reason to consider starting them is that the DSC configs (to configure the servers) don't execute
 until the first time they are started - causing a delay for the installations to finish. This is an open discussion topic.
   
-#issues
-* Do we really need folder under Configuration.....?? So.. if we use the cmdlets instead of stupid custom scripts... we dont need this.
-* We would need a naming convention -- COURSE URL should be Psd1 name.
-* We would need a Prefix convention
-
-* the lab cmdlets are so easy -- let use those -- please....
-    * Start-LabConfiguration
-    * Start-Lab -ConfigurationName X
-    * Stop-Lab -Configuration X
-    * Remove-LAbConfiguration -Configuration X
-    etc -- only a few more -- can provide instructions.
-
-* It is possible to Preload a download of requirements before the lab build....we can teach this if we stop with the shitty scripts.
-
-* What should the folder structure naming be?
-
-* The Naming of configs should be very clear - with out the need of a read.me
-
-* Can offer a prebuild of downloads for a lab before config if we teach the cmdlets.
-
-* Can offer Bootstrap option that load things like PowerShell V6 , RSAT tools for Win10 and other things.
-
-* Can offer Linux versions as well -- although not currently supported -- have a way around them
-
-* 
