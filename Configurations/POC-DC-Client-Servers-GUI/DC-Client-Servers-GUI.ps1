@@ -517,10 +517,12 @@ Configuration AutoLab {
 
 #region DomainJoin config
    node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
+
+    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
  
         xWaitForADDomain DscForestWait {
             DomainName = $Node.DomainName
-            DomainUserCredential = $Credential
+            DomainUserCredential = $DomainCredential
             RetryCount = '20'
             RetryIntervalSec = '60'
         }
@@ -528,7 +530,7 @@ Configuration AutoLab {
          xComputer JoinDC {
             Name = $Node.NodeName
             DomainName = $Node.DomainName
-            Credential = $Credential
+            Credential = $DomainCredential
             DependsOn = '[xWaitForADDomain]DSCForestWait'
         }
     }#end DomianJoin Config
