@@ -38,13 +38,13 @@ The host computer must have the following:
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 1. .\Run-Lab.ps1 * Starts the Lab environment
 2. .\Snapshot-Lab * Snapshot the lab environment for easy and fast rebuilding
-3. .\Refresh-lab.ps1 * Refresh the lab from a previose Snapshot
-4. .\Wipe-Lab.ps1 * Wipe the lab and VM's from you system
+3. .\Refresh-lab.ps1 * Refresh the lab from a previous Snapshot
+4. .\Wipe-Lab.ps1 * Wipe the lab and VM's from your system
 5. .\Enable-Internet * Enable Internet to the VM's 
 
 # StandAlone
 In the Standalone folder, a variety of DSC configurations have been included for authors and students
-that wish to build their environments on their own VM Infrastructure.
+who wish to build their environments on their own VM Infrastructure.
 The DSC Configurations may be applied to your own VMs.
 You will need to deploy the configs and DSC resources yourself.
 
