@@ -47,11 +47,8 @@ If ($HostStatus -eq $False) {
     Start-LabHostConfiguration
 }
 
-
-############################################### IN PROGRESS ########################
 ###### COPY Configs to host machine 
-## IMPORTANT __ REMOVE GITHUB FROM PATH!!!
-Copy-item -Path C:\GitHub\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
+Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
 
 
 Write-Host -ForegroundColor Yellow -Object @"
