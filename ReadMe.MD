@@ -4,6 +4,10 @@ The configurations for the VM are written in Microsoft DSC and deployed using [V
 This tool will completely build a lab environment from scratch, however if you want to build your own
 environment and have the VMs configured for you, see the section on StandAlone.
 
+## requirements
+The host ocmputer must have WMF 5 (Windows Management Framework) and an internet connection.
+
+
 
 ## This Lab tool currently supports running on a host:
 * Windows Server 2012 R2

@@ -1,17 +1,25 @@
-﻿## Trying a new direction
+﻿<#
+Disclaimer
 
+This code is provided without copyright and “AS IS”.  It is free for you to use and modify under the MIT license.
+Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run as Administrator"
 
-Write-Warning @"
-    This script will create a folder structure off the C: drive
-    with a folder named Lability. Do not delete this folder.
+#>
+#Requires -version 5.0
+#Requires -runasadministrator
 
-    It will then install Hyper-V on Win10 or Server 2012 R2 or Server 2016
+Write-Host -ForegroundColor Green -Object @"
 
-    You must restart this computer
-    when the initial setup is complete.
-    From Powershell: Restart-Computer   
+    This is the Setup-Host script. This script will perform the following:
+    * For PowerShell Remoting, Set the host 'TrustedHosts' value to *
+    * Install the Lability module from PSGallery
+    * Install Hyper-V
+    * Create the C:\Lability folder (DO NOT DELETE)
+    * Copy configurations and resources to C:\Lability
+    * You will then need to reboot the host before continuing
 "@
-Start-Sleep 5
+
+Pause
 
 
 # For remoting commands to VM's - have the host set trustedhosts to *
@@ -29,13 +37,13 @@ If ($trust.value -eq "" -or $trust.value -eq "*"){
 # Lability install
 Write-Output "Installong LAbility for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
-Install-Module -Name Lability
+Install-Module -Name Lability -RequiredVersion 0.10.0
 
 # SEtup host Env.
 # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
 $HostStatus=Test-LabHostConfiguration
 If ($HostStatus -eq $False) {
-    Write-Output "Initializing host"
+    Write-Host "Initializing host"
     Start-LabHostConfiguration
 }
 
@@ -43,15 +51,20 @@ If ($HostStatus -eq $False) {
 ############################################### IN PROGRESS ########################
 ###### COPY Configs to host machine 
 ## IMPORTANT __ REMOVE GITHUB FROM PATH!!!
-Copy-item -Path C:\GitHub\PS-Auto-Lab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
+Copy-item -Path C:\GitHub\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
 
-break
 
-######  Download of ISO and DSC Resources -- this takes time
-### Actually - don;t do this here --- let the first run of the config grab all resources
-### So... Remove this and jsut have the kickoff script for the lab.
-Invoke-LabResourceDownload -ConfigurationData .\TestLabGuide.psd1 -all
+Write-Host -ForegroundColor Yellow -Object @"
 
-### ADD REBOOT MESSAGE
-Write-Output "NEw Reboot message"
+    The Host must be reboot before continuing.
+    After the reboot, open Powershell, navigate to a configuration directory
+    c:\Lability\Configuration\<yourconfigfolder>
+    And run either:
+    
+    PS> .\Setup-Lab
+"@
+
+Pause
+Restart-Computer
+
 
