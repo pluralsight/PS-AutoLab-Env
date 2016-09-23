@@ -43,6 +43,14 @@ Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
 Install-Module -Name Lability -RequiredVersion 0.10.0
 
+# Installing modules to host(Author) machine need to run configs - this will be replaced
+# In the next build - will auto-read from Cofniguration File
+Install-Module -Name xActiveDirectory -RequiredVersion 2.13.0.0
+Install-Module -Name xComputerManagement -RequiredVersion 1.8.0.0
+Install-Module -Name xNetworking -RequiredVersion 2.12.0.0
+Install-Module -Name xDhcpServer -RequiredVersion 1.5.0.0
+Install-Module -Name xADCSDeployment -RequiredVersion 1.0.0.0
+
 # SEtup host Env.
 # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
 $HostStatus=Test-LabHostConfiguration

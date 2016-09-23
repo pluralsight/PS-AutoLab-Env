@@ -54,7 +54,7 @@ Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fa
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
-Start-LabConfiguration -ConfigurationData .\*.psd1 -Verbose -path .\ -IgnorePendingReboot
+Start-LabConfiguration -ConfigurationData .\*.psd1 -Verbose -path .\ -IgnorePendingReboot -NoSnapshot 
 
 Write-Host -ForegroundColor Green -Object @"
 
@@ -67,5 +67,5 @@ Write-Host -ForegroundColor Green -Object @"
 
 "@
 
-Pause
+
 

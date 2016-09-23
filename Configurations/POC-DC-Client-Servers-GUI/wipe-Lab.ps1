@@ -42,4 +42,3 @@ Write-Host -ForegroundColor Green -Object @"
 
 "@
 
-Pause

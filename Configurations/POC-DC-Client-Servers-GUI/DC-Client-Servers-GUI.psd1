@@ -67,7 +67,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'Client'
             IPAddress = '192.168.3.100'
-            Role = 'DominJoin'
+            Role = 'DomainJoin'
             Lability_ProcessorCount = 2
             Lability_StartupMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
