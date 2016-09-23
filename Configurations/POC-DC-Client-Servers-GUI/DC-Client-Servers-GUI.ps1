@@ -663,7 +663,7 @@ Configuration GUILab {
             Credential = $Credential
             TestScript = {
                             try {
-                                    set-GPLink -name "PKI AutoEnroll" -target $Using:Node.DomainDN -LinkEnabled Yes -ErrorAction silentlyContinue
+                                    set-GPLink -name "PKI AutoEnroll" -target $Using:Node.DomainDN -LinkEnabled Yes -ErrorAction stop
                                     return $True
                                 }
                             catch
