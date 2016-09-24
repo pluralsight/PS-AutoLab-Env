@@ -8,7 +8,9 @@ environment and have the VMs configured for you, see the section on StandAlone.
 ## Who made this?
 
 * A collaboration project by Jason Helmick and Melissa (Missy) Januszko
+
         * Inspired by Don Jones and Gary Eimerman (Pluralsight)
+        
 * Sponsered and supported by [Pluralsight](http://www.Pluralsight.com)
 * Developed for Pluralsight Authors, Students, and Everyone interested in contributing
 
