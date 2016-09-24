@@ -1,6 +1,6 @@
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environment to support courses.  
-The configurations for the VM are written in Microsoft DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
+The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
 This tool will completely build a lab environment from scratch, however if you want to build your own
 environment and have the VMs configured for you, see the section on StandAlone.
 
@@ -11,7 +11,7 @@ The host computer must have the following:
 
 ## This Lab tool currently supports running on a host:
 * Windows Server 2012 R2 (Not tested)
-* Windows Server 2016
+* Windows Server 2016 (Tested)
 * Windows 10 client with SLAT (Not tested)
 
 ## The lab tool will build virtual environments with the following OS's:
@@ -66,3 +66,4 @@ These are things currently being worked on and/or in testing.
 3. Bootstrapping and automatically installing PowerShell 6 (future)
 4. Nano (Future)
 5. Linux (Ubuntu and CentOS) (Future)
+* Please make recommedations or fork this repo and share your own!!!
