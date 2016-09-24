@@ -5,6 +5,8 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 This tool will completely build a lab environment from scratch, however if you want to build your own
 environment and have the VMs configured for you, see the section on StandAlone.
 
+## Who made this?
+
 * A collaboration project by Jason Helmick and Melissa (Missy) Januszko
 * Sponsered and supported by [Pluralsight](http://www.Pluralsight.com)
 * Developed for Pluralsight Authors, Students, and Everyone interested in contributing
