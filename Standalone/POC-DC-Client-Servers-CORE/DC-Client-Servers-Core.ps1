@@ -124,21 +124,15 @@ Configuration AutoLab {
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
 
         $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
- 
+         
         xComputer ComputerName { 
             Name = $Node.NodeName 
         }            
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
-                'DNS',
-                'RSAT-DNS-Server'                           
+                'DNS',                  
                 'AD-Domain-Services'
-                'GPMC',
-                'RSAT-AD-Tools' 
-                'RSAT-AD-PowerShell'
-                'RSAT-AD-AdminCenter'
-                'RSAT-ADDS-Tools'
 
             )) {
             WindowsFeature $feature.Replace('-','') {
@@ -541,5 +535,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\*.psd1
+AutoLab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-Core.psd1
 

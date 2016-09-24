@@ -1,42 +1,50 @@
-Configuration GUILab {
+<# Notes:
+
+Authors: Jason Helmick and Melissa (Missy) Janusko
+
+The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko.
+Currently on her public DSC hub located here:
+https://github.com/majst32/DSC_public.git
+
+Goal - Create a Domain Controller, Populute with OU's Groups and Users.
+       One Server joined to the new domain
+       One Windows 10 CLient joined to the new domain
+
+       
+
+Disclaimer
+
+This example code is provided without copyright and AS IS.  It is free for you to use and modify.
+Note: These demos should not be run as a script. These are the commands that I use in the 
+demonstrations and would need to be modified for your environment.
+
+#> 
+
+Configuration AutoLab {
 
     param (
         [Parameter()] 
         [ValidateNotNull()] 
-        [PSCredential] $Credential = (Get-Credential -Credential 'Administrator')
+        [PSCredential] $Credential = (Get-Credential -Credential Administrator)
     )
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
-        @{ModuleName="xNetworking";ModuleVersion="2.11.0.0"}
-#        @{ModuleName="XADCSDeployment";ModuleVersion="1.0.0.0"},
-#        @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"}
+        @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"}
+
 #endregion
 
     node $AllNodes.Where({$true}).NodeName {
 #region LCM configuration
-        
+       
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
             ConfigurationMode = 'ApplyOnly'
-           # CertificateID = $node.Thumbprint
         }
 
-#endregion
-
-#region Set ComputerName
-
-        xComputer ComputerName { 
-            Name = $Node.NodeName 
-        } 
-            
-#endregion
-
-#region Domain Credentials for Lab machines
-    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($Credential.UserName)@$($node.DomainName)", $Credential.Password)
 #endregion
   
 #region IPaddress settings 
@@ -108,22 +116,24 @@ Configuration GUILab {
             Profile = 'Any'
         }
 #endregion
-                  
+
     } #end nodes ALL
 
 #region Domain Controller config
 
-    node $AllNodes.Where({$_.Role -in 'DC'}).NodeName {
-        
+    node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
+
+        $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
+         
+        xComputer ComputerName { 
+            Name = $Node.NodeName 
+        }            
+
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
+                'DNS',                  
                 'AD-Domain-Services'
-                'GPMC',
-                'RSAT-AD-Tools',
-                'DNS',
-                'RSAT-DNS-Server',
-                'DHCP',
-                'RSAT-DHCP'
+
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present';
@@ -134,8 +144,8 @@ Configuration GUILab {
 
             xADDomain FirstDC {
                 DomainName = $Node.DomainName
-                DomainAdministratorCredential = $DomainCredential
-                SafemodeAdministratorPassword = $DomainCredential
+                DomainAdministratorCredential = $Credential
+                SafemodeAdministratorPassword = $Credential
                 DatabasePath = $Node.DCDatabasePath
                 LogPath = $Node.DCLogPath
                 SysvolPath = $Node.SysvolPath 
@@ -144,20 +154,13 @@ Configuration GUILab {
         
         #Add OU, Groups, and Users
 
-            xWaitForADDomain DscForestWait {
-                DomainName = $Node.DomainName
-                DomainUserCredential = $DomainCredential
-                RetryCount = '20'
-                RetryIntervalSec = '60'
-                DependsOn = "[xADDomain]FirstDC"
-            }
 
             xADOrganizationalUnit IT {
                 Name = 'IT'
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Dev {
@@ -165,7 +168,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Marketing {
@@ -173,7 +176,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Sales {
@@ -181,7 +184,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit Accounting {
@@ -189,7 +192,7 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADOrganizationalUnit JEA_Operators {
@@ -197,12 +200,12 @@ Configuration GUILab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             # Users
             xADUser IT1 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=IT,$($node.DomainDN)"
                 UserName = 'DonJ'
                 GivenName = 'Don'
@@ -211,13 +214,14 @@ Configuration GUILab {
                 Description = 'The Main guy'
                 Department = 'IT'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser IT2 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=IT,$($node.DomainDN)"
                 UserName = 'Jasonh'
                 GivenName = 'Jason'
@@ -226,13 +230,14 @@ Configuration GUILab {
                 Description = 'The Fun guy'
                 Department = 'IT'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser IT3 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=IT,$($node.DomainDN)"
                 UserName = 'GregS'
                 GivenName = 'Greg'
@@ -241,13 +246,14 @@ Configuration GUILab {
                 Description = 'The Janitor'
                 Department = 'IT'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Dev1 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Dev,$($node.DomainDN)"
                 UserName = 'SimonA'
                 GivenName = 'Simon'
@@ -256,13 +262,14 @@ Configuration GUILab {
                 Description = 'The Brilliant one'
                 Department = 'Dev'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Acct1 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Accounting,$($node.DomainDN)"
                 UserName = 'AaronS'
                 GivenName = 'Aaron'
@@ -271,13 +278,14 @@ Configuration GUILab {
                 Description = 'Accountant'
                 Department = 'Accounting'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Acct2 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Accounting,$($node.DomainDN)"
                 UserName = 'AndreaS'
                 GivenName = 'Andrea'
@@ -286,13 +294,14 @@ Configuration GUILab {
                 Description = 'Accountant'
                 Department = 'Accounting'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Acct3 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Accounting,$($node.DomainDN)"
                 UserName = 'AndyS'
                 GivenName = 'Andy'
@@ -301,13 +310,14 @@ Configuration GUILab {
                 Description = 'Accountant'
                 Department = 'Accounting'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Sales1 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Sales,$($node.DomainDN)"
                 UserName = 'SamS'
                 GivenName = 'Sam'
@@ -316,13 +326,14 @@ Configuration GUILab {
                 Description = 'Sales'
                 Department = 'Sales'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Sales2 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Sales,$($node.DomainDN)"
                 UserName = 'SonyaS'
                 GivenName = 'Sonya'
@@ -331,13 +342,14 @@ Configuration GUILab {
                 Description = 'Sales'
                 Department = 'Sales'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Sales3 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Sales,$($node.DomainDN)"
                 UserName = 'SamanthaS'
                 GivenName = 'Samantha'
@@ -346,13 +358,14 @@ Configuration GUILab {
                 Description = 'Sales'
                 Department = 'Sales'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Market1 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Marketing,$($node.DomainDN)"
                 UserName = 'MarkS'
                 GivenName = 'Mark'
@@ -361,13 +374,14 @@ Configuration GUILab {
                 Description = 'Marketing'
                 Department = 'Marketing'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Market2 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Marketing,$($node.DomainDN)"
                 UserName = 'MonicaS'
                 GivenName = 'Monica'
@@ -376,13 +390,14 @@ Configuration GUILab {
                 Description = 'Marketing'
                 Department = 'Marketing'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser Market3 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=Marketing,$($node.DomainDN)"
                 UserName = 'MattS'
                 GivenName = 'Matt'
@@ -391,13 +406,14 @@ Configuration GUILab {
                 Description = 'Marketing'
                 Department = 'Marketing'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser JEA1 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=JEA_Operators,$($node.DomainDN)"
                 UserName = 'JimJ'
                 GivenName = 'Jim'
@@ -406,13 +422,14 @@ Configuration GUILab {
                 Description = 'JEA'
                 Department = 'IT'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADUser JEA2 {
-                DomainName = $node.Domain
+                DomainName = $node.DomainName
                 Path = "OU=JEA_Operators,$($node.DomainDN)"
                 UserName = 'JillJ'
                 GivenName = 'Jill'
@@ -421,9 +438,10 @@ Configuration GUILab {
                 Description = 'JEA'
                 Department = 'IT'
                 Enabled = $true
-                Password = $Credential
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
  
             #Groups
@@ -433,7 +451,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'DonJ', 'Jasonh', 'GregS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup SalesG1 {
@@ -442,7 +460,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'SamS', 'SonyaS', 'SamanthaS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup MKG1 {
@@ -451,7 +469,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'MarkS', 'MonicaS', 'MattS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup AccountG1 {
@@ -460,7 +478,7 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'AaronS', 'AndreaS', 'AndyS'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
 
             xADGroup JEAG1 {
@@ -469,14 +487,53 @@ Configuration GUILab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'JimJ', 'JillJ'
-                DependsOn = '[xWaitForADDomain]DscForestWait'
+                DependsOn = '[xADDomain]FirstDC'
             }
        
     } #end nodes DC
 
 #endregion 
 
+#region Web config
+   node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
+        
+        foreach ($feature in @(
+                'web-Server'
+ 
+            )) {
+            WindowsFeature $feature.Replace('-','') {
+                Ensure = 'Present'
+                Name = $feature
+                IncludeAllSubFeature = $False
+            }
+        }
+        
+    }#end Web Config
 
-} #end Configuration Example
 
-GUILab -OutputPath .\ -ConfigurationData .\DC-GUI.psd1
+#region DomainJoin config
+   node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
+
+    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
+ 
+        xWaitForADDomain DscForestWait {
+            DomainName = $Node.DomainName
+            DomainUserCredential = $DomainCredential
+            RetryCount = '20'
+            RetryIntervalSec = '60'
+        }
+
+         xComputer JoinDC {
+            Name = $Node.NodeName
+            DomainName = $Node.DomainName
+            Credential = $DomainCredential
+            DependsOn = '[xWaitForADDomain]DSCForestWait'
+        }
+    }#end DomianJoin Config
+#endregion
+
+} # End AllNodes
+#endregion
+
+AutoLab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-Core.psd1
+

@@ -20,7 +20,7 @@ The host computer must have the following:
 * Windows 8.1 clients
 * Windows 10 clients
 
-# Current Instructions 
+# Instructions 
 1. Download the ZIP of this repository to the Host computer.
 2. Extract the zip of PS-AutoLab-Env to your c:\ drive (C:\PS-AutoLab-Env)
 3. Open Powershell with administrative privileges
@@ -49,10 +49,9 @@ The DSC Configurations may be applied to your own VMs.
 You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-Excepted convergence of all the configurations for the first time run is 60 minutes.
-The DC may require an addiitonal reboot to complete its configuration. Tracking this issue now.
-If after 30 minutes, you still do not see users (ADUC), then reboot the system or run the following:
-Start-DscConfiguration -UseExisting
+None at this time - ;)
+NOTE - Configuration convergence take 30 minutes and several reboots - do not turn of machines 
+       until the finish. It is advised that you run .\Snapshot when complete for easy refreshing.
 
 # Current and Future Development
 These are things currently being worked on and/or in testing.
