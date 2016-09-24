@@ -1,4 +1,5 @@
 ### A collaboration project by Jason Helmick and Melissa (Missy) Jankuszko
+### Sponsered by [Pluralsight](http://www.Pluralsight.com)
 
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environment to support courses.  
