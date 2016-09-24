@@ -4,15 +4,15 @@ The configurations for the VM are written in Microsoft DSC and deployed using [V
 This tool will completely build a lab environment from scratch, however if you want to build your own
 environment and have the VMs configured for you, see the section on StandAlone.
 
-## requirements
+## Requirements
 The host computer must have the following:
 * WMF 5 (Windows Management Framework 5)
 * An internet connection
 
 ## This Lab tool currently supports running on a host:
-* Windows Server 2012 R2
+* Windows Server 2012 R2 (Not tested)
 * Windows Server 2016
-* Windows 10 client
+* Windows 10 client with SLAT (Not tested)
 
 ## The lab tool will build virtual environments with the following OS's:
 * Windows Server 2012 R2
@@ -34,7 +34,7 @@ The host computer must have the following:
         * Note - This only happens the first time -- you will be able to build and wipe the 
                 Lab quickly in future.
 
-# Other scripts you will need:
+## Other scripts you will need:
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 1. .\Run-Lab.ps1 * Starts the Lab environment
 2. .\Snapshot-Lab * Snapshot the lab environment for easy and fast rebuilding
@@ -42,7 +42,7 @@ You will receive reminders and instructions when to run these when you start the
 4. .\Wipe-Lab.ps1 * Wipe the lab and VM's from your system
 5. .\Enable-Internet * Enable Internet to the VM's 
 
-# StandAlone
+# StandAlone Configurations
 In the Standalone folder, a variety of DSC configurations have been included for authors and students
 who wish to build their environments on their own VM Infrastructure.
 The DSC Configurations may be applied to your own VMs.
@@ -65,3 +65,5 @@ These are things currently being worked on and/or in testing.
         * SQL (future)
 2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
 3. Bootstrapping and automatically installing PowerShell 6 (future)
+4. Nano (Future)
+5. Linux (Ubuntu and CentOS) (Future)
