@@ -50,8 +50,8 @@ You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
 None at this time - ;)
-NOTE - Configuration convergence take 30 minutes and several reboots - do not turn of machines 
-       until the finish. It is advised that you run .\Snapshot when complete for easy refreshing.
+NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn of machines 
+       until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing.
 
 # Current and Future Development
 These are things currently being worked on and/or in testing.
