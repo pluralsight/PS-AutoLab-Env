@@ -40,6 +40,7 @@ The host computer must have the following:
 
 ## Other scripts you will need:
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
+
 1. .\Run-Lab.ps1 * Starts the Lab environment
 2. .\Snapshot-Lab * Snapshot the lab environment for easy and fast rebuilding
 3. .\Refresh-lab.ps1 * Refresh the lab from a previous Snapshot
