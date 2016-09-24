@@ -4,7 +4,7 @@
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environment to support courses.  
 
-The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
+The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](http://./Standalone/README.md).
 
 ## Requirements
 The host computer must have the following:
@@ -27,7 +27,7 @@ The host computer must have the following:
 2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
 3. Open PowerShell with administrative privileges
 4. Change to folder C:\PS-Auto-Lab-Env
-5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
+5. Run PS> .\ [Setup-Host.ps1](http://./Setup-Host.ps1)
 6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
 8. In PowerShell, run the script PS> .\Setup-Lab.ps1
@@ -50,17 +50,17 @@ In the Standalone folder, a variety of DSC configurations have been included for
 # Known Issues
 None at this time - ;)
 
-    NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing.
+_NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
 # Current and Future Development
 These are things currently being worked on and/or in testing.
 
 1. Additional Role configurations including:
-        * Windows Server 2016 release version (current)
-        * ADCS (plus certificates and autoenrollment) (current)
-        * Web servers and web sites (current)
-        * Exchange (future)
-        * SQL (future)
+   * Windows Server 2016 release version (current)
+   * ADCS (plus certificates and autoenrollment) (current)
+   * Web servers and web sites (current)
+   * Exchange (future)
+   * SQL (future)
 2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
 3. Bootstrapping and automatically installing PowerShell 6 (future)
 4. Nano (Future)
