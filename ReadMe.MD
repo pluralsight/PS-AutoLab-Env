@@ -1,4 +1,4 @@
-### A collaboration project by Jason Helmick and Melissa (Missy) Jankuszko
+### A collaboration project by Jason Helmick and Melissa (Missy) Januszko
 ### Sponsered and supported by [Pluralsight](http://www.Pluralsight.com)
 
 # Pluralsight PowerShell Automated Lab Environment
