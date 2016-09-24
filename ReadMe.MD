@@ -1,12 +1,13 @@
-## A collaboration project by Jason Helmick and Melissa (Missy) Januszko
-### Sponsered and supported by [Pluralsight](http://www.Pluralsight.com)
-### Developed for Pluralsight Authors, Students, and Everyone interested in contributing
 
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environment to support courses.  
 The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability)
 This tool will completely build a lab environment from scratch, however if you want to build your own
 environment and have the VMs configured for you, see the section on StandAlone.
+
+# A collaboration project by Jason Helmick and Melissa (Missy) Januszko
+## Sponsered and supported by [Pluralsight](http://www.Pluralsight.com)
+## Developed for Pluralsight Authors, Students, and Everyone interested in contributing
 
 ## Requirements
 The host computer must have the following:
