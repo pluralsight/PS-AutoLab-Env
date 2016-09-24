@@ -57,6 +57,7 @@ NOTE - Configuration convergence takes about 30 minutes and several reboots - do
 These are things currently being worked on and/or in testing.
 
 1. Additional Role configurations including:
+        * Server 2016 release version (current)
         * ADCS (plus certificattes and autoenroll) (current)
         * Web servers and Websites (current)
         * Exchange (future)
