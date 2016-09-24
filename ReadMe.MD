@@ -4,7 +4,7 @@
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environment to support courses.  
 
-The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](http://./Standalone/README.md).
+The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
 ## Requirements
 The host computer must have the following:
@@ -27,7 +27,7 @@ The host computer must have the following:
 2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
 3. Open PowerShell with administrative privileges
 4. Change to folder C:\PS-Auto-Lab-Env
-5. Run PS> .\ [Setup-Host.ps1](http://./Setup-Host.ps1)
+5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
 8. In PowerShell, run the script PS> .\Setup-Lab.ps1
@@ -40,7 +40,7 @@ You will be able to build and wipe the Lab quickly in future._
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
-* .\Refresh-lab.ps1 _(Refresh the lab from a previous Snapshot)_
+* .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
 * .\Wipe-Lab.ps1 _(Wipe the lab and VM's from your system)_
 * .\Enable-Internet _(Enable Internet to the VM's)_ 
 
