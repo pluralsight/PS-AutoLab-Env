@@ -36,14 +36,6 @@ You will be able to build and wipe the Lab quickly in future._
 
 ## Other scripts you will need:
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
-<<<<<<< HEAD
-* .\Run-Lab.ps1 _(Starts the Lab environment)_
-* .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
-* .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
-* .\Wipe-Lab.ps1 _(Wipe the lab and VM's from your system)_
-* .\Enable-Internet _(Enable Internet to the VM's)_ 
-
-=======
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
@@ -51,7 +43,6 @@ You will receive reminders and instructions when to run these when you start the
 * .\Wipe-Lab.ps1 _(Wipe the lab and VM's from your system)_
 * .\Enable-Internet _(Enable Internet to the VM's)_ 
 
->>>>>>> 6b490f398c4fdcc079367ad0c7048192ec5edcb0
 # Standalone Configurations
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
