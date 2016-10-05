@@ -1,5 +1,3 @@
-### A collaboration project by Jason Helmick and Melissa (Missy) Januszko
-### Sponsered and supported by [Pluralsight](http://www.Pluralsight.com)
 
 # Pluralsight PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environment to support courses.  
@@ -38,6 +36,7 @@ You will be able to build and wipe the Lab quickly in future._
 
 ## Other scripts you will need:
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
+
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
