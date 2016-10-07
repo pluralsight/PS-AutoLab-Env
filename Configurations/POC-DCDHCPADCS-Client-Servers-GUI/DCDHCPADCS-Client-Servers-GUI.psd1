@@ -52,7 +52,18 @@ demonstrations and would need to be modified for your environment.
             DHCPScopeID = '192.168.3.0'
             DHCPDnsServerIPAddress = '192.168.3.10'
             DHCPRouter = '192.168.3.1'
-
+ 
+           # ADCS Certificate Services information
+            CACN = 'Company.Pri'
+            CADNSuffix = "C=US,L=Phoenix,S=Arizona,O=Company"
+            CADatabasePath = "C:\windows\system32\CertLog"
+            CALogPath = "C:\CA_Logs"
+            ADCSCAType = 'EnterpriseRootCA'
+            ADCSCryptoProviderName = 'RSA#Microsoft Software Key Storage Provider'
+            ADCSHashAlgorithmName = 'SHA256'
+            ADCSKeyLength = 2048
+            ADCSValidityPeriod = 'Years'
+            ADCSValidityPeriodUnits = 2
             # Lability default node settings
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
@@ -64,7 +75,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC'
             IPAddress = '192.168.3.10'
-            Role = @('DC', 'DHCP')
+            Role = @('DC', 'DHCP', 'ADCS')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -103,7 +114,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; }
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; }
                 @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  }
-
+                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; Provider = 'PSGallery'; }
             );
         };
     };
