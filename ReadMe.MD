@@ -4,12 +4,14 @@ This is an automated lab environment build tool to support Authors and students 
 
 The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
-# Releases
-
+# Versions
 Current Release is v1.0.0
-[PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
 
-## Requirements
+## v1.0.0
+* Download release [PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
+* This is the initial release with several POC configurations for 2016TP5 and Windows 10
+
+# Requirements
 The host computer must have the following:
 * WMF 5 (Windows Management Framework 5)
 * An internet connection
