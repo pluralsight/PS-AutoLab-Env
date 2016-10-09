@@ -66,7 +66,7 @@ Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Labi
 
 #### Temp fix until Lability updates version with new media File
 #### Copying new media file manually
-Copy-item -Path C:\PS-AutoLab-Env\media.json -Destination C:\lability\Config
+Copy-item -Path C:\PS-AutoLab-Env\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
 
 
 Write-Host -ForegroundColor Green -Object @"
