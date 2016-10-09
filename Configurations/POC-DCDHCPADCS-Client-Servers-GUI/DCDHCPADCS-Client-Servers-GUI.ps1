@@ -1,6 +1,6 @@
 <# Notes:
 
-Authors: Jason Helmick and Melissa (Missy) Janusko
+Authors: Jason Helmick and Melissa (Missy) Januszko
 
 The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko.
 Currently on her public DSC hub located here:
@@ -967,5 +967,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\*.psd1
+AutoLab -OutputPath .\ -ConfigurationData .\mj.psd1
 
