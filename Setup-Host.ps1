@@ -34,7 +34,7 @@ if ($Trust.Value -eq "*") {
     Write-Host -ForegroundColor Green -Object "TrustHosts is already set to *. No changes needed"
 }
 else {
-    $add = 'DC,S*,Client*,192.168.3.'
+    $add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
     Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
     Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
 }
