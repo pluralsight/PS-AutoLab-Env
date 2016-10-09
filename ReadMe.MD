@@ -24,7 +24,7 @@ The host computer must have the following:
 1. Download the ZIP of this repository to the Host computer.
 2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
 3. Open PowerShell with administrative privileges
-4. Change to folder C:\PS-Auto-Lab-Env
+4. Change to folder C:\PS-AutoLab-Env
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
