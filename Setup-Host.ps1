@@ -26,10 +26,19 @@ Write-Host -ForegroundColor Green -Object @"
 Pause
 
 
-# For remoting commands to VM's - have the host set trustedhosts to *
+# For remoting commands to VM's - have the host set trustedhosts
 
-Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts to * so that remoting commands to VM's work properly"
-$trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts 
+Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
+$trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
+if ($Trust.Value -eq "*") {
+    Write-Host -ForegroundColor Green -Object "TrustHosts is already set to *. No changes needed"
+}
+else {
+    $add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
+    Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
+    Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
+}
+<#
 If ($trust.value -eq "" -or $trust.value -eq "*"){
     Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value * -Force
 } Else {
@@ -37,6 +46,7 @@ If ($trust.value -eq "" -or $trust.value -eq "*"){
     Write-Warning "Your trustedhosts has a value $($trust.Value)"
     break
 }
+#>
 
 # Lability install
 Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
