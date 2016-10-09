@@ -969,5 +969,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\mj.psd1
+AutoLab -OutputPath "C:\DSC\Configs" -ConfigurationData .\mj.psd1
 
