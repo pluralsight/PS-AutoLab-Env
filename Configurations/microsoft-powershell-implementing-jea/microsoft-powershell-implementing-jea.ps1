@@ -239,11 +239,11 @@ Configuration AutoLab {
             xADUser Dev1 {
                 DomainName = $node.DomainName
                 Path = "OU=Dev,$($node.DomainDN)"
-                UserName = 'SimonA'
+                UserName = 'SimonS'
                 GivenName = 'Simon'
-                Surname = 'Allardice'
-                DisplayName = 'Simon Allardice'
-                Description = 'The Brilliant one'
+                Surname = 'Smith'
+                DisplayName = 'Simon Smith'
+                Description = 'The developer'
                 Department = 'Dev'
                 Enabled = $true
                 Password = $DomainCredential
