@@ -12,7 +12,7 @@ Current Release is v2.0.0
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
-* Added support for Server 2016 RTM
+* Added support for Server 2016 RTM 
 * Removed support of Server 2016 TP5 (Breaking change)
 * Modified configuration data (.psd1) for new media types
 
