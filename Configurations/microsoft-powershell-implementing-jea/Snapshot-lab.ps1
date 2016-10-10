@@ -32,7 +32,7 @@ Pause
 Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
 
-Checkpoint-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured
+Checkpoint-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured -force
 
 Write-Host -ForegroundColor Green -Object @"
 
