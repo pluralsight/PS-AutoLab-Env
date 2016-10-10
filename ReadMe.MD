@@ -5,9 +5,13 @@ This is an automated lab environment build tool to support Authors and students 
 The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
 # Versions
-Current Release is v1.0.0
+Current Release is v2.0.0
 
 ## Unreleased
+* Master meets current release
+
+## v2.0.0
+* Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
 * Added support for Server 2016 RTM
 * Removed support of Server 2016 TP5 (Breaking change)
 * Modified configuration data (.psd1) for new media types
