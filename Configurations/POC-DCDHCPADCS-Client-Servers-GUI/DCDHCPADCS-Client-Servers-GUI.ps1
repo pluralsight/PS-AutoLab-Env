@@ -527,12 +527,12 @@ Configuration AutoLab {
         }  
  
     }
-} #end DHCP Config
+ #end DHCP Config
  #endregion
 
 
 #region ADCS
-<#
+
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
  
         ## Hack to fix DependsOn with hypens "bug" :(
@@ -552,7 +552,8 @@ Configuration AutoLab {
                 DependsOn = '[xADDomain]FirstDC'
             }
         } #End foreach  
-        
+    }
+<#        
         xAdcsCertificationAuthority ADCSConfig
         {
             CAType = $Node.ADCSCAType
