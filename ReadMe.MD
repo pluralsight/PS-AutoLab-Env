@@ -8,7 +8,8 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 Current Release is v2.0.0
 
 ## Unreleased
-* Master meets current release, please fork and add suggestions and corrections
+* Added Shutdown-Lab script to shutdown VM's
+* Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
@@ -54,6 +55,7 @@ You will be able to build and wipe the Lab quickly in future._
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
+* .\Shutdown-Lab.ps1 _(Stops the lab VM's)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
 * .\Wipe-Lab.ps1 _(Wipe the lab and VM's from your system)_
