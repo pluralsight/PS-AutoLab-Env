@@ -230,10 +230,10 @@ Configuration AutoLab {
             xADUser IT2 {
                 DomainName = $node.DomainName
                 Path = "OU=IT,$($node.DomainDN)"
-                UserName = 'MattS'
-                GivenName = 'Matt'
+                UserName = 'MikeS'
+                GivenName = 'Mike'
                 Surname = 'Smith'
-                DisplayName = 'Matt Smith'
+                DisplayName = 'Mike Smith'
                 Description = 'Backup IT'
                 Department = 'IT'
                 Enabled = $true
