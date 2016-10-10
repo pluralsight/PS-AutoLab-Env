@@ -91,10 +91,13 @@ These are things currently planned for development. Please help us and contribut
    * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
+   * Installing RSAT tool into Windows 10 (current) (this iscludes the ability to install jsut about any addional tools)
+   * Installing PowerShell 6 (current)
    * Do you have suggestions? Add to Issues list
-2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
-3. Bootstrapping and automatically installing PowerShell 6 (current)
-4. Nano support (current)
-5. Linux (Ubuntu and CentOS) (Future)
+2. Nano support (current)
+3. Linux (Ubuntu and CentOS) (Future)
+4. Structural config changes
+    * Moving to a single composite config for easier development and management (Future)
+    * Adding Pester tests to all configurations (future)
 
 _Please make recommendations or fork this repo and share your own!!!_
