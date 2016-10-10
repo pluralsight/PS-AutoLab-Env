@@ -550,7 +550,6 @@ Configuration AutoLab {
                 DependsOn = '[xADDomain]FirstDC'
             }
         } #End foreach  
-    }
         
         xAdcsCertificationAuthority ADCSConfig
         {
@@ -567,6 +566,7 @@ Configuration AutoLab {
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
             DependsOn = '[WindowsFeature]ADCSCertAuthority'    
         }
+    }
 
 <#
     #Add GPO for PKI AutoEnroll
