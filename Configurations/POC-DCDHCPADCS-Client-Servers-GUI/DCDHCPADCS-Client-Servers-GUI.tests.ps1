@@ -48,7 +48,7 @@ Describe "Test DC server for installation completeness" {
             }
 
         } # Context WindowsFeatures
-
+    
     Context "Active Directory object existence" {
 
         It "Created AD OU named IT" {
@@ -192,36 +192,36 @@ Describe "Test DC server for installation completeness" {
 
     Context "Windows Features for ADCS Installed" {
         
-    It "Should have ADCS Installed" {
-        $Result = (get-WindowsFeature -Name ADCS-Cert-Authority -ComputerName $server).InstallState
-        $Result | should be 'Installed'
-        }
+        It "Should have ADCS Installed" {
+            $Result = (get-WindowsFeature -Name ADCS-Cert-Authority -ComputerName $server).InstallState
+            $Result | should be 'Installed'
+            }
 
-    It "Should have Certificate Enrollment Policy Web Service binaries installed" {
-        $Result= (get-WindowsFeature -Name ADCS-Enroll-Web-Pol -ComputerName $server).InstallState
-        $Result | should be "Installed"
-        }
+        It "Should have Certificate Enrollment Policy Web Service binaries installed" {
+            $Result= (get-WindowsFeature -Name ADCS-Enroll-Web-Pol -ComputerName $server).InstallState
+            $Result | should be "Installed"
+            }
 
-    It "Should have Certificate Enrollment Web Service binaries installed" {
-        $Result = (get-WindowsFeature -Name ADCS-Enroll-Web-Svc -ComputerName $server).InstallState 
-        $Result | should be "Installed"
-        }
+        It "Should have Certificate Enrollment Web Service binaries installed" {
+            $Result = (get-WindowsFeature -Name ADCS-Enroll-Web-Svc -ComputerName $server).InstallState 
+            $Result | should be "Installed"
+            }
 
-    It "Should have Certification Authority Web Enrollment role service binaries installed" {
-        $Result = (get-WindowsFeature -Name ADCS-Web-Enrollment -ComputerName $server).InstallState
-        $Result | should be "Installed"
-        }
+        It "Should have Certification Authority Web Enrollment role service binaries installed" {
+            $Result = (get-WindowsFeature -Name ADCS-Web-Enrollment -ComputerName $server).InstallState
+            $Result | should be "Installed"
+            }
 
-    It "Should have the RSAT for ADCS installed" {
-        $Result = (get-WindowsFeature -Name RSAT-ADCS -ComputerName $server).InstallState
-        $Result | should be "Installed"
-        }
+        It "Should have the RSAT for ADCS installed" {
+            $Result = (get-WindowsFeature -Name RSAT-ADCS -ComputerName $server).InstallState
+            $Result | should be "Installed"
+            }
 
-    It "Should have the RSAT-ADCS-Mgmt Installed" {
-        $Result = (get-WindowsFeature -Name RSAT-ADCS-Mgmt -ComputerName $server).InstallState
-        $Result | should be "Installed"
-        }
+        It "Should have the RSAT-ADCS-Mgmt Installed" {
+            $Result = (get-WindowsFeature -Name RSAT-ADCS-Mgmt -ComputerName $server).InstallState
+            $Result | should be "Installed"
+            }   
+
+        }           
         
-
-    }
 }
