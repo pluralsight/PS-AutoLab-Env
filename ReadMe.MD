@@ -99,5 +99,7 @@ These are things currently planned for development. Please help us and contribut
 4. Structural config changes
     * Moving to a single composite config for easier development and management (Future)
     * Adding Pester tests to all configurations (future)
+5. Add custom media and Registration Keys (future) - (your own ISO with Key)
+6. Add support for custom DSCResource Modules (future)
 
 _Please make recommendations or fork this repo and share your own!!!_
