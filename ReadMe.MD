@@ -29,7 +29,7 @@ The host computer must have the following:
 ## This Lab tool currently supports running on a host:
 * Windows Server 2012 R2 (Not tested)
 * Windows Server 2016 (Tested)
-* Windows 10 client with SLAT (Not tested)
+* Windows 10 client with SLAT (Tested)
 
 ## The lab tool will build virtual environments with the following OS's:
 * Windows Server 2012 R2
@@ -77,7 +77,7 @@ These are things currently being worked on and/or in testing.
 1. Additional Role configurations including:
    * Windows Server 2016 release version (completed)
    * ADCS (plus certificates and autoenrollment) (current)
-   * Web servers and web sites (current)
+   * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
    * Do you have suggestions? Add to Issues list
