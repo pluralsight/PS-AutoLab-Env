@@ -38,20 +38,11 @@ else {
     Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
     Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
 }
-<#
-If ($trust.value -eq "" -or $trust.value -eq "*"){
-    Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value * -Force
-} Else {
-    Write-Warning "Your system is not a default installation -- "
-    Write-Warning "Your trustedhosts has a value $($trust.Value)"
-    break
-}
-#>
 
 # Lability install
 Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
-Install-Module -Name Lability -RequiredVersion 0.10.0
+Install-Module -Name Lability -RequiredVersion 0.10.0 -Force
 
 # Installing modules to host(Author) machine need to run configs - this will be replaced
 # In the next build - will auto-read from Cofniguration File
@@ -72,6 +63,10 @@ If ($HostStatus -eq $False) {
 ###### COPY Configs to host machine
 Write-Host -ForegroundColor Cyan -Object "Copying configs to c:\Lability\Configurations" 
 Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
+
+#### Temp fix until Lability updates version with new media File
+#### Copying new media file manually
+Copy-item -Path C:\PS-AutoLab-Env\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
 
 
 Write-Host -ForegroundColor Green -Object @"
