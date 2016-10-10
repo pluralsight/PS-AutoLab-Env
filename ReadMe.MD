@@ -69,14 +69,15 @@ _NOTE - Configuration convergence takes about 30 minutes and several reboots - d
 These are things currently being worked on and/or in testing.
 
 1. Additional Role configurations including:
-   * Windows Server 2016 release version (current)
+   * Windows Server 2016 release version (completed)
    * ADCS (plus certificates and autoenrollment) (current)
    * Web servers and web sites (current)
    * Exchange (future)
    * SQL (future)
+   * Do you have suggestions? Add to Issues list
 2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
-3. Bootstrapping and automatically installing PowerShell 6 (future)
-4. Nano (Future)
+3. Bootstrapping and automatically installing PowerShell 6 (current)
+4. Nano support (current)
 5. Linux (Ubuntu and CentOS) (Future)
 
 _Please make recommendations or fork this repo and share your own!!!_
