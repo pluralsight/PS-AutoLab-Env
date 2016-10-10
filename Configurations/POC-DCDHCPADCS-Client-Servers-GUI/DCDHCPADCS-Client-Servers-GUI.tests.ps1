@@ -177,15 +177,15 @@ Describe "Test DC server for installation completeness" {
         }
        
     It "Should have a DHCP Scope" {
-        {get-DHCPServerv4Scope -ComputerName $Server} | should not be NullorEmpty 
+        {get-DHCPServerv4Scope -ComputerName $Server} | should not Throw 
         }
 
     It "Should have a Router Value" {
-        {Get-DhcpServerv4OptionValue -ScopeId 192.168.2.0 -ComputerName $server | Where-Object {$_.Name -eq "Router"}} | should not be NullOrEmpty
+        {Get-DhcpServerv4OptionValue -ScopeId 192.168.2.0 -ComputerName $server | Where-Object {$_.Name -eq "Router"}} | should not Throw
         }
 
     It "Should have a DNS Server value" {
-        {Get-DhcpServerv4OptionValue -ScopeId 192.168.2.0 -ComputerName $server | Where-Object {$_.Name -eq "DNS Servers"}} | should not be NullOrEmpty
+        {Get-DhcpServerv4OptionValue -ScopeId 192.168.2.0 -ComputerName $server | Where-Object {$_.Name -eq "DNS Servers"}} | should not Throw
         }
 
     }
