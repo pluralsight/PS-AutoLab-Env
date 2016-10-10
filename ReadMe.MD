@@ -8,7 +8,7 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 Current Release is v2.0.0
 
 ## Unreleased
-* Master meets current release
+* Master meets current release, please fork and add suggestions and corrections
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
