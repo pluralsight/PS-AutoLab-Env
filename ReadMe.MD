@@ -11,6 +11,7 @@ Current Release is v2.0.0
 * Added Shutdown-Lab script to shutdown VM's
 * Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
 * Added Pluralsight Author folder and config example (Course name by URL)
+* Modified User list for AD
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
