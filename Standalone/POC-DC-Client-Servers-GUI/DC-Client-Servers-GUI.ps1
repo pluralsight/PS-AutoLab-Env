@@ -440,7 +440,7 @@ Configuration AutoLab {
                 Path = "OU=IT,$($node.DomainDN)"
                 Category = 'Security'
                 GroupScope = 'Universal'
-                Members = 'MaryL', 'MattS'
+                Members = 'MaryL', 'MikeS'
                 DependsOn = '[xADDomain]FirstDC'
             }
 
