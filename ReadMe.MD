@@ -37,6 +37,10 @@ The host computer must have the following:
 * Windows Server 2016 (Tested)
 * Windows 10 client with SLAT (Tested)
 
+## Note for VMware users
+If you are going to build a Host VM of Server 2016 or Windows 10, In the gerenal settings for your VM, you must change the OS 
+type to Hyper-V(Unsupported) or the Host hyper-v will not work!
+
 ## The lab tool will build virtual environments with the following OS's:
 * Windows Server 2012 R2
 * Windows Server 2016
