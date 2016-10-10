@@ -551,7 +551,7 @@ Configuration AutoLab {
             }
         } #End foreach  
     }
-<#        
+        
         xAdcsCertificationAuthority ADCSConfig
         {
             CAType = $Node.ADCSCAType
@@ -567,6 +567,8 @@ Configuration AutoLab {
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
             DependsOn = '[WindowsFeature]ADCSCertAuthority'    
         }
+
+<#
     #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
         {
