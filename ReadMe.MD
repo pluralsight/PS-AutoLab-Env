@@ -7,6 +7,11 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 # Versions
 Current Release is v1.0.0
 
+## Unreleased
+* Added support for Server 2016 RTM
+* Removed support of Server 2016 TP5 (Breaking change)
+* Modified configuration data (.psd1) for new media types
+
 ## v1.0.0
 * Download release [PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
 * This is the initial release with several POC configurations for 2016TP5 and Windows 10
