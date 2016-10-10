@@ -27,6 +27,7 @@ Pause
 
 
 # For remoting commands to VM's - have the host set trustedhosts
+Enable-PSremoting -force
 
 Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
 $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts

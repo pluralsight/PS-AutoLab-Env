@@ -16,6 +16,7 @@ Master is currently in sync with latest release.
 * Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
 * Added Pluralsight Author folder and config example (Course name by URL)
 * Modified User list for AD
+* Forcibly enable PowerShell Remoting for Win 10 Hosts
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
