@@ -32,6 +32,9 @@ Write-Host -ForegroundColor Green -Object @"
     When complete, run:
     .\Run-Lab.ps1
 
+    To stop the lab VM's:
+    .\Shutdown-lab.ps1
+    
     When the configurations have finished, you can checkpoint the VM's with:
     .\Snapshot-Lab.ps1
 
