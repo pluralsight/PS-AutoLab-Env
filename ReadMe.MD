@@ -8,7 +8,9 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 Current Release is v2.0.0
 
 ## Unreleased
-* Master meets current release, please fork and add suggestions and corrections
+* Added Shutdown-Lab script to shutdown VM's
+* Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
+* Added Pluralsight Author folder and config example (Course name by URL)
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
@@ -28,7 +30,7 @@ The host computer must have the following:
 ## This Lab tool currently supports running on a host:
 * Windows Server 2012 R2 (Not tested)
 * Windows Server 2016 (Tested)
-* Windows 10 client with SLAT (Not tested)
+* Windows 10 client with SLAT (Tested)
 
 ## The lab tool will build virtual environments with the following OS's:
 * Windows Server 2012 R2
@@ -54,6 +56,7 @@ You will be able to build and wipe the Lab quickly in future._
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
+* .\Shutdown-Lab.ps1 _(Stops the lab VM's)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
 * .\Wipe-Lab.ps1 _(Wipe the lab and VM's from your system)_
@@ -75,7 +78,7 @@ These are things currently being worked on and/or in testing.
 1. Additional Role configurations including:
    * Windows Server 2016 release version (completed)
    * ADCS (plus certificates and autoenrollment) (current)
-   * Web servers and web sites (current)
+   * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
    * Do you have suggestions? Add to Issues list

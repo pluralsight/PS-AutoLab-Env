@@ -45,6 +45,7 @@ demonstrations and would need to be modified for your environment.
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
+            SecureBoot = $false
             Lability_Media = '2016_x64_Standard_EN_Eval' # Can be Core,Win10,2012R2,nano
                                                        # 2016_x64_Standard_EN_Eval
                                                        # 2016_x64_Standard_Core_EN_Eval

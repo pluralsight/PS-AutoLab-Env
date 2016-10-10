@@ -34,7 +34,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     To stop the lab VM's:
     .\Shutdown-lab.ps1
-
+    
     When the configurations have finished, you can checkpoint the VM's with:
     .\Snapshot-Lab.ps1
 
@@ -54,7 +54,7 @@ Pause
 # Run the config to generate the .mof files
 Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
 Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fail'
-.\StandAlone-Server-Gui.ps1
+.\microsoft-powershell-implementing-jea.ps1
 
 # Build the lab without a snapshot
 #
@@ -74,9 +74,6 @@ Write-Host -ForegroundColor Green -Object @"
 
     When complete, run:
     .\Run-Lab.ps1
-
-    To stop the lab VM's:
-    .\Shutdown-lab.ps1
 
 "@
 
