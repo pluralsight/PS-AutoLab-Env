@@ -5,9 +5,13 @@ This is an automated lab environment build tool to support Authors and students 
 The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
 # Versions
-Current Release is v2.0.0
+Current Release is v2.1.0
 
 ## Unreleased
+Master is currently in sync with latest release.
+
+## v2.1.0
+* Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
 * Added Shutdown-Lab script to shutdown VM's
 * Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
 * Added Pluralsight Author folder and config example (Course name by URL)
@@ -74,7 +78,7 @@ will continue.
 _NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
 # Current and Future Development
-These are things currently being worked on and/or in testing.
+These are things currently planned for development. Please help us and contribute your own configs or pick something from the list marked (Future)
 
 1. Additional Role configurations including:
    * Windows Server 2016 release version (completed)
