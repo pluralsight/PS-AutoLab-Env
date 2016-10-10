@@ -4,7 +4,19 @@ This is an automated lab environment build tool to support Authors and students 
 
 The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
-## Requirements
+# Versions
+Current Release is v1.0.0
+
+## Unreleased
+* Added support for Server 2016 RTM
+* Removed support of Server 2016 TP5 (Breaking change)
+* Modified configuration data (.psd1) for new media types
+
+## v1.0.0
+* Download release [PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
+* This is the initial release with several POC configurations for 2016TP5 and Windows 10
+
+# Requirements
 The host computer must have the following:
 * WMF 5 (Windows Management Framework 5)
 * An internet connection
@@ -47,7 +59,9 @@ You will receive reminders and instructions when to run these when you start the
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-None at this time - ;)
+Possible problem with the Setup-Lab script pausing after downloading .iso files. This is beinging investigated. 
+If the script does not continue automatically after completing the downloads, press the return key once and it
+will continue.
 
 _NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
@@ -55,14 +69,15 @@ _NOTE - Configuration convergence takes about 30 minutes and several reboots - d
 These are things currently being worked on and/or in testing.
 
 1. Additional Role configurations including:
-   * Windows Server 2016 release version (current)
+   * Windows Server 2016 release version (completed)
    * ADCS (plus certificates and autoenrollment) (current)
    * Web servers and web sites (current)
    * Exchange (future)
    * SQL (future)
+   * Do you have suggestions? Add to Issues list
 2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
-3. Bootstrapping and automatically installing PowerShell 6 (future)
-4. Nano (Future)
+3. Bootstrapping and automatically installing PowerShell 6 (current)
+4. Nano support (current)
 5. Linux (Ubuntu and CentOS) (Future)
 
 _Please make recommendations or fork this repo and share your own!!!_
