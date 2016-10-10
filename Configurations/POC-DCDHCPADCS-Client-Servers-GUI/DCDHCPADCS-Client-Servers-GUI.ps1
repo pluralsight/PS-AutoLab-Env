@@ -526,12 +526,13 @@ Configuration AutoLab {
             DependsOn = '[xDhcpServerScope]DhcpScope'
         }  
  
-    } #end DHCP Config
+    }
+} #end DHCP Config
  #endregion
 
 
 #region ADCS
-
+<#
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
  
         ## Hack to fix DependsOn with hypens "bug" :(
@@ -567,9 +568,8 @@ Configuration AutoLab {
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
             DependsOn = '[WindowsFeature]ADCSCertAuthority'    
         }
-    }
 
-<#
+
     #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
         {
