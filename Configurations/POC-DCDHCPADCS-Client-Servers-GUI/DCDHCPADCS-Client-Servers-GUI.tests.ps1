@@ -222,6 +222,14 @@ Describe "Test DC server for installation completeness" {
             $Result | should be "Installed"
             }   
 
-        }           
+        }  
+        
+    Context "ADCS Configuration" {
+        
+        It "Should have one Certification Authority in Active Directory" {
+            $Result = (get-adobject -filter * -SearchBase "CN=Certification Authorities,CN=Public Key Services,CN=Services,CN=Configuration,DC=Company,DC=Pri" -SearchScope OneLevel).count
+            $Result | should BeExactly 1
+            }
+    }               
         
 }
