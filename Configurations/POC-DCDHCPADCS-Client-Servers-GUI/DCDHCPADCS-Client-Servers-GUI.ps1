@@ -566,7 +566,7 @@ Configuration AutoLab {
                 DependsOn = '[xADDomain]FirstDC'
             }
         } #End foreach  
-
+    }
 <#        
         xAdcsCertificationAuthority ADCSConfig
         {
