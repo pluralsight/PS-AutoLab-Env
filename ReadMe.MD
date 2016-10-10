@@ -54,7 +54,9 @@ You will receive reminders and instructions when to run these when you start the
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-None at this time - ;)
+Possible problem with the Setup-Lab script pausing after downloading .iso files. This is beinging investigated. 
+If the script does not continue automatically after completing the downloads, press the return key once and it
+will continue.
 
 _NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
