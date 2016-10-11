@@ -75,20 +75,16 @@ Describe "Test DC server for installation completeness" {
             {Get-ADOrganizationalUnit -Identity "OU=JEA_Operators,DC=Company,DC=pri"} | should not Throw
             }
 
-        It "Created AD User DonJ" {
-            {Get-ADUser -Identity DonJ} | should not Throw
+        It "Created AD User MaryL" {
+            {Get-ADUser -Identity MaryL} | should not Throw
             }
 
-        It "Created AD User JasonH" {
-            {Get-ADUser -Identity JasonH} | should not Throw
+        It "Created AD User MikeS" {
+            {Get-ADUser -Identity MikeS} | should not Throw
             }
 
-        It "Created AD User GregS" {
-            {Get-ADUser -Identity GregS} | should not Throw
-            }
-
-        It "Created AD User SimonA" {
-            {Get-ADUser -Identity SimonA} | should not Throw
+        It "Created AD User SimonS" {
+            {Get-ADUser -Identity SimonS} | should not Throw
             }
 
         It "Created AD User AaronS" {
