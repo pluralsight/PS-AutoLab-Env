@@ -5,13 +5,18 @@ This is an automated lab environment build tool to support Authors and students 
 The configurations for the VM are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
 # Versions
-Current Release is v2.0.0
+Current Release is v2.1.0
 
 ## Unreleased
+Master is currently in sync with latest release.
+
+## v2.1.0
+* Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
 * Added Shutdown-Lab script to shutdown VM's
 * Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
 * Added Pluralsight Author folder and config example (Course name by URL)
 * Modified User list for AD
+* Forcibly enable PowerShell Remoting for Win 10 Hosts
 
 ## v2.0.0
 * Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
@@ -32,6 +37,10 @@ The host computer must have the following:
 * Windows Server 2012 R2 (Not tested)
 * Windows Server 2016 (Tested)
 * Windows 10 client with SLAT (Tested)
+
+## Note for VMware users
+If you are going to build a Host VM of Server 2016 or Windows 10, In the gerenal settings for your VM, you must change the OS 
+type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 
 ## The lab tool will build virtual environments with the following OS's:
 * Windows Server 2012 R2
@@ -74,7 +83,7 @@ will continue.
 _NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
 # Current and Future Development
-These are things currently being worked on and/or in testing.
+These are things currently planned for development. Please help us and contribute your own configs or pick something from the list marked (Future)
 
 1. Additional Role configurations including:
    * Windows Server 2016 release version (completed)
@@ -82,10 +91,15 @@ These are things currently being worked on and/or in testing.
    * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
+   * Installing RSAT tool into Windows 10 (current) (this iscludes the ability to install jsut about any addional tools)
+   * Installing PowerShell 6 (current)
    * Do you have suggestions? Add to Issues list
-2. Bootstrapping and automatically installing RSAT tool into Windows 10 (current)
-3. Bootstrapping and automatically installing PowerShell 6 (current)
-4. Nano support (current)
-5. Linux (Ubuntu and CentOS) (Future)
+2. Nano support (current)
+3. Linux (Ubuntu and CentOS) (Future)
+4. Structural config changes
+    * Moving to a single composite config for easier development and management (Future)
+    * Adding Pester tests to all configurations (future)
+5. Add custom media and Registration Keys (future) - (your own ISO with Key)
+6. Add support for custom DSCResource Modules (future)
 
 _Please make recommendations or fork this repo and share your own!!!_
