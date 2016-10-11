@@ -571,9 +571,6 @@ Configuration AutoLab {
         }
     }
 
- <#    
-
-
     #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
         {
@@ -594,7 +591,8 @@ Configuration AutoLab {
                         }
             DependsOn = '[xADDomain]FirstDC'
         }
-        
+ 
+ <#       
         script setAEGPRegSetting1
         {
             Credential = $Credential

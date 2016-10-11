@@ -226,6 +226,14 @@ Describe "Test DC server for installation completeness" {
             $Result = get-adobject -filter * -SearchBase "CN=Certification Authorities,CN=Public Key Services,CN=Services,CN=Configuration,DC=Company,DC=Pri" -SearchScope OneLevel
             ($Result.DistinguishedName).count | should BeExactly 1
             }
-    }               
+    }        
+    
+    Context "GPO for Autoenrollment" {
+        
+        It "Should have a GPO named PKI AutoEnroll" {
+            get-GPO -name "PKI AutoEnroll" | should not Throw
+            } 
+    
+    }      
         
 }
