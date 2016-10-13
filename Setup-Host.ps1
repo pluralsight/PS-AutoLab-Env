@@ -10,7 +10,7 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 
 #Set variables
 $labilityfolder = 'C:\Lability' #It looks like Start-LabHostConfiguration forces this location.
-$pwd = (Get-Location).path
+$pwd = $PSScriptRoot
 $add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
 
 Clear-Host
@@ -71,7 +71,9 @@ Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination $labili
 
 #### Temp fix until Lability updates version with new media File
 #### Copying new media file manually
-Copy-item -Path C:\PS-AutoLab-Env\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
+Copy-item -Path $pwd\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
+#### Copying HostDefaults file manually so users can override the Lability default
+Copy-item -Path $pwd\hostdefaults.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
 
 
 Write-Host -ForegroundColor Green -Object @"
