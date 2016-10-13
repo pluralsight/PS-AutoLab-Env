@@ -627,12 +627,10 @@ Configuration AutoLab {
                         }
             DependsOn = '[xWaitForADDomain]WaitForADADCSRole'   
             }
-        }
- 
- <#       
+       
         script setAEGPRegSetting1
         {
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             if ((Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy" -ErrorAction SilentlyContinue).Value -eq 7) {
                                 return $True
@@ -650,7 +648,9 @@ Configuration AutoLab {
                         }
             DependsOn = '[Script]CreatePKIAEGpo'
         }
+    }
 
+<#
         script setAEGPRegSetting2 
         {
             Credential = $Credential

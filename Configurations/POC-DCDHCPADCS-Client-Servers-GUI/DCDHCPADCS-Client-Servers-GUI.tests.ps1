@@ -233,7 +233,12 @@ Describe "Test DC server for installation completeness" {
         It "Should have a GPO named PKI AutoEnroll" {
             {get-GPO -name "PKI AutoEnroll"} | should not Throw
             } 
+
+        It "Should have an autoenrollment registry value set to 7" {
+            {Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy"} | Should BeExactly 7
+            }
     
+        #It should have 3 and only 3 registry settings
     }      
         
 }
