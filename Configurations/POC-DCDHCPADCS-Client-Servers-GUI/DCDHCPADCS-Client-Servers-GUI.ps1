@@ -168,6 +168,7 @@ Configuration AutoLab {
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
             }
 
             xADOrganizationalUnit Dev {
@@ -176,6 +177,8 @@ Configuration AutoLab {
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
+
             }
 
             xADOrganizationalUnit Marketing {
@@ -184,6 +187,8 @@ Configuration AutoLab {
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
+
             }
 
             xADOrganizationalUnit Sales {
@@ -192,6 +197,8 @@ Configuration AutoLab {
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
+
             }
 
             xADOrganizationalUnit Accounting {
@@ -200,6 +207,8 @@ Configuration AutoLab {
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
+
             }
 
             xADOrganizationalUnit JEA_Operators {
@@ -208,6 +217,8 @@ Configuration AutoLab {
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
+
             }
 
             # Users
