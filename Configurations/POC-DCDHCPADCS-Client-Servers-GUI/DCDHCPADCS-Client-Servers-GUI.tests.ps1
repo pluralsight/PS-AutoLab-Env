@@ -235,7 +235,8 @@ Describe "Test DC server for installation completeness" {
             } 
 
         It "Should have an autoenrollment registry value set to 7" {
-            {Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy"} | Should BeExactly 7
+            $Result = (Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy").Value
+            $Result | Should BeExactly 7
             }
     
         #It should have 3 and only 3 registry settings
