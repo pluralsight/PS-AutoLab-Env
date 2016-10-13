@@ -520,6 +520,7 @@ Configuration AutoLab {
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
             Ensure = 'Present';
             DependsOn = '[WindowsFeature]DHCP'
+            PsDscRunAsCredential = $DomainCredential
         }
         
         xDhcpServerScope 'DhcpScope' {
@@ -572,7 +573,7 @@ Configuration AutoLab {
         xAdcsCertificationAuthority ADCSConfig
         {
             CAType = $Node.ADCSCAType
-            Credential = $Credential
+            Credential = $DomainCredential
             CryptoProviderName = $Node.ADCSCryptoProviderName
             HashAlgorithmName = $Node.ADCSHashAlgorithmName
             KeyLength = $Node.ADCSKeyLength
