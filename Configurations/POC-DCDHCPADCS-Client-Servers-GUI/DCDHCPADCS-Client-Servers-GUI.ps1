@@ -454,6 +454,7 @@ Configuration AutoLab {
                 GroupScope = 'Universal'
                 Members = 'MaryL', 'MikeS'
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
             }
 
             xADGroup SalesG1 {
@@ -463,6 +464,7 @@ Configuration AutoLab {
                 GroupScope = 'Universal'
                 Members = 'SamS', 'SonyaS', 'SamanthaS'
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
             }
 
             xADGroup MKG1 {
@@ -472,6 +474,7 @@ Configuration AutoLab {
                 GroupScope = 'Universal'
                 Members = 'MarkS', 'MonicaS', 'MattS'
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
             }
 
             xADGroup AccountG1 {
@@ -481,6 +484,7 @@ Configuration AutoLab {
                 GroupScope = 'Universal'
                 Members = 'AaronS', 'AndreaS', 'AndyS'
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
             }
 
             xADGroup JEAG1 {
@@ -490,6 +494,7 @@ Configuration AutoLab {
                 GroupScope = 'Universal'
                 Members = 'JimJ', 'JillJ'
                 DependsOn = '[xADDomain]FirstDC'
+                Credential = $DomainCredential
             }
        
     } #end nodes DC
