@@ -161,6 +161,13 @@ Configuration AutoLab {
         
         #Add OU, Groups, and Users
 
+            xWaitForADDomain WaitForADDCRole {
+                DomainName = $Node.DomainName
+                DependsOn = '[xADDomain]FirstDC'
+                RetryIntervalSec = '30'
+                RetryCount = '10'
+                DomainUserCredential = $DomainCredential
+                }
 
             xADOrganizationalUnit IT {
                 Name = 'IT'
@@ -515,11 +522,19 @@ Configuration AutoLab {
                 IncludeAllSubFeature = $False;
                 DependsOn = '[xADDomain]FirstDC'
             }
-        } #End foreach  
+        } #End foreach
+        
+         xWaitForADDomain WaitForADDHCPRole {
+                DomainName = $Node.DomainName
+                RetryIntervalSec = '30'
+                RetryCount = '10'
+                DomainUserCredential = $DomainCredential
+                DependsOn = '[xADDomain]FirstDC'
+                }  
         
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
             Ensure = 'Present';
-            DependsOn = '[WindowsFeature]DHCP'
+            DependsOn = '[WindowsFeature]DHCP','[xWaitForADDomain]WaitForADDHCPRole'
         }
         
         xDhcpServerScope 'DhcpScope' {
@@ -568,6 +583,13 @@ Configuration AutoLab {
             }
         } #End foreach  
     
+         xWaitForADDomain WaitForADADCSRole {
+                DomainName = $Node.DomainName
+                RetryIntervalSec = '30'
+                RetryCount = '10'
+                DomainUserCredential = $DomainCredential
+                DependsOn = '[xADDomain]FirstDC'
+                }  
             
         xAdcsCertificationAuthority ADCSConfig
         {
@@ -582,7 +604,7 @@ Configuration AutoLab {
             LogDirectory = $Node.CALogPath
             ValidityPeriod = $node.ADCSValidityPeriod
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
-            DependsOn = '[WindowsFeature]ADCSCertAuthority'    
+            DependsOn = '[WindowsFeature]ADCSCertAuthority','[xWaitForADDomain]WaitForADADCSRole'    
         }
     }
 <#
