@@ -26,22 +26,24 @@ Write-Host -ForegroundColor Green -Object @"
 Pause
 
 
-# For remoting commands to VM's - have the host set trustedhosts to *
+# For remoting commands to VM's - have the host set trustedhosts
+Enable-PSremoting -force
 
-Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts to * so that remoting commands to VM's work properly"
-$trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts 
-If ($trust.value -eq "" -or $trust.value -eq "*"){
-    Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value * -Force
-} Else {
-    Write-Warning "Your system is not a default installation -- "
-    Write-Warning "Your trustedhosts has a value $($trust.Value)"
-    break
+Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
+$trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
+if ($Trust.Value -eq "*") {
+    Write-Host -ForegroundColor Green -Object "TrustHosts is already set to *. No changes needed"
+}
+else {
+    $add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
+    Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
+    Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
 }
 
 # Lability install
 Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
-Install-Module -Name Lability -RequiredVersion 0.10.0
+Install-Module -Name Lability -RequiredVersion 0.10.0 -Force
 
 # Installing modules to host(Author) machine need to run configs - this will be replaced
 # In the next build - will auto-read from Cofniguration File
@@ -62,6 +64,10 @@ If ($HostStatus -eq $False) {
 ###### COPY Configs to host machine
 Write-Host -ForegroundColor Cyan -Object "Copying configs to c:\Lability\Configurations" 
 Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
+
+#### Temp fix until Lability updates version with new media File
+#### Copying new media file manually
+Copy-item -Path C:\PS-AutoLab-Env\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
 
 
 Write-Host -ForegroundColor Green -Object @"

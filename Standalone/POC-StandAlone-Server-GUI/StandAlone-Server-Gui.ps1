@@ -1,4 +1,4 @@
-Configuration GUILab {
+Configuration AutoLab {
 
     param (
         [Parameter()] 
@@ -125,4 +125,4 @@ Configuration GUILab {
 
 } #end Configuration Example
 
-GUILab -OutputPath .\ -ConfigurationData .\StandAlone-Server-Gui.psd1
+AutoLab -OutputPath .\ -ConfigurationData .\*.psd1

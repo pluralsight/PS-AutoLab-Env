@@ -17,8 +17,11 @@ Write-Host -ForegroundColor Green -Object @"
     
     * Run the lab setup
     Note! If this is the first time you have run this, it can take several
-    hours to downlaod the .ISO's and resources.
+    hours to download the .ISO's and resources.
     This only occurs the first time.
+
+    **Possible problem, if the downloads finish but the script doesn't continue (pauses)
+        Hit the return key once and it will continue
 
     *You will be able to wipe and rebuild this lab without needing to perform
     the downloads again.
@@ -29,6 +32,9 @@ Write-Host -ForegroundColor Green -Object @"
     When complete, run:
     .\Run-Lab.ps1
 
+    To stop the lab VM's:
+    .\Shutdown-lab.ps1
+    
     When the configurations have finished, you can checkpoint the VM's with:
     .\Snapshot-Lab.ps1
 
@@ -54,7 +60,11 @@ Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fa
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
-Start-LabConfiguration -ConfigurationData .\*.psd1 -Verbose -path .\ -IgnorePendingReboot -NoSnapshot 
+Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot 
+# Disable secure boot for VM's
+Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
+Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
+
 
 Write-Host -ForegroundColor Green -Object @"
 
