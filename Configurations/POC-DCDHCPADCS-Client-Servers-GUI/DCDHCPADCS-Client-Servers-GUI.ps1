@@ -174,7 +174,7 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
             }
 
@@ -183,7 +183,7 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
 
             }
@@ -193,7 +193,7 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
 
             }
@@ -203,7 +203,7 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
 
             }
@@ -213,7 +213,7 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
 
             }
@@ -223,7 +223,7 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 Path = $Node.DomainDN
                 ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
 
             }
@@ -242,7 +242,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]IT'
             }
 
             xADUser IT2 {
@@ -258,7 +258,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]IT'
             }
 
             xADUser Dev1 {
@@ -274,7 +274,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Dev'
             }
 
             xADUser Acct1 {
@@ -290,7 +290,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Accounting'
             }
 
             xADUser Acct2 {
@@ -306,7 +306,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Accounting'
             }
 
             xADUser Acct3 {
@@ -322,7 +322,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Accounting'
             }
 
             xADUser Sales1 {
@@ -338,7 +338,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Sales'
             }
 
             xADUser Sales2 {
@@ -354,7 +354,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Sales'
             }
 
             xADUser Sales3 {
@@ -370,7 +370,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Sales'
             }
 
             xADUser Market1 {
@@ -386,7 +386,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Marketing'
             }
 
             xADUser Market2 {
@@ -402,7 +402,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Marketing'
             }
 
             xADUser Market3 {
@@ -418,7 +418,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]Marketing'
             }
 
             xADUser JEA1 {
@@ -434,7 +434,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]JEA_Operators'
             }
 
             xADUser JEA2 {
@@ -450,7 +450,7 @@ Configuration AutoLab {
                 Password = $DomainCredential
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADOrganizationalUnit]JEA_Operators'
             }
  
             #Groups
@@ -460,7 +460,7 @@ Configuration AutoLab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'MaryL', 'MikeS'
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADUser]IT1','[xADUser]IT2'
                 Credential = $DomainCredential
             }
 
@@ -470,7 +470,7 @@ Configuration AutoLab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'SamS', 'SonyaS', 'SamanthaS'
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADUser]Sales1','[xADUser]Sales2','[xADUser]Sales3'
                 Credential = $DomainCredential
             }
 
@@ -480,7 +480,7 @@ Configuration AutoLab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'MarkS', 'MonicaS', 'MattS'
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADUser]Market1','[xADUser]Market2','[xADUser]Market3'
                 Credential = $DomainCredential
             }
 
@@ -490,7 +490,7 @@ Configuration AutoLab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'AaronS', 'AndreaS', 'AndyS'
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADUser]Acct1','[xADUser]Acct2','[xADUser]Acct3'
                 Credential = $DomainCredential
             }
 
@@ -500,7 +500,7 @@ Configuration AutoLab {
                 Category = 'Security'
                 GroupScope = 'Universal'
                 Members = 'JimJ', 'JillJ'
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[xADUser]JEA1','[xADUser]JEA2'
                 Credential = $DomainCredential
             }
        
@@ -588,7 +588,7 @@ Configuration AutoLab {
                 RetryIntervalSec = '30'
                 RetryCount = '10'
                 DomainUserCredential = $DomainCredential
-                DependsOn = '[xADDomain]FirstDC'
+                DependsOn = '[WindowsFeature]ADCS-Cert-Authority'
                 }  
             
         xAdcsCertificationAuthority ADCSConfig
@@ -604,7 +604,7 @@ Configuration AutoLab {
             LogDirectory = $Node.CALogPath
             ValidityPeriod = $node.ADCSValidityPeriod
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
-            DependsOn = '[WindowsFeature]ADCSCertAuthority','[xWaitForADDomain]WaitForADADCSRole'    
+            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'    
         }
     }
 <#
