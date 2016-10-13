@@ -51,7 +51,8 @@ Configuration AutoLab {
   
 #region IPaddress settings 
 
- 
+    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
+
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
@@ -124,8 +125,6 @@ Configuration AutoLab {
 #region Domain Controller config
 
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
-
-    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
          
         xComputer ComputerName { 
             Name = $Node.NodeName 
@@ -570,7 +569,7 @@ Configuration AutoLab {
             DependsOn = '[WindowsFeature]ADCSCertAuthority'    
         }
     }
-
+<#
     #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
         {
