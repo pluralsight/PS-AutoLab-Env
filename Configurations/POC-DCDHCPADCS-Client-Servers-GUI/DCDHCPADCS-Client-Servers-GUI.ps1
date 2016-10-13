@@ -588,7 +588,7 @@ Configuration AutoLab {
                 RetryIntervalSec = '30'
                 RetryCount = '10'
                 DomainUserCredential = $DomainCredential
-                DependsOn = '[WindowsFeature]ADCS-Cert-Authority'
+                DependsOn = '[WindowsFeature]ADCSCertAuthority'
                 }  
             
         xAdcsCertificationAuthority ADCSConfig
