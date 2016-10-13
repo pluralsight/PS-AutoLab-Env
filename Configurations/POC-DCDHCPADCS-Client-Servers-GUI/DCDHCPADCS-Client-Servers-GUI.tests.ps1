@@ -238,6 +238,11 @@ Describe "Test DC server for installation completeness" {
             $Result = (Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy").Value
             $Result | Should BeExactly 7
             }
+
+        It "Should have an OfflineExpirationPercent set to 10" {
+            $Result = (Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent").Value
+            $Result | Should BeExactly 10
+            }
     
         #It should have 3 and only 3 registry settings
     }      

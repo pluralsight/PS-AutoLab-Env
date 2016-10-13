@@ -648,12 +648,10 @@ Configuration AutoLab {
                         }
             DependsOn = '[Script]CreatePKIAEGpo'
         }
-    }
 
-<#
         script setAEGPRegSetting2 
         {
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             if ((Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent" -ErrorAction SilentlyContinue).Value -eq 10) {
                                 return $True
@@ -672,7 +670,9 @@ Configuration AutoLab {
             DependsOn = '[Script]setAEGPRegSetting1'
 
         }
-                                  
+   }
+
+ <#                               
         script setAEGPRegSetting3
         {
             Credential = $Credential
