@@ -670,9 +670,7 @@ Configuration AutoLab {
             DependsOn = '[Script]setAEGPRegSetting1'
 
         }
-   }
-
- <#                               
+                               
         script setAEGPRegSetting3
         {
             Credential = $Credential
@@ -693,6 +691,8 @@ Configuration AutoLab {
                         }
             DependsOn = '[Script]setAEGPRegSetting2'
         }
+    }
+<#
       
         Script SetAEGPLink
         {
