@@ -231,7 +231,7 @@ Describe "Test DC server for installation completeness" {
     Context "GPO for Autoenrollment" {
         
         It "Should have a GPO named PKI AutoEnroll" {
-            get-GPO -name "PKI AutoEnroll" | should not Throw
+            {get-GPO -name "PKI AutoEnroll"} | should not Throw
             } 
     
     }      
