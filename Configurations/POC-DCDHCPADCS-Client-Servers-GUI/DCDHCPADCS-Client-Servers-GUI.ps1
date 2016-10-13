@@ -607,11 +607,11 @@ Configuration AutoLab {
             DependsOn = '[xWaitForADDomain]WaitForADADCSRole'    
         }
     }
-<#
+
     #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
         {
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             if ((get-gpo -name "PKI AutoEnroll" -ErrorAction SilentlyContinue) -eq $Null) {
                                 return $False
