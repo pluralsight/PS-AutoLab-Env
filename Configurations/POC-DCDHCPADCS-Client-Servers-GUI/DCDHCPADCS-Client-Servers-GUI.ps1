@@ -606,7 +606,6 @@ Configuration AutoLab {
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
             DependsOn = '[xWaitForADDomain]WaitForADADCSRole'    
         }
-    }
 
     #Add GPO for PKI AutoEnroll
         script CreatePKIAEGpo
@@ -626,7 +625,8 @@ Configuration AutoLab {
                             $GPO= (get-gpo -name "PKI AutoEnroll")
                             return @{Result = $GPO}
                         }
-            DependsOn = '[xADDomain]FirstDC'
+            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'   
+            }
         }
  
  <#       
