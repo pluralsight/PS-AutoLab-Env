@@ -1,5 +1,5 @@
 
-Function createhostDefaultsFile {
+Function createHostDefaultsFile {
 
 	$hostDefaults = @{
 		ConfigurationPath="C:\Users\admin\Dropbox (Personal)\Pluralsight courses\Implementing and Securing Windows Server 2016 Core Networking\PS-AutoLab-Env\Configurations";
@@ -12,7 +12,7 @@ Function createhostDefaultsFile {
 		ResourceShareName="Resources";
 		DisableLocalFileCaching=$false;
 	}
-
+	Write-Host  -ForegroundColor Cyan -Object "Creating HostDefaults.json file..."
 	$hostDefaults | convertto-json | out-file HostDefaults.json
 
 }

@@ -43,6 +43,7 @@ Catch
 
 
 # For remoting commands to VM's - have the host set trustedhosts
+Write-Host  -ForegroundColor Cyan -Object "Enabling PowerShell Remoting..."
 Enable-PSremoting -force -SkipNetworkProfileCheck
 
 Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
@@ -78,7 +79,7 @@ If ($HostStatus -eq $False) {
 
 ###### COPY Configs to host machine
 Write-Host -ForegroundColor Cyan -Object "Copying configs to $labilityfolder\Configurations" 
-Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination $labilityfolder\Configurations -force
+Copy-item -Path $pwd\Configurations\* -recurse -Destination $labilityfolder\Configurations -force
 
 #### Temp fix until Lability updates version with new media File
 #### Copying new media file manually
