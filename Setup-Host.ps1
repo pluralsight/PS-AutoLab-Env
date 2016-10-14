@@ -30,9 +30,20 @@ Write-Host -ForegroundColor Green -Object @"
 
 Pause
 
+#Generate HostsDefault.json file
+Try
+{
+	./createHostDefaultsFile.ps1
+}
+Catch
+{
+	Write-Host "Unable to generate HostDefaults.json file. Please consult the file createHostDefaultsFile.ps1"
+	break
+}
+
 
 # For remoting commands to VM's - have the host set trustedhosts
-Enable-PSremoting -force
+Enable-PSremoting -force -SkipNetworkProfileCheck
 
 Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
 $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
