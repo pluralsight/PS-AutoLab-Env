@@ -2,7 +2,7 @@
 Function createHostDefaultsFile {
 
 	$hostDefaults = @{
-		ConfigurationPath="C:\Users\admin\Dropbox (Personal)\Pluralsight courses\Implementing and Securing Windows Server 2016 Core Networking\PS-AutoLab-Env\Configurations";
+		ConfigurationPath="%SYSTEMDRIVE%\Lability\Configurations";
 		DifferencingVhdPath="%SYSTEMDRIVE%\Lability\VMVirtualHardDisks";
 		HotfixPath="%SYSTEMDRIVE%\Lability\Hotfixes";
 		IsoPath="%SYSTEMDRIVE%\Lability\ISOs";
