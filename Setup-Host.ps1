@@ -7,27 +7,44 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #>
 #Requires -version 5.0
 #Requires -runasadministrator
+
+#Set variables
+$labilityfolder = 'C:\Lability' #It looks like Start-LabHostConfiguration forces this location.
+$pwd = $PSScriptRoot
+$add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
+
 Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Setup-Host script. This script will perform the following:
-    * For PowerShell Remoting, Set the host 'TrustedHosts' value to *
+    * For PowerShell Remoting, Set the host 'TrustedHosts' value to $add
     * Install the Lability module from PSGallery
     * Install Hyper-V
-    * Create the C:\Lability folder (DO NOT DELETE)
-    * Copy configurations and resources to C:\Lability
+    * Create the $labilityfolder folder (DO NOT DELETE)
+    * Copy configurations and resources to $labilityfolder
     * You will then need to reboot the host before continuing
 
-    Note! - You may delete the folder c:\PS-AutoLab-Env when this setup finished and the system
-            has been rebooted.
+    Note! - You may delete the folder $pwd when this setup finished and the system has been rebooted.
 
 "@
 
 Pause
 
+#Generate HostsDefault.json file
+Try
+{
+	./createHostDefaultsFile.ps1
+}
+Catch
+{
+	Write-Host "Unable to generate HostDefaults.json file. Please consult the file createHostDefaultsFile.ps1"
+	break
+}
+
 
 # For remoting commands to VM's - have the host set trustedhosts
-Enable-PSremoting -force
+Write-Host  -ForegroundColor Cyan -Object "Enabling PowerShell Remoting..."
+Enable-PSremoting -force -SkipNetworkProfileCheck
 
 Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
 $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
@@ -35,7 +52,6 @@ if ($Trust.Value -eq "*") {
     Write-Host -ForegroundColor Green -Object "TrustHosts is already set to *. No changes needed"
 }
 else {
-    $add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
     Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
     Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
 }
@@ -46,7 +62,7 @@ Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBoot
 Install-Module -Name Lability -RequiredVersion 0.10.0 -Force
 
 # Installing modules to host(Author) machine need to run configs - this will be replaced
-# In the next build - will auto-read from Cofniguration File
+# In the next build - will auto-read from Configuration File
 Install-Module -Name xActiveDirectory -RequiredVersion 2.13.0.0
 Install-Module -Name xComputerManagement -RequiredVersion 1.8.0.0
 Install-Module -Name xNetworking -RequiredVersion 2.12.0.0
@@ -62,27 +78,28 @@ If ($HostStatus -eq $False) {
 }
 
 ###### COPY Configs to host machine
-Write-Host -ForegroundColor Cyan -Object "Copying configs to c:\Lability\Configurations" 
-Copy-item -Path C:\PS-AutoLab-Env\Configurations\* -recurse -Destination C:\Lability\Configurations -force
+Write-Host -ForegroundColor Cyan -Object "Copying configs to $labilityfolder\Configurations" 
+Copy-item -Path $pwd\Configurations\* -recurse -Destination $labilityfolder\Configurations -force
 
 #### Temp fix until Lability updates version with new media File
 #### Copying new media file manually
-Copy-item -Path C:\PS-AutoLab-Env\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
+Copy-item -Path $pwd\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
+#### Copying HostDefaults file manually so users can override the Lability default
+Copy-item -Path $pwd\hostdefaults.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
 
 
 Write-Host -ForegroundColor Green -Object @"
 
     The Host is about to reboot.
     After the reboot, open Powershell, navigate to a configuration directory
-    C:\Lability\Configuration\<yourconfigfolder>
+    $labilityfolder\Configuration\<yourconfigfolder>
     And run:
     
-    PS C:\Lability\Configuration\<yourconfigfolder>.\Setup-Lab
+    PS $labilityfolder\Configuration\<yourconfigfolder>.\Setup-Lab
 
 "@
 
-Write-Host -ForegroundColor Yellow -Object "Note! - You may delete the folder c:\PS-AutoLab-Env when this setup finished and the system
-            has been rebooted."
+Write-Host -ForegroundColor Yellow -Object "Note! - You may delete the folder $pwd when this setup finished and the system has been rebooted."
 
 Pause
 Restart-Computer
