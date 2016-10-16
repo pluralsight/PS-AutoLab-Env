@@ -623,7 +623,7 @@ Configuration AutoLab {
                         }
             GetScript = {
                             $GPO= (get-gpo -name "PKI AutoEnroll")
-                            return @{Result = $GPO}
+                            return @{Result = $($GPO.DisplayName)}
                         }
             DependsOn = '[xWaitForADDomain]WaitForADADCSRole'   
             }
@@ -644,7 +644,7 @@ Configuration AutoLab {
                         }
             GetScript = {
                             $RegVal1 = (Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy")
-                            return @{Result = $RegVal1}
+                            return @{Result = "$($RegVal1.FullKeyPath)\$($RegVal1.ValueName)\$($RegVal1.Value)"}
                         }
             DependsOn = '[Script]CreatePKIAEGpo'
         }
@@ -665,7 +665,7 @@ Configuration AutoLab {
                         }
             GetScript = {
                             $Regval2 = (Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent")
-                            return @{Result = $RegVal2}
+                            return @{Result = "$($RegVal2.FullKeyPath)\$($RegVal2.ValueName)\$($RegVal2.Value)"}
                         }
             DependsOn = '[Script]setAEGPRegSetting1'
 
@@ -673,7 +673,7 @@ Configuration AutoLab {
                                
         script setAEGPRegSetting3
         {
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             if ((Get-GPRegistryValue -Name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames" -ErrorAction SilentlyContinue).value -match "MY") {
                                 return $True
@@ -687,7 +687,7 @@ Configuration AutoLab {
                         }
             GetScript = {
                             $RegVal3 = (Get-GPRegistryValue -Name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames")
-                            return @{Result = $RegVal3}
+                            return @{Result = "$($RegVal3.FullKeyPath)\$($RegVal3.ValueName)\$($RegVal3.Value)"}
                         }
             DependsOn = '[Script]setAEGPRegSetting2'
         }
