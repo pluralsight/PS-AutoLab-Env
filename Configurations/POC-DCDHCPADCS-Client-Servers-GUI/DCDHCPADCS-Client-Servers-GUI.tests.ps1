@@ -3,6 +3,8 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 $Server = "DC"
+$Domain = "company.pri"
+$DomainDN = "DC=company,DC=pri"
 
 Describe "Test DC server for installation completeness" {
     Context "Windows Features for ADDS Installed" {
@@ -248,8 +250,17 @@ Describe "Test DC server for installation completeness" {
             $Result = (Get-GPRegistryValue -Name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames").Value
             $Result | Should Be "My"
             }
-    
-        #It should have 3 and only 3 registry settings
+   
+        It "Should have the PKI Autoenrollment GPO linked to the root" {
+            $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Domain).ID
+            $GPLinks = (Get-GPInheritance -Domain $Domain -Target $DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
+            $GPLinks | Should Not BeNullorEmpty
+            }
+
+        It "Should have the PKI Autoenrollment GPO enabled" {
+            $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Domain).ID
+            $GPLinks = (Get-GPInheritance -Domain $Domain -Target $DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
+            }
     }      
         
 }
