@@ -260,6 +260,7 @@ Describe "Test DC server for installation completeness" {
         It "Should have the PKI Autoenrollment GPO enabled" {
             $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Domain).ID
             $GPLinks = (Get-GPInheritance -Domain $Domain -Target $DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
+            $GPLinks.Enabled | Should Be $True
             }
     }      
         

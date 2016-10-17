@@ -691,32 +691,34 @@ Configuration AutoLab {
                         }
             DependsOn = '[Script]setAEGPRegSetting2'
         }
-    }
-<#
-      
+         
         Script SetAEGPLink
         {
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             try {
-                                    set-GPLink -name "PKI AutoEnroll" -target $Using:Node.DomainDN -LinkEnabled Yes -ErrorAction stop
-                                    return $True
+                                $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
+                                $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
+                                if ($GPLinks.Enabled -eq $True) {return $True}
+                                else {return $False}
                                 }
-                            catch
-                                {
-                                    return $False
+                            catch {
+                                Return $False
                                 }
                          }
             SetScript = {
                             New-GPLink -name "PKI AutoEnroll" -Target $Using:Node.DomainDN -LinkEnabled Yes 
                         }
             GetScript = {
-                            $GPLink = set-GPLink -name "PKI AutoEnroll" -target $Using:Node.DomainDN
-                            return @{Result = $GPLink}
+                           $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
+                           $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
+                           return @{Result = "$($GPLinks.DisplayName) = $($GPLinks.Enabled)"}
                         }
             DependsOn = '[Script]setAEGPRegSetting3'
         }  
-        
+    }
+
+<#        
 #region Create and publish templates
 
 #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
