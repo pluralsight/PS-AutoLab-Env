@@ -207,11 +207,11 @@ Configuration AutoLab {
             xADUser IT1 {
                 DomainName = $node.DomainName
                 Path = "OU=IT,$($node.DomainDN)"
-                UserName = 'DonJ'
-                GivenName = 'Don'
-                Surname = 'Jones'
-                DisplayName = 'Don Jones'
-                Description = 'The Main guy'
+                UserName = 'MaryL'
+                GivenName = 'Mary'
+                Surname = 'Lennon'
+                DisplayName = 'Mary Lennon'
+                Description = 'Main IT'
                 Department = 'IT'
                 Enabled = $true
                 Password = $DomainCredential
@@ -223,27 +223,11 @@ Configuration AutoLab {
             xADUser IT2 {
                 DomainName = $node.DomainName
                 Path = "OU=IT,$($node.DomainDN)"
-                UserName = 'Jasonh'
-                GivenName = 'Jason'
-                Surname = 'Helmick'
-                DisplayName = 'Jason Helmick'
-                Description = 'The Fun guy'
-                Department = 'IT'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser IT3 {
-                DomainName = $node.DomainName
-                Path = "OU=IT,$($node.DomainDN)"
-                UserName = 'GregS'
-                GivenName = 'Greg'
-                Surname = 'Shields'
-                DisplayName = 'Greg Shields'
-                Description = 'The Janitor'
+                UserName = 'MikeS'
+                GivenName = 'Mike'
+                Surname = 'Smith'
+                DisplayName = 'Mike Smith'
+                Description = 'Backup IT'
                 Department = 'IT'
                 Enabled = $true
                 Password = $DomainCredential
@@ -255,11 +239,11 @@ Configuration AutoLab {
             xADUser Dev1 {
                 DomainName = $node.DomainName
                 Path = "OU=Dev,$($node.DomainDN)"
-                UserName = 'SimonA'
+                UserName = 'SimonS'
                 GivenName = 'Simon'
-                Surname = 'Allardice'
-                DisplayName = 'Simon Allardice'
-                Description = 'The Brilliant one'
+                Surname = 'Smith'
+                DisplayName = 'Simon Smith'
+                Description = 'The Developer'
                 Department = 'Dev'
                 Enabled = $true
                 Password = $DomainCredential
@@ -450,7 +434,7 @@ Configuration AutoLab {
                 Path = "OU=IT,$($node.DomainDN)"
                 Category = 'Security'
                 GroupScope = 'Universal'
-                Members = 'DonJ', 'Jasonh', 'GregS'
+                Members = 'MaryL', 'MikeS'
                 DependsOn = '[xADDomain]FirstDC'
             }
 
@@ -535,5 +519,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\DC-Client-Servers-Core.psd1
+AutoLab -OutputPath .\ -ConfigurationData .\*.psd1
 

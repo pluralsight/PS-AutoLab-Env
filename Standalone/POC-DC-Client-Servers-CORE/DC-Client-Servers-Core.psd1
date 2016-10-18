@@ -45,8 +45,19 @@ demonstrations and would need to be modified for your environment.
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
-            Lability_Media = '2016TP5_x64_Standard_Core_EN' # Can be Core,Win10,2012R2,nano
-                                                       # 2016TP5_x64_Standard_Core_EN
+            SecureBoot = $false
+            Lability_Media = '2016_x64_Standard_Core_EN_Eval' # Can be Core,Win10,2012R2,nano
+                                                       # 2016_x64_Standard_EN_Eval
+                                                       # 2016_x64_Standard_Core_EN_Eval
+                                                       # 2016_x64_Datacenter_EN_Eval
+                                                       # 2016_x64_Datacenter_Core_EN_Eval
+                                                       # 2016_x64_Standard_Nano_EN_Eval
+                                                       # 2016_x64_Datacenter_Nano_EN_Eval
+                                                       # 2012R2_x64_Standard_EN_Eval
+                                                       # 2012R2_x64_Standard_EN_V5_Eval
+                                                       # 2012R2_x64_Standard_Core_EN_Eval
+                                                       # 2012R2_x64_Standard_Core_EN_V5_Eval
+                                                       # 2012R2_x64_Datacenter_EN_V5_Eval
                                                        # WIN10_x64_Enterprise_EN_Eval
         }
         @{

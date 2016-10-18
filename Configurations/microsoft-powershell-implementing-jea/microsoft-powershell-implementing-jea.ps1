@@ -243,7 +243,7 @@ Configuration AutoLab {
                 GivenName = 'Simon'
                 Surname = 'Smith'
                 DisplayName = 'Simon Smith'
-                Description = 'The Developer'
+                Description = 'The developer'
                 Department = 'Dev'
                 Enabled = $true
                 Password = $DomainCredential
