@@ -1,5 +1,27 @@
 ## Usage FAQ
 
+### I get an error about my network connection type being set to Public.
+
+Full error:
+
+```powershell
+Set-WSManQuickConfig : <f:WSManFault xmlns:f="http://schemas.microsoft.com/wbem/wsman/1/wsmanfault" Code="2150859113" Machine="localhost"><f:Message><f:ProviderFault provider="Config provider" path="%systemroot%\system32\WsmSvc.dll"><f:WSManFault xmlns:f="http://schemas.microsoft.com/wbem/wsman/1/wsmanfault" Code="2150859113" Machine="tablet"><f:Message>WinRM firewall exception will not work since one of the network connection types on this machine is set to Public. Change the network connection type to either Domain or Private and try again. </f:Message></f:WSManFault></f:ProviderFault></f:Message></f:WSManFault>
+At line:116 char:17
++                 Set-WSManQuickConfig -force
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [Set-WSManQuickConfig], InvalidOperationException
+    + FullyQualifiedErrorId : WsManError,Microsoft.WSMan.Management.SetWSManQuickConfigCommand
+```
+
+Fix:
+```
+# Find connections with a NetworkCategory set to Public
+Get-NetConnectionProfile
+
+# For each connection, change to Private or Domain
+Set-NetConnectionProfile -InterfaceIndex 3 -NetworkCategory Private
+```
+
 ### `Enable-Internet.ps1` fails on *New-NetNat : The parameter is incorrect.*
 
 Full error:
