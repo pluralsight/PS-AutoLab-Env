@@ -716,19 +716,17 @@ Configuration AutoLab {
                         }
             DependsOn = '[Script]setAEGPRegSetting3'
         }  
-    }
-
-<#        
+        
 #region Create and publish templates
 
 #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
         script CreateWebServer2Template
         {
             DependsOn = '[xAdcsCertificationAuthority]ADCSConfig'
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             try {
-                                $WSTemplate=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=blah,DC=com" -Properties * -ErrorAction Stop
+                                $WSTemplate=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
                                 return $True
                                 }
                             catch {
@@ -755,20 +753,21 @@ Configuration AutoLab {
                         'revision'='100'}
 
 
-                        New-ADObject -name "WebServer2" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=blah,DC=com" -DisplayName WebServer2 -OtherAttributes $WebServerTemplate
-                        $WSOrig = Get-ADObject -Identity "CN=WebServer,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=blah,DC=com" -Properties * | Select-Object pkiExpirationPeriod,pkiOverlapPeriod,pkiKeyUsage
-                        Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=blah,DC=com" | Set-ADObject -Add @{'pKIKeyUsage'=$WSOrig.pKIKeyUsage;'pKIExpirationPeriod'=$WSOrig.pKIExpirationPeriod;'pkiOverlapPeriod'=$WSOrig.pKIOverlapPeriod}
+                        New-ADObject -name "WebServer2" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -DisplayName WebServer2 -OtherAttributes $WebServerTemplate
+                        $WSOrig = Get-ADObject -Identity "CN=WebServer,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * | Select-Object pkiExpirationPeriod,pkiOverlapPeriod,pkiKeyUsage
+                        Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" | Set-ADObject -Add @{'pKIKeyUsage'=$WSOrig.pKIKeyUsage;'pKIExpirationPeriod'=$WSOrig.pKIExpirationPeriod;'pkiOverlapPeriod'=$WSOrig.pKIOverlapPeriod}
                         }
                 GetScript = {
                                 try {
-                                    return @{Result={get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=blah,DC=com" -Properties * -ErrorAction Stop}}
+                                    return @{Result={get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop}}
                                     }
                                 catch {
                                     return @{Result=$Null}
                                     }
                             }
         }
- 
+    }
+<# 
  #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
         script CreateDSCTemplate
         {

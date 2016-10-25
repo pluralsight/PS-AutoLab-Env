@@ -262,6 +262,13 @@ Describe "Test DC server for installation completeness" {
             $GPLinks = (Get-GPInheritance -Domain $Domain -Target $DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
             $GPLinks.Enabled | Should Be $True
             }
-    }      
+    }
+    Context "Certificate Templates" {
+        
+        It "Should have a template available in AD named WebServer2" {
+            {get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri"} | should not Throw
+            }
+    }
+              
         
 }
