@@ -8,7 +8,9 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 Current Release is v2.1.0
 
 ## Unreleased
-Master is currently in sync with latest release.
+Master IS NOT currently in sync with latest release.
+* Added Lability 0.10.1 support
+* Removed 2016 Server manual media fix
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
@@ -18,15 +20,8 @@ Master is currently in sync with latest release.
 * Modified User list for AD
 * Forcibly enable PowerShell Remoting for Win 10 Hosts
 
-## v2.0.0
-* Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
-* Added support for Server 2016 RTM 
-* Removed support of Server 2016 TP5 (Breaking change)
-* Modified configuration data (.psd1) for new media types
-
-## v1.0.0
-* Download release [PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
-* This is the initial release with several POC configurations for 2016TP5 and Windows 10
+## All Releases
+* Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
 
 # Requirements
 The host computer must have the following:
@@ -50,9 +45,9 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 
 # Instructions 
 1. Download the ZIP of this repository to the Host computer.
-2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
-3. Open PowerShell with administrative privileges
-4. Change to folder C:\PS-Auto-Lab-Env
+2. Extract the folder PS-AutoLab-Env from the zip file.
+3. Open PowerShell with administrative privileges.
+4. Change to the extracted folder `PS-AutoLab-Env`.
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
