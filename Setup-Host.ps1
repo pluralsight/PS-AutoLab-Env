@@ -48,7 +48,7 @@ else {
 # Lability install
 Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
-Install-Module -Name Lability -RequiredVersion 0.10.0 -Force
+Install-Module -Name Lability -RequiredVersion 0.10.1 -Force
 
 # Installing modules to host(Author) machine need to run configs - this will be replaced
 # In the next build - will auto-read from Cofniguration File
