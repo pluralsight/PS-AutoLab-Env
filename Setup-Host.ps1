@@ -70,11 +70,6 @@ If ($HostStatus -eq $False) {
 Write-Host -ForegroundColor Cyan -Object "Copying configs to $DestinationPath\Configurations" 
 Copy-item -Path $SourcePath\Configurations\* -recurse -Destination $DestinationPath\Configurations -force
 
-#### Temp fix until Lability updates version with new media File
-#### Copying new media file manually
-Copy-item -Path $SourcePath\media.json -Destination 'C:\Program Files\WindowsPowershell\Modules\Lability\0.10.0\config'
-
-
 Write-Host -ForegroundColor Green -Object @"
 
     The Host is about to reboot.
