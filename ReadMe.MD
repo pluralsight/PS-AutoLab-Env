@@ -8,7 +8,9 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 Current Release is v2.1.0
 
 ## Unreleased
-Master is currently in sync with latest release.
+Master IS NOT currently in sync with latest release.
+* Added Lability 0.10.1 support
+* Removed 2016 Server manual media fix
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
@@ -18,15 +20,8 @@ Master is currently in sync with latest release.
 * Modified User list for AD
 * Forcibly enable PowerShell Remoting for Win 10 Hosts
 
-## v2.0.0
-* Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
-* Added support for Server 2016 RTM 
-* Removed support of Server 2016 TP5 (Breaking change)
-* Modified configuration data (.psd1) for new media types
-
-## v1.0.0
-* Download release [PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
-* This is the initial release with several POC configurations for 2016TP5 and Windows 10
+## All Releases
+* Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
 
 # Requirements
 The host computer must have the following:
