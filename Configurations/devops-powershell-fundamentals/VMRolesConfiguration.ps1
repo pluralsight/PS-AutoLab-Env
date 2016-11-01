@@ -544,7 +544,7 @@ Configuration AutoLab {
         }
         
     }#end Web Config
-
+#endregion
 
 #region DomainJoin config
    node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
@@ -567,6 +567,19 @@ Configuration AutoLab {
     }#end DomianJoin Config
 #endregion
 
+#region RSAT config
+   node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
+        
+        xHotfix RSAT {
+            Id = 'WindowsTH-RSAT_WS2016-x64.msu'
+            Path = 'c:\software'
+            Credential = $DomainCredential
+            DependsOn = '[xcomputer]JoinDC'
+            Ensure = 'Present'
+        }
+        
+    }#end RSAT Config
+#endregion
 } # End AllNodes
 #endregion
 
