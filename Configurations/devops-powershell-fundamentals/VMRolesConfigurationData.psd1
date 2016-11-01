@@ -41,6 +41,18 @@ demonstrations and would need to be modified for your environment.
             PSDscAllowPlainTextPassword = $true
             PSDscAllowDomainUser = $true 
                         
+            # DHCP Server Data
+            DHCPName = 'LabNet'
+            DHCPIPStartRange = '192.168.3.200'
+            DHCPIPEndRange = '192.168.3.250'
+            DHCPSubnetMask = '255.255.255.0'
+            DHCPState = 'Active'
+            DHCPAddressFamily = 'IPv4'
+            DHCPLeaseDuration = '00:08:00'
+            DHCPScopeID = '192.168.3.0'
+            DHCPDnsServerIPAddress = '192.168.3.10'
+            DHCPRouter = '192.168.3.1'
+
             # Lability default node settings
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
@@ -63,11 +75,12 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC'
             IPAddress = '192.168.3.10'
-            Role = 'DC'
+            Role = 'DC'   # multiple roles @('DC', 'DHCP')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
+<#
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
@@ -75,6 +88,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
+#>
         @{
             NodeName = 'Client'
             IPAddress = '192.168.3.100'
@@ -84,6 +98,7 @@ demonstrations and would need to be modified for your environment.
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_Resource = @('Win10RSAT');
         }
 
         
@@ -100,8 +115,20 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; }
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  }
 
             );
+            Resource = @(
+                @{
+                    
+                    Id = 'Win10RSAT'
+                    Filename = 'WindowsTH-RSAT_WS2016-x64.msu'
+                    Uri = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS2016-x64.msu'
+                    Expand = $false                    
+                    DestinationPath = '\software' # Default is resources folder
+                }
+            );
+
         };
     };
 };
