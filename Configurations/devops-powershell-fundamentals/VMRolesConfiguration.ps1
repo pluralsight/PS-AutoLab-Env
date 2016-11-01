@@ -33,7 +33,8 @@ Configuration AutoLab {
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
         @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
-        @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"}
+        @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
+        @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'}
 
 #endregion
 
