@@ -572,8 +572,8 @@ Configuration AutoLab {
    node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
         
         xHotfix RSAT {
-            Id = 'WindowsTH-RSAT_WS2016-x64.msu'
-            Path = 'c:\software'
+            Id = 'WindowsTH-RSAT_WS2016-x64'
+            Path = 'c:\software\WindowsTH-RSAT_WS2016-x64.msu'
             Credential = $DomainCredential
             DependsOn = '[xcomputer]JoinDC'
             Ensure = 'Present'
