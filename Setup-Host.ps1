@@ -57,6 +57,7 @@ Install-Module -Name xComputerManagement -RequiredVersion 1.8.0.0
 Install-Module -Name xNetworking -RequiredVersion 2.12.0.0
 Install-Module -Name xDhcpServer -RequiredVersion 1.5.0.0
 Install-Module -Name xADCSDeployment -RequiredVersion 1.0.0.0
+Install-Module -Name xWindowsUpdate -RequiredVersion 2.5.0.0
 
 # SEtup host Env.
 # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
