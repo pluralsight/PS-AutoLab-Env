@@ -30,6 +30,7 @@ Configuration AutoLab {
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
+        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="3.7.0.0"},
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
         @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
@@ -133,15 +134,10 @@ Configuration AutoLab {
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
-                'DNS',
-                'RSAT-DNS-Server'                           
-                'AD-Domain-Services'
-                'GPMC',
-                'RSAT-AD-Tools' 
+                'DNS',                           
+                'AD-Domain-Services',
+                'RSAT-AD-Tools', 
                 'RSAT-AD-PowerShell'
-                'RSAT-AD-AdminCenter'
-                'RSAT-ADDS-Tools'
-
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present';
@@ -573,7 +569,7 @@ Configuration AutoLab {
         
         xHotfix RSAT {
             Id = 'KB2693643'
-            Path = 'c:\software\WindowsTH-RSAT_WS2016-x64.msu'
+            Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
             Credential = $DomainCredential
             DependsOn = '[xcomputer]JoinDC'
             Ensure = 'Present'
