@@ -7,14 +7,12 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 # Versions
 Current Release is v2.1.0
 
-<<<<<<< Updated upstream
-## Unreleased
-=======
 ## Unreleased (master)
->>>>>>> Stashed changes
 Master IS NOT currently in sync with latest release.
 * Added Lability 0.10.1 support
 * Removed 2016 Server manual media fix
+* Added Win10 RSAT config
+* Added Pester test (Validate-Lab.ps1) to notify when configurations are converged.
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
