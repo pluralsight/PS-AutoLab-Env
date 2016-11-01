@@ -7,7 +7,11 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 # Versions
 Current Release is v2.1.0
 
+<<<<<<< Updated upstream
 ## Unreleased
+=======
+## Unreleased (master)
+>>>>>>> Stashed changes
 Master IS NOT currently in sync with latest release.
 * Added Lability 0.10.1 support
 * Removed 2016 Server manual media fix
