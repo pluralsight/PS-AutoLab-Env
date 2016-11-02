@@ -95,7 +95,7 @@ It "Should have a DNS server configuration of 192.168.3.10" {
 Describe NanoServer {
 
 It "Should respond to WSMan requests" { 
-  $script:sess = New-PSSession -VMName Nano-A -Credential $Credential -ErrorAction Stop
+  $script:sess = New-PSSession -VMName Nano-A -Credential $Cred -ErrorAction Stop
   $script:sess.Computername | Should Be 'Nano-A'
 }
 

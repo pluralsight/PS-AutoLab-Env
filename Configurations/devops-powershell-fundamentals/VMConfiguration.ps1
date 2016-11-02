@@ -35,7 +35,8 @@ Configuration AutoLab {
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
         @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
-        @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'}
+        @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'},
+        @{ModuleName='xPendingReboot';ModuleVersion = '0.3.0.0'}
 
 #endregion
 
@@ -163,12 +164,12 @@ Configuration AutoLab {
             }  
         
         #Add OU, Groups, and Users
-    OUs = (Get-Content .\AD-OU.json | ConvertFrom-Json)
-    Users = (Get-Content .\AD-Users.json | ConvertFrom-Json)
-    Groups = (Get-Content .\AD-Group.json | ConvertFrom-Json)
+    $OUs = (Get-Content .\AD-OU.json | ConvertFrom-Json)
+    $Users = (Get-Content .\AD-Users.json | ConvertFrom-Json)
+    $Groups = (Get-Content .\AD-Group.json | ConvertFrom-Json)
 
     
-        foreach ($OU in $node.OUs) {
+        foreach ($OU in $OUs) {
             xADOrganizationalUnit $OU.Name {
             Path = $node.DomainDN
             Name = $OU.Name
@@ -179,7 +180,7 @@ Configuration AutoLab {
         }
         } #OU
         
-        foreach ($user in $node.Users) {
+        foreach ($user in $Users) {
         
             xADUser $user.samaccountname {
                 Ensure = "Present"
@@ -199,7 +200,7 @@ Configuration AutoLab {
             }
         } #user
 
-        Foreach ($group in $node.Groups) {
+        Foreach ($group in $Groups) {
             xADGroup $group.Name {
                 GroupName = $group.name
                 Ensure = 'Present'
