@@ -837,8 +837,7 @@ Configuration AutoLab {
                             return @{Result=$pubws2.Name}
                         }
          }
- }
-<#          
+          
           script PublishDSCTemplate 
         {       
            DependsOn = '[Script]CreateDSCTemplate'
@@ -852,16 +851,18 @@ Configuration AutoLab {
                             add-CATemplate -name "DSCTemplate" -force
                         }
            GetScript = {
-                            return @{Result={Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}}}
+                            $pubDSC = Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
+                            return @{Result=$pubDSC.Name}
                         }
          } 
+    }
                                                    
 #endregion - Create and publish templates
 
 #region template permissions
 
 
-
+<#
         [string[]]$Perms = "0e10c968-78fb-11d2-90d4-00c04f79dc55","a05b8cc2-17bc-4802-a710-e7c15ab866a2"
 
         foreach ($P in $Perms) {

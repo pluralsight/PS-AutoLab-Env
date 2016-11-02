@@ -278,6 +278,10 @@ Describe "Test DC server for installation completeness" {
             $tmpl | should not BeNullOrEmpty
             }
 
+     It "Should have the DSC Template published in the CA" {
+            $tmpl = invoke-command -ComputerName DC {Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}}
+            $tmpl | should not BeNullOrEmpty
+            }
     }
               
         
