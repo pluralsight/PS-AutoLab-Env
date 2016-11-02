@@ -1,0 +1,142 @@
+[
+    {
+        "DistinguishedName":  "CN=MaryL,OU=IT,DC=Company,DC=Pri",
+        "Name":  "MaryL",
+        "SamAccountName":  "MaryL",
+        "GivenName":  "Mary",
+        "Surname":  "Lennon",
+        "DisplayName":  "Mary Lennon",
+        "Description":  "Main IT",
+        "Department":  "IT"
+    },
+    {
+        "DistinguishedName":  "CN=MikeS,OU=IT,DC=Company,DC=Pri",
+        "Name":  "MikeS",
+        "SamAccountName":  "MikeS",
+        "GivenName":  "Mike",
+        "Surname":  "Smith",
+        "DisplayName":  "Mike Smith",
+        "Description":  "Backup IT",
+        "Department":  "IT"
+    },
+    {
+        "DistinguishedName":  "CN=SimonS,OU=Dev,DC=Company,DC=Pri",
+        "Name":  "SimonS",
+        "SamAccountName":  "SimonS",
+        "GivenName":  "Simon",
+        "Surname":  "Smith",
+        "DisplayName":  "Simon Smith",
+        "Description":  "The Developer",
+        "Department":  "Dev"
+    },
+    {
+        "DistinguishedName":  "CN=AaronS,OU=Accounting,DC=Company,DC=Pri",
+        "Name":  "AaronS",
+        "SamAccountName":  "AaronS",
+        "GivenName":  "Aaron",
+        "Surname":  "Smith",
+        "DisplayName":  "Aaron Smith",
+        "Description":  "Accountant",
+        "Department":  "Accounting"
+    },
+    {
+        "DistinguishedName":  "CN=AndreaS,OU=Accounting,DC=Company,DC=Pri",
+        "Name":  "AndreaS",
+        "SamAccountName":  "AndreaS",
+        "GivenName":  "Andrea",
+        "Surname":  "Smith",
+        "DisplayName":  "Andrea Smith",
+        "Description":  "Accountant",
+        "Department":  "Accounting"
+    },
+    {
+        "DistinguishedName":  "CN=AndyS,OU=Accounting,DC=Company,DC=Pri",
+        "Name":  "AndyS",
+        "SamAccountName":  "AndyS",
+        "GivenName":  "Andy",
+        "Surname":  "Smith",
+        "DisplayName":  "Andy Smith",
+        "Description":  "Accountant",
+        "Department":  "Accounting"
+    },
+    {
+        "DistinguishedName":  "CN=SamS,OU=Sales,DC=Company,DC=Pri",
+        "Name":  "SamS",
+        "SamAccountName":  "SamS",
+        "GivenName":  "Sam",
+        "Surname":  "Smith",
+        "DisplayName":  "Sam Smith",
+        "Description":  "Sales",
+        "Department":  "Sales"
+    },
+    {
+        "DistinguishedName":  "CN=SonyaS,OU=Sales,DC=Company,DC=Pri",
+        "Name":  "SonyaS",
+        "SamAccountName":  "SonyaS",
+        "GivenName":  "Sonya",
+        "Surname":  "Smith",
+        "DisplayName":  "Sonya Smith",
+        "Description":  "Sales",
+        "Department":  "Sales"
+    },
+    {
+        "DistinguishedName":  "CN=SamanthaS,OU=Sales,DC=Company,DC=Pri",
+        "Name":  "SamanthaS",
+        "SamAccountName":  "SamanthaS",
+        "GivenName":  "Samantha",
+        "Surname":  "Smith",
+        "DisplayName":  "Samantha Smith",
+        "Description":  "Sales",
+        "Department":  "Sales"
+    },
+    {
+        "DistinguishedName":  "CN=MarkS,OU=Marketing,DC=Company,DC=Pri",
+        "Name":  "MarkS",
+        "SamAccountName":  "MarkS",
+        "GivenName":  "Mark",
+        "Surname":  "Smith",
+        "DisplayName":  "Mark Smith",
+        "Description":  "Marketing",
+        "Department":  "Marketing"
+    },
+    {
+        "DistinguishedName":  "CN=MonicaS,OU=Marketing,DC=Company,DC=Pri",
+        "Name":  "MonicaS",
+        "SamAccountName":  "MonicaS",
+        "GivenName":  "Monica",
+        "Surname":  "Smith",
+        "DisplayName":  "Monica Smith",
+        "Description":  "Marketing",
+        "Department":  "Marketing"
+    },
+    {
+        "DistinguishedName":  "CN=MattS,OU=Marketing,DC=Company,DC=Pri",
+        "Name":  "MattS",
+        "SamAccountName":  "MattS",
+        "GivenName":  "Matt",
+        "Surname":  "Smith",
+        "DisplayName":  "Matt Smith",
+        "Description":  "Marketing",
+        "Department":  "Marketing"
+    },
+    {
+        "DistinguishedName":  "CN=JimJ,OU=JEA_Operators,DC=Company,DC=Pri",
+        "Name":  "JimJ",
+        "SamAccountName":  "JimJ",
+        "GivenName":  "Jim",
+        "Surname":  "Jea",
+        "DisplayName":  "Jim Jea",
+        "Description":  "JEA",
+        "Department":  "IT"
+    },
+    {
+        "DistinguishedName":  "CN=JillJ,OU=JEA_Operators,DC=Company,DC=Pri",
+        "Name":  "JillJ",
+        "SamAccountName":  "JillJ",
+        "GivenName":  "Jill",
+        "Surname":  "Jea",
+        "DisplayName":  "Jill Jea",
+        "Description":  "JEA",
+        "Department":  "IT"
+    }
+]
