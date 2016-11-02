@@ -766,8 +766,8 @@ Configuration AutoLab {
                                     }
                             }
         }
-    }
-<# 
+    
+
  #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
         script CreateDSCTemplate
         {
@@ -817,7 +817,8 @@ Configuration AutoLab {
                                     }
                             }
         }
-              
+    }
+<#              
         script PublishWebServerTemplate2 
         {       
            DependsOn = '[Script]CreateWebServer2Template'

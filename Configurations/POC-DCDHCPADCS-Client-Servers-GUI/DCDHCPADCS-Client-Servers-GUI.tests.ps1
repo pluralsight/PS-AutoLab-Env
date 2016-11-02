@@ -268,6 +268,11 @@ Describe "Test DC server for installation completeness" {
         It "Should have a template available in AD named WebServer2" {
             {get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri"} | should not Throw
             }
+
+    It "Should have a template available in AD named DSCTemplate" {
+            {get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri"} | should not Throw
+            }
+
     }
               
         
