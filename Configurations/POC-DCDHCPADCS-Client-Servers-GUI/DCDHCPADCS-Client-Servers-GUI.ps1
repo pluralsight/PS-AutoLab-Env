@@ -856,13 +856,12 @@ Configuration AutoLab {
                         }
          } 
     }
+<#
                                                    
 #endregion - Create and publish templates
 
 #region template permissions
 
-
-<#
         [string[]]$Perms = "0e10c968-78fb-11d2-90d4-00c04f79dc55","a05b8cc2-17bc-4802-a710-e7c15ab866a2"
 
         foreach ($P in $Perms) {
@@ -909,7 +908,8 @@ Configuration AutoLab {
                             }
                         }
                  }
-                 
+       
+                
                 script "Perms_DSCCert_$($P)"
                 {
                     DependsOn = '[Script]CreateWebServer2Template'

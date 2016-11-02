@@ -283,6 +283,5 @@ Describe "Test DC server for installation completeness" {
             $tmpl | should not BeNullOrEmpty
             }
     }
-              
-        
+               
 }
