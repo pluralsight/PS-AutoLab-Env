@@ -45,6 +45,9 @@ Write-Host -ForegroundColor Green -Object @"
 
     Next Steps:
 
+    To tell when you lab is converged:
+    .\Validate-Lab
+
     To stop the lab VM's:
     .\Shutdown-lab.ps1
 

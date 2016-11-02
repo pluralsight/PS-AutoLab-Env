@@ -67,6 +67,7 @@ You will be able to build and wipe the Lab quickly in future._
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
+* .\Validate-Lab _(Runs pester tests to notify you when Lab is converged)
 * .\Shutdown-Lab.ps1 _(Stops the lab VM's)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
