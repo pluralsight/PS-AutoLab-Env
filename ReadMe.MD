@@ -7,8 +7,16 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 # Versions
 Current Release is v2.1.0
 
-## Unreleased
-Master is currently in sync with latest release.
+## Unreleased (master)
+Master IS NOT currently in sync with latest release.
+* Added Lability 0.10.1 support
+* Removed 2016 Server manual media fix
+* Added Win10 RSAT config
+* Added Pester test (Validate-Lab.ps1) to notify when configurations are converged.
+* Added Nano configuration
+* deprecated older POC configs
+* Adding one master Muli-Role POC Example that will be supported
+* Added new course config
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
@@ -18,15 +26,8 @@ Master is currently in sync with latest release.
 * Modified User list for AD
 * Forcibly enable PowerShell Remoting for Win 10 Hosts
 
-## v2.0.0
-* Download release [PS-AutoLab-Env v2.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.0.0)
-* Added support for Server 2016 RTM 
-* Removed support of Server 2016 TP5 (Breaking change)
-* Modified configuration data (.psd1) for new media types
-
-## v1.0.0
-* Download release [PS-AutoLab-Env v1.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v1.0.0)
-* This is the initial release with several POC configurations for 2016TP5 and Windows 10
+## All Releases
+* Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
 
 # Requirements
 The host computer must have the following:
@@ -50,9 +51,9 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 
 # Instructions 
 1. Download the ZIP of this repository to the Host computer.
-2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
-3. Open PowerShell with administrative privileges
-4. Change to folder C:\PS-Auto-Lab-Env
+2. Extract the folder PS-AutoLab-Env from the zip file.
+3. Open PowerShell with administrative privileges.
+4. Change to the extracted folder `PS-AutoLab-Env`.
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
@@ -66,6 +67,7 @@ You will be able to build and wipe the Lab quickly in future._
 You will receive reminders and instructions when to run these when you start the .\Setup-Lab script.
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
+* .\Validate-Lab _(Runs pester tests to notify you when Lab is converged)
 * .\Shutdown-Lab.ps1 _(Stops the lab VM's)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
@@ -91,14 +93,14 @@ These are things currently planned for development. Please help us and contribut
    * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
-   * Installing RSAT tool into Windows 10 (current) (this iscludes the ability to install jsut about any addional tools)
+   * Installing RSAT tool into Windows 10 (Completed) 
    * Installing PowerShell 6 (current)
    * Do you have suggestions? Add to Issues list
-2. Nano support (current)
+2. Nano support (Completed)
 3. Linux (Ubuntu and CentOS) (Future)
 4. Structural config changes
     * Moving to a single composite config for easier development and management (Future)
-    * Adding Pester tests to all configurations (future)
+    * Adding Pester tests to all configurations (Completed)
 5. Add custom media and Registration Keys (future) - (your own ISO with Key)
 6. Add support for custom DSCResource Modules (future)
 
