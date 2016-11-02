@@ -97,7 +97,6 @@ demonstrations and would need to be modified for your environment.
             Lability_Media = '2016_x64_Standard_Nano_DSC_EN_Eval'
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
-            Lability_WarningMessage = "Keyboard layout will be 'EN-US'"
         }
 
         @{
