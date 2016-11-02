@@ -75,6 +75,9 @@ Write-Host -ForegroundColor Green -Object @"
     When complete, run:
     .\Run-Lab.ps1
 
+    And run:
+    .\Validate-Lab.ps1
+
 "@
 
 

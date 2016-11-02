@@ -2,11 +2,11 @@
 
 #test if VM setup is complete
 
-<#
-The password will be passed by the control script WaitforVM.ps1
-You can manually set it while developing this Pester test
-$Password = 'P@ssw0rd'
-#>
+
+#The password will be passed by the control script WaitforVM.ps1
+#You can manually set it while developing this Pester test
+#$Password = 'P@ssw0rd'
+
 
 $Domain = "company"
 $Secure = ConvertTo-SecureString -String $Password -AsPlainText -force
@@ -91,6 +91,31 @@ It "Should have a DNS server configuration of 192.168.3.10" {
 
 
 } #S1
+
+Describe NanoServer {
+
+It "Should respond to WSMan requests" { 
+  $script:sess = New-PSSession -VMName Nano1 -Credential $Cred -ErrorAction Stop
+  $script:sess.Computername | Should Be 'Nano1'
+}
+
+It "Should have an IP address of 192.168.3.60" {
+ $r = Invoke-Command { Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4} -session $script:sess
+ $r.IPv4Address | Should Be '192.168.3.60'
+}
+
+It "Should belong to the Workgroup domain" {
+  $sys = Invoke-Command { Get-CimInstance Win32_computersystem} -session $script:sess
+  $sys.Domain | Should Be "Workgroup"
+}
+
+It "Should have the DSC package installed" {
+  $pkg = Invoke-command { (Get-WindowsPackage -PackageName *DSC* -Online).Where({$_.packageState -eq 'Installed'})} -session $script:sess
+  $pkg.count | Should BeGreaterThan 0
+
+}
+}
+
 
 Describe Client {
 

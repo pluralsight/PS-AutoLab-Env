@@ -97,7 +97,6 @@ demonstrations and would need to be modified for your environment.
             Lability_Media = '2016_x64_Standard_Nano_DSC_EN_Eval'
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
-            Lability_WarningMessage = "Keyboard layout will be 'EN-US'"
         }
 
         @{
@@ -148,11 +147,13 @@ demonstrations and would need to be modified for your environment.
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
-                @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; }
-                @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; }
-                @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  }
-                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';}
-                @{ Name = 'xPSDesiredStateConfiguration'; MinimumVersion = '4.0.0.0'; }
+                @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
+                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
+                @{ Name = 'xPSDesiredStateConfiguration'; MinimumVersion = '4.0.0.0'; },
+                @{ Name = 'xPendingReboot'; MinimumVersion = '0.3.0.0'; }
+
 
             );
             Resource = @(
