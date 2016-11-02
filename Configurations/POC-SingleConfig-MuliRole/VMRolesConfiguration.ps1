@@ -30,9 +30,12 @@ Configuration AutoLab {
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
+        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="4.0.0.0"},
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
-        @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"}
+        @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
+        @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
+        @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'}
 
 #endregion
 
@@ -123,7 +126,7 @@ Configuration AutoLab {
 
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
 
-        $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
+    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
          
         xComputer ComputerName { 
             Name = $Node.NodeName 
@@ -131,9 +134,10 @@ Configuration AutoLab {
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
-                'DNS',                  
-                'AD-Domain-Services'
-
+                'DNS',                           
+                'AD-Domain-Services',
+                'RSAT-AD-Tools', 
+                'RSAT-AD-PowerShell'
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present';
@@ -478,6 +482,50 @@ Configuration AutoLab {
 
 #endregion 
 
+#region DHCP
+    node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
+
+        foreach ($feature in @(
+                'DHCP',
+                'RSAT-DHCP'
+            )) {
+
+            WindowsFeature $feature.Replace('-','') {
+                Ensure = 'Present';
+                Name = $feature;
+                IncludeAllSubFeature = $False;
+                DependsOn = '[xADDomain]FirstDC'
+            }
+        } #End foreach  
+        
+        xDhcpServerAuthorization 'DhcpServerAuthorization' {
+            Ensure = 'Present';
+            DependsOn = '[WindowsFeature]DHCP'
+        }
+        
+        xDhcpServerScope 'DhcpScope' {
+            Name = $Node.DHCPName;
+            IPStartRange = $Node.DHCPIPStartRange
+            IPEndRange = $Node.DHCPIPEndRange
+            SubnetMask = $Node.DHCPSubnetMask
+            LeaseDuration = $Node.DHCPLeaseDuration
+            State = $Node.DHCPState
+            AddressFamily = $Node.DHCPAddressFamily
+            DependsOn = '[WindowsFeature]DHCP'
+        }
+
+        xDhcpServerOption 'DhcpOption' {
+            ScopeID = $Node.DHCPScopeID
+            DnsServerIPAddress = $Node.DHCPDnsServerIPAddress
+            Router = $node.DHCPRouter
+            AddressFamily = $Node.DHCPAddressFamily
+            DependsOn = '[xDhcpServerScope]DhcpScope'
+        }  
+ 
+    } #end DHCP Config
+ #endregion
+
+
 #region Web config
    node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
         
@@ -493,7 +541,7 @@ Configuration AutoLab {
         }
         
     }#end Web Config
-
+#endregion
 
 #region DomainJoin config
    node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
@@ -516,6 +564,19 @@ Configuration AutoLab {
     }#end DomianJoin Config
 #endregion
 
+#region RSAT config
+   node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
+        
+        xHotfix RSAT {
+            Id = 'KB2693643'
+            Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
+            Credential = $DomainCredential
+            DependsOn = '[xcomputer]JoinDC'
+            Ensure = 'Present'
+        }
+        
+    }#end RSAT Config
+#endregion
 } # End AllNodes
 #endregion
 

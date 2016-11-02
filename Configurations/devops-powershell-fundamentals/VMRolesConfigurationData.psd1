@@ -152,7 +152,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; }
                 @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  }
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';}
-                @{ Name = 'xPSDesiredStateConfiguration'; MinimumVersion = '3.7.0.0'; }
+                @{ Name = 'xPSDesiredStateConfiguration'; MinimumVersion = '4.0.0.0'; }
 
             );
             Resource = @(
