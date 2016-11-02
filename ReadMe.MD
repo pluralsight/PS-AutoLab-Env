@@ -14,7 +14,9 @@ Master IS NOT currently in sync with latest release.
 * Added Win10 RSAT config
 * Added Pester test (Validate-Lab.ps1) to notify when configurations are converged.
 * Added Nano configuration
-
+* deprecated older POC configs
+* Adding one master Muli-Role POC Example that will be supported
+* Added new course config
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
