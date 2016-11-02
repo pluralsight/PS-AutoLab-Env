@@ -273,6 +273,11 @@ Describe "Test DC server for installation completeness" {
             {get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri"} | should not Throw
             }
 
+    It "Should have the WebServer2 Template published in the CA" {
+            $tmpl = invoke-command -ComputerName DC {Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}}
+            $tmpl | should not BeNullOrEmpty
+            }
+
     }
               
         

@@ -817,8 +817,7 @@ Configuration AutoLab {
                                     }
                             }
         }
-    }
-<#              
+                  
         script PublishWebServerTemplate2 
         {       
            DependsOn = '[Script]CreateWebServer2Template'
@@ -835,7 +834,8 @@ Configuration AutoLab {
                             return @{Result={Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}}}
                         }
          }
-          
+ }
+<#          
           script PublishDSCTemplate 
         {       
            DependsOn = '[Script]CreateDSCTemplate'
