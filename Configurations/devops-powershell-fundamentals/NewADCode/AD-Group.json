@@ -1,0 +1,34 @@
+[
+    {
+        "DistinguishedName":  "CN=IT,OU=IT,DC=Company,DC=Pri",
+        "Name":  "IT",
+        "GroupCategory":  "Security",
+        "GroupScope":  "Universal",
+        "Members":  [
+                        "MikeS",
+                        "MaryL"
+                    ]
+    },
+    {
+        "DistinguishedName":  "CN=Sales,OU=Sales,DC=Company,DC=Pri",
+        "Name":  "Sales",
+        "GroupCategory":  "Security",
+        "GroupScope":  "Universal",
+        "Members":  [
+                        "SamanthaS",
+                        "SonyaS",
+                        "SamS"
+                    ]
+    },
+    {
+        "DistinguishedName":  "CN=Marketing,OU=Marketing,DC=Company,DC=Pri",
+        "Name":  "Marketing",
+        "GroupCategory":  "Security",
+        "GroupScope":  "Universal",
+        "Members":  [
+                        "MattS",
+                        "MonicaS",
+                        "MarkS"
+                    ]
+    }
+]

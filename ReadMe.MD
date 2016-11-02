@@ -7,10 +7,16 @@ The configurations for the VM are written in Microsoft PowerShell DSC and deploy
 # Versions
 Current Release is v2.1.0
 
-## Unreleased
+## Unreleased (master)
 Master IS NOT currently in sync with latest release.
 * Added Lability 0.10.1 support
 * Removed 2016 Server manual media fix
+* Added Win10 RSAT config
+* Added Pester test (Validate-Lab.ps1) to notify when configurations are converged.
+* Added Nano configuration
+* deprecated older POC configs
+* Adding one master Muli-Role POC Example that will be supported
+* Added new course config
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
@@ -86,14 +92,14 @@ These are things currently planned for development. Please help us and contribut
    * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
-   * Installing RSAT tool into Windows 10 (current) (this iscludes the ability to install jsut about any addional tools)
+   * Installing RSAT tool into Windows 10 (Completed) 
    * Installing PowerShell 6 (current)
    * Do you have suggestions? Add to Issues list
-2. Nano support (current)
+2. Nano support (Completed)
 3. Linux (Ubuntu and CentOS) (Future)
 4. Structural config changes
     * Moving to a single composite config for easier development and management (Future)
-    * Adding Pester tests to all configurations (future)
+    * Adding Pester tests to all configurations (Completed)
 5. Add custom media and Registration Keys (future) - (your own ISO with Key)
 6. Add support for custom DSCResource Modules (future)
 
