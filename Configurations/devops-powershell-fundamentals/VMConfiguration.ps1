@@ -138,6 +138,12 @@ Configuration AutoLab {
                 'AD-Domain-Services',
                 'RSAT-AD-Tools', 
                 'RSAT-AD-PowerShell'
+                #For Gui, might like
+                #'RSAT-DNS-Server',                    
+                #'GPMC, 
+                #'RSAT-AD-AdminCenter',
+                #'RSAT-ADDS-Tools'
+
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present';

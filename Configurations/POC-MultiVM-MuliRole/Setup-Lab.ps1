@@ -54,7 +54,7 @@ Pause
 # Run the config to generate the .mof files
 Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
 Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fail'
-.\VMRolesConfiguration.ps1
+.\VMConfiguration.ps1
 
 # Build the lab without a snapshot
 #
