@@ -30,7 +30,7 @@ Configuration AutoLab {
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
-        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="3.7.0.0"},
+        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="4.0.0.0"},
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
         @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
@@ -138,6 +138,12 @@ Configuration AutoLab {
                 'AD-Domain-Services',
                 'RSAT-AD-Tools', 
                 'RSAT-AD-PowerShell'
+                #For Gui, might like
+                #'RSAT-DNS-Server',                    
+                #'GPMC, 
+                #'RSAT-AD-AdminCenter',
+                #'RSAT-ADDS-Tools'
+
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present';
