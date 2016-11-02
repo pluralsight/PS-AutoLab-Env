@@ -811,7 +811,8 @@ Configuration AutoLab {
                         }
                 GetScript = {
                                 try {
-                                    return @{Result={get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop}}
+                                    $dsctmpl = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
+                                    return @{Result=$dsctmpl.DistinguishedName}
                                     }
                                 catch {
                                     return @{Result=$Null}
@@ -832,7 +833,8 @@ Configuration AutoLab {
                             add-CATemplate -name "WebServer2" -force
                         }
            GetScript = {
-                            return @{Result={Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}}}
+                            $pubWS2 = Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}
+                            return @{Result=$pubws2.Name}
                         }
          }
  }
