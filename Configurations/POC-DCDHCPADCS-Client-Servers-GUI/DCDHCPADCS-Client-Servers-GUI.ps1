@@ -759,7 +759,8 @@ Configuration AutoLab {
                         }
                 GetScript = {
                                 try {
-                                    return @{Result={get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop}}
+                                    $WS2=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
+                                    return @{Result=$WS2.DistinguishedName}
                                     }
                                 catch {
                                     return @{Result=$Null}
