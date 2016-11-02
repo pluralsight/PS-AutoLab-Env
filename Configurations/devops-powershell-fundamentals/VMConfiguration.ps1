@@ -185,7 +185,7 @@ Configuration AutoLab {
             xADUser $user.samaccountname {
                 Ensure = "Present"
                 Path = $user.distinguishedname.split(",",2)[1]
-                DomainName = $node.domainDN
+                DomainName = $node.domainname
                 Username = $user.samaccountname
                 GivenName = $user.givenname
                 Surname = $user.Surname
@@ -207,7 +207,7 @@ Configuration AutoLab {
                 Path = $group.distinguishedname.split(",",2)[1]
                 Category = $group.GroupCategory
                 GroupScope = $group.GroupScope
-                Members = ($group.members -join ",")
+                Members = $group.members
                 DependsOn = '[xADDomain]FirstDC'
             }
         }
