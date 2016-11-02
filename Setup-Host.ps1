@@ -59,6 +59,7 @@ Install-Module -Name xDhcpServer -RequiredVersion 1.5.0.0
 Install-Module -Name xADCSDeployment -RequiredVersion 1.0.0.0
 Install-Module -Name xWindowsUpdate -RequiredVersion 2.5.0.0
 Install-Module -Name xPSDesiredStateConfiguration -RequiredVersion 4.0.0.0
+Install-Module -Name xPendingReboot -RequiredVersion 0.3.0.0
 
 
 # SEtup host Env.
