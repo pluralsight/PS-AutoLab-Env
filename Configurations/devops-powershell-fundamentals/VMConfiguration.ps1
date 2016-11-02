@@ -163,326 +163,54 @@ Configuration AutoLab {
             }  
         
         #Add OU, Groups, and Users
+    OUs = (Get-Content .\AD-OU.json | ConvertFrom-Json)
+    Users = (Get-Content .\AD-Users.json | ConvertFrom-Json)
+    Groups = (Get-Content .\AD-Group.json | ConvertFrom-Json)
 
+    
+        foreach ($OU in $node.OUs) {
+            xADOrganizationalUnit $OU.Name {
+            Path = $node.DomainDN
+            Name = $OU.Name
+            Description = $OU.Description
+            ProtectedFromAccidentalDeletion = $False
+            Ensure = "Present"
+            DependsOn = '[xADDomain]FirstDC'
+        }
+        } #OU
+        
+        foreach ($user in $node.Users) {
+        
+            xADUser $user.samaccountname {
+                Ensure = "Present"
+                Path = $user.distinguishedname.split(",",2)[1]
+                DomainName = $node.domainDN
+                Username = $user.samaccountname
+                GivenName = $user.givenname
+                Surname = $user.Surname
+                DisplayName = $user.Displayname
+                Description = $user.description
+                Department = $User.department
+                Enabled = $true
+                Password = $DomainCredential
+                DomainAdministratorCredential = $DomainCredential
+                PasswordNeverExpires = $True
+                DependsOn = '[xADDomain]FirstDC'
+            }
+        } #user
 
-            xADOrganizationalUnit IT {
-                Name = 'IT'
+        Foreach ($group in $node.Groups) {
+            xADGroup $group.Name {
+                GroupName = $group.name
                 Ensure = 'Present'
-                Path = $Node.DomainDN
-                ProtectedFromAccidentalDeletion = $False
+                Path = $group.distinguishedname.split(",",2)[1]
+                Category = $group.GroupCategory
+                GroupScope = $group.GroupScope
+                Members = ($group.members -join ",")
                 DependsOn = '[xADDomain]FirstDC'
             }
+        }
 
-            xADOrganizationalUnit Dev {
-                Name = 'Dev'
-                Ensure = 'Present'
-                Path = $Node.DomainDN
-                ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADOrganizationalUnit Marketing {
-                Name = 'Marketing'
-                Ensure = 'Present'
-                Path = $Node.DomainDN
-                ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADOrganizationalUnit Sales {
-                Name = 'Sales'
-                Ensure = 'Present'
-                Path = $Node.DomainDN
-                ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADOrganizationalUnit Accounting {
-                Name = 'Accounting'
-                Ensure = 'Present'
-                Path = $Node.DomainDN
-                ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADOrganizationalUnit JEA_Operators {
-                Name = 'JEA_Operators'
-                Ensure = 'Present'
-                Path = $Node.DomainDN
-                ProtectedFromAccidentalDeletion = $False
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            # Users
-            xADUser IT1 {
-                DomainName = $node.DomainName
-                Path = "OU=IT,$($node.DomainDN)"
-                UserName = 'MaryL'
-                GivenName = 'Mary'
-                Surname = 'Lennon'
-                DisplayName = 'Mary Lennon'
-                Description = 'Main IT'
-                Department = 'IT'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser IT2 {
-                DomainName = $node.DomainName
-                Path = "OU=IT,$($node.DomainDN)"
-                UserName = 'MikeS'
-                GivenName = 'Mike'
-                Surname = 'Smith'
-                DisplayName = 'Mike Smith'
-                Description = 'Backup IT'
-                Department = 'IT'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Dev1 {
-                DomainName = $node.DomainName
-                Path = "OU=Dev,$($node.DomainDN)"
-                UserName = 'SimonS'
-                GivenName = 'Simon'
-                Surname = 'Smith'
-                DisplayName = 'Simon Smith'
-                Description = 'The Developer'
-                Department = 'Dev'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Acct1 {
-                DomainName = $node.DomainName
-                Path = "OU=Accounting,$($node.DomainDN)"
-                UserName = 'AaronS'
-                GivenName = 'Aaron'
-                Surname = 'Smith'
-                DisplayName = 'Aaron Smith'
-                Description = 'Accountant'
-                Department = 'Accounting'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Acct2 {
-                DomainName = $node.DomainName
-                Path = "OU=Accounting,$($node.DomainDN)"
-                UserName = 'AndreaS'
-                GivenName = 'Andrea'
-                Surname = 'Smith'
-                DisplayName = 'Andrea Smith'
-                Description = 'Accountant'
-                Department = 'Accounting'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Acct3 {
-                DomainName = $node.DomainName
-                Path = "OU=Accounting,$($node.DomainDN)"
-                UserName = 'AndyS'
-                GivenName = 'Andy'
-                Surname = 'Smith'
-                DisplayName = 'Andy Smith'
-                Description = 'Accountant'
-                Department = 'Accounting'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Sales1 {
-                DomainName = $node.DomainName
-                Path = "OU=Sales,$($node.DomainDN)"
-                UserName = 'SamS'
-                GivenName = 'Sam'
-                Surname = 'Smith'
-                DisplayName = 'Sam Smith'
-                Description = 'Sales'
-                Department = 'Sales'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Sales2 {
-                DomainName = $node.DomainName
-                Path = "OU=Sales,$($node.DomainDN)"
-                UserName = 'SonyaS'
-                GivenName = 'Sonya'
-                Surname = 'Smith'
-                DisplayName = 'Sonya Smith'
-                Description = 'Sales'
-                Department = 'Sales'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Sales3 {
-                DomainName = $node.DomainName
-                Path = "OU=Sales,$($node.DomainDN)"
-                UserName = 'SamanthaS'
-                GivenName = 'Samantha'
-                Surname = 'Smith'
-                DisplayName = 'Samantha Smith'
-                Description = 'Sales'
-                Department = 'Sales'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Market1 {
-                DomainName = $node.DomainName
-                Path = "OU=Marketing,$($node.DomainDN)"
-                UserName = 'MarkS'
-                GivenName = 'Mark'
-                Surname = 'Smith'
-                DisplayName = 'Mark Smith'
-                Description = 'Marketing'
-                Department = 'Marketing'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Market2 {
-                DomainName = $node.DomainName
-                Path = "OU=Marketing,$($node.DomainDN)"
-                UserName = 'MonicaS'
-                GivenName = 'Monica'
-                Surname = 'Smith'
-                DisplayName = 'Monica Smith'
-                Description = 'Marketing'
-                Department = 'Marketing'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser Market3 {
-                DomainName = $node.DomainName
-                Path = "OU=Marketing,$($node.DomainDN)"
-                UserName = 'MattS'
-                GivenName = 'Matt'
-                Surname = 'Smith'
-                DisplayName = 'Matt Smith'
-                Description = 'Marketing'
-                Department = 'Marketing'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser JEA1 {
-                DomainName = $node.DomainName
-                Path = "OU=JEA_Operators,$($node.DomainDN)"
-                UserName = 'JimJ'
-                GivenName = 'Jim'
-                Surname = 'Jea'
-                DisplayName = 'Jim Jea'
-                Description = 'JEA'
-                Department = 'IT'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADUser JEA2 {
-                DomainName = $node.DomainName
-                Path = "OU=JEA_Operators,$($node.DomainDN)"
-                UserName = 'JillJ'
-                GivenName = 'Jill'
-                Surname = 'Jea'
-                DisplayName = 'Jill Jea'
-                Description = 'JEA'
-                Department = 'IT'
-                Enabled = $true
-                Password = $DomainCredential
-                DomainAdministratorCredential = $DomainCredential
-                PasswordNeverExpires = $true
-                DependsOn = '[xADDomain]FirstDC'
-            }
- 
-            #Groups
-            xADGroup ITG1 {
-                GroupName = 'IT'
-                Path = "OU=IT,$($node.DomainDN)"
-                Category = 'Security'
-                GroupScope = 'Universal'
-                Members = 'MaryL', 'MikeS'
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADGroup SalesG1 {
-                GroupName = 'Sales'
-                Path = "OU=Sales,$($node.DomainDN)"
-                Category = 'Security'
-                GroupScope = 'Universal'
-                Members = 'SamS', 'SonyaS', 'SamanthaS'
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADGroup MKG1 {
-                GroupName = 'Marketing'
-                Path = "OU=Marketing,$($node.DomainDN)"
-                Category = 'Security'
-                GroupScope = 'Universal'
-                Members = 'MarkS', 'MonicaS', 'MattS'
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADGroup AccountG1 {
-                GroupName = 'Accounting'
-                Path = "OU=Accounting,$($node.DomainDN)"
-                Category = 'Security'
-                GroupScope = 'Universal'
-                Members = 'AaronS', 'AndreaS', 'AndyS'
-                DependsOn = '[xADDomain]FirstDC'
-            }
-
-            xADGroup JEAG1 {
-                GroupName = 'JEA Operators'
-                Path = "OU=JEA_Operators,$($node.DomainDN)"
-                Category = 'Security'
-                GroupScope = 'Universal'
-                Members = 'JimJ', 'JillJ'
-                DependsOn = '[xADDomain]FirstDC'
-            }
        
     } #end nodes DC
 
@@ -580,6 +308,12 @@ Configuration AutoLab {
             DependsOn = '[xcomputer]JoinDC'
             Ensure = 'Present'
         }
+
+        xPendingReboot Reboot { 
+            Name = 'AfterRSATInstall'
+            DependsOn = '[xHotFix]RSAT'
+        }
+
         
     }#end RSAT Config
 #endregion
