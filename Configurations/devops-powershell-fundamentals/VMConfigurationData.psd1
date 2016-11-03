@@ -73,7 +73,7 @@ demonstrations and would need to be modified for your environment.
                                                        # WIN10_x64_Enterprise_EN_Eval
         }
         @{
-            NodeName = 'DC'
+            NodeName = 'DC1'
             IPAddress = '192.168.3.10'
             Role = 'DC'   # multiple roles @('DC', 'DHCP')
             Lability_BootOrder = 10
@@ -89,8 +89,16 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
 
+        @{
+            NodeName = 'S2'
+            IPAddress = '192.168.3.51'
+            Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
+            Lability_BootOrder = 20
+            Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+        }
+
        @{
-            NodeName = 'NANO1'
+            NodeName = 'N1'
             IPAddress = '192.168.3.60'
             #Role = 'Nano'
             Lability_BootOrder = 20
@@ -100,7 +108,7 @@ demonstrations and would need to be modified for your environment.
         }
 
         @{
-            NodeName = 'Client'
+            NodeName = 'Cli1'
             IPAddress = '192.168.3.100'
             Role = @('domainJoin', 'RSAT')
             Lability_ProcessorCount = 1

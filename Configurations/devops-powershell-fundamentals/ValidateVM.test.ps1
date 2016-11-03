@@ -12,9 +12,9 @@ $Domain = "company"
 $Secure = ConvertTo-SecureString -String $Password -AsPlainText -force
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
-Describe DC {
+Describe DC1 {
 
-$dc = New-PSSession -VMName DC -Credential $cred -ErrorAction SilentlyContinue
+$dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
 
 It "[DC] Should accept domain admin credential" {
     $dc.Count | Should Be 1
@@ -91,6 +91,25 @@ It "[S1] Should have a DNS server configuration of 192.168.3.10" {
 
 } #S1
 
+
+Describe S2 {
+    $s2 = New-PSSession -VMName S2 -Credential $cred -ErrorAction SilentlyContinue
+It "Should accept domain admin credential" {
+    $s2.Count | Should Be 1
+}
+
+It "Should have an IP address of 192.168.3.51" {
+    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S2
+    $i.ipv4Address | should be '192.168.3.51'
+}
+$dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s2
+It "Should have a DNS server configuration of 192.168.3.10" {                        
+  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
+}
+
+
+} #S2
+
 Describe NanoServer {
 
 It "[Nano] Should respond to WSMan requests" { 
@@ -116,10 +135,11 @@ It "[Nano] Should have the DSC package installed" {
 }
 
 
-Describe Client {
+Describe Cli1 {
 
 $cl = New-PSSession -VMName client -Credential $cred -ErrorAction SilentlyContinue
 It "[CLI] Should accept domain admin credential" {
+    $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction SilentlyContinue
     $cl.Count | Should Be 1
 }
 
@@ -128,7 +148,7 @@ It "[CLI] Should have an IP address of 192.168.3.100" {
     $i.ipv4Address | should be '192.168.3.100'
 }
 
-$dns = icm {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
+$dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
 It "[CLI] Should have a DNS server configuration of 192.168.3.10" {                        
   $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
 }
