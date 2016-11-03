@@ -119,7 +119,7 @@ It "[Nano] Should have the DSC package installed" {
 Describe Client {
 
 $cl = New-PSSession -VMName client -Credential $cred -ErrorAction SilentlyContinue
-It "Should accept domain admin credential" {
+It "[CLI] Should accept domain admin credential" {
     $cl.Count | Should Be 1
 }
 
