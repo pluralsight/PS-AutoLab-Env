@@ -12,9 +12,9 @@ $Domain = "company"
 $Secure = ConvertTo-SecureString -String $Password -AsPlainText -force
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
-Describe DC {
+Describe DC1 {
 
-$dc = New-PSSession -VMName DC -Credential $cred -ErrorAction SilentlyContinue
+$dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
 
 It "Should accept domain admin credential" {
     $dc.Count | Should Be 1
@@ -92,11 +92,30 @@ It "Should have a DNS server configuration of 192.168.3.10" {
 
 } #S1
 
+
+Describe S2 {
+    $s1 = New-PSSession -VMName S2 -Credential $cred -ErrorAction SilentlyContinue
+It "Should accept domain admin credential" {
+    $s1.Count | Should Be 1
+}
+
+It "Should have an IP address of 192.168.3.51" {
+    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+    $i.ipv4Address | should be '192.168.3.51'
+}
+$dns = icm {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
+It "Should have a DNS server configuration of 192.168.3.10" {                        
+  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
+}
+
+
+} #S2
+
 Describe NanoServer {
 
 It "Should respond to WSMan requests" { 
-  $script:sess = New-PSSession -VMName Nano1 -Credential $Cred -ErrorAction Stop
-  $script:sess.Computername | Should Be 'Nano1'
+  $script:sess = New-PSSession -VMName N1 -Credential $Cred -ErrorAction Stop
+  $script:sess.Computername | Should Be 'N1'
 }
 
 It "Should have an IP address of 192.168.3.60" {
@@ -117,9 +136,9 @@ It "Should have the DSC package installed" {
 }
 
 
-Describe Client {
+Describe Cli1 {
 
-$cl = New-PSSession -VMName client -Credential $cred -ErrorAction SilentlyContinue
+$cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction SilentlyContinue
 It "Should accept domain admin credential" {
     $cl.Count | Should Be 1
 }
