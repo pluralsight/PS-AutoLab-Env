@@ -19,6 +19,8 @@ Master IS NOT currently in sync with latest release.
 * deprecated older POC configs
 * Adding one master Muli-Role POC Example that will be supported
 * Added new course config
+* Host DSCResources no longer are specified in Setup-Host.ps1. They are now automatically read from the configuration data and installed as needed.
+
 
 ## v2.1.0
 * Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
