@@ -26,7 +26,7 @@ demonstrations and would need to be modified for your environment.
             DefaultGateway = '192.168.3.1'
             SubnetMask = 24
             AddressFamily = 'IPv4'
-            DnsServerAddress = '192.168.3.10'
+            DnsServerAddress = '4.2.2.2'
                        
             # Domain and Domain Controller information
             DomainName = "Company.Pri"
