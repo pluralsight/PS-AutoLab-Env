@@ -1,8 +1,8 @@
 
 # PowerShell Automated Lab Environment
-This is an automated lab environment build tool to support Authors and students in designing and building a virtual lab environments.   
+This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
 
-The configurations and control scripts for the VM's are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
+The configurations and control scripts for the Hyper-V virtual machine's are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
 This tool is provided 'as is' with no warrenties or guarantees.
 
