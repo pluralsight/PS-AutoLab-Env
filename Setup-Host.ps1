@@ -13,7 +13,11 @@ $SourcePath = $PSScriptRoot
 $DestinationPath = "C:\AutoLab" #Default
 Clear-Host
 Write-Host -ForegroundColor Cyan -Object "The default installation path is $DestinationPath"
-$result
+$result = Read-Host "Would you like to change the default path? (y/n)"
+If ($Result -eq 'y'){
+    $DestinationPath = Read-Host "Enter complete path including drive letter"
+    Write-Output "New path is $DestinationPath"
+}
 
 
 Write-Host -ForegroundColor Green -Object @"
