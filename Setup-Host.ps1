@@ -10,9 +10,16 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 
 # Setup Path Variables
 $SourcePath = $PSScriptRoot
-$DestinationPath = "C:\Lability"
-
+$DestinationPath = "C:\AutoLab" #Default
 Clear-Host
+Write-Host -ForegroundColor Cyan -Object "The default installation path is $DestinationPath"
+$result = Read-Host "Would you like to change the default path? (y/n)"
+If ($Result -eq 'y'){
+    $DestinationPath = Read-Host "Enter complete path including drive letter"
+    Write-Output "New path is $DestinationPath"
+}
+
+
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Setup-Host script. This script will perform the following:
@@ -49,6 +56,21 @@ else {
 Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
 Install-Module -Name Lability -RequiredVersion 0.10.1 -Force
+
+# SEt Lability folder structure
+$DirDef = @{
+    ConfigurationPath = "$DestinationPath\Configurations"
+    DifferencingVhdPath = "$DestinationPath\VMVirtualHardDisks"
+    HotfixPath = "$DestinationPath\Hotfixes"
+    IsoPath = "$DestinationPath\ISOs"
+    ModuleCachePath = "C:\ProgramData\Lability\Modules"
+    ParentVhdPath = "$DestinationPath\MasterVirtualHardDisks"
+    ResourcePath = "$DestinationPath\Resources"
+
+}
+
+Set-LabHostDefault @DirDef
+
 
 # SEtup host Env.
 # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
