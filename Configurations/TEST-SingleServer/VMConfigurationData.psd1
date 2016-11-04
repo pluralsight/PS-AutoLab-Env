@@ -148,7 +148,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; },
                 #@{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; },
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; }
                 #@{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; }
 
 
