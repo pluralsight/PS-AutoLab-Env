@@ -15,7 +15,10 @@ $cred = New-Object PSCredential "Company\Administrator",$Secure
 Describe DC1 {
 
 $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
-
+#set error action preference to suppress all error messsage
+if ($dc) {
+    Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
+}
 It "[DC1] Should accept domain admin credential" {
     $dc.Count | Should Be 1
 }
@@ -74,7 +77,6 @@ It "[DC1] Should have a computer account for S1" {
 It "[DC1] Should have a computer account for S2" {
     $computer.name -contains "S2" | Should Be "True"
 } 
-
 
 } #DC
 
