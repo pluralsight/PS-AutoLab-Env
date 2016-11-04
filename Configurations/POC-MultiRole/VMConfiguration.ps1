@@ -2,16 +2,12 @@
 
 Authors: Jason Helmick and Melissa (Missy) Janusko
 
-The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko.
-Currently on her public DSC hub located here:
-https://github.com/majst32/DSC_public.git
+The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
+Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
 
-Goal - Create a Domain Controller, Populute with OU's Groups and Users.
-       One Server joined to the new domain
-       One Windows 10 CLient joined to the new domain
+Additional contributors of note: Jeff Hicks
 
        
-
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
