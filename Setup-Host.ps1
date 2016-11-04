@@ -98,7 +98,12 @@ Write-Host -ForegroundColor Green -Object @"
 Write-Host -ForegroundColor Yellow -Object "Note! - You may delete the folder $SourcePath when this setup finished and the system
             has been rebooted."
 
-Pause
-Restart-Computer
+Write-Warning "System needs to reboot"
+$reboot = Read-Host "Do you wish to reboot now? (y/n)"
+If ($reboot -eq 'y') {
+    Write-Output "Rebooting now"
+    Restart-Computer
+}
+
 
 
