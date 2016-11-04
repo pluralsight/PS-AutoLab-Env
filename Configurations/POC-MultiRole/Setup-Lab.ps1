@@ -50,6 +50,17 @@ Write-Host -ForegroundColor Green -Object @"
 "@
 
 Pause
+# Install DSC Resource modules specified in the .PSD1
+Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
+Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$DSCResources = $LabData.NonNodeData.Lability.DSCResource
+
+Foreach ($DSCResource in $DSCResources) {
+
+    Install-Module -Name $($DSCResource).Name -RequiredVersion $($DSCResource).RequiredVersion
+
+}
 
 # Run the config to generate the .mof files
 Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'

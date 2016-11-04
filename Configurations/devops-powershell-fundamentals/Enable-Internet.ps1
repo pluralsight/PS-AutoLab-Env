@@ -51,4 +51,15 @@ Function Set-Internet {
 
 Set-Internet
 
+Write-Host -ForegroundColor Green -Object @"
+
+    Next Steps:
+    
+    When complete, run:
+    .\Run-Lab.ps1
+
+    And run:
+    .\Validate-Lab.ps1
+
+"@
 
