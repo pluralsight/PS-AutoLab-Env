@@ -22,6 +22,7 @@ Master IS NOT currently in sync with latest release.
 * Host DSCResources no longer are specified in Setup-Host.ps1. They are now automatically read from the configuration data and installed as needed. (Breaking change)
 * Added support to change the installation path
 * Changed default installation path from C:\Lability to C:\AutoLab (Breaking change)
+* Added quick single server test configuration
 
 
 ## v2.1.0
