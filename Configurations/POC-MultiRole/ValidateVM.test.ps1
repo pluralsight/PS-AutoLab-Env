@@ -97,24 +97,6 @@ It "[S1] Should have a DNS server configuration of 192.168.3.10" {
 } #S1
 
 
-Describe S2 {
-    $s2 = New-PSSession -VMName S2 -Credential $cred -ErrorAction SilentlyContinue
-It "Should accept domain admin credential" {
-    $s2.Count | Should Be 1
-}
-
-It "Should have an IP address of 192.168.3.51" {
-    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S2
-    $i.ipv4Address | should be '192.168.3.51'
-}
-$dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s2
-It "Should have a DNS server configuration of 192.168.3.10" {                        
-  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
-}
-
-
-} #S2
-
 Describe NanoServer {
 
 It "[Nano] Should respond to WSMan requests" { 
