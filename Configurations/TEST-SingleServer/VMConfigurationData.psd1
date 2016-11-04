@@ -84,6 +84,7 @@ demonstrations and would need to be modified for your environment.
             Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_StartupMemory = 4GB
         }
 <#
        @{
