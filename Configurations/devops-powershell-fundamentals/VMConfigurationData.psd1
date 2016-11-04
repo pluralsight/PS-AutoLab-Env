@@ -2,16 +2,12 @@
 
 Authors: Jason Helmick and Melissa (Missy) Janusko
 
-The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko.
-Currently on her public DSC hub located here:
-https://github.com/majst32/DSC_public.git
+The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
+Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
 
-Goal - Create a Domain Controller, Populute with OU's Groups and Users.
-       One Server joined to the new domain
-       One Windows 10 CLient joined to the new domain
+Additional contributors of note: Jeff Hicks
 
        
-
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
@@ -72,6 +68,7 @@ demonstrations and would need to be modified for your environment.
                                                        # 2012R2_x64_Datacenter_EN_V5_Eval
                                                        # WIN10_x64_Enterprise_EN_Eval
         }
+
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
@@ -159,8 +156,8 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
-                @{ Name = 'xPSDesiredStateConfiguration'; MinimumVersion = '4.0.0.0'; },
-                @{ Name = 'xPendingReboot'; MinimumVersion = '0.3.0.0'; }
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; },
+                @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; }
 
 
             );
