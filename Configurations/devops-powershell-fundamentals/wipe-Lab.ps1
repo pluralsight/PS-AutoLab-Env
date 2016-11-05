@@ -31,7 +31,7 @@ Write-Host -ForegroundColor Cyan -Object 'Removing the lab environment'
 Stop-Lab -ConfigurationData .\*.psd1 
 Remove-Item -Path .\*.mof
 Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch
-Remove-Item -Path C:\Lability\VMVirtualHardDisks\* -Recurse -Force 
+
 
 Write-Host -ForegroundColor Green -Object @"
 
