@@ -26,6 +26,8 @@ Master IS NOT currently in sync with latest release.
 * Added default password setting of 'P@ssw0rd' so no more prompts
 * Added 'Unattend-LabSetup.ps1 that combines Setup-Lab, Run-Lab, Validate-Lab
 * Removed script pauses.
+* Added SOT-Current (Source of Truth) - the main development config that feeds other supported configs.
+
 
 
 ## v2.1.0
@@ -65,6 +67,7 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 4. Change to the extracted folder `PS-AutoLab-Env`.
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 * Note: The default installation folder is C:\AutoLab. You can change this if desired.
+* Note: .\Unattend-LabSetup runs setup-lab, Run-Lab, and Validate-Lab all together for faster processing
 6. Change to the configuration folder under the installation folder (C:\AutoLab) and choose a configuration i.e. c:\AutoLab\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
 8. In PowerShell, run the script PS> .\Setup-Lab.ps1
@@ -78,6 +81,7 @@ You will receive reminders and instructions when to run these when you start the
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
 * .\Validate-Lab _(Runs pester tests to notify you when Lab is converged)
+* Note: .\Unattend-LabSetup runs setup-lab, Run-Lab, and Validate-Lab all together for faster processing
 * .\Shutdown-Lab.ps1 _(Stops the lab VM's)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
