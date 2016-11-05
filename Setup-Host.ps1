@@ -74,10 +74,11 @@ Set-LabHostDefault @DirDef
 
 # SEtup host Env.
 # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
+
 $HostStatus=Test-LabHostConfiguration
 If ($HostStatus -eq $False) {
     Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V" 
-    Start-LabHostConfiguration -ErrorAction SilentlyContinue
+    Start-LabHostConfiguration -ErrorAction SilentlyContinue 
 }
 
 ###### COPY Configs to host machine
