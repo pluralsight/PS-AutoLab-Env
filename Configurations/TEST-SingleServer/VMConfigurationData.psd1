@@ -81,7 +81,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
-            Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
+            #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_StartupMemory = 4GB
