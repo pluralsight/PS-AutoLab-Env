@@ -2,10 +2,6 @@
 #requires -module Pester
 
 
-Param(
-[Parameter(Position = 0, Mandatory, Helpmessage = "What domain password did you use?")]
-[string]$Password)
-
 Write-Host "[$(Get-Date)] Starting the VM testing process. This could take some time complete. Errors are expected until all tests complete successfully." -ForegroundColor Cyan
 
 $Complete = $False

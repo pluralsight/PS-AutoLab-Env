@@ -9,7 +9,7 @@
 
 
 
-$Secure = ConvertTo-SecureString -String $Password -AsPlainText -force
+$Secure = ConvertTo-SecureString -String 'P@ssw0rd' -AsPlainText -Force
 $cred = New-Object PSCredential "Administrator",$Secure
 
 
