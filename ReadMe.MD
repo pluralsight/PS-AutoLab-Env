@@ -26,8 +26,6 @@ Master IS NOT currently in sync with latest release.
 * Added default password setting of 'P@ssw0rd' so no more prompts
 * Added 'Unattend-LabSetup.ps1 that combines Setup-Lab, Run-Lab, Validate-Lab
 * Removed script pauses.
-* Added SOT-Current (Source of Truth) - the main development config that feeds other supported configs.
-
 
 
 ## v2.1.0
