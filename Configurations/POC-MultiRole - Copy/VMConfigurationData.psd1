@@ -76,7 +76,6 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_StartupMemory = 2GB
         }
 
         @{
@@ -85,7 +84,6 @@ demonstrations and would need to be modified for your environment.
             Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_StartupMemory = 2gb
         }
 
        @{

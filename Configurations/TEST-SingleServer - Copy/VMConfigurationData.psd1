@@ -26,7 +26,7 @@ demonstrations and would need to be modified for your environment.
             DefaultGateway = '192.168.3.1'
             SubnetMask = 24
             AddressFamily = 'IPv4'
-            DnsServerAddress = '192.168.3.10'
+            DnsServerAddress = '4.2.2.2'
                        
             # Domain and Domain Controller information
             DomainName = "Company.Pri"
@@ -54,7 +54,7 @@ demonstrations and would need to be modified for your environment.
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
             SecureBoot = $false
-            Lability_Media = '2016_x64_Standard_Core_EN_Eval' # Can be Core,Win10,2012R2,nano
+            Lability_Media = '2016_x64_Standard_EN_Eval' # Can be Core,Win10,2012R2,nano
                                                        # 2016_x64_Standard_EN_Eval
                                                        # 2016_x64_Standard_Core_EN_Eval
                                                        # 2016_x64_Datacenter_EN_Eval
@@ -68,7 +68,7 @@ demonstrations and would need to be modified for your environment.
                                                        # 2012R2_x64_Datacenter_EN_V5_Eval
                                                        # WIN10_x64_Enterprise_EN_Eval
         }
-
+<#
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
@@ -76,18 +76,17 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_StartupMemory = 2GB
         }
-
+#>
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
             Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_StartupMemory = 2gb
+            Lability_StartupMemory = 4GB
         }
-
+<#
        @{
             NodeName = 'N1'
             IPAddress = '192.168.3.60'
@@ -109,7 +108,7 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource = @('Win10RSAT');
         }
-
+#>
         
     );
     NonNodeData = @{
@@ -145,13 +144,13 @@ demonstrations and would need to be modified for your environment.
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
+                #@{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
+                #@{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; },
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; }
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; }
+                #@{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; }
 
 
             );
