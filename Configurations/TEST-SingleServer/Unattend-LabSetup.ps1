@@ -17,7 +17,6 @@ Write-Host -ForegroundColor Green -Object @"
  
 Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
-Pause
 
 .\Setup-Lab.ps1
 .\Run-Lab.ps1
