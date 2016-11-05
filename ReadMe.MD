@@ -23,6 +23,9 @@ Master IS NOT currently in sync with latest release.
 * Added support to change the installation path
 * Changed default installation path from C:\Lability to C:\AutoLab (Breaking change)
 * Added quick single server test configuration
+* Added default password setting of 'P@ssw0rd' so no more prompts
+* Added 'Unattend-LabSetup.ps1 that combines Setup-Lab, Run-Lab, Validate-Lab
+* Removed script pauses.
 
 
 ## v2.1.0

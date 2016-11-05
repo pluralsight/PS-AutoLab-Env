@@ -49,7 +49,6 @@ Write-Host -ForegroundColor Green -Object @"
 
 "@
 
-Pause
 # Install DSC Resource modules specified in the .PSD1
 Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
 Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
