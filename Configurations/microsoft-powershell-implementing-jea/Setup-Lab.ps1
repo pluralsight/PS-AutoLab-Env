@@ -34,7 +34,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     To stop the lab VM's:
     .\Shutdown-lab.ps1
-    
+
     When the configurations have finished, you can checkpoint the VM's with:
     .\Snapshot-Lab.ps1
 
@@ -50,17 +50,28 @@ Write-Host -ForegroundColor Green -Object @"
 "@
 
 Pause
+# Install DSC Resource modules specified in the .PSD1
+Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
+Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$DSCResources = $LabData.NonNodeData.Lability.DSCResource
+
+Foreach ($DSCResource in $DSCResources) {
+
+    Install-Module -Name $($DSCResource).Name -RequiredVersion $($DSCResource).RequiredVersion
+
+}
 
 # Run the config to generate the .mof files
 Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
 Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fail'
-.\microsoft-powershell-implementing-jea.ps1
+.\VMConfiguration.ps1
 
 # Build the lab without a snapshot
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
-Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot 
+Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot -Password (ConvertTo-SecureString -String 'P@ssw0rd' -AsPlainText -Force)
 # Disable secure boot for VM's
 Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
 Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
@@ -74,6 +85,9 @@ Write-Host -ForegroundColor Green -Object @"
 
     When complete, run:
     .\Run-Lab.ps1
+
+    And run:
+    .\Validate-Lab.ps1
 
 "@
 

@@ -71,7 +71,7 @@ Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fa
 #
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
-Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot 
+Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot -Password (ConvertTo-SecureString -String 'P@ssw0rd' -AsPlainText -Force)
 # Disable secure boot for VM's
 Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
 Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
