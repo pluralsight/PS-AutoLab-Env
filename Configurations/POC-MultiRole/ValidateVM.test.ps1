@@ -16,7 +16,6 @@ Describe DC1 {
 
 $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
 #set error action preference to suppress all error messsages
-if ($dc) {
     Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
 
 It "[DC1] Should accept domain admin credential" {
@@ -74,7 +73,7 @@ It "[DC1] Should have a computer account for S1" {
     $computer.name -contains "S1" | Should Be "True"
 } 
 
-}
+
 
 } #DC
 
