@@ -43,6 +43,8 @@ Master IS NOT currently in sync with latest release.
 The host computer must have the following:
 * WMF 5 (Windows Management Framework 5)
 * An internet connection
+* Minimum 16GB of Ram
+* Minimum 100GB free disk space
 
 ## This Lab tool currently supports running on a host:
 * Windows Server 2016 
