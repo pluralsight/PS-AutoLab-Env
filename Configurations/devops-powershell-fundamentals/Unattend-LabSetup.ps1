@@ -16,8 +16,6 @@ Write-Host -ForegroundColor Green -Object @"
 "@
  
 Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
-# Creates the lab environment without making a Hyper-V Snapshot
-Start-Lab -ConfigurationData .\*.psd1 
 
 Pause
 
