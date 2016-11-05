@@ -726,7 +726,7 @@ Configuration AutoLab {
             Credential = $DomainCredential
             TestScript = {
                             try {
-                                $WSTemplate=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
+                                $WSTemplate=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                                 return $True
                                 }
                             catch {
@@ -753,13 +753,13 @@ Configuration AutoLab {
                         'revision'='100'}
 
 
-                        New-ADObject -name "WebServer2" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -DisplayName WebServer2 -OtherAttributes $WebServerTemplate
-                        $WSOrig = Get-ADObject -Identity "CN=WebServer,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * | Select-Object pkiExpirationPeriod,pkiOverlapPeriod,pkiKeyUsage
-                        Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" | Set-ADObject -Add @{'pKIKeyUsage'=$WSOrig.pKIKeyUsage;'pKIExpirationPeriod'=$WSOrig.pKIExpirationPeriod;'pkiOverlapPeriod'=$WSOrig.pKIOverlapPeriod}
+                        New-ADObject -name "WebServer2" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -DisplayName WebServer2 -OtherAttributes $WebServerTemplate
+                        $WSOrig = Get-ADObject -Identity "CN=WebServer,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * | Select-Object pkiExpirationPeriod,pkiOverlapPeriod,pkiKeyUsage
+                        Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" | Set-ADObject -Add @{'pKIKeyUsage'=$WSOrig.pKIKeyUsage;'pKIExpirationPeriod'=$WSOrig.pKIExpirationPeriod;'pkiOverlapPeriod'=$WSOrig.pKIOverlapPeriod}
                         }
                 GetScript = {
                                 try {
-                                    $WS2=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
+                                    $WS2=get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                                     return @{Result=$WS2.DistinguishedName}
                                     }
                                 catch {
@@ -776,7 +776,7 @@ Configuration AutoLab {
             Credential = $Credential
             TestScript = {
                             try {
-                                $DSCTemplate=get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
+                                $DSCTemplate=get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                                 return $True
                                 }
                             catch {
@@ -804,14 +804,14 @@ Configuration AutoLab {
                         'revision'='100'}
 
 
-                        New-ADObject -name "DSCTemplate" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -DisplayName DSCTemplate -OtherAttributes $DSCTemplateProps
-                        $WSOrig = Get-ADObject -Identity "CN=Workstation,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * | Select-Object pkiExpirationPeriod,pkiOverlapPeriod,pkiKeyUsage
+                        New-ADObject -name "DSCTemplate" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -DisplayName DSCTemplate -OtherAttributes $DSCTemplateProps
+                        $WSOrig = Get-ADObject -Identity "CN=Workstation,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * | Select-Object pkiExpirationPeriod,pkiOverlapPeriod,pkiKeyUsage
                         [byte[]] $WSOrig.pkiKeyUsage = 48
-                        Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" | Set-ADObject -Add @{'pKIKeyUsage'=$WSOrig.pKIKeyUsage;'pKIExpirationPeriod'=$WSOrig.pKIExpirationPeriod;'pkiOverlapPeriod'=$WSOrig.pKIOverlapPeriod}
+                        Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" | Set-ADObject -Add @{'pKIKeyUsage'=$WSOrig.pKIKeyUsage;'pKIExpirationPeriod'=$WSOrig.pKIExpirationPeriod;'pkiOverlapPeriod'=$WSOrig.pKIOverlapPeriod}
                         }
                 GetScript = {
                                 try {
-                                    $dsctmpl = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri" -Properties * -ErrorAction Stop
+                                    $dsctmpl = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                                     return @{Result=$dsctmpl.DistinguishedName}
                                     }
                                 catch {
