@@ -76,6 +76,8 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_StartupMemory = 2GB
+            Lability_ProcessorCount = 2
         }
 
         @{
@@ -108,8 +110,8 @@ demonstrations and would need to be modified for your environment.
             NodeName = 'Cli1'
             IPAddress = '192.168.3.100'
             Role = @('domainJoin', 'RSAT')
-            Lability_ProcessorCount = 1
-            Lability_StartupMemory = 2GB
+            Lability_ProcessorCount = 2
+            Lability_StartupMemory = 4GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
