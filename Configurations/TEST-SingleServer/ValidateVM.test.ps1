@@ -5,12 +5,12 @@
 
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
-#$Password = 'P@ssw0rd'
+Param ($Password = 'P@ssw0rd')
 
 
-
-$Secure = ConvertTo-SecureString -String 'P@ssw0rd' -AsPlainText -Force
-$cred = New-Object PSCredential "Administrator",$Secure
+$Domain = "company"
+$Secure = ConvertTo-SecureString -String $Password -AsPlainText -Force
+$cred = New-Object PSCredential "Company\Administrator",$Secure
 
 
 Describe S1 {

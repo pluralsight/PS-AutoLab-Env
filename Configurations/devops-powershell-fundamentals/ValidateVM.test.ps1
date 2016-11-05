@@ -5,11 +5,11 @@
 
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
-#$Password = 'P@ssw0rd'
+Param ($Password = 'P@ssw0rd')
 
 
 $Domain = "company"
-$Secure = ConvertTo-SecureString -String 'P@ssw0rd' -AsPlainText -Force
+$Secure = ConvertTo-SecureString -String $Password -AsPlainText -Force
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
 Describe DC1 {
@@ -18,7 +18,7 @@ $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
 #set error action preference to suppress all error messsages
 if ($dc) {
     Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
-}
+
 It "[DC1] Should accept domain admin credential" {
     $dc.Count | Should Be 1
 }
@@ -77,7 +77,7 @@ It "[DC1] Should have a computer account for S1" {
 It "[DC1] Should have a computer account for S2" {
     $computer.name -contains "S2" | Should Be "True"
 } 
-
+}
 
 } #DC
 
