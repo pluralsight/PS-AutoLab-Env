@@ -77,6 +77,10 @@ Describe "Test DC server for installation completeness" {
             {Get-ADOrganizationalUnit -Identity "OU=JEA_Operators,DC=Company,DC=pri"} | should not Throw
             }
 
+        It "Created AD OU named Servers" {
+            {Get-ADOrganizationalUnit -Identity "OU=Servers,DC=Company,DC=pri"} | should not Throw
+            }
+
         It "Created AD User MaryL" {
             {Get-ADUser -Identity MaryL} | should not Throw
             }
