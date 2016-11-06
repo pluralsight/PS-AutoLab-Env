@@ -225,7 +225,15 @@ Configuration AutoLab {
                 ProtectedFromAccidentalDeletion = $False
                 DependsOn = '[xWaitForADDomain]WaitForADDCRole'
                 Credential = $DomainCredential
+            }
 
+            xADOrganizationalUnit Servers {
+                Name = 'Servers'
+                Ensure = 'Present'
+                Path = $Node.DomainDN
+                ProtectedFromAccidentalDeletion = $False
+                DependsOn = '[xWaitForADDomain]WaitForADDCRole'
+                Credential = $DomainCredential
             }
 
             # Users
