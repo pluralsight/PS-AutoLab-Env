@@ -463,9 +463,13 @@ Configuration AutoLab {
             
             #prestage Web Server Computer objects
 
+        $WebServerCount = 0
+        
         foreach ($N in $AllNodes) {
             if ($N.Role -eq "Web") {
-                
+
+                $WebServerCount = $WebServerCount++
+
                 xADComputer "CompObj_$($N.NodeName)" {
                     ComputerName = "$($N.NodeName)$"
                     DependsOn = '[xADOrganizationalUnit]Servers'
@@ -476,6 +480,7 @@ Configuration AutoLab {
                     }
                 }
             }
+
             #Groups
             xADGroup ITG1 {
                 GroupName = 'IT'
@@ -525,6 +530,20 @@ Configuration AutoLab {
                 Members = 'JimJ', 'JillJ'
                 DependsOn = '[xADUser]JEA1','[xADUser]JEA2'
                 Credential = $DomainCredential
+            }
+
+        If ($WebServerCount -ne 0) {
+            
+            xADGroup WebServerGroup {
+                GroupName = 'Web Servers'
+                GroupScope = 'Global'
+                DependsOn = '[xADOrganizationalUnit]GroupsOU'
+                Members = $AllNodes.Where{$_.Role -eq "Web"}.NodeName
+                Credential = $EACredential
+                Category = 'Security'
+                Path = "OU=IT,$($Node.DomainDN)"
+                Ensure = 'Present'
+                }
             }
        
     } #end nodes DC
