@@ -88,18 +88,18 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
-<#
+
         @{
             NodeName = 'Client'
             IPAddress = '192.168.2.100'
-            Role = 'DomainJoin'
+            Role = @('DomainJoin','Web')
             Lability_ProcessorCount = 2
             Lability_StartupMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
-#>
+
         
     );
     NonNodeData = @{
