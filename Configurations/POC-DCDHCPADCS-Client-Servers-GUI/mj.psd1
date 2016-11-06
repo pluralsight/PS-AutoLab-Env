@@ -80,7 +80,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
-<#
+
         @{
             NodeName = 'S1'
             IPAddress = '192.168.2.50'
@@ -88,6 +88,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
+<#
         @{
             NodeName = 'Client'
             IPAddress = '192.168.2.100'

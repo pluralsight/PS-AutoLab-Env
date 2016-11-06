@@ -136,6 +136,10 @@ Describe "Test DC server for installation completeness" {
         It "Created AD User JillJ" {
             {Get-ADUser -Identity JillJ} | should not Throw
             }
+
+        It "Created AD Computer S1" {
+            {Get-ADComputer -Identity S1} | should not Throw
+            }
     
         It "Created AD Group IT" {
             {Get-ADGroup -Identity IT} | should not Throw

@@ -460,7 +460,22 @@ Configuration AutoLab {
                 PasswordNeverExpires = $true
                 DependsOn = '[xADOrganizationalUnit]JEA_Operators'
             }
- 
+            
+            #prestage Web Server Computer objects
+
+        foreach ($N in $AllNodes) {
+            if ($N.Role -eq "Web") {
+                
+                xADComputer "CompObj_$($N.NodeName)" {
+                    ComputerName = "$($N.NodeName)$"
+                    DependsOn = '[xADOrganizationalUnit]Servers'
+                    DisplayName = $N.NodeName
+                    Path = "OU=Servers,$($N.DomainDN)"
+                    Enabled = $True
+                    DomainAdministratorCredential = $DomainCredential
+                    }
+                }
+            }
             #Groups
             xADGroup ITG1 {
                 GroupName = 'IT'
