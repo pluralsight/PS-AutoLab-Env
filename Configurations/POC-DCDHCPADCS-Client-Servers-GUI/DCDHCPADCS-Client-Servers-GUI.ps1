@@ -463,21 +463,20 @@ Configuration AutoLab {
             
             #prestage Web Server Computer objects
 
-        $WebServerCount = 0
+        [string[]]$WebServers = $Null
         
         foreach ($N in $AllNodes) {
             if ($N.Role -eq "Web") {
 
-                $WebServerCount = $WebServerCount + 1
+                $WebServers = $WebServers + "$($N.NodeName)$"
 
                 xADComputer "CompObj_$($N.NodeName)" {
-                    ComputerName = "$($N.NodeName)$"
+                    ComputerName = "$($N.NodeName)"
                     DependsOn = '[xADOrganizationalUnit]Servers'
                     DisplayName = $N.NodeName
                     Path = "OU=Servers,$($N.DomainDN)"
                     Enabled = $True
                     DomainAdministratorCredential = $DomainCredential
-                    Description = $WebServerCount
                     }
                 }
             }
@@ -533,13 +532,13 @@ Configuration AutoLab {
                 Credential = $DomainCredential
             }
 
-        If ($WebServerCount -ne 0) {
+        If ($WebServers -ne $Null) {
             
             xADGroup WebServerGroup {
                 GroupName = 'Web Servers'
                 GroupScope = 'Global'
                 DependsOn = '[xADOrganizationalUnit]IT'
-                Members = $AllNodes.Where{$_.Role -eq "Web"}.NodeName
+                Members = $WebServers
                 Credential = $EACredential
                 Category = 'Security'
                 Path = "OU=IT,$($Node.DomainDN)"
