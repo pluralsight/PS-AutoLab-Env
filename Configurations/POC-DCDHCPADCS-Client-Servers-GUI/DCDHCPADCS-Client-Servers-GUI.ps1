@@ -891,6 +891,7 @@ Configuration AutoLab {
                         }
            SetScript = {
                             add-CATemplate -name "DSCTemplate" -force
+                            write-verbose -Message ("Publishing Template DSCTemplate...")
                         }
            GetScript = {
                             $pubDSC = Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
@@ -903,7 +904,7 @@ Configuration AutoLab {
 
 #region template permissions
 #Permission beginning with 0e10... is "Enroll".  Permission beginning with "a05b" is autoenroll.
-#TODO:  Write-Verbose does not show up in script resources.  Figure out why.
+#TODO:  Write-Verbose in other script resources.
 
         [string[]]$Perms = "0e10c968-78fb-11d2-90d4-00c04f79dc55","a05b8cc2-17bc-4802-a710-e7c15ab866a2"
 
@@ -914,23 +915,23 @@ Configuration AutoLab {
                     DependsOn = '[Script]CreateWebServer2Template'
                     Credential = $DomainCredential
                     TestScript = {
-                        Import-Module activedirectory
+                        Import-Module activedirectory -Verbose:$false
                         $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
                         if ($WebServerCertACL -eq $Null) {
-                            write-verbose "Web Servers Group does not have permissions on Web Server template"
+                            write-verbose -message ("Web Servers Group does not have permissions on Web Server template...")
                             Return $False
                             }
                         elseif (($WebServerCertACL.ActiveDirectoryRights -like "*ExtendedRight*") -and ($WebServerCertACL.ObjectType -notcontains $Using:P)) {
-                            write-verbose "Web Servers group has permission, but not the correct permission."
+                            write-verbose -message ("Web Servers group has permission, but not the correct permission...")
                             Return $False
                             }
                         else {
-                            write-verbose "ACL on Web Server Template is set correctly for this GUID for Web Servers Group"
+                            write-verbose -message ("ACL on Web Server Template is set correctly for this GUID for Web Servers Group...")
                             Return $True
                             }
                         }
                      SetScript = {
-                        Import-Module activedirectory
+                        Import-Module activedirectory -Verbose:$false
                         $WebServersGroup = get-adgroup -Identity "Web Servers" | Select-Object SID
                         $EnrollGUID = [GUID]::Parse($Using:P)
                         $ACL = get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
@@ -938,10 +939,10 @@ Configuration AutoLab {
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
                         set-ACL "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
-                        write-verbose "Permissions set for Web Servers Group"
+                        write-verbose -Message ("Permissions set for Web Servers Group")
                         }
                      GetScript = {
-                        Import-Module activedirectory
+                        Import-Module activedirectory -Verbose:$false
                         $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
                         if ($WebServerCertACL -ne $Null) {
                             return @{Result=$WebServerCertACL}
@@ -957,23 +958,23 @@ Configuration AutoLab {
                     DependsOn = '[Script]CreateWebServer2Template'
                     Credential = $DomainCredential
                     TestScript = {
-                        Import-Module activedirectory
+                        Import-Module activedirectory -Verbose:$false
                         $DSCCertACL = (get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers*"}
                         if ($DSCCertACL -eq $Null) {
-                            write-verbose "Domain Computers does not have permissions on DSC template"
+                            write-verbose -Message ("Domain Computers does not have permissions on DSC template")
                             Return $False
                             }
                         elseif (($DSCCertACL.ActiveDirectoryRights -like "*ExtendedRight*") -and ($DSCCertACL.ObjectType -notcontains $Using:P)) {
-                            write-verbose "Domain Computers group has permission, but not the correct permission."
+                            write-verbose -Message ("Domain Computers group has permission, but not the correct permission...")
                             Return $False
                             }
                         else {
-                            write-verbose "ACL on DSC Template is set correctly for this GUID for Domain Computers"
+                            write-verbose -Message ("ACL on DSC Template is set correctly for this GUID for Domain Computers...")
                             Return $True
                             }
                         }
                      SetScript = {
-                        Import-Module activedirectory
+                        Import-Module activedirectory -Verbose:$false
                         $DomainComputersGroup = get-adgroup -Identity "Domain Computers" | Select-Object SID
                         $EnrollGUID = [GUID]::Parse($Using:P)
                         $ACL = get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
@@ -981,10 +982,10 @@ Configuration AutoLab {
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
                         set-ACL "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
-                        write-verbose "Permissions set for Domain Computers"
+                        write-verbose -Message ("Permissions set for Domain Computers...")
                         }
                      GetScript = {
-                        Import-Module activedirectory
+                        Import-Module activedirectory -Verbose:$false
                         $DSCCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers"}
                         if ($DSCCertACL -ne $Null) {
                             return @{Result=$DSCCertACL}
