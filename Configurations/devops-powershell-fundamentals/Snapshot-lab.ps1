@@ -8,7 +8,6 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #Requires -version 5.0
 #Requires -runasadministrator
 
-Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Snapshot-Lab script. This script will perform the following:
@@ -16,14 +15,6 @@ Write-Host -ForegroundColor Green -Object @"
     * Snapshot the lab environment for easy and fast rebuilding
     
     Note! This should be done after the configurations have finished
-
-    Next Steps:
-
-    To quickly rebuild the labs from the checkpoint, run:
-    .\Refresh-Lab.ps1
-
-    To stop the lab environment, run:
-    .\shutdown-lab.ps1
 
 "@
 

@@ -2,7 +2,7 @@
 
 This lab builds the following:
 
-* 1 Standalone SErver with Graphical Desktop
+* 1 Standalone Server with Graphical Desktop
 
 ## To get started:
 
