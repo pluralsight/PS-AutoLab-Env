@@ -896,12 +896,13 @@ Configuration AutoLab {
                             $pubDSC = Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
                             return @{Result=$pubDSC.Name}
                         }
-         } 
-    }
+         }
+        
                                                    
 #endregion - Create and publish templates
 
 #region template permissions
+#Permission beginning with 0e10... is "Enroll".  Permission beginning with "a05b" is autoenroll.
 
         [string[]]$Perms = "0e10c968-78fb-11d2-90d4-00c04f79dc55","a05b8cc2-17bc-4802-a710-e7c15ab866a2"
 
@@ -913,7 +914,7 @@ Configuration AutoLab {
                     Credential = $DomainCredential
                     TestScript = {
                         Import-Module activedirectory
-                        $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
+                        $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
                         if ($WebServerCertACL -eq $Null) {
                             write-verbose "Web Servers Group does not have permissions on Web Server template"
                             Return $False
@@ -931,16 +932,16 @@ Configuration AutoLab {
                         Import-Module activedirectory
                         $WebServersGroup = get-adgroup -Identity "Web Servers" | Select-Object SID
                         $EnrollGUID = [GUID]::Parse($Using:P)
-                        $ACL = get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN"
+                        $ACL = get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
                         $ACL.AddAccessRule((New-Object System.DirectoryServices.ExtendedRightAccessRule $WebServersGroup.SID,'Allow',$EnrollGUID,'None'))
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
-                        set-ACL "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN" -AclObject $ACL
+                        set-ACL "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
                         write-verbose "Permissions set for Web Servers Group"
                         }
                      GetScript = {
                         Import-Module activedirectory
-                        $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
+                        $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
                         if ($WebServerCertACL -ne $Null) {
                             return @{Result=$WebServerCertACL}
                             }
@@ -949,15 +950,14 @@ Configuration AutoLab {
                             }
                         }
                  }
-       
-                
+                      
                 script "Perms_DSCCert_$($P)"
                 {
                     DependsOn = '[Script]CreateWebServer2Template'
                     Credential = $DomainCredential
                     TestScript = {
                         Import-Module activedirectory
-                        $DSCCertACL = (get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN").Access | Where-Object {$_.IdentityReference -like "*Domain Computers*"}
+                        $DSCCertACL = (get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers*"}
                         if ($DSCCertACL -eq $Null) {
                             write-verbose "Domain Computers does not have permissions on DSC template"
                             Return $False
@@ -975,16 +975,16 @@ Configuration AutoLab {
                         Import-Module activedirectory
                         $DomainComputersGroup = get-adgroup -Identity "Domain Computers" | Select-Object SID
                         $EnrollGUID = [GUID]::Parse($Using:P)
-                        $ACL = get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN"
+                        $ACL = get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
                         $ACL.AddAccessRule((New-Object System.DirectoryServices.ExtendedRightAccessRule $DomainComputersGroup.SID,'Allow',$EnrollGUID,'None'))
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                         #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
-                        set-ACL "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN" -AclObject $ACL
+                        set-ACL "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
                         write-verbose "Permissions set for Domain Computers"
                         }
                      GetScript = {
                         Import-Module activedirectory
-                        $DSCCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$Using:Node.DomainDN").Access | Where-Object {$_.IdentityReference -like "*Domain Computers"}
+                        $DSCCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers"}
                         if ($DSCCertACL -ne $Null) {
                             return @{Result=$DSCCertACL}
                             }
@@ -994,7 +994,6 @@ Configuration AutoLab {
                         }
                  }
       }   
-
                         
  
     } #end ADCS Config
