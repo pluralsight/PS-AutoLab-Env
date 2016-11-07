@@ -903,6 +903,7 @@ Configuration AutoLab {
 
 #region template permissions
 #Permission beginning with 0e10... is "Enroll".  Permission beginning with "a05b" is autoenroll.
+#TODO:  Write-Verbose does not show up in script resources.  Figure out why.
 
         [string[]]$Perms = "0e10c968-78fb-11d2-90d4-00c04f79dc55","a05b8cc2-17bc-4802-a710-e7c15ab866a2"
 
