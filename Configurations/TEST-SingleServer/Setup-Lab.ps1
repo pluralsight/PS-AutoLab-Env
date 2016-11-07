@@ -8,7 +8,6 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #Requires -version 5.0
 #Requires -runasadministrator
 
-Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Setup-Lab script. This script will perform the following:
@@ -41,7 +40,6 @@ Foreach ($DSCResource in $DSCResources) {
 
 # Run the config to generate the .mof files
 Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
-Write-Host -ForegroundColor Yellow -Object 'If this fails, the lab build will fail'
 .\VMConfiguration.ps1
 
 # Build the lab without a snapshot
