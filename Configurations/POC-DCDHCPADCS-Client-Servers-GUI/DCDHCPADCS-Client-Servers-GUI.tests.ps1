@@ -140,6 +140,10 @@ Describe "Test DC server for installation completeness" {
         It "Created AD Computer S1" {
             {Get-ADComputer -Identity S1} | should not Throw
             }
+
+        It "Created AD Computer Client" {
+            {Get-ADComputer -Identity Client} | should not Throw
+            }
     
         It "Created AD Group IT" {
             {Get-ADGroup -Identity IT} | should not Throw
@@ -159,6 +163,23 @@ Describe "Test DC server for installation completeness" {
 
         It "Created AD Group JEA Operators" {
             {Get-ADGroup -Identity "JEA Operators"} | should not Throw
+            }
+
+        It "Created AD Group Web Servers" {
+            {Get-ADGroup -Identity "Web Servers"} | should not Throw
+            }
+
+        It "Should have 2 members in Web Servers Group" {
+            $GM = Get-ADGroupMember -Identity "Web Servers"
+            $GM.Count | should BeExactly 2
+            }
+
+        It "Should have a member named S1 in Web Servers Group" {
+            {Get-ADGroupMember -Identity "Web Servers" | Where-Object {$_.Name -eq "S1"}} | should not BeNullOrEmpty
+            }
+
+        It "Should have a member named Client in Web Servers Group" {
+            {Get-ADGroupMember -Identity "Web Servers" | Where-Object {$_.Name -eq "Client"}} | should not BeNullOrEmpty
             }
     }
 
