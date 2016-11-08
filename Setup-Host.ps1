@@ -92,7 +92,9 @@ Write-Host -ForegroundColor Green -Object @"
     $DestinationPath\Configuration\<yourconfigfolder>
     And run:
     
-    PS $DestinationPath\Configuration\<yourconfigfolder>.\Setup-Lab
+    PS $DestinationPath\Configuration\<yourconfigfolder>.\Setup-Lab.ps1
+    or
+    PS $DestinationPath\Configuration\<yourconfigfolder>.\Unattend-Lab.ps1
 
 "@
 
