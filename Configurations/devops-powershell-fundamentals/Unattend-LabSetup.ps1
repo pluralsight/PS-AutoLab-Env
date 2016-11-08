@@ -20,6 +20,7 @@ Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
 .\Setup-Lab.ps1
 .\Run-Lab.ps1
+.\Enable-Internet.ps1
 .\Validate-Lab.ps1
 
 Write-Host -ForegroundColor Green -Object @"
