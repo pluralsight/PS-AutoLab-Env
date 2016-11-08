@@ -66,9 +66,15 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 
 # Instructions 
 1. Download the ZIP of this repository to the Host computer.
+<<<<<<< HEAD
+2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
+3. Open PowerShell with administrative privileges
+4. Change to folder C:\PS-AutoLab-Env
+=======
 2. Extract the folder PS-AutoLab-Env from the zip file.
 3. Open PowerShell with administrative privileges.
 4. Change to the extracted folder `PS-AutoLab-Env`.
+>>>>>>> refs/remotes/origin/master
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 * Note: The default installation folder is C:\AutoLab. You can change this if desired.
 * Note: .\Unattend-LabSetup runs setup-lab, Run-Lab, and Validate-Lab all together for faster processing
@@ -123,3 +129,5 @@ These are things currently planned for development. Please help us and contribut
 6. Add support for custom DSCResource Modules (future)
 
 _Please make recommendations or fork this repo and share your own!!!_
+
+*
