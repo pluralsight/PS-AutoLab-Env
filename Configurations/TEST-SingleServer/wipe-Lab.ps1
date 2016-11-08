@@ -16,11 +16,19 @@ Write-Host -ForegroundColor Green -Object @"
     * Wipe the lab and VM's from your system 
 
 "@
+
 Pause
+
 Write-Host -ForegroundColor Cyan -Object 'Removing the lab environment'
-# Creates the lab environment without making a Hyper-V Snapshot
-Stop-Lab -ConfigurationData .\*.psd1 
+# Stop the VM's
+Stop-Lab -ConfigurationData .\*.psd1
+# Remove .mof iles 
 Remove-Item -Path .\*.mof
+# Delete NAT
+$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$NatName = $Labdata.AllNodes.IPNatName
+Remove-NetNat -Name $NatName 
+# Delete vM's
 Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch
 Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
