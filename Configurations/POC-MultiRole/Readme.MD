@@ -2,35 +2,12 @@
 
 This lab builds the following:
 
-* 1 DC with users, groups and OU's
+* 1 DC with users, groups and OU's - GUI
 * 1 DHCP server on the DC
-* 1 Domain joined server S1
+* 2 Domain joined servers (s1 and s2)
 * 1 Nano server
 * 1 Domain joined Windows 10 Client with RSAT tools
 
 ## To get started:
-
-    Run the following and follow the onscreen instructions:
-    .\Setup-Lab.ps1
-
-    When complete, run:
-    .\Run-Lab.ps1
-
-    Run the following to validate when configurations have converged:
-    .\Validate-Lab.ps1
-
-    To enable Internet access for the VM's, run:
-    .\Enable-Internet.ps1
-
-    To stop the lab VM's:
-    .\Shutdown-lab.ps1
-
-    When the configurations have finished, you can checkpoint the VM's with:
-    .\Snapshot-Lab.ps1
-
-    To quickly rebuild the labs from the checkpoint, run:
-    .\Refresh-Lab.ps1
-
-    To destroy the lab to build again:
-    .\Wipe-Lab.ps1 
-
+* Run the .\Setup-Lab.ps1
+* and follow on screen instructions

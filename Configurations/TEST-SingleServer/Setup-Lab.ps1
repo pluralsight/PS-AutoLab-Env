@@ -47,7 +47,7 @@ Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
 Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
 
-$Password = ConvertTo-SecureString -String "$labdata.allnodes.labpassword" -AsPlainText -Force 
+$Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
 Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot -Password $Password
 # Disable secure boot for VM's
 Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm

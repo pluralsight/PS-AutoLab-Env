@@ -8,6 +8,7 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #Requires -version 5.0
 #Requires -runasadministrator
 
+Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Refresh-Lab script. This script will perform the following:
@@ -16,6 +17,17 @@ Write-Host -ForegroundColor Green -Object @"
     
     Note! This can only be done if you created a snapshot!
     .\Snapshot-lab.ps1
+
+    Next Steps:
+
+    To start the lab environment, run:
+    .\run-lab.ps1
+
+    To stop the lab environment, run:
+    .\shutdown-lab.ps1
+
+    To destroy this lab, run:
+    .\Wipe-Lab.ps1
 
 "@
 
