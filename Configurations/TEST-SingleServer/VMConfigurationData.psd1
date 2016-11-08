@@ -21,7 +21,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = '*'
             
-             # Lab Password - assigned to Administrator and Users
+            # Lab Password - assigned to Administrator and Users
             LabPassword = 'P@ssw0rd'
             
             # Common networking

@@ -5,11 +5,9 @@
 
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
-Param ($Password = 'P@ssw0rd')
-
-
+$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
 $Domain = "company"
-$Secure = ConvertTo-SecureString -String $Password -AsPlainText -Force
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
 Describe DC1 {
