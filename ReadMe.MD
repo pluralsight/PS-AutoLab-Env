@@ -4,7 +4,7 @@ This is an automated lab environment build tool to support authors, trainers, ed
 
 The configurations and control scripts for the Hyper-V virtual machine's are written in Microsoft PowerShell DSC and deployed using [VirtualEngine Lability](https://github.com/VirtualEngine/Lability). This tool will completely build a lab environment from scratch, however if you want to build your own environment and have the VMs configured for you, see the section on [StandAlone](./Standalone/README.md).
 
-This tool is provided 'as is' with no warrenties or guarantees.
+This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
 Current Release is v2.1.0
@@ -12,14 +12,24 @@ Current Release is v2.1.0
 ## Unreleased (master)
 Master IS NOT currently in sync with latest release.
 * Added Lability 0.10.1 support
-* Removed 2016 Server manual media fix
+* Removed 2016 Server manual media fix (not breaking change)
 * Added Win10 RSAT config
 * Added Pester test (Validate-Lab.ps1) to notify when configurations are converged.
 * Added Nano configuration
-* deprecated older POC configs
+* Deprecated older POC configs - soon to be removed (Breaking change)
 * Adding one master Muli-Role POC Example that will be supported
 * Added new course config
-* Host DSCResources no longer are specified in Setup-Host.ps1. They are now automatically read from the configuration data and installed as needed.
+* Host DSCResources no longer are specified in Setup-Host.ps1. They are now automatically read from the configuration data and installed as needed. (Breaking change)
+* Added support to change the installation path
+* Changed default installation path from C:\Lability to C:\AutoLab (Breaking change)
+* Added quick single server test configuration
+* Added default password setting of 'P@ssw0rd' so no more prompts
+    (Note- this is set in the Config Data (.PSD1) and can be changed per configuration)
+* Added 'Unattend-LabSetup.ps1 that combines Setup-Lab, Run-Lab, Enable-Internet, Validate-Lab
+* Removed script pauses except for Wipe-Lab.ps1
+* Enable-Internet now reads from config data (no longer hard coded)
+* Wipe-Lab.ps1 now removes the NAT
+
 
 
 ## v2.1.0
@@ -37,11 +47,12 @@ Master IS NOT currently in sync with latest release.
 The host computer must have the following:
 * WMF 5 (Windows Management Framework 5)
 * An internet connection
+* Minimum 16GB of Ram
+* Minimum 100GB free disk space
 
 ## This Lab tool currently supports running on a host:
-* Windows Server 2012 R2 (Not tested)
-* Windows Server 2016 (Tested)
-* Windows 10 client with SLAT (Tested)
+* Windows Server 2016 
+* Windows 10 client with SLAT 
 
 ## Note for VMware users
 If you are going to build a Host VM of Server 2016 or Windows 10, In the gerenal settings for your VM, you must change the OS 
@@ -59,7 +70,9 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 3. Open PowerShell with administrative privileges.
 4. Change to the extracted folder `PS-AutoLab-Env`.
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
-6. Change to the configuration folder and choose a configuration i.e. c:\Lability\Configuration\<Your Config folder>
+* Note: The default installation folder is C:\AutoLab. You can change this if desired.
+* Note: .\Unattend-LabSetup runs setup-lab, Run-Lab, and Validate-Lab all together for faster processing
+6. Change to the configuration folder under the installation folder (C:\AutoLab) and choose a configuration i.e. c:\AutoLab\Configuration\<Your Config folder>
 7. Check the Readme.md to find a description of what this config will do.
 8. In PowerShell, run the script PS> .\Setup-Lab.ps1
 
@@ -72,6 +85,7 @@ You will receive reminders and instructions when to run these when you start the
 
 * .\Run-Lab.ps1 _(Starts the Lab environment)_
 * .\Validate-Lab _(Runs pester tests to notify you when Lab is converged)
+* Note: .\Unattend-LabSetup runs setup-lab, Run-Lab, and Validate-Lab all together for faster processing
 * .\Shutdown-Lab.ps1 _(Stops the lab VM's)_
 * .\Snapshot-Lab _(Snapshot the lab environment for easy and fast rebuilding)_
 * .\Refresh-Lab.ps1 _(Refresh the lab from a previous Snapshot)_
@@ -86,7 +100,7 @@ Possible problem with the Setup-Lab script pausing after downloading .iso files.
 If the script does not continue automatically after completing the downloads, press the return key once and it
 will continue.
 
-_NOTE - Configuration convergence takes about 30 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
+_NOTE - Configuration convergence takes about 30 - 60 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
 # Current and Future Development
 These are things currently planned for development. Please help us and contribute your own configs or pick something from the list marked (Future)

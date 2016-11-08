@@ -26,7 +26,7 @@ Write-Host -ForegroundColor Green -Object @"
 
     To stop the lab VM's:
     .\Shutdown-lab.ps1
-    
+
     When the configurations have finished, you can checkpoint the VM's with:
     .\Snapshot-Lab.ps1
 
@@ -35,8 +35,6 @@ Write-Host -ForegroundColor Green -Object @"
 
 "@
 
-Pause
-
 Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
 Start-Lab -ConfigurationData .\*.psd1 
@@ -44,6 +42,10 @@ Start-Lab -ConfigurationData .\*.psd1
 Write-Host -ForegroundColor Green -Object @"
 
     Next Steps:
+
+    To tell when you lab is converged:
+    .\Validate-Lab
+
     To stop the lab VM's:
     .\Shutdown-lab.ps1
 

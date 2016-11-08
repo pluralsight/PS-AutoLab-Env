@@ -2,12 +2,8 @@
 #requires -module Pester
 
 
-Param(
-[Parameter(Position = 0, Mandatory, Helpmessage = "What domain password did you use?")]
-[string]$Password)
-
 Write-Host "[$(Get-Date)] Starting the VM testing process. This could take some time complete. Errors are expected until all tests complete successfully." -ForegroundColor Cyan
-
+Start-sleep -Seconds 300
 $Complete = $False
 
 do {
@@ -18,7 +14,7 @@ if ($test.Failedcount -eq 0) {
     $Complete = $True
 }
 else {
-    60..1 | foreach {
+    300..1 | foreach {
     Write-progress -Activity "VM Completion Test" -Status "Tests failed" -CurrentOperation "Waiting until next test run" -SecondsRemaining $_
     Start-sleep -Seconds 1
     }

@@ -5,20 +5,23 @@
 
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
-#$Password = 'P@ssw0rd'
-
-
+$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
 $Domain = "company"
-$Secure = ConvertTo-SecureString -String $Password -AsPlainText -force
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
 Describe DC1 {
 
 $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
 #set error action preference to suppress all error messsages
+<<<<<<< HEAD
 if ($dc) {
     Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
 }
+=======
+    Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
+
+>>>>>>> 294b886de0a9eda75a1d582b16594f4212a5aa1a
 It "[DC1] Should accept domain admin credential" {
     $dc.Count | Should Be 1
 }
