@@ -20,6 +20,9 @@ demonstrations and would need to be modified for your environment.
     AllNodes = @(
         @{
             NodeName = '*'
+
+            # Lab Password - assigned to Administrator and Users
+            LabPassword = 'P@ssw0rd'
             
             # Common networking
             InterfaceAlias = 'Ethernet'
