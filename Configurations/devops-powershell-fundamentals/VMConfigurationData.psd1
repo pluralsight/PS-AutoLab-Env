@@ -26,6 +26,8 @@ demonstrations and would need to be modified for your environment.
             DefaultGateway = '192.168.3.1'
             SubnetMask = 24
             AddressFamily = 'IPv4'
+            IPNetwork = '192.168.3.0/24'
+            IPNatName = 'LabNat'
             DnsServerAddress = '192.168.3.10'
                        
             # Domain and Domain Controller information
