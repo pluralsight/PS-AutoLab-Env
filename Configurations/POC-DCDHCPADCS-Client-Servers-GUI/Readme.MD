@@ -2,7 +2,7 @@
 
 ## NOTE!
 This is currently under testing for release - until then see configuration:
-POC-DC-Client-Servers  (either GUI or Core)
+POC-MultiRole  (either GUI or Core)
 
 This lab builds the foloowing:
 

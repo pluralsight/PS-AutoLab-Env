@@ -18,11 +18,8 @@ demonstrations and would need to be modified for your environment.
 
 Configuration AutoLab {
 
-    param (
-        [Parameter()] 
-        [ValidateNotNull()] 
-        [PSCredential] $Credential = (Get-Credential -Credential Administrator)
-    )
+$Secure = ConvertTo-SecureString -String 'P@ssw0rd' -AsPlainText -Force
+$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure 
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,

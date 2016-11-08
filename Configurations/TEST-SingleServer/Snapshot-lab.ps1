@@ -8,46 +8,33 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #Requires -version 5.0
 #Requires -runasadministrator
 
-Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
-    This is the Refresh-Lab script. This script will perform the following:
+    This is the Snapshot-Lab script. This script will perform the following:
     
-    * Refresh the lab from a previous Snapshot 
+    * Snapshot the lab environment for easy and fast rebuilding
     
-    Note! This can only be done if you created a snapshot!
-    .\Snapshot-lab.ps1
-
-    Next Steps:
-
-    To start the lab environment, run:
-    .\run-lab.ps1
-
-    To stop the lab environment, run:
-    .\shutdown-lab.ps1
-
-    To destroy this lab, run:
-    .\Wipe-Lab.ps1
+    Note! This should be done after the configurations have finished
 
 "@
 
 Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
 # Creates the lab environment without making a Hyper-V Snapshot
 Stop-Lab -ConfigurationData .\*.psd1 
-Restore-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured -force
+Checkpoint-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured
 
 Write-Host -ForegroundColor Green -Object @"
 
-    Next Steps:
+   Next Steps:
 
     To start the lab environment, run:
-    .\run-lab.ps1
+    .\Run-Lab.ps1
+
+    To quickly rebuild the labs from the checkpoint, run:
+    .\Refresh-Lab.ps1
 
     To stop the lab environment, run:
     .\shutdown-lab.ps1
-
-    To destroy this lab, run:
-    .\Wipe-Lab.ps1
 
 "@
 
