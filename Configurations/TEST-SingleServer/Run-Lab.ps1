@@ -8,7 +8,6 @@ Note: All scripts require WMF 5 or above, and to run from PowerShell using "Run 
 #Requires -version 5.0
 #Requires -runasadministrator
 
-Clear-Host
 Write-Host -ForegroundColor Green -Object @"
 
     This is the Run-Lab script. This script will perform the following:
@@ -18,20 +17,6 @@ Write-Host -ForegroundColor Green -Object @"
     Note! If this is the first time you have run this, it can take up to an hour
     for the DSC configs to apply. 
     This only occurs the first time.
-
-    *You will be able to wipe and rebuild this lab without needing to perform
-    the configuration process again if you:
-
-    Next Steps:
-
-    To stop the lab VM's:
-    .\Shutdown-lab.ps1
-
-    When the configurations have finished, you can checkpoint the VM's with:
-    .\Snapshot-Lab.ps1
-
-    To quickly rebuild the labs from the checkpoint, run:
-    .\Refresh-Lab.ps1
 
 "@
 
@@ -43,8 +28,11 @@ Write-Host -ForegroundColor Green -Object @"
 
     Next Steps:
 
-    To tell when you lab is converged:
-    .\Validate-Lab
+    Run the following to validatae when configurations have converged:
+    .\Validate-Lab.ps1
+
+    To enable Internet access for the VM's, run:
+    .\Enable-Internet.ps1
 
     To stop the lab VM's:
     .\Shutdown-lab.ps1
@@ -54,6 +42,10 @@ Write-Host -ForegroundColor Green -Object @"
 
     To quickly rebuild the labs from the checkpoint, run:
     .\Refresh-Lab.ps1
+
+    To destroy the lab to build again:
+    .\Wipe-Lab.ps1   
+
 
 "@
 
