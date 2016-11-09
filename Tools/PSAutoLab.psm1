@@ -431,10 +431,10 @@ Function Unattend-Lab {
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
 
-    .\Setup-Lab.ps1
-    .\Run-Lab.ps1
-    .\Enable-Internet.ps1
-    .\Validate-Lab.ps1
+    Setup-Lab
+    Run-Lab
+    Enable-Internet
+    Validate-Lab
 
     Write-Host -ForegroundColor Green -Object @"
 
