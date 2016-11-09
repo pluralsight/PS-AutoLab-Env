@@ -6,27 +6,35 @@ This lab builds the following:
 
 ## To get started:
 
+    To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
+    PS> Unattend-Lab
     
-    Run the following and follow the onscreen instructions:
-    .\Setup-Lab.ps1
+    To run the commands individually to setup the lab environment:
 
-    When complete, run:
-    .\Run-Lab.ps1
+    Run the following for initial setup:
+    PS> Setup-Lab
 
-    Run the following to validate when configurations have converged:
-    .\Validate-Lab.ps1
+    To start the LAb, and apply configurations the first time:
+    PS> Run-Lab
 
     To enable Internet access for the VM's, run:
-    .\Enable-Internet.ps1
+    PS> Enable-Internet
+
+    To validate when configurations have converged:
+    PS> Validate-Lab
+   
+## To Stop and snapshot the lab
 
     To stop the lab VM's:
-    .\Shutdown-lab.ps1
+    PS> Shutdown-lab
 
-    When the configurations have finished, you can checkpoint the VM's with:
-    .\Snapshot-Lab.ps1
+    To checkpoint the VM's:
+    PS> Snapshot-Lab
 
     To quickly rebuild the labs from the checkpoint, run:
-    .\Refresh-Lab.ps1
+    PS> Refresh-Lab
 
+## To remove a lab
+    
     To destroy the lab to build again:
-    .\Wipe-Lab.ps1 
+    PS> Wipe-Lab
