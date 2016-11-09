@@ -206,7 +206,42 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             }
         }
 
+    #prestage Web Server Computer objects
+
+        [string[]]$WebServers = $Null
+        
+        foreach ($N in $AllNodes) {
+            if ($N.Role -eq "Web") {
+
+                $WebServers = $WebServers + "$($N.NodeName)$"
+
+                xADComputer "CompObj_$($N.NodeName)" {
+                    ComputerName = "$($N.NodeName)"
+                    DependsOn = '[xADOrganizationalUnit]Servers'
+                    DisplayName = $N.NodeName
+                    Path = "OU=Servers,$($N.DomainDN)"
+                    Enabled = $True
+                    DomainAdministratorCredential = $DomainCredential
+                    }
+                }
+            }
+
+     #add Web Servers group with Web Server computer objects as members
        
+       If ($WebServers -ne $Null) {
+            
+            xADGroup WebServerGroup {
+                GroupName = 'Web Servers'
+                GroupScope = 'Global'
+                DependsOn = '[xADOrganizationalUnit]IT'
+                Members = $WebServers
+                Credential = $EACredential
+                Category = 'Security'
+                Path = "OU=IT,$($Node.DomainDN)"
+                Ensure = 'Present'
+                }
+            }
+
     } #end nodes DC
 
 #endregion 
