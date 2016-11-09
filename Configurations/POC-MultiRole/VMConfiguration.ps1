@@ -1,6 +1,6 @@
 <# Notes:
 
-Authors: Jason Helmick and Melissa (Missy) Janusko
+Authors: Jason Helmick and Melissa (Missy) Januszko
 
 The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
 Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
