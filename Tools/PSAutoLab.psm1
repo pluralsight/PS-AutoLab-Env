@@ -78,25 +78,25 @@ Function Setup-Lab {
         Next Steps:
         
         When complete, run:
-        .\Run-Lab.ps1
+        Run-Lab
 
         Run the following to validatae when configurations have converged:
-        .\Validate-Lab.ps1
+        Validate-Lab
 
         To enable Internet access for the VM's, run:
-        .\Enable-Internet.ps1
+        Enable-Internet
 
         To stop the lab VM's:
-        .\Shutdown-lab.ps1
+        Shutdown-lab
 
         When the configurations have finished, you can checkpoint the VM's with:
-        .\Snapshot-Lab.ps1
+        Snapshot-Lab
 
         To quickly rebuild the labs from the checkpoint, run:
-        .\Refresh-Lab.ps1
+        Refresh-Lab
 
         To destroy the lab to build again:
-        .\Wipe-Lab.ps1   
+        Wipe-Lab   
 
 "@
 
@@ -132,22 +132,22 @@ Function Run-Lab {
         Next Steps:
 
         Run the following to validatae when configurations have converged:
-        .\Validate-Lab.ps1
+        Validate-Lab
 
         To enable Internet access for the VM's, run:
-        .\Enable-Internet.ps1
+        Enable-Internet
 
         To stop the lab VM's:
-        .\Shutdown-lab.ps1
+        Shutdown-lab
 
         When the configurations have finished, you can checkpoint the VM's with:
-        .\Snapshot-Lab.ps1
+        Snapshot-Lab
 
         To quickly rebuild the labs from the checkpoint, run:
-        .\Refresh-Lab.ps1
+        Refresh-Lab
 
         To destroy the lab to build again:
-        .\Wipe-Lab.ps1   
+        Wipe-Lab  
 
 
 "@
@@ -193,10 +193,10 @@ Function Enable-Internet {
         Next Steps:
     
         When complete, run:
-        .\Run-Lab.ps1
+        Run-Lab
 
         And run:
-        .\Validate-Lab.ps1
+        Validate-Lab
 
 "@
 }
@@ -261,16 +261,16 @@ Function Shutdown-Lab {
      Next Steps:
 
         When the configurations have finished, you can checkpoint the VM's with:
-        .\Snapshot-Lab.ps1
+        Snapshot-Lab
 
         To quickly rebuild the labs from the checkpoint, run:
-        .\Refresh-Lab.ps1
+        Refresh-Lab
 
         To start the lab environment:
-        .\Run-Lab.ps1
+        Run-Lab
 
         To destroy the lab environment:
-        .\wipe-lab.ps1
+        Wipe-Lab
 
 "@
 }
@@ -302,13 +302,13 @@ Function Snapshot-Lab {
        Next Steps:
 
         To start the lab environment, run:
-        .\Run-Lab.ps1
+        Run-Lab
 
         To quickly rebuild the labs from the checkpoint, run:
-        .\Refresh-Lab.ps1
+        Refresh-Lab
 
         To stop the lab environment, run:
-        .\shutdown-lab.ps1
+        Shutdown-Lab
 
 "@
 }
@@ -327,7 +327,7 @@ Function Refresh-Lab {
         * Refresh the lab from a previous Snapshot 
     
         Note! This can only be done if you created a snapshot!
-        .\Snapshot-lab.ps1
+        Snapshot-lab
 
 "@
 
@@ -341,13 +341,13 @@ Function Refresh-Lab {
         Next Steps:
 
         To start the lab environment, run:
-        .\run-lab.ps1
+        Run-Lab
 
         To stop the lab environment, run:
-        .\shutdown-lab.ps1
+        Shutdown-Lab
 
         To destroy this lab, run:
-        .\Wipe-Lab.ps1
+        Wipe-Lab
 
 "@
 }
@@ -388,28 +388,28 @@ Function Wipe-Lab {
         Next Steps:
 
         Run the following and follow the onscreen instructions:
-        .\Setup-Lab.ps1
+        Setup-Lab
 
         When complete, run:
-        .\Run-Lab.ps1
+        Run-Lab
 
         Run the following to validate when configurations have converged:
-        .\Validate-Lab.ps1
+        Validate-Lab
 
         To enable Internet access for the VM's, run:
-        .\Enable-Internet.ps1
+        Enable-Internet
 
         To stop the lab VM's:
-        .\Shutdown-lab.ps1
+        Shutdown-lab
 
         When the configurations have finished, you can checkpoint the VM's with:
-        .\Snapshot-Lab.ps1
+        Snapshot-Lab
 
         To quickly rebuild the labs from the checkpoint, run:
-        .\Refresh-Lab.ps1
+        Refresh-Lab
 
         To destroy the lab to build again:
-        .\Wipe-Lab.ps1 
+        Wipe-Lab
 
 
 "@
@@ -439,13 +439,13 @@ Function Unattend-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
         To stop the lab VM's:
-        .\Shutdown-lab.ps1
+        Shutdown-lab
 
         When the configurations have finished, you can checkpoint the VM's with:
-        .\Snapshot-Lab.ps1
+        Snapshot-Lab
 
         To quickly rebuild the labs from the checkpoint, run:
-        .\Refresh-Lab.ps1
+        Refresh-Lab
 
 "@
 
