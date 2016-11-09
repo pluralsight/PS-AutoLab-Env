@@ -230,7 +230,7 @@ Function Validate-Lab {
     } until ($Complete)
 
     #re-run test one more time to show everything that was tested.
-    Invoke-Pester -Script $PSScriptRoot\ValidateVM.Test.ps1
+    Invoke-Pester -Script .\ValidateVM.Test.ps1
 
     Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab.ps1." -ForegroundColor Green
 
