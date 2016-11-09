@@ -30,6 +30,8 @@ Master IS NOT currently in sync with latest release.
 * Removed script pauses except for Wipe-Lab.ps1
 * Enable-Internet now reads from config data (no longer hard coded)
 * Wipe-Lab.ps1 now removes the NAT
+* Added custom bootstrap to enable PSRemoting on the client (In the PSD1)
+* Added custom bootstrap to increase the MaxEnvelopeSize for larger configs (Added for DC in .PSD1)
 * Important: Removed control scripts and placed into a module (PSAutoLab) See instrcutions below, or the Instructions.MD file in the configuration folder of your choice.
 
 
