@@ -1,3 +1,4 @@
+# Flash! New 3.0.0 release coming! Please read the entire readme and instructions.
 
 # PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
