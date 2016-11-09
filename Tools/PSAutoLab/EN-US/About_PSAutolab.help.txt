@@ -1,5 +1,5 @@
-
-
+This is the help file for the PS AutoLab.  This lab configures VM environements on Hyper-V form DSC configuration files.
+For more information, see: http://GitHub/theJasonHelmick/PS-AutoLab-Env
 
 
 ## To get started:
