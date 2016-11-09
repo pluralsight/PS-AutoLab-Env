@@ -348,7 +348,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                                 return $True}
                         }
             SetScript = {
-                            new-gpo -name "PKI AutoEnroll -domain $Using:Node.DomainName"
+                            new-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName
                         }
             GetScript = {
                             $GPO= (get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
