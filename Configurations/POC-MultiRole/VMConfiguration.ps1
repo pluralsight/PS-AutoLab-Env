@@ -30,7 +30,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
         @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'},
-        @{ModuleName='xPendingReboot';ModuleVersion = '0.3.0.0'}
+        @{ModuleName='xPendingReboot';ModuleVersion = '0.3.0.0'},
+        @{ModuleName='xADCSDeployment';ModuleVersion = '1.0.0.0'}
 
 #endregion
 
