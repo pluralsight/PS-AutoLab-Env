@@ -2,7 +2,7 @@
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-$Server = "DC"
+$Server = "DC1"
 $Domain = "company.pri"
 $DomainDN = "DC=company,DC=pri"
 
