@@ -209,12 +209,12 @@ Function Validate-Lab {
     )
 
     Write-Host "[$(Get-Date)] Starting the VM testing process. This could take some time complete. Errors are expected until all tests complete successfully." -ForegroundColor Cyan
-    Start-sleep -Seconds 300
+    #Start-sleep -Seconds 300
     $Complete = $False
 
     do {
 
-    $test= Invoke-Pester -Script $PSScriptRoot\VMValidate.Test.ps1 -quiet -PassThru
+    $test= Invoke-Pester -Script .\VMValidate.Test.ps1 -quiet -PassThru
 
     if ($test.Failedcount -eq 0) {
         $Complete = $True
@@ -230,7 +230,7 @@ Function Validate-Lab {
     } until ($Complete)
 
     #re-run test one more time to show everything that was tested.
-    Invoke-Pester -Script .\ValidateVM.Test.ps1
+    Invoke-Pester -Script .\VMValidate.Test.ps1
 
     Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab.ps1." -ForegroundColor Green
 
