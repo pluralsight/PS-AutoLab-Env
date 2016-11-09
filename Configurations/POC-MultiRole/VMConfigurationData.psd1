@@ -89,7 +89,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
-            Role = @('DC', 'DHCP')
+            Role = @('DC', 'DHCP','ADCS')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
