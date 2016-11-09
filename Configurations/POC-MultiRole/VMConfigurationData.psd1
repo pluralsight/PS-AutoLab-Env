@@ -1,6 +1,6 @@
 <# Notes:
 
-Authors: Jason Helmick and Melissa (Missy) Janusko
+Authors: Jason Helmick and Melissa (Missy) Januszko
 
 The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
 Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
@@ -53,6 +53,18 @@ demonstrations and would need to be modified for your environment.
             DHCPScopeID = '192.168.3.0'
             DHCPDnsServerIPAddress = '192.168.3.10'
             DHCPRouter = '192.168.3.1'
+
+ 	    # ADCS Certificate Services information
+            CACN = 'Company.Pri'
+            CADNSuffix = "C=US,L=Phoenix,S=Arizona,O=Company"
+            CADatabasePath = "C:\windows\system32\CertLog"
+            CALogPath = "C:\CA_Logs"
+            ADCSCAType = 'EnterpriseRootCA'
+            ADCSCryptoProviderName = 'RSA#Microsoft Software Key Storage Provider'
+            ADCSHashAlgorithmName = 'SHA256'
+            ADCSKeyLength = 2048
+            ADCSValidityPeriod = 'Years'
+            ADCSValidityPeriodUnits = 2
 
             # Lability default node settings
             Lability_SwitchName = 'LabNet'
