@@ -90,7 +90,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_StartupMemory = 4GB
-            CutomBootStrap = @'
+            CustomBootStrap = @'
                     # This must be set to handle larger .mof files
                     Set-Item -path wsman:\localhost\maxenvelopesize -value 1000       
 '@
