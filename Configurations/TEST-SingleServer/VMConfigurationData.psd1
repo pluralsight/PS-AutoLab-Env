@@ -119,6 +119,9 @@ demonstrations and would need to be modified for your environment.
             CutomBootStrap = @'
                     # To enable PSRemoting on the client
                     Enable-PSRemoting -SkipNetworkProfileCheck -Force;
+                    # To enable RDP
+                    Set-ItemProperty -Path "HKLM:\System\ControlSet001\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0;
+
 '@
         }
 #>
@@ -159,10 +162,10 @@ demonstrations and would need to be modified for your environment.
                 ## Download published version from the PowerShell Gallery or Github
                 #@{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xNetworking'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery'; },
                 #@{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; }
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '5.0.0.0'; }
                 #@{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; }
 
 

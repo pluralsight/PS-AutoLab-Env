@@ -24,10 +24,10 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
-        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="4.0.0.0"},
-        @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
+        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="5.0.0.0"},
+        @{ModuleName="xActiveDirectory";ModuleVersion="2.14.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
-        @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
+        @{ModuleName="xNetworking";ModuleVersion="3.0.0.0"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
         @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'},
         @{ModuleName='xPendingReboot';ModuleVersion = '0.3.0.0'},
@@ -53,7 +53,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
             InterfaceAlias = $node.InterfaceAlias
-            SubnetMask     = $node.SubnetMask
+            PrefixLength     = $node.SubnetMask
             AddressFamily  = $node.AddressFamily
         }
 
@@ -236,7 +236,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 GroupScope = 'Global'
                 DependsOn = '[xADOrganizationalUnit]IT'
                 Members = $WebServers
-                Credential = $EACredential
+                Credential = $DomainCredential
                 Category = 'Security'
                 Path = "OU=IT,$($Node.DomainDN)"
                 Ensure = 'Present'
