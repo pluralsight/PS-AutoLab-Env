@@ -22,5 +22,10 @@
     {
         "Name":  "JEA_Operators",
         "Description":  null
+    },
+    {
+        "Name":  "Servers",
+        "Description":  null
     }
+
 ]
