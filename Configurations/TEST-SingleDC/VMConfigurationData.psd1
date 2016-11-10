@@ -134,6 +134,8 @@ demonstrations and would need to be modified for your environment.
             CustomBootStrap = @'
                     # To enable PSRemoting on the client
                     Enable-PSRemoting -SkipNetworkProfileCheck -Force;
+                    # To enable RDP
+                    Set-ItemProperty -Path "HKLM:\System\ControlSet001\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0;
 '@
         }
 #>
