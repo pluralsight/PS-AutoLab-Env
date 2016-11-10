@@ -77,29 +77,22 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
-            Role = 'DC'   # multiple roles @('DC', 'DHCP')
+            Role = @('DC', 'DHCP')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_StartupMemory = 2GB
+            Lability_StartupMemory = 4GB
             Lability_ProcessorCount = 2
+            Lability_Media = '2016_x64_Standard_EN_Eval'
             CustomBootStrap = @'
                     # This must be set to handle larger .mof files
                     Set-Item -path wsman:\localhost\maxenvelopesize -value 1000       
 '@
         }
-
+<#
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
-            Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Lability_BootOrder = 20
-            Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-        }
-
-        @{
-            NodeName = 'S2'
-            IPAddress = '192.168.3.51'
             Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -129,8 +122,9 @@ demonstrations and would need to be modified for your environment.
                     # To enable PSRemoting on the client
                     Enable-PSRemoting -SkipNetworkProfileCheck -Force;
 '@
-        }
 
+        }
+#>
         
     );
     NonNodeData = @{
