@@ -62,14 +62,6 @@ It "[DC1] Should have at least 15 user accounts" {
     $users.count | should BeGreaterThan 15
 }
 
-$computer = Invoke-Command { Get-ADComputer -filter * -ErrorAction SilentlyContinue} -session $dc
-It "[DC1] Should have a computer account for Client" {
-    $computer.name -contains "cli1" | Should Be "True"
-} 
-
-It "[DC1] Should have a computer account for S1" {
-    $computer.name -contains "S1" | Should Be "True"
-} 
 
 
 
