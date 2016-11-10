@@ -95,10 +95,6 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_StartupMemory = 2GB
             Lability_ProcessorCount = 2
-            CustomBootStrap = @'
-                    # This must be set to handle larger .mof files
-                    Set-Item -path wsman:\localhost\maxenvelopesize -value 1000       
-'@
         }
 
         @{
@@ -129,11 +125,7 @@ demonstrations and would need to be modified for your environment.
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Resource = @('Win10RSAT')
-            CustomBootStrap = @'
-                    # To enable PSRemoting on the client
-                    Enable-PSRemoting -SkipNetworkProfileCheck -Force;
-'@
+            Lability_Resource = @('Win10RSAT');
         }
 
         
