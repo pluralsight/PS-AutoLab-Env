@@ -70,7 +70,6 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 
 # Instructions 
 1. Download the ZIP of this repository to the Host computer.
-
 2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
 3. Open PowerShell with administrative privileges
 4. Change to the extracted folder `PS-AutoLab-Env`.
@@ -80,7 +79,7 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 6. Change to the configuration folder under the installation folder (C:\AutoLab) and choose a configuration i.e. c:\AutoLab\Configuration\<Your Config folder>
 7. Check the Instructions.MD (Get-Content .\Instructions.MD)
 
-_Note - The first time you run Setup-Lab.ps1, it will download all required files including ISOs and DSCResources.
+_Note - The first time you run Setup-Lab, it will download all required files including ISOs and DSCResources.
 This initial download may require several hours depending on your Internet connection but it only happens the first time.
 You will be able to build and wipe the Lab quickly in future._
 
