@@ -1,6 +1,6 @@
 <# Notes:
 
-Authors: Jason Helmick and Melissa (Missy) Janusko
+Authors: Jason Helmick and Melissa (Missy) Januszko
 
 The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
 Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
@@ -54,6 +54,18 @@ demonstrations and would need to be modified for your environment.
             DHCPDnsServerIPAddress = '192.168.3.10'
             DHCPRouter = '192.168.3.1'
 
+ 	    # ADCS Certificate Services information
+            CACN = 'Company.Pri'
+            CADNSuffix = "C=US,L=Phoenix,S=Arizona,O=Company"
+            CADatabasePath = "C:\windows\system32\CertLog"
+            CALogPath = "C:\CA_Logs"
+            ADCSCAType = 'EnterpriseRootCA'
+            ADCSCryptoProviderName = 'RSA#Microsoft Software Key Storage Provider'
+            ADCSHashAlgorithmName = 'SHA256'
+            ADCSKeyLength = 2048
+            ADCSValidityPeriod = 'Years'
+            ADCSValidityPeriodUnits = 2
+
             # Lability default node settings
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
@@ -77,13 +89,13 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
-            Role = @('DC', 'DHCP')
+            Role = @('DC', 'DHCP','ADCS')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_StartupMemory = 4GB
-            Lability_ProcessorCount = 2
             Lability_Media = '2016_x64_Standard_EN_Eval'
+            Lability_StartupMemory = 2GB
+            Lability_ProcessorCount = 2
             CustomBootStrap = @'
                     # This must be set to handle larger .mof files
                     Set-Item -path wsman:\localhost\maxenvelopesize -value 1000       
@@ -93,8 +105,9 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
-            Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Lability_BootOrder = 20
+            #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
+            Role = @('DomainJoin', 'Web')
+	    Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
         }
 
@@ -122,7 +135,6 @@ demonstrations and would need to be modified for your environment.
                     # To enable PSRemoting on the client
                     Enable-PSRemoting -SkipNetworkProfileCheck -Force;
 '@
-
         }
 #>
         
@@ -166,8 +178,8 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; },
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; }
-
+                @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; },
+		@{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; }
 
             );
             Resource = @(
