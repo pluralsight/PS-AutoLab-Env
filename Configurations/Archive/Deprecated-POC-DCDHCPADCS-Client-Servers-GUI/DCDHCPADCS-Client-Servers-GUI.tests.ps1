@@ -2,7 +2,7 @@
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-$Server = "DC"
+$Server = "DC1"
 $Domain = "company.pri"
 $DomainDN = "DC=company,DC=pri"
 
@@ -303,12 +303,12 @@ Describe "Test DC server for installation completeness" {
             }
 
     It "Should have the WebServer2 Template published in the CA" {
-            $tmpl = invoke-command -ComputerName DC {Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}}
+            $tmpl = invoke-command -ComputerName DC1 {Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}}
             $tmpl | should not BeNullOrEmpty
             }
 
      It "Should have the DSC Template published in the CA" {
-            $tmpl = invoke-command -ComputerName DC {Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}}
+            $tmpl = invoke-command -ComputerName DC1 {Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}}
             $tmpl | should not BeNullOrEmpty
             }
     }
