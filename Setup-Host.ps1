@@ -53,9 +53,13 @@ else {
 }
 
 # Lability install
-Write-Host -ForegroundColor Cyan "Installing Lability for the lab build"
+Write-Host -ForegroundColor Cyan "Installing Lability Module for the lab build"
 Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap
 Install-Module -Name Lability -RequiredVersion 0.10.1 -Force
+
+# Install PSAutoLab Module
+Write-Host -ForegroundColor Cyan "Installing PSAutoLab Module for the lab build"
+Copy-Item -Path "$SourcePath\Tools\PSAutoLab" -Destination 'C:\Program Files\WindowsPowerShell\Modules' -Recurse -Force
 
 # SEt Lability folder structure
 $DirDef = @{
