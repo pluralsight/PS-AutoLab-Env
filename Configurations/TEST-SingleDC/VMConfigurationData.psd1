@@ -69,7 +69,7 @@ demonstrations and would need to be modified for your environment.
             # Lability default node settings
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
-            Lability_StartupMemory = 1GB
+            Lability_MinimumMemory = 1GB
             SecureBoot = $false
             Lability_Media = '2016_x64_Standard_Core_EN_Eval' # Can be Core,Win10,2012R2,nano
                                                        # 2016_x64_Standard_EN_Eval
@@ -94,7 +94,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media = '2016_x64_Standard_EN_Eval'
-            Lability_StartupMemory = 2GB
+            Lability_MinimumMemory = 2GB
             Lability_ProcessorCount = 2
             CustomBootStrap = @'
                     # This must be set to handle larger .mof files
@@ -118,7 +118,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 20
             Lability_Media = '2016_x64_Standard_Nano_DSC_EN_Eval'
             Lability_ProcessorCount = 1
-            Lability_StartupMemory = 1GB
+            Lability_MinimumMemory = 1GB
         }
 
         @{
@@ -126,7 +126,7 @@ demonstrations and would need to be modified for your environment.
             IPAddress = '192.168.3.100'
             Role = @('domainJoin', 'RSAT')
             Lability_ProcessorCount = 2
-            Lability_StartupMemory = 4GB
+            Lability_MinimumMemory = 4GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -172,14 +172,14 @@ demonstrations and would need to be modified for your environment.
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xActiveDirectory'; RequiredVersion="2.13.0.0"; Provider = 'PSGallery'; },
+                @{ Name = 'xActiveDirectory'; RequiredVersion="2.14.0.0"; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xNetworking'; RequiredVersion = '2.12.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xNetworking'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xDhcpServer'; RequiredVersion = '1.5.0.0'; Provider = 'PSGallery';  },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.5.0.0'; Provider = 'PSGallery';},
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '4.0.0.0'; },
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '5.0.0.0'; },
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; },
-		@{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; }
+		        @{ Name = 'xADCSDeployment'; RequiredVersion = '1.0.0.0'; }
 
             );
             Resource = @(
