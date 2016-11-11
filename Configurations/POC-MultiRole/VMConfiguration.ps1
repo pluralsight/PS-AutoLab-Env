@@ -339,6 +339,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             ValueType = 'Dword'
             ValueData = '0'
             Ensure = 'Present'
+            DependsOn = '[xWaitForADDomain]DSCForestWait'
         }
         foreach ($Rule in @(
                 'RemoteDesktop-UserMode-In-TCP',
@@ -346,8 +347,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'RemoteDesktop-Shadow-In-TCP'
         )) {
         xFirewall $Rule {
-            Name = $Rule.name
+            Name = $Rule
             Enabled = 'True'
+            DependsOn = '[Registry]RDP'
         }
     } # End RDP
     }

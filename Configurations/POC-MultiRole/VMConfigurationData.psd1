@@ -105,7 +105,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
-            Role = @('DC', 'DHCP','ADCS', 'RDP') 
+            Role = @('DC', 'DHCP', 'ADCS') 
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -122,7 +122,7 @@ demonstrations and would need to be modified for your environment.
             NodeName = 'S1'
             IPAddress = '192.168.3.50'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role = @('DomainJoin', 'Web', 'RDP')
+            Role = @('DomainJoin', 'Web')
 	        Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media = '2016_x64_Standard_Core_EN_Eval'
@@ -153,7 +153,7 @@ demonstrations and would need to be modified for your environment.
                     Enable-PSRemoting -SkipNetworkProfileCheck -Force;
 '@
         }
-
+#>
         
     );
     NonNodeData = @{
