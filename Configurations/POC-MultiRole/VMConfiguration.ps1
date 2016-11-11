@@ -34,8 +34,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         @{ModuleName='xADCSDeployment';ModuleVersion = '1.0.0.0'}
 
 #endregion
-
+#region All Nodes
     node $AllNodes.Where({$true}).NodeName {
+#endregion
 #region LCM configuration
        
         LocalConfigurationManager {
@@ -84,39 +85,19 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 #endregion
 
 #region Firewall Rules
-        
-        xFirewall 'FPS-ICMP4-ERQ-In' {
-            Name = 'FPS-ICMP4-ERQ-In'
-            DisplayName = 'File and Printer Sharing (Echo Request - ICMPv4-In)'
-            Description = 'Echo request messages are sent as ping requests to other nodes.'
-            Direction = 'Inbound'
-            Action = 'Allow'
-            Enabled = 'True'
-            Profile = 'Any'
-        }
 
-        xFirewall 'FPS-ICMP6-ERQ-In' {
-            Name = 'FPS-ICMP6-ERQ-In';
-            DisplayName = 'File and Printer Sharing (Echo Request - ICMPv6-In)'
-            Description = 'Echo request messages are sent as ping requests to other nodes.'
-            Direction = 'Inbound'
-            Action = 'Allow'
-            Enabled = 'True'
-            Profile = 'Any'
-        }
+    $LabData = Import-PowerShellDataFile .\*.psd1
+    $FireWallRules = $labdata.Allnodes.FirealllRuleNames
 
-        xFirewall 'FPS-SMB-In-TCP' {
-            Name = 'FPS-SMB-In-TCP'
-            DisplayName = 'File and Printer Sharing (SMB-In)'
-            Description = 'Inbound rule for File and Printer Sharing to allow Server Message Block transmission and reception via Named Pipes. [TCP 445]'
-            Direction = 'Inbound'
-            Action = 'Allow'
+        foreach ($Rule in $FireWallRules) {
+        xFirewall $Rule {
+            Name = $Rule.name
             Enabled = 'True'
-            Profile = 'Any'
         }
+} #End foreach
+
+    } #end Firewall Rules
 #endregion
-
-    } #end nodes ALL
 
 #region Domain Controller config
 
@@ -290,6 +271,87 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     } #end DHCP Config
  #endregion
 
+#region Web config
+   node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
+        
+        foreach ($feature in @(
+                'web-Server'
+ 
+            )) {
+            WindowsFeature $feature.Replace('-','') {
+                Ensure = 'Present'
+                Name = $feature
+                IncludeAllSubFeature = $False
+            }
+        }
+        
+    }#end Web Config
+#endregion
+
+#region DomainJoin config
+   node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
+
+    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
+ 
+        xWaitForADDomain DscForestWait {
+            DomainName = $Node.DomainName
+            DomainUserCredential = $DomainCredential
+            RetryCount = '20'
+            RetryIntervalSec = '60'
+        }
+
+         xComputer JoinDC {
+            Name = $Node.NodeName
+            DomainName = $Node.DomainName
+            Credential = $DomainCredential
+            DependsOn = '[xWaitForADDomain]DSCForestWait'
+        }
+    }#end DomianJoin Config
+#endregion
+
+#region RSAT config
+   node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
+        # Adds RSAT
+      
+        xHotfix RSAT {
+            Id = 'KB2693643'
+            Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
+            Credential = $DomainCredential
+            DependsOn = '[xcomputer]JoinDC'
+            Ensure = 'Present'
+        }
+
+        xPendingReboot Reboot { 
+            Name = 'AfterRSATInstall'
+            DependsOn = '[xHotFix]RSAT'
+        }
+
+        
+    }#end RSAT Config
+
+#region RDP config
+   node $AllNodes.Where({$_.Role -eq 'RDP'}).NodeName {
+        # Adds RDP support and opens Firewall rules
+
+        Registry RDP {
+            Key = 'HKLM:\System\ControlSet001\Control\Terminal Server'
+            ValueName = 'fDenyTSConnections'
+            ValueType = 'Dword'
+            ValueData = '0'
+            Ensure = 'Present'
+        }
+        foreach ($Rule in @(
+                'RemoteDesktop-UserMode-In-TCP',
+                'RemoteDesktop-UserMode-In-UDP',
+                'RemoteDesktop-Shadow-In-TCP'
+        )) {
+        xFirewall $Rule {
+            Name = $Rule.name
+            Enabled = 'True'
+        }
+    } # End RDP
+    }
+#endregion
 #region ADCS
 
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
@@ -687,63 +749,6 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                          
     } #end ADCS Config
 
-#region Web config
-   node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
-        
-        foreach ($feature in @(
-                'web-Server'
- 
-            )) {
-            WindowsFeature $feature.Replace('-','') {
-                Ensure = 'Present'
-                Name = $feature
-                IncludeAllSubFeature = $False
-            }
-        }
-        
-    }#end Web Config
-#endregion
-
-#region DomainJoin config
-   node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
-
-    $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
- 
-        xWaitForADDomain DscForestWait {
-            DomainName = $Node.DomainName
-            DomainUserCredential = $DomainCredential
-            RetryCount = '20'
-            RetryIntervalSec = '60'
-        }
-
-         xComputer JoinDC {
-            Name = $Node.NodeName
-            DomainName = $Node.DomainName
-            Credential = $DomainCredential
-            DependsOn = '[xWaitForADDomain]DSCForestWait'
-        }
-    }#end DomianJoin Config
-#endregion
-
-#region RSAT config
-   node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
-        
-        xHotfix RSAT {
-            Id = 'KB2693643'
-            Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
-            Credential = $DomainCredential
-            DependsOn = '[xcomputer]JoinDC'
-            Ensure = 'Present'
-        }
-
-        xPendingReboot Reboot { 
-            Name = 'AfterRSATInstall'
-            DependsOn = '[xHotFix]RSAT'
-        }
-
-        
-    }#end RSAT Config
-#endregion
 } # End AllNodes
 #endregion
 
