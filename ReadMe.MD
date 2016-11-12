@@ -19,7 +19,7 @@ Master IS currently in sync with latest release.
 * Added Lability 0.10.1 support
 * Removed 2016 Server manual media fix (not breaking change)
 * Added Win10 RSAT config
-* Added Pester test (Validate-Lab.ps1) to notify when configurations are converged.
+* Added Pester test (Validate-Lab) to notify when configurations are converged.
 * Added Nano configuration
 * Deprecated older POC configs - soon to be removed (Breaking change)
 * Adding one master Muli-Role POC Example that will be supported
@@ -30,16 +30,16 @@ Master IS currently in sync with latest release.
 * Added quick single server test configuration
 * Added default password setting of 'P@ssw0rd' so no more prompts
     (Note- this is set in the Config Data (.PSD1) and can be changed per configuration)
-* Added 'Unattend-Lab.ps1 that combines Setup-Lab, Run-Lab, Enable-Internet, Validate-Lab
-* Removed script pauses except for Wipe-Lab.ps1
+* Added 'Unattend-Lab that combines Setup-Lab, Run-Lab, Enable-Internet, Validate-Lab
+* Removed script pauses except for Wipe-Lab
 * Enable-Internet now reads from config data (no longer hard coded)
-* Wipe-Lab.ps1 now removes the NAT
+* Wipe-Lab now removes the NAT
 * Added custom bootstrap to enable PSRemoting on the client (In the PSD1)
 * Added custom gootstrap to enable RDP on the client
 * Added custom bootstrap to increase the MaxEnvelopeSize for larger configs (Added for DC in .PSD1)
 * Added ADCS Role, including GPO for autoenrollment and Certificates for Webservers and Document encryption (DSC)
 
-* **Important: Removed control scripts and placed into a module (PSAutoLab) See instrcutions below, or the Instructions.MD file in the configuration folder of your choice.**
+* **Important: Removed control scripts and placed into a module (PSAutoLab) See instructions below, or the Instructions.MD file in the configuration folder of your choice.**
 
 ## All Releases
 * Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
