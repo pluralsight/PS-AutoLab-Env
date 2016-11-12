@@ -1,4 +1,4 @@
-# Flash! New 3.0.0 release coming! Please read the entire readme and instructions.
+# Flash! New 3.0.0 release! Please read the entire readme and instructions.
 
 # PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
@@ -8,10 +8,14 @@ The configurations and control scripts for the Hyper-V virtual machine's are wri
 This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
-Current Release is v2.1.0
+Current Release is v3.0.0
 
 ## Unreleased (master)
-Master IS NOT currently in sync with latest release.
+Master IS currently in sync with latest release.
+
+## Version 3.0.0
+* **Download release [PS-AutoLab-Env v3.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.0)**
+
 * Added Lability 0.10.1 support
 * Removed 2016 Server manual media fix (not breaking change)
 * Added Win10 RSAT config
@@ -35,17 +39,7 @@ Master IS NOT currently in sync with latest release.
 * Added custom bootstrap to increase the MaxEnvelopeSize for larger configs (Added for DC in .PSD1)
 * Added ADCS Role, including GPO for autoenrollment and Certificates for Webservers and Document encryption (DSC)
 
-* Important: Removed control scripts and placed into a module (PSAutoLab) See instrcutions below, or the Instructions.MD file in the configuration folder of your choice.
-
-
-
-## v2.1.0
-* Download release [PS-AutoLab-Env v2.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v2.1.0)
-* Added Shutdown-Lab script to shutdown VM's
-* Disabled secure boot on VM's for bug in Win 10 Anniversary edition as Host
-* Added Pluralsight Author folder and config example (Course name by URL)
-* Modified User list for AD
-* Forcibly enable PowerShell Remoting for Win 10 Hosts
+* **Important: Removed control scripts and placed into a module (PSAutoLab) See instrcutions below, or the Instructions.MD file in the configuration folder of your choice.**
 
 ## All Releases
 * Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
@@ -126,9 +120,8 @@ You will be able to build and wipe the Lab quickly in future._
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-Possible problem with the Setup-Lab script pausing after downloading .iso files. This is beinging investigated. 
-If the script does not continue automatically after completing the downloads, press the return key once and it
-will continue.
+If adding role ADCS - the DC will not fully converge due to a bug in DSC resource. Working for resolution.
+This will not prevent the configration from working.
 
 _NOTE - Configuration convergence takes about 30 - 60 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
@@ -137,7 +130,7 @@ These are things currently planned for development. Please help us and contribut
 
 1. Additional Role configurations including:
    * Windows Server 2016 release version (completed)
-   * ADCS (plus certificates and autoenrollment) (current)
+   * ADCS (plus certificates and autoenrollment) (completed)
    * Web servers and web sites (future)
    * Exchange (future)
    * SQL (future)
