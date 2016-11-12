@@ -346,8 +346,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'RemoteDesktop-Shadow-In-TCP'
         )) {
         xFirewall $Rule {
-            Name = $Rule.name
+            Name = $Rule
             Enabled = 'True'
+            DependsOn = '[Registry]RDP'
         }
     } # End RDP
     }
