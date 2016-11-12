@@ -2,7 +2,10 @@
 
 This lab builds the following:
 
-* 1 DC with graphical Desktop
+* 1 DC
+* 1 Server (s1)
+* 1 Nano (N1)
+* 1 Client with RSAT (Cli1)
 
 ## To get started:
 
