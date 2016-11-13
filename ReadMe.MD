@@ -120,8 +120,7 @@ You will be able to build and wipe the Lab quickly in future._
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-If adding role ADCS - the DC will not fully converge due to a bug in DSC resource. Working for resolution.
-This will not prevent the configration from working.
+None
 
 _NOTE - Configuration convergence takes about 30 - 60 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
