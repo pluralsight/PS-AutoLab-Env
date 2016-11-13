@@ -173,6 +173,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $True
                 DependsOn = '[xADDomain]FirstDC'
+                PasswordAuthentication = 'Negotiate'
             }
         } #user
 
