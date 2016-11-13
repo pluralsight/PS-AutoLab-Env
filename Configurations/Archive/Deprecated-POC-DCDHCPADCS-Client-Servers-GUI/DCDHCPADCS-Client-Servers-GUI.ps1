@@ -32,7 +32,7 @@ Configuration AutoLab {
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
         @{ModuleName="xActiveDirectory";ModuleVersion="2.13.0.0"},
         @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
-        @{ModuleName="xNetworking";ModuleVersion="2.12.0.0"},
+        @{ModuleName="xNetworking";ModuleVersion="3.0.0.0"},
         @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
         @{ModuleName="xADCSDeployment";ModuleVersion="1.0.0.0"}
 
@@ -57,7 +57,7 @@ Configuration AutoLab {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
             InterfaceAlias = $node.InterfaceAlias
-            SubnetMask     = $node.SubnetMask
+            PrefixLength     = $node.SubnetMask
             AddressFamily  = $node.AddressFamily
         }
 
@@ -661,7 +661,7 @@ Configuration AutoLab {
                                 return $True}
                         }
             SetScript = {
-                            new-gpo -name "PKI AutoEnroll -domain $Using:Node.DomainName"
+                            new-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName
                         }
             GetScript = {
                             $GPO= (get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
