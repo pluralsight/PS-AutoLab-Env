@@ -91,7 +91,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 
         foreach ($Rule in $FireWallRules) {
         xFirewall $Rule {
-            Name = $Rule.name
+            Name = $Rule
             Enabled = 'True'
         }
 } #End foreach
