@@ -11,7 +11,7 @@ This tool is provided 'as is' with no warranties or guarantees.
 Current Release is v3.0.0
 
 ## Unreleased (master)
-Master IS currently in sync with latest release.
+Master IS NOT currently in sync with latest release. Working on a bug fix for convergence
 
 ## Version 3.0.0
 * **Download release [PS-AutoLab-Env v3.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.0)**
