@@ -13,7 +13,7 @@ Current Release is v3.0.1
 ## Unreleased (master)
 Master IS currently in sync with latest release.
 
-## Version 3.0.0
+## Version 3.0.1
 * **Download release [PS-AutoLab-Env v3.0.1](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.1)**
 
 * Bug fix for convergence of the DC DSC Configuration with ADCS
