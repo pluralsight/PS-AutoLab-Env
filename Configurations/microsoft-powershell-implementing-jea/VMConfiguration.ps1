@@ -114,10 +114,10 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'DNS',                           
                 'AD-Domain-Services',
                 'RSAT-AD-Tools', 
-                'RSAT-AD-PowerShell'
+                'RSAT-AD-PowerShell',
+                'GPMC'
                 #For Gui, might like
-                #'RSAT-DNS-Server',                    
-                #'GPMC', 
+                #'RSAT-DNS-Server',                     
                 #'RSAT-AD-AdminCenter',
                 #'RSAT-ADDS-Tools'
 
@@ -564,7 +564,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         script CreateDSCTemplate
         {
             DependsOn = '[xAdcsCertificationAuthority]ADCSConfig'
-            Credential = $Credential
+            Credential = $DomainCredential
             TestScript = {
                             try {
                                 $DSCTemplate=get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
@@ -614,7 +614,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         script PublishWebServerTemplate2 
         {       
            DependsOn = '[Script]CreateWebServer2Template'
-           Credential = $Credential
+           Credential = $DomainCredential
            TestScript = {
                             $Template= Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}
                             if ($Template -eq $Null) {return $False}
@@ -632,7 +632,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
           script PublishDSCTemplate 
         {       
            DependsOn = '[Script]CreateDSCTemplate'
-           Credential = $Credential
+           Credential = $DomainCredential
            TestScript = {
                             $Template= Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
                             if ($Template -eq $Null) {return $False}
