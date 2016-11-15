@@ -117,7 +117,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'RSAT-AD-PowerShell'
                 #For Gui, might like
                 #'RSAT-DNS-Server',                    
-                #'GPMC, 
+                #'GPMC', 
                 #'RSAT-AD-AdminCenter',
                 #'RSAT-ADDS-Tools'
 
@@ -361,7 +361,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'ADCS-Enroll-Web-Pol',
                 'ADCS-Enroll-Web-Svc',
                 'ADCS-Web-Enrollment'
-                # For the GUI install, include the following:
+                # For the GUI version - uncomment the following
                 #'RSAT-ADCS',
                 #'RSAT-ADCS-Mgmt'
             )) {
