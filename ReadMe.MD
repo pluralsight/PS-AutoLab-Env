@@ -1,4 +1,4 @@
-# Flash! New 3.0.0 release! Please read the entire readme and instructions.
+# Flash! New 3.0.1 release! Please read the entire readme and instructions.
 
 # PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
@@ -8,38 +8,16 @@ The configurations and control scripts for the Hyper-V virtual machine's are wri
 This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
-Current Release is v3.0.0
+Current Release is v3.0.1
 
 ## Unreleased (master)
-Master IS NOT currently in sync with latest release. Working on a bug fix for convergence
+Master IS currently in sync with latest release.
 
 ## Version 3.0.0
-* **Download release [PS-AutoLab-Env v3.0.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.0)**
+* **Download release [PS-AutoLab-Env v3.0.1](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.1)**
 
-* Added Lability 0.10.1 support
-* Removed 2016 Server manual media fix (not breaking change)
-* Added Win10 RSAT config
-* Added Pester test (Validate-Lab) to notify when configurations are converged.
-* Added Nano configuration
-* Deprecated older POC configs - soon to be removed (Breaking change)
-* Adding one master Muli-Role POC Example that will be supported
-* Added new course config
-* Host DSCResources no longer are specified in Setup-Host.ps1. They are now automatically read from the configuration data and installed as needed. (Breaking change)
-* Added support to change the installation path
-* Changed default installation path from C:\Lability to C:\AutoLab (Breaking change)
-* Added quick single server test configuration
-* Added default password setting of 'P@ssw0rd' so no more prompts
-    (Note- this is set in the Config Data (.PSD1) and can be changed per configuration)
-* Added 'Unattend-Lab that combines Setup-Lab, Run-Lab, Enable-Internet, Validate-Lab
-* Removed script pauses except for Wipe-Lab
-* Enable-Internet now reads from config data (no longer hard coded)
-* Wipe-Lab now removes the NAT
-* Added custom bootstrap to enable PSRemoting on the client (In the PSD1)
-* Added custom gootstrap to enable RDP on the client
-* Added custom bootstrap to increase the MaxEnvelopeSize for larger configs (Added for DC in .PSD1)
-* Added ADCS Role, including GPO for autoenrollment and Certificates for Webservers and Document encryption (DSC)
-
-* **Important: Removed control scripts and placed into a module (PSAutoLab) See instructions below, or the Instructions.MD file in the configuration folder of your choice.**
+* Bug fix for convergence of the DC DSC Configuration with ADCS
+* See previous release (v3.0.0) for additional information about major release
 
 ## All Releases
 * Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
