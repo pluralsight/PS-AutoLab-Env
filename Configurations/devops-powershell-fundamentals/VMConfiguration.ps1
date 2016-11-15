@@ -87,11 +87,11 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 #region Firewall Rules
 
     $LabData = Import-PowerShellDataFile .\*.psd1
-    $FireWallRules = $labdata.Allnodes.FirealllRuleNames
+    $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
         xFirewall $Rule {
-            Name = $Rule.name
+            Name = $Rule
             Enabled = 'True'
         }
 } #End foreach
@@ -117,7 +117,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'RSAT-AD-PowerShell'
                 #For Gui, might like
                 #'RSAT-DNS-Server',                    
-                #'GPMC, 
+                #'GPMC', 
                 #'RSAT-AD-AdminCenter',
                 #'RSAT-ADDS-Tools'
 
@@ -173,6 +173,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $True
                 DependsOn = '[xADDomain]FirstDC'
+                PasswordAuthentication = 'Negotiate'
             }
         } #user
 
@@ -209,8 +210,6 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             }
 
      #add Web Servers group with Web Server computer objects as members
-       
-       If ($WebServers -ne $Null) {
             
             xADGroup WebServerGroup {
                 GroupName = 'Web Servers'
@@ -222,7 +221,6 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 Path = "OU=IT,$($Node.DomainDN)"
                 Ensure = 'Present'
                 }
-            }
 
     } #end nodes DC
 
@@ -232,8 +230,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
 
         foreach ($feature in @(
-                'DHCP',
-                'RSAT-DHCP'
+                'DHCP'
+                #'RSAT-DHCP'
             )) {
 
             WindowsFeature $feature.Replace('-','') {
@@ -362,9 +360,10 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'ADCS-Cert-Authority',
                 'ADCS-Enroll-Web-Pol',
                 'ADCS-Enroll-Web-Svc',
-                'ADCS-Web-Enrollment',
-                'RSAT-ADCS',
-                'RSAT-ADCS-Mgmt'
+                'ADCS-Web-Enrollment'
+                # For the GUI version - uncomment the following
+                #'RSAT-ADCS',
+                #'RSAT-ADCS-Mgmt'
             )) {
 
             WindowsFeature $feature.Replace('-','') {
