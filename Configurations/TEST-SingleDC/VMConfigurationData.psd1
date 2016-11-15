@@ -109,7 +109,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media = '2016_x64_Standard_EN_Eval'
             Lability_MinimumMemory = 4GB
             Lability_StartupMemory = 4GB
             Lability_ProcessorCount = 2

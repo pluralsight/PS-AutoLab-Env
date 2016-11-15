@@ -114,12 +114,12 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'DNS',                           
                 'AD-Domain-Services',
                 'RSAT-AD-Tools', 
-                'RSAT-AD-PowerShell'
+                'RSAT-AD-PowerShell',
                 #For Gui, might like
-                #'RSAT-DNS-Server',                    
-                #'GPMC, 
-                #'RSAT-AD-AdminCenter',
-                #'RSAT-ADDS-Tools'
+                'RSAT-DNS-Server',                    
+                'GPMC', 
+                'RSAT-AD-AdminCenter',
+                'RSAT-ADDS-Tools'
 
             )) {
             WindowsFeature $feature.Replace('-','') {
@@ -361,8 +361,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'ADCS-Enroll-Web-Pol',
                 'ADCS-Enroll-Web-Svc',
                 'ADCS-Web-Enrollment'
-                #'RSAT-ADCS',
-                #'RSAT-ADCS-Mgmt'
+                # For the GUI version - uncomment the following
+                'RSAT-ADCS',
+                'RSAT-ADCS-Mgmt'
             )) {
 
             WindowsFeature $feature.Replace('-','') {
