@@ -361,6 +361,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'ADCS-Enroll-Web-Pol',
                 'ADCS-Enroll-Web-Svc',
                 'ADCS-Web-Enrollment'
+                # For the GUI install, include the following:
                 #'RSAT-ADCS',
                 #'RSAT-ADCS-Mgmt'
             )) {
