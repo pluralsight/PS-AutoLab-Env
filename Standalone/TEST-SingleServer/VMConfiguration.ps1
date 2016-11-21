@@ -87,11 +87,11 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 #region Firewall Rules
 
     $LabData = Import-PowerShellDataFile .\*.psd1
-    $FireWallRules = $labdata.Allnodes.FirewallRuleNames
+    $FireWallRules = $labdata.Allnodes.FirealllRuleNames
 
         foreach ($Rule in $FireWallRules) {
         xFirewall $Rule {
-            Name = $Rule
+            Name = $Rule.name
             Enabled = 'True'
         }
 } #End foreach
@@ -114,10 +114,10 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'DNS',                           
                 'AD-Domain-Services',
                 'RSAT-AD-Tools', 
-                'RSAT-AD-PowerShell',
-                'GPMC'
+                'RSAT-AD-PowerShell'
                 #For Gui, might like
-                #'RSAT-DNS-Server',                     
+                #'RSAT-DNS-Server',                    
+                #'GPMC, 
                 #'RSAT-AD-AdminCenter',
                 #'RSAT-ADDS-Tools'
 
@@ -173,7 +173,6 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 DomainAdministratorCredential = $DomainCredential
                 PasswordNeverExpires = $True
                 DependsOn = '[xADDomain]FirstDC'
-                PasswordAuthentication = 'Negotiate'
             }
         } #user
 
@@ -210,6 +209,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             }
 
      #add Web Servers group with Web Server computer objects as members
+       
+       If ($WebServers -ne $Null) {
             
             xADGroup WebServerGroup {
                 GroupName = 'Web Servers'
@@ -221,6 +222,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 Path = "OU=IT,$($Node.DomainDN)"
                 Ensure = 'Present'
                 }
+            }
 
     } #end nodes DC
 
@@ -230,8 +232,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
 
         foreach ($feature in @(
-                'DHCP'
-                #'RSAT-DHCP'
+                'DHCP',
+                'RSAT-DHCP'
             )) {
 
             WindowsFeature $feature.Replace('-','') {
@@ -360,10 +362,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 'ADCS-Cert-Authority',
                 'ADCS-Enroll-Web-Pol',
                 'ADCS-Enroll-Web-Svc',
-                'ADCS-Web-Enrollment'
-                # For the GUI version - uncomment the following
-                #'RSAT-ADCS',
-                #'RSAT-ADCS-Mgmt'
+                'ADCS-Web-Enrollment',
+                'RSAT-ADCS',
+                'RSAT-ADCS-Mgmt'
             )) {
 
             WindowsFeature $feature.Replace('-','') {
@@ -564,7 +565,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         script CreateDSCTemplate
         {
             DependsOn = '[xAdcsCertificationAuthority]ADCSConfig'
-            Credential = $DomainCredential
+            Credential = $Credential
             TestScript = {
                             try {
                                 $DSCTemplate=get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
@@ -614,7 +615,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         script PublishWebServerTemplate2 
         {       
            DependsOn = '[Script]CreateWebServer2Template'
-           Credential = $DomainCredential
+           Credential = $Credential
            TestScript = {
                             $Template= Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}
                             if ($Template -eq $Null) {return $False}
@@ -632,7 +633,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
           script PublishDSCTemplate 
         {       
            DependsOn = '[Script]CreateDSCTemplate'
-           Credential = $DomainCredential
+           Credential = $Credential
            TestScript = {
                             $Template= Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
                             if ($Template -eq $Null) {return $False}
