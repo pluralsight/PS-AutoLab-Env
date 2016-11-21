@@ -62,9 +62,6 @@ It "[DC1] Should have at least 15 user accounts" {
     $users.count | should BeGreaterThan 15
 }
 
-
-
-
 } #DC
 
 

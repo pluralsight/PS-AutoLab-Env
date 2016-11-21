@@ -27,10 +27,10 @@ demonstrations and would need to be modified for your environment.
             
             # Common networking
             InterfaceAlias = 'Ethernet'
-            DefaultGateway = '192.168.2.1'
+            DefaultGateway = '192.168.3.1'
             SubnetMask = 24
             AddressFamily = 'IPv4'
-            DnsServerAddress = '192.168.2.11'
+            DnsServerAddress = '192.168.3.10'
                        
             # Domain and Domain Controller information
             DomainName = "Company.Pri"
@@ -43,15 +43,15 @@ demonstrations and would need to be modified for your environment.
                         
             # DHCP Server Data
             DHCPName = 'LabNet'
-            DHCPIPStartRange = '192.168.2.200'
-            DHCPIPEndRange = '192.168.2.250'
+            DHCPIPStartRange = '192.168.3.200'
+            DHCPIPEndRange = '192.168.3.250'
             DHCPSubnetMask = '255.255.255.0'
             DHCPState = 'Active'
             DHCPAddressFamily = 'IPv4'
             DHCPLeaseDuration = '00:08:00'
-            DHCPScopeID = '192.168.2.0'
-            DHCPDnsServerIPAddress = '192.168.2.11'
-            DHCPRouter = '192.168.2.1'
+            DHCPScopeID = '192.168.3.0'
+            DHCPDnsServerIPAddress = '192.168.3.10'
+            DHCPRouter = '192.168.3.1'
  
            # ADCS Certificate Services information
             CACN = 'Company.Pri'
@@ -73,8 +73,8 @@ demonstrations and would need to be modified for your environment.
                                                        # WIN10_x64_Enterprise_EN_Eval
         }
         @{
-            NodeName = 'DC'
-            IPAddress = '192.168.2.11'
+            NodeName = 'DC1'
+            IPAddress = '192.168.3.10'
             Role = @('DC', 'DHCP', 'ADCS')
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
@@ -83,7 +83,7 @@ demonstrations and would need to be modified for your environment.
 
         @{
             NodeName = 'S1'
-            IPAddress = '192.168.2.50'
+            IPAddress = '192.168.3.50'
             Role = @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
