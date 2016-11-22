@@ -11,7 +11,8 @@ This tool is provided 'as is' with no warranties or guarantees.
 Current Release is v3.0.1
 
 ## Unreleased (master)
-Master IS currently in sync with latest release.
+Master IS Not currently in sync with latest release.
+* Added Post Setup script under tools
 
 ## Version 3.0.1
 * **Download release [PS-AutoLab-Env v3.0.1](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.1)**
@@ -46,7 +47,8 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 # Instructions 
 1. Download the ZIP of this repository to the Host computer.
 2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
-3. Open PowerShell with administrative privileges
+3. Open PowerShell with administrative privileges (Run As Administrator)
+4. Set the execution policy to Bypass (PS> Set-ExecutionPolicy ByPass)
 4. Change to the extracted folder `PS-AutoLab-Env`.
 5. Run PS> .\ [Setup-Host.ps1](./Setup-Host.ps1)
 * Note: The default installation folder is C:\AutoLab. You can change this if desired.
@@ -69,7 +71,7 @@ You will be able to build and wipe the Lab quickly in future._
     Run the following for initial setup:
     PS> Setup-Lab
 
-    To start the LAb, and apply configurations the first time:
+    To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
     To enable Internet access for the VM's, run:
