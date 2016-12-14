@@ -45,6 +45,8 @@ type to Hyper-V(Unsupported) or the Host hyper-v will not work!
 * Windows 10 clients
 
 # Instructions 
+Video of instructions here: [Video Instructions](https://www.youtube.com/watch?v=fIXHvbgxEDk&feature=youtu.be)
+
 1. Download the ZIP of this repository to the Host computer.
 2. Extract the zip of PS-AutoLab-Env to your C:\ drive (C:\PS-AutoLab-Env)
 3. Open PowerShell with administrative privileges (Run As Administrator)
