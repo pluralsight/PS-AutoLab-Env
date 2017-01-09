@@ -138,7 +138,7 @@ demonstrations and would need to be modified for your environment.
             Lability_Media = '2016_x64_Standard_Core_EN_Eval'
         }
 
-
+<#
        @{
             NodeName = 'N1'
             IPAddress = '192.168.3.60'
@@ -148,7 +148,7 @@ demonstrations and would need to be modified for your environment.
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
         }
-
+#>
         @{
             NodeName = 'Cli1'
             IPAddress = '192.168.3.100'
