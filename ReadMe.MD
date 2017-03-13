@@ -1,4 +1,3 @@
-# Flash! New 3.0.1 release! Please read the entire readme and instructions.
 
 # PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
@@ -8,10 +7,10 @@ The configurations and control scripts for the Hyper-V virtual machine's are wri
 This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
-Current Release is v3.0.1
+Current Release is v3.0.2
 
 ## Unreleased (master)
-Master IS Not currently in sync with latest release.
+Master IS currently in sync with latest release.
 * Added Post Setup script under tools
 
 ## Version 3.0.1
