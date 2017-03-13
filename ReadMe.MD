@@ -11,13 +11,11 @@ Current Release is v3.0.2
 
 ## Unreleased (master)
 Master IS currently in sync with latest release.
-* Added Post Setup script under tools
 
-## Version 3.0.1
-* **Download release [PS-AutoLab-Env v3.0.1](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.1)**
+## Version 3.0.2
+* **Download release [PS-AutoLab-Env v3.0.2](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.2)**
 
-* Bug fix for convergence of the DC DSC Configuration with ADCS
-* See previous release (v3.0.0) for additional information about major release
+* Added New course config for Michael Bender
 
 ## All Releases
 * Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
