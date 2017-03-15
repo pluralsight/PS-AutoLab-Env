@@ -1,4 +1,3 @@
-# Flash! New 3.0.1 release! Please read the entire readme and instructions.
 
 # PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
@@ -8,17 +7,15 @@ The configurations and control scripts for the Hyper-V virtual machine's are wri
 This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
-Current Release is v3.0.1
+Current Release is v3.0.2
 
 ## Unreleased (master)
-Master IS Not currently in sync with latest release.
-* Added Post Setup script under tools
+Master IS currently in sync with latest release.
 
-## Version 3.0.1
-* **Download release [PS-AutoLab-Env v3.0.1](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.1)**
+## Version 3.0.2
+* **Download release [PS-AutoLab-Env v3.0.2](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.2)**
 
-* Bug fix for convergence of the DC DSC Configuration with ADCS
-* See previous release (v3.0.0) for additional information about major release
+* Added New course config for Michael Bender
 
 ## All Releases
 * Download any release [All Releases](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases)
