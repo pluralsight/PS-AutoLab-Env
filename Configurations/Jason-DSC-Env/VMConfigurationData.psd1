@@ -34,7 +34,6 @@ demonstrations and would need to be modified for your environment.
             DnsServerAddress = '192.168.3.10'
 
             # Firewall settings to enable
-            #NOTE - Need to add WMI rules or turn off firewalls
             FirewallRuleNames = @(
                 'FPS-ICMP4-ERQ-In';
                 'FPS-ICMP6-ERQ-In';
@@ -106,7 +105,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'DC1'
             IPAddress = '192.168.3.10'
-            Role = @('DC', 'DHCP', 'ADCS') 
+            Role = @('DC', 'ADCS') 
             Lability_BootOrder = 10
             Lability_BootDelay = 60 # Number of seconds to delay before others
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -140,7 +139,7 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media = '2016_x64_Standard_Core_EN_Eval'
         }
-
+<#
         @{
             NodeName = 'PullServer'
             IPAddress = '192.168.3.70'
@@ -151,7 +150,7 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media = '2016_x64_Standard_Core_EN_Eval'
         }
-
+#>
 <#
        @{
             NodeName = 'N1'
