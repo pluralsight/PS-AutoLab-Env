@@ -6,7 +6,7 @@ Full error: *Windows could not parse or process unattend answer file [C:\Windows
 
 Make sure that the configuration changes you've made are valid. 
 Specifically, this error is known to be caused by an invalid NodeName. 
-NodeName on Windows must match the rules for a Windows Computer Name, notably a 15 character maximum.  
+NodeName on Windows must match the rules for a Windows Computer Name, notably a 15 character maximum and no spaces or special characters.  
 See details here: https://support.microsoft.com/en-us/kb/909264
 
 ### How can I avoid issues when changing VM names?
