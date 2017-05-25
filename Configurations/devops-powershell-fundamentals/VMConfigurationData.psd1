@@ -34,7 +34,6 @@ demonstrations and would need to be modified for your environment.
             DnsServerAddress = '192.168.3.10'
 
             # Firewall settings to enable
-            #NOTE - Need to add WMI rules or turn off firewalls
             FirewallRuleNames = @(
                 'FPS-ICMP4-ERQ-In';
                 'FPS-ICMP6-ERQ-In';
