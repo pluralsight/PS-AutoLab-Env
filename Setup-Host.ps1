@@ -63,8 +63,8 @@ Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBoot
  If an older version is installed, update the version, otherwise install the latest version.
 #>
 
-$requiredVersion ='0.10.1'
-$LabilityMod = Get-Module -Name Lability -ListAvailable | Sort Version -Descending
+$requiredVersion ='0.11.0'
+$LabilityMod = Get-Module -Name Lability -ListAvailable | Sort-Object -Property Version -Descending
 if (-Not $LabilityMod) {
    Write-Host -ForegroundColor Cyan "Installing Lability Module version $requiredVersion for the lab build"
    Install-Module -Name Lability -RequiredVersion $requiredVersion -Force
