@@ -11,6 +11,7 @@ Current Release is v3.0.2
 
 ## Unreleased (Dev Branch)
 New release under development
+* Updated to Lability version 0.11.0
 
 ## Version 3.0.2
 * **Download release [PS-AutoLab-Env v3.0.2](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.2)**
