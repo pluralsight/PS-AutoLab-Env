@@ -23,7 +23,7 @@ Final Release is v3.0.3
 * **Download release [PS-AutoLab-Env v3.0.3](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.3)**
 
 * Version 1.1.0 of the PSAutolab module with -IgnorePendingReboot parameter for Unattend-lab and Setup-Lab.
-## Deprecation announcement - see readme.md
+* **Deprecation announcement - see top readme.md**
 
 ## Version 3.0.2
 * **Download release [PS-AutoLab-Env v3.0.2](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.2)**
