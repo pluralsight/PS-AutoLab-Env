@@ -106,30 +106,77 @@ Function Setup-Lab {
 #endregion Setup-lab
 
 #region Run-Lab
-Function Run-Lab {
+Function Setup-Lab {
+    [cmdletbinding(SupportsShouldProcess)]
     Param (
-        [string]$Path = $PSScriptRoot
+        [string]$Path = $PSScriptRoot,
+        [switch]$IgnorePendingReboot
     )
 
     Write-Host -ForegroundColor Green -Object @"
 
-        This is the Run-Lab script. This script will perform the following:
-    
-        * Start the Lab environment
-    
-        Note! If this is the first time you have run this, it can take up to an hour
-        for the DSC configs to apply. 
+        This is the Setup-Lab script. This script will perform the following:
+        * Run the configs to generate the required .mof files
+        Note! - If there is an error creating the .mofs, the setup will fail
+        
+        * Run the lab setup
+        Note! If this is the first time you have run this, it can take several
+        hours to download the .ISO's and resources.
         This only occurs the first time.
 
+        **Possible problem, if the downloads finish but the script doesn't continue (pauses)
+            Hit the return key once and it will continue
+
+        *You will be able to wipe and rebuild this lab without needing to perform
+        the downloads again.
 "@
 
-    Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
-    # Creates the lab environment without making a Hyper-V Snapshot
-    Start-Lab -ConfigurationData .\*.psd1 
+    # Install DSC Resource modules specified in the .PSD1
+    Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
+    Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+    $LabData = Import-PowerShellDataFile -Path .\*.psd1
+    $DSCResources = $LabData.NonNodeData.Lability.DSCResource
 
-    Write-Host -ForegroundColor Green -Object @"
+    Foreach ($DSCResource in $DSCResources) {
+
+        Install-Module -Name $($DSCResource).Name -RequiredVersion $($DSCResource).RequiredVersion
+
+    }
+
+    # Run the config to generate the .mof files
+    Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
+    if ($PSCmdlet.ShouldProcess('.\VMConfiguration.ps1')) {
+        .\VMConfiguration.ps1
+    }
+    # Build the lab without a snapshot
+    #
+    Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
+    # Creates the lab environment without making a Hyper-V Snapshot
+
+    $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
+    $startParams = @{
+        ConfigurationData = ".\*.psd1"
+        Path              = ".\"
+        NoSnapshot        = $True 
+        Password          = $Password
+    }
+    if ($IgnorePendingReboot) {
+        $startParams.Add("IgnorePendingReboot", $True)
+    }
+
+    if ($PSCmdlet.ShouldProcess($($startParams | Out-String))) {
+        Start-LabConfiguration @startParams 
+        # Disable secure boot for VM's
+        Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
+        Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
+
+
+        Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
+        
+        When complete, run:
+        Run-Lab
 
         Run the following to validatae when configurations have converged:
         Validate-Lab
@@ -147,12 +194,13 @@ Function Run-Lab {
         Refresh-Lab
 
         To destroy the lab to build again:
-        Wipe-Lab  
-
+        Wipe-Lab   
 
 "@
-}
-#endregion setup-lab
+
+    } #should process
+
+}#endregion setup-lab
 
 #region Enable-Internet
 Function Enable-Internet {
@@ -418,8 +466,10 @@ Function Wipe-Lab {
 
 #region Unattend-Lab
 Function Unattend-Lab {
+    [cmdletbinding(SupportsShouldProcess)]
     Param (
-        [string]$Path = $PSScriptRoot
+        [string]$Path = $PSScriptRoot,
+        [switch]$IgnorePendingReboot
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -431,7 +481,7 @@ Function Unattend-Lab {
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
 
-    Setup-Lab
+    Setup-Lab @psboundparameters
     Run-Lab
     Enable-Internet
     Validate-Lab
