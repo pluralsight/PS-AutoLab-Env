@@ -116,25 +116,4 @@ None
 _NOTE - Configuration convergence takes about 30 - 60 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
 
 # Current and Future Development
-These are things currently planned for development. Please help us and contribute your own configs or pick something from the list marked (Future)
-
-1. Additional Role configurations including:
-   * Windows Server 2016 release version (completed)
-   * ADCS (plus certificates and autoenrollment) (completed)
-   * Web servers and web sites (future)
-   * Exchange (future)
-   * SQL (future)
-   * Installing RSAT tool into Windows 10 (Completed) 
-   * Installing PowerShell 6 (current)
-   * Do you have suggestions? Add to Issues list
-2. Nano support (Completed)
-3. Linux (Ubuntu and CentOS) (Future)
-4. Structural config changes
-    * Moving to a single composite config for easier development and management (Future)
-    * Adding Pester tests to all configurations (Completed)
-5. Add custom media and Registration Keys (future) - (your own ISO with Key)
-6. Add support for custom DSCResource Modules (future)
-
-_Please make recommendations or fork this repo and share your own!!!_
-
-*
+None. Check back for the link to the new repo and project.
