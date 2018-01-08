@@ -16,11 +16,13 @@ The configurations and control scripts for the Hyper-V virtual machine's are wri
 This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
-Current Release is v3.0.2
+Final Release is v3.0.3
 
-## Unreleased (Dev Branch)
-New release under development
-* Updated to Lability version 0.11.0
+## Version 3.0.3
+
+* **Download release [PS-AutoLab-Env v3.0.3](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.3)**
+
+* Version 1.1.0 of the PSAutolab module with -IgnorePendingReboot parameter for Unattend-lab and Setup-Lab.
 
 ## Version 3.0.2
 * **Download release [PS-AutoLab-Env v3.0.2](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.2)**
