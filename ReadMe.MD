@@ -111,9 +111,7 @@ You will be able to build and wipe the Lab quickly in future._
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-None
-
-_NOTE - Configuration convergence takes about 30 - 60 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
+For suport, see issues list on this repo.
 
 # Current and Future Development
 None. Check back for the link to the new repo and project.
