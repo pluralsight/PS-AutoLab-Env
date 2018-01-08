@@ -1,5 +1,5 @@
 # Deprecated
-This repo and version of AutoLab is soon to be deprecated. The current version (3.0.2) works as described under the original releases of Win10 and Server 2016.  Due to the major update versions from Microsoft and changes to Hyper-V over the past year, you may have issues getting this to work as described. Check the “Issues” list for possible solutions.
+This repo and version of AutoLab is soon to be deprecated. The current version (3.0.3) works as described under the original releases of Win10 and Server 2016.  Due to the major update versions from Microsoft and changes to Hyper-V over the past year, you may have issues getting this to work as described. Check the “Issues” list for possible solutions.
 
 We are currently working on a new product with similar functionality that will be published to a new repo. When the new product is ready for release, we will post a link here. 
 
