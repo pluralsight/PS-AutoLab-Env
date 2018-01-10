@@ -114,7 +114,7 @@ It "[S1] Should have a DNS server configuration of 192.168.3.10" {
   $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
 }
 } #S2
-<#
+
 Describe PullServer {
     $PullServer = New-PSSession -VMName PullServer -Credential $cred -ErrorAction SilentlyContinue
 It "[S1] Should accept domain admin credential" {
@@ -130,9 +130,8 @@ It "[S1] Should have a DNS server configuration of 192.168.3.10" {
   $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
 }
 }
-#>
 
-<#
+
 Describe NanoServer {
 
 It "[Nano] Should respond to WSMan requests" { 
@@ -156,7 +155,7 @@ It "[Nano] Should have the DSC package installed" {
 
 }
 }
-#>
+
 
 Describe Cli1 {
 
