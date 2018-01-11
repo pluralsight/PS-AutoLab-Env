@@ -1,5 +1,5 @@
 # Deprecated
-This repo and version of AutoLab is soon to be deprecated. The current version (3.0.4) works as described under the original releases of Win10 and Server 2016.  Due to the major update versions from Microsoft and changes to Hyper-V over the past year, you may have issues getting this to work as described. Check the “Issues” list for possible solutions.
+This repo and version of AutoLab is soon to be deprecated. The current version (3.1.0) works as described under the original releases of Win10 and Server 2016.  Due to the major update versions from Microsoft and changes to Hyper-V over the past year, you may have issues getting this to work as described. Check the “Issues” list for possible solutions.
 
 We are currently working on a new product with similar functionality that will be published to a new repo. When the new product is ready for release, we will post a link here. 
 
@@ -18,9 +18,9 @@ This tool is provided 'as is' with no warranties or guarantees.
 # Versions
 Final Release is v3.0.4
 
-## Version 3.0.4
+## Version 3.1.0
 
-* **Download release [PS-AutoLab-Env v3.0.4](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.4)**
+* **Download release [PS-AutoLab-Env v3.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.1.0)**
 
 * Version 1.1.0 of the PSAutolab module with -IgnorePendingReboot parameter for Unattend-lab and Setup-Lab.
 * **Deprecation announcement - see top readme.md**
