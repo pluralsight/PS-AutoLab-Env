@@ -1,9 +1,9 @@
-# Deprecated
+# Soon to be Deprecated and Replaced
 This repo and version of AutoLab is soon to be deprecated. The current version (3.1.0) works as described under the original releases of Win10 and Server 2016.  Due to the major update versions from Microsoft and changes to Hyper-V over the past year, you may have issues getting this to work as described. Check the “Issues” list for possible solutions.
 
-We are currently working on a new product with similar functionality that will be published to a new repo. When the new product is ready for release, we will post a link here. 
+We are currently working on a new product with similar functionality that will be published to a new repo. ##When the new product is ready for release, we will post a link here. We are planning Q1 of 2018.## 
 
-Until then, this repo and product is soon to be deprecated and is not activily being supported.
+Until then, this repo and product is soon to be deprecated and is not activily being supported. 
 
 You are free to use, modify and distribute this unsupported version. This tool is provided ‘as is’ with no warranties or guarantees.
 
