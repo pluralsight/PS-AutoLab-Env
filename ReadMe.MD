@@ -3,7 +3,7 @@ This repo and version of AutoLab is soon to be deprecated. The current version (
 
 We are currently working on a new product with similar functionality that will be published to a new repo. 
 
-##When the new product is ready for release, we will post a link here. We are planning Q1 of 2018.## 
+## When the new product is ready for release, we will post a link here. We are planning Q1 of 2018.
 
 Until then, this repo and product is soon to be deprecated and is not activily being supported. 
 
