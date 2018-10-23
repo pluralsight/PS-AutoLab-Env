@@ -1,3 +1,7 @@
+# Final Version
+This repo and version of AutoLab is final. The current version (3.1.0) works as described under the original releases of Win10 and Server 2016.  Due to the major update versions from Microsoft and changes to Hyper-V over the past year, you may have issues getting this to work as described. Check the “Issues” list for possible solutions.
+
+This is under MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want. The code is yours.
 
 # PowerShell Automated Lab Environment
 This is an automated lab environment build tool to support authors, trainers, educators and students in designing and building a virtual lab environment.   
@@ -7,10 +11,14 @@ The configurations and control scripts for the Hyper-V virtual machine's are wri
 This tool is provided 'as is' with no warranties or guarantees.
 
 # Versions
-Current Release is v3.0.2
+Final Release is v3.0.4
 
-## Unreleased (master)
-Master IS currently in sync with latest release.
+## Version 3.1.0
+
+* **Download release [PS-AutoLab-Env v3.1.0](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.1.0)**
+
+* Version 1.1.0 of the PSAutolab module with -IgnorePendingReboot parameter for Unattend-lab and Setup-Lab.
+* **Deprecation announcement - see top readme.md**
 
 ## Version 3.0.2
 * **Download release [PS-AutoLab-Env v3.0.2](https://github.com/theJasonHelmick/PS-AutoLab-Env/releases/tag/v3.0.2)**
@@ -99,30 +107,7 @@ You will be able to build and wipe the Lab quickly in future._
 In the Standalone folder, a variety of DSC configurations have been included for authors and students who wish to build their environments on their own VM Infrastructure. The DSC Configurations may be applied to your own VMs. You will need to deploy the configs and DSC resources yourself.
 
 # Known Issues
-None
-
-_NOTE - Configuration convergence takes about 30 - 60 minutes and several reboots - do not turn off machines until they finish. It is advised that you run .\Snapshot-lab when complete for easy refreshing._
+For suport, see issues list on this repo.
 
 # Current and Future Development
-These are things currently planned for development. Please help us and contribute your own configs or pick something from the list marked (Future)
-
-1. Additional Role configurations including:
-   * Windows Server 2016 release version (completed)
-   * ADCS (plus certificates and autoenrollment) (completed)
-   * Web servers and web sites (future)
-   * Exchange (future)
-   * SQL (future)
-   * Installing RSAT tool into Windows 10 (Completed) 
-   * Installing PowerShell 6 (current)
-   * Do you have suggestions? Add to Issues list
-2. Nano support (Completed)
-3. Linux (Ubuntu and CentOS) (Future)
-4. Structural config changes
-    * Moving to a single composite config for easier development and management (Future)
-    * Adding Pester tests to all configurations (Completed)
-5. Add custom media and Registration Keys (future) - (your own ISO with Key)
-6. Add support for custom DSCResource Modules (future)
-
-_Please make recommendations or fork this repo and share your own!!!_
-
-*
+None. Check back for the link to the new repo and project.
