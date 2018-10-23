@@ -23,8 +23,10 @@ demonstrations and would need to be modified for your environment.
 
 #region Setup-Lab
 Function Setup-Lab {
+    [cmdletbinding(SupportsShouldProcess)]
     Param (
-        [string]$Path = $PSScriptRoot
+        [string]$Path = $PSScriptRoot,
+        [switch]$IgnorePendingReboot
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -59,21 +61,33 @@ Function Setup-Lab {
 
     # Run the config to generate the .mof files
     Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
-    .\VMConfiguration.ps1
-
+    if ($PSCmdlet.ShouldProcess('.\VMConfiguration.ps1')) {
+        .\VMConfiguration.ps1
+    }
     # Build the lab without a snapshot
     #
     Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
-    Start-LabConfiguration -ConfigurationData .\*.psd1 -path .\ -NoSnapshot -Password $Password
-    # Disable secure boot for VM's
-    Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
-    Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
+    $startParams = @{
+        ConfigurationData = ".\*.psd1"
+        Path              = ".\"
+        NoSnapshot        = $True 
+        Password          = $Password
+    }
+    if ($IgnorePendingReboot) {
+        $startParams.Add("IgnorePendingReboot", $True)
+    }
+
+    if ($PSCmdlet.ShouldProcess($($startParams | Out-String))) {
+        Start-LabConfiguration @startParams 
+        # Disable secure boot for VM's
+        Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
+        Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
 
-    Write-Host -ForegroundColor Green -Object @"
+        Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
         
@@ -100,7 +114,7 @@ Function Setup-Lab {
 
 "@
 
-
+    } #should process
 
 }
 #endregion Setup-lab
@@ -175,18 +189,18 @@ Function Enable-Internet {
 
 
 
-        $LabData = Import-PowerShellDataFile -Path .\*.psd1
-        $LabSwitchName = $labdata.NonNodeData.Lability.Network.name 
-        $GatewayIP = $Labdata.AllNodes.DefaultGateway
-        $GatewayPrefix = $Labdata.AllNodes.SubnetMask
-        $NatNetwork = $Labdata.AllNodes.IPnetwork
-        $NatName = $Labdata.AllNodes.IPNatName
+    $LabData = Import-PowerShellDataFile -Path .\*.psd1
+    $LabSwitchName = $labdata.NonNodeData.Lability.Network.name 
+    $GatewayIP = $Labdata.AllNodes.DefaultGateway
+    $GatewayPrefix = $Labdata.AllNodes.SubnetMask
+    $NatNetwork = $Labdata.AllNodes.IPnetwork
+    $NatName = $Labdata.AllNodes.IPNatName
 
 
-        $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
-        New-NetIPAddress -InterfaceIndex $Index -IPAddress $GatewayIP -PrefixLength $GatewayPrefix -ErrorAction SilentlyContinue
-        # Creating the NAT on Server 2016 -- maybe not work on 2012R2
-        New-NetNat -Name $NatName -InternalIPInterfaceAddressPrefix $NatNetwork -ErrorAction SilentlyContinue   
+    $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
+    New-NetIPAddress -InterfaceIndex $Index -IPAddress $GatewayIP -PrefixLength $GatewayPrefix -ErrorAction SilentlyContinue
+    # Creating the NAT on Server 2016 -- maybe not work on 2012R2
+    New-NetNat -Name $NatName -InternalIPInterfaceAddressPrefix $NatNetwork -ErrorAction SilentlyContinue   
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -214,19 +228,19 @@ Function Validate-Lab {
 
     do {
 
-    $test= Invoke-Pester -Script .\VMValidate.Test.ps1 -quiet -PassThru
+        $test = Invoke-Pester -Script .\VMValidate.Test.ps1 -quiet -PassThru
 
-    if ($test.Failedcount -eq 0) {
-        $Complete = $True
-    }
-    else {
-        300..1 | foreach {
-        Write-progress -Activity "VM Completion Test" -Status "Tests failed" -CurrentOperation "Waiting until next test run" -SecondsRemaining $_
-        Start-sleep -Seconds 1
+        if ($test.Failedcount -eq 0) {
+            $Complete = $True
         }
+        else {
+            300..1 | foreach {
+                Write-progress -Activity "VM Completion Test" -Status "Tests failed" -CurrentOperation "Waiting until next test run" -SecondsRemaining $_
+                Start-sleep -Seconds 1
+            }
 
-        Write-Progress -Activity "VM Completion Test" -Completed
-    }
+            Write-Progress -Activity "VM Completion Test" -Completed
+        }
     } until ($Complete)
 
     #re-run test one more time to show everything that was tested.
@@ -418,8 +432,10 @@ Function Wipe-Lab {
 
 #region Unattend-Lab
 Function Unattend-Lab {
+    [cmdletbinding(SupportsShouldProcess)]
     Param (
-        [string]$Path = $PSScriptRoot
+        [string]$Path = $PSScriptRoot,
+        [switch]$IgnorePendingReboot
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -431,7 +447,7 @@ Function Unattend-Lab {
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
 
-    Setup-Lab
+    Setup-Lab @psboundparameters
     Run-Lab
     Enable-Internet
     Validate-Lab
