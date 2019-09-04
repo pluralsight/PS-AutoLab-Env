@@ -1,5 +1,7 @@
 # PS-AutoLab-Env
 
+This project serves as a set of "wrapper" commands that utilize the [Lability])https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment. The downside is that it is a difficult module for less experience PowerShell users. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
+
 _*This project is under new ownership and updates are in progress. Please bear with us.*_
 
 # Final Version (maybe)
