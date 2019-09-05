@@ -1,0 +1,20 @@
+Changelog for PS-AutoLab-Env
+
+v4.0.0
+
+Complete rewrite and update
+Added Changelog
+Published Autolab module to the PowerShell Gallery
+Archived some configurations
+Updated README.md
+Updated LICENSE
+
+v3.1.1
+
+Included Windows 10 configuration from Jeff Hicks
+
+v3.1.0
+
+Updates PSAutolab module with -IgnorePendingReboot parameter for Unattend-lab and Setup-Lab.
+
+See releases for any previous changes

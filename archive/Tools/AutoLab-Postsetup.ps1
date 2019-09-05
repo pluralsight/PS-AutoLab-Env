@@ -1,9 +1,9 @@
-﻿#requires -version 5.0
+﻿#requires -version 5.1
 
 <#
 You can use this script for any one-time post-installation processing that
 you wish to do for virtual machines. This script will process a special
-hashtable that you define. 
+hashtable that you define.
 
 Computername - The hashtable has a string for the virtual machine name.
 
@@ -18,7 +18,7 @@ after files are copied.
 PSCommands - An array of PowerShell scriptblocks to execute.
 
 You can also define a setting with a computername of *. These settings will
-apply to all computers defined in your array. The script will process 
+apply to all computers defined in your array. The script will process
 computer-specific settings and then those for all computers.
 
 The assumption is that you will make a copy of this script file and place
@@ -28,13 +28,13 @@ and convergence has completed.
 #>
 
 <#
-$all = @( 
+$all = @(
 #these settings will apply to all defined nodes
 Computername = "*"
 FileCopy = @(
   @{Source="C:\Get-WindowsUpdate.ps1";Destination="C:\"},
   @{Source="C:\Install-WindowsUpdate.ps1";Destination="C:\"}
-  ) 
+  )
 Install = @()
 PSCommands = @(
  #a collection of scriptblocks
@@ -49,7 +49,7 @@ Computername = "CLI1"
 FileCopy = @(
     @{source="c:\MyTools";Destination="C:\Sourcefiles"}
     @{Source="c:\files\MySpecial.ps1";Destination="C:\"}
-  ) 
+  )
 Install = @(
  @{Path="C:\sourcefiles\Git-2.10.2-64-bit.exe";Arguments="/SP- /SILENT /SUPPRESSMSGBOXES /NORESTART /NOCLOSEAPPLICATIONS"}
  )
@@ -63,7 +63,7 @@ PSCommands = @(
 #>
 
 
-$all = @( 
+$all = @(
 
 @{
 #these settings will apply to all defined nodes
@@ -71,7 +71,7 @@ Computername = "*"
 FileCopy = @(
   @{Source="C:\Get-WindowsUpdate.ps1";Destination="C:\"},
   @{Source="C:\Install-WindowsUpdate.ps1";Destination="C:\"}
-  ) 
+  )
 Install = @()
 PSCommands = @(
  #a collection of scriptblocks
@@ -94,7 +94,7 @@ PSCommands = @(
 Computername = "CLI1"
 FileCopy = @(
   @{source="c:\MyCopy";Destination="C:\Sourcefiles"}
-  ) 
+  )
 Install = @(
  @{Path="C:\sourceFiles\BoxSyncSetup.exe";Arguments="/install /quiet /norestart"}
  @{Path="C:\sourcefiles\Git-2.10.2-64-bit.exe";Arguments="/SP- /SILENT /SUPPRESSMSGBOXES /NORESTART /NOCLOSEAPPLICATIONS"}
@@ -107,7 +107,7 @@ PSCommands = @(
 ,
 @{
 Computername = "S1"
-FileCopy = @( ) 
+FileCopy = @( )
 Install = @( )
 PSCommands = @(
  #a collection of scriptblocks
@@ -118,7 +118,7 @@ PSCommands = @(
 )
 
 #pull credential information from configuration psd1 file
-$Secure = ConvertTo-SecureString -String "P@ssw0rd" -AsPlainText -Force 
+$Secure = ConvertTo-SecureString -String "P@ssw0rd" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
