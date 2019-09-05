@@ -25,7 +25,7 @@ Describe DOM1 {
     }
 
     #test for features
-    $feat = Invoke-Command { Get-WindowsFeature | Where installed} -session $dc
+    $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed} -session $dc
     $needed = 'AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
     'RSAT-AD-PowerShell'
     foreach ($item in $needed) {
@@ -93,6 +93,11 @@ Describe DOM1 {
         $rec.name | Should be 'srv3.company.pri'
         $rec.ipaddress | Should be '192.168.3.60'
     }
+
+    It "[DOM1] Should be running Windows Server 2016" {
+        $test = Invoke-Command {Get-Ciminstance -ClassName win32_operatingsystem -property caption} -session $dc
+        $test.caption | Should BeLike '*2016*'
+    }
 } #DOM1
 
 Describe SRV1 {
@@ -110,6 +115,11 @@ Describe SRV1 {
     $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $SRV1
     It "[SRV1] Should have a DNS server configuration of 192.168.3.10" {
         $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
+    }
+
+    It "[SRV1] Should be running Windows Server 2016" {
+        $test = Invoke-Command {Get-Ciminstance -ClassName win32_operatingsystem -property caption} -session $srv1
+        $test.caption | Should BeLike '*2016*'
     }
 } #SRV1
 
@@ -144,25 +154,36 @@ Describe SRV2 {
         $app.path | Should be "/MyWebServices"
         $app.physicalpath | should be "c:\MyWebServices"
     }
+
+    It "[SRV2] Should be running Windows Server 2016" {
+        $test = Invoke-Command {Get-Ciminstance -ClassName win32_operatingsystem -property caption} -session $srv2
+        $test.caption | Should BeLike '*2016*'
+    }
 } #SRV2
 
 
 Describe SRV3 {
 
+    $srv3 = New-PSSession -VMName SRV3 -Credential $wgCred -ErrorAction Stop
+    $all += $srv3
+
     It "[SRV3] Should respond to WSMan requests" {
-        $script:sess = New-PSSession -VMName SRV3 -Credential $wgCred -ErrorAction Stop
-        $all+=$script:sess
-        $script:sess.Computername | Should Be 'SRV3'
+       $srv3.Computername | Should Be 'SRV3'
     }
 
     It "[SRV3] Should have an IP address of 192.168.3.60" {
-        $r = Invoke-Command { Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4} -session $script:sess
+        $r = Invoke-Command { Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4} -session $srv3
         $r.IPv4Address | Should Be '192.168.3.60'
     }
 
     It "[SRV3] Should belong to the Workgroup domain" {
-        $sys = Invoke-Command { Get-CimInstance Win32_computersystem} -session $script:sess
+        $sys = Invoke-Command { Get-CimInstance Win32_computersystem} -session $srv3
         $sys.Domain | Should Be "Workgroup"
+    }
+
+    It "[SRV3] Should be running Windows Server 2019" {
+        $test = Invoke-Command {Get-Ciminstance -ClassName win32_operatingsystem -property caption} -session $srv3
+        $test.caption | Should BeLike '*2019*'
     }
 
 }
@@ -171,10 +192,16 @@ Describe SRV3 {
 Describe Win10 {
 
     $cl = New-PSSession -VMName Win10 -Credential $cred -ErrorAction SilentlyContinue
-    $all+=$cl
+    $all += $cl
     It "[WIN10] Should belong to the COMPANY domain" {
         $test = Invoke-Command {Get-Ciminstance -ClassName win32_computersystem -property domain} -session $cl
         $test.domain | Should Be "company.pri"
+    }
+
+    It "[WIN10] Should be running Windows 10 Enterprise version 18362" {
+        $test = Invoke-Command {Get-Ciminstance -ClassName win32_operatingsystem -property version,caption} -session $cl
+        $test.Version | Should Be '10.0.18362'
+        $test.caption | Should BeLike "*Enterprise*"
     }
 
     It "[Win10] Should have an IP address of 192.168.3.100" {
