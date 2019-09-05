@@ -1,0 +1,412 @@
+[
+    {
+        "DistinguishedName": "CN=MaryL,OU=IT,DC=Company,DC=Pri",
+        "Name": "MaryL",
+        "SamAccountName": "MaryL",
+        "GivenName": "Mary",
+        "Surname": "Lennon",
+        "DisplayName": "Mary Lennon",
+        "Description": "Main IT",
+        "Department": "IT"
+    },
+    {
+        "DistinguishedName": "CN=ArtD,OU=IT,DC=Company,DC=Pri",
+        "Name": "ArtD",
+        "SamAccountName": "ArtD",
+        "GivenName": "Art",
+        "Surname": "Deco",
+        "DisplayName": "Art Deco",
+        "Description": "PowerShell Guru",
+        "Department": "IT"
+    },
+    {
+        "DistinguishedName": "CN=AprilS,OU=IT,DC=Company,DC=Pri",
+        "Name": "AprilS",
+        "SamAccountName": "AprilS",
+        "GivenName": "April",
+        "Surname": "Showers",
+        "DisplayName": "April Showers",
+        "Description": "PowerShell Guru",
+        "Department": "IT"
+    },
+    {
+        "DistinguishedName": "CN=MikeS,OU=IT,DC=Company,DC=Pri",
+        "Name": "MikeS",
+        "SamAccountName": "MikeS",
+        "GivenName": "Mike",
+        "Surname": "Smith",
+        "DisplayName": "Mike Smith",
+        "Description": "Backup IT",
+        "Department": "IT"
+    },
+    {
+        "DistinguishedName": "CN=SimonS,OU=Dev,DC=Company,DC=Pri",
+        "Name": "SimonS",
+        "SamAccountName": "SimonS",
+        "GivenName": "Simon",
+        "Surname": "Smith",
+        "DisplayName": "Simon Smith",
+        "Description": "The Developer",
+        "Department": "Dev"
+    },
+    {
+        "DistinguishedName": "CN=AaronS,OU=Accounting,DC=Company,DC=Pri",
+        "Name": "AaronS",
+        "SamAccountName": "AaronS",
+        "GivenName": "Aaron",
+        "Surname": "Smith",
+        "DisplayName": "Aaron Smith",
+        "Description": "Accountant",
+        "Department": "Accounting"
+    },
+    {
+        "DistinguishedName": "CN=AndreaS,OU=Accounting,DC=Company,DC=Pri",
+        "Name": "AndreaS",
+        "SamAccountName": "AndreaS",
+        "GivenName": "Andrea",
+        "Surname": "Smith",
+        "DisplayName": "Andrea Smith",
+        "Description": "Accountant",
+        "Department": "Accounting"
+    },
+    {
+        "DistinguishedName": "CN=AndyS,OU=Accounting,DC=Company,DC=Pri",
+        "Name": "AndyS",
+        "SamAccountName": "AndyS",
+        "GivenName": "Andy",
+        "Surname": "Smith",
+        "DisplayName": "Andy Smith",
+        "Description": "Accountant",
+        "Department": "Accounting"
+    },
+    {
+        "DistinguishedName": "CN=SamS,OU=Sales,DC=Company,DC=Pri",
+        "Name": "SamS",
+        "SamAccountName": "SamS",
+        "GivenName": "Sam",
+        "Surname": "Smith",
+        "DisplayName": "Sam Smith",
+        "Description": "Sales",
+        "Department": "Sales"
+    },
+    {
+        "DistinguishedName": "CN=SonyaS,OU=Sales,DC=Company,DC=Pri",
+        "Name": "SonyaS",
+        "SamAccountName": "SonyaS",
+        "GivenName": "Sonya",
+        "Surname": "Smith",
+        "DisplayName": "Sonya Smith",
+        "Description": "Sales",
+        "Department": "Sales"
+    },
+    {
+        "DistinguishedName": "CN=SamanthaS,OU=Sales,DC=Company,DC=Pri",
+        "Name": "SamanthaS",
+        "SamAccountName": "SamanthaS",
+        "GivenName": "Samantha",
+        "Surname": "Smith",
+        "DisplayName": "Samantha Smith",
+        "Description": "Sales",
+        "Department": "Sales"
+    },
+    {
+        "DistinguishedName": "CN=MarkS,OU=Marketing,DC=Company,DC=Pri",
+        "Name": "MarkS",
+        "SamAccountName": "MarkS",
+        "GivenName": "Mark",
+        "Surname": "Smith",
+        "DisplayName": "Mark Smith",
+        "Description": "Marketing",
+        "Department": "Marketing"
+    },
+    {
+        "DistinguishedName": "CN=MonicaS,OU=Marketing,DC=Company,DC=Pri",
+        "Name": "MonicaS",
+        "SamAccountName": "MonicaS",
+        "GivenName": "Monica",
+        "Surname": "Smith",
+        "DisplayName": "Monica Smith",
+        "Description": "Marketing",
+        "Department": "Marketing"
+    },
+    {
+        "DistinguishedName": "CN=MattS,OU=Marketing,DC=Company,DC=Pri",
+        "Name": "MattS",
+        "SamAccountName": "MattS",
+        "GivenName": "Matt",
+        "Surname": "Smith",
+        "DisplayName": "Matt Smith",
+        "Description": "Marketing",
+        "Department": "Marketing"
+    },
+    {
+        "DistinguishedName": "CN=JimJ,OU=JEA_Operators,DC=Company,DC=Pri",
+        "Name": "JimJ",
+        "SamAccountName": "JimJ",
+        "GivenName": "Jim",
+        "Surname": "Jea",
+        "DisplayName": "Jim Jea",
+        "Description": "JEA",
+        "Department": "IT"
+    },
+    {
+        "DistinguishedName": "CN=JillJ,OU=JEA_Operators,DC=Company,DC=Pri",
+        "Name": "JillJ",
+        "SamAccountName": "JillJ",
+        "GivenName": "Jill",
+        "Surname": "Jea",
+        "DisplayName": "Jill Jea",
+        "Description": "JEA",
+        "Department": "IT"
+    },
+    {
+        "DistinguishedName": "CN=E.Ratti,DC=Company,DC=pri",
+        "Name": "Erich Ratti",
+        "SAMAccountname": "E.Ratti",
+        "GivenName": "Erich",
+        "Surname": "Ratti",
+        "DisplayName": "Erich Ratti",
+        "Description": null,
+        "Department": "Marketing"
+    },
+    {
+        "DistinguishedName": "CN=L.Kuja,DC=Company,DC=pri",
+        "Name": "Louis Kuja",
+        "SAMAccountname": "L.Kuja",
+        "GivenName": "Louis",
+        "Surname": "Kuja",
+        "DisplayName": "Louis Kuja",
+        "Description": null,
+        "Department": "Development"
+    },
+    {
+        "DistinguishedName": "CN=M.Nierer,DC=Company,DC=pri",
+        "Name": "Myron Nierer",
+        "SAMAccountname": "M.Nierer",
+        "GivenName": "Myron",
+        "Surname": "Nierer",
+        "DisplayName": "Myron Nierer",
+        "Description": null,
+        "Department": "Physical Plant"
+    },
+    {
+        "DistinguishedName": "CN=R.Freil,DC=Company,DC=pri",
+        "Name": "Rayford Freil",
+        "SAMAccountname": "R.Freil",
+        "GivenName": "Rayford",
+        "Surname": "Freil",
+        "DisplayName": "Rayford Freil",
+        "Description": null,
+        "Department": "Security"
+    },
+    {
+        "DistinguishedName": "CN=T.Shult,DC=Company,DC=pri",
+        "Name": "Tom Shult",
+        "SAMAccountname": "T.Shult",
+        "GivenName": "Tom",
+        "Surname": "Shult",
+        "DisplayName": "Tom Shult",
+        "Description": null,
+        "Department": "Manufacturing"
+    },
+    {
+        "DistinguishedName": "CN=C.Melve,DC=Company,DC=pri",
+        "Name": "Cyrus Melve",
+        "SAMAccountname": "C.Melve",
+        "GivenName": "Cyrus",
+        "Surname": "Melve",
+        "DisplayName": "Cyrus Melve",
+        "Description": null,
+        "Department": "Security"
+    },
+    {
+        "DistinguishedName": "CN=B.Storr,DC=Company,DC=pri",
+        "Name": "Bennett Storr",
+        "SAMAccountname": "B.Storr",
+        "GivenName": "Bennett",
+        "Surname": "Storr",
+        "DisplayName": "Bennett Storr",
+        "Description": null,
+        "Department": "Payroll"
+    },
+    {
+        "DistinguishedName": "CN=S.Montbriand,DC=Company,DC=pri",
+        "Name": "Sammy Montbriand",
+        "SAMAccountname": "S.Montbriand",
+        "GivenName": "Sammy",
+        "Surname": "Montbriand",
+        "DisplayName": "Sammy Montbriand",
+        "Description": null,
+        "Department": "Manufacturing"
+    },
+    {
+        "DistinguishedName": "CN=N.Wobser,DC=Company,DC=pri",
+        "Name": "Napoleon Wobser",
+        "SAMAccountname": "N.Wobser",
+        "GivenName": "Napoleon",
+        "Surname": "Wobser",
+        "DisplayName": "Napoleon Wobser",
+        "Description": null,
+        "Department": "Quality Assurance"
+    },
+    {
+        "DistinguishedName": "CN=J.Clineman,DC=Company,DC=pri",
+        "Name": "James Clineman",
+        "SAMAccountname": "J.Clineman",
+        "GivenName": "James",
+        "Surname": "Clineman",
+        "DisplayName": "James Clineman",
+        "Description": null,
+        "Department": "Physical Plant"
+    },
+    {
+        "DistinguishedName": "CN=A.Henaire,DC=Company,DC=pri",
+        "Name": "Alexander Henaire",
+        "SAMAccountname": "A.Henaire",
+        "GivenName": "Alexander",
+        "Surname": "Henaire",
+        "DisplayName": "Alexander Henaire",
+        "Description": null,
+        "Department": "Customer Service"
+    },
+    {
+        "DistinguishedName": "CN=E.Muhtaseb,DC=Company,DC=pri",
+        "Name": "Eliseo Muhtaseb",
+        "SAMAccountname": "E.Muhtaseb",
+        "GivenName": "Eliseo",
+        "Surname": "Muhtaseb",
+        "DisplayName": "Eliseo Muhtaseb",
+        "Description": null,
+        "Department": "Manufacturing"
+    },
+    {
+        "DistinguishedName": "CN=Y.Graffney,DC=Company,DC=pri",
+        "Name": "Yong Graffney",
+        "SAMAccountname": "Y.Graffney",
+        "GivenName": "Yong",
+        "Surname": "Graffney",
+        "DisplayName": "Yong Graffney",
+        "Description": null,
+        "Department": "Customer Service"
+    },
+    {
+        "DistinguishedName": "CN=D.Monroy,DC=Company,DC=pri",
+        "Name": "Dee Monroy",
+        "SAMAccountname": "D.Monroy",
+        "GivenName": "Dee",
+        "Surname": "Monroy",
+        "DisplayName": "Dee Monroy",
+        "Description": null,
+        "Department": "Consumer Affairs"
+    },
+    {
+        "DistinguishedName": "CN=E.Capece,DC=Company,DC=pri",
+        "Name": "Everette Capece",
+        "SAMAccountname": "E.Capece",
+        "GivenName": "Everette",
+        "Surname": "Capece",
+        "DisplayName": "Everette Capece",
+        "Description": null,
+        "Department": "Executive"
+    },
+    {
+        "DistinguishedName": "CN=L.Saller,DC=Company,DC=pri",
+        "Name": "Lanny Saller",
+        "SAMAccountname": "L.Saller",
+        "GivenName": "Lanny",
+        "Surname": "Saller",
+        "DisplayName": "Lanny Saller",
+        "Description": null,
+        "Department": "Physical Plant"
+    },
+    {
+        "DistinguishedName": "CN=G.Bushmaker,DC=Company,DC=pri",
+        "Name": "Gordon Bushmaker",
+        "SAMAccountname": "G.Bushmaker",
+        "GivenName": "Gordon",
+        "Surname": "Bushmaker",
+        "DisplayName": "Gordon Bushmaker",
+        "Description": null,
+        "Department": "Manufacturing"
+    },
+    {
+        "DistinguishedName": "CN=G.Guillary,DC=Company,DC=pri",
+        "Name": "Garret Guillary",
+        "SAMAccountname": "G.Guillary",
+        "GivenName": "Garret",
+        "Surname": "Guillary",
+        "DisplayName": "Garret Guillary",
+        "Description": null,
+        "Department": "Sales"
+    },
+    {
+        "DistinguishedName": "CN=D.Waldow,DC=Company,DC=pri",
+        "Name": "Diego Waldow",
+        "SAMAccountname": "D.Waldow",
+        "GivenName": "Diego",
+        "Surname": "Waldow",
+        "DisplayName": "Diego Waldow",
+        "Description": null,
+        "Department": "Public Affairs"
+    },
+    {
+        "DistinguishedName": "CN=D.Colato,DC=Company,DC=pri",
+        "Name": "Duncan Colato",
+        "SAMAccountname": "D.Colato",
+        "GivenName": "Duncan",
+        "Surname": "Colato",
+        "DisplayName": "Duncan Colato",
+        "Description": null,
+        "Department": "Manufacturing"
+    },
+    {
+        "DistinguishedName": "CN=D.Fierst,DC=Company,DC=pri",
+        "Name": "Dewitt Fierst",
+        "SAMAccountname": "D.Fierst",
+        "GivenName": "Dewitt",
+        "Surname": "Fierst",
+        "DisplayName": "Dewitt Fierst",
+        "Description": null,
+        "Department": "Customer Service"
+    },
+    {
+        "DistinguishedName": "CN=A.Fieldhouse,DC=Company,DC=pri",
+        "Name": "Aron Fieldhouse",
+        "SAMAccountname": "A.Fieldhouse",
+        "GivenName": "Aron",
+        "Surname": "Fieldhouse",
+        "DisplayName": "Aron Fieldhouse",
+        "Description": null,
+        "Department": "Physical Plant"
+    },
+    {
+        "DistinguishedName": "CN=S.Talone,DC=Company,DC=pri",
+        "Name": "Stanton Talone",
+        "SAMAccountname": "S.Talone",
+        "GivenName": "Stanton",
+        "Surname": "Talone",
+        "DisplayName": "Stanton Talone",
+        "Description": null,
+        "Department": "Public Affairs"
+    },
+    {
+        "DistinguishedName": "CN=D.Hamsher,DC=Company,DC=pri",
+        "Name": "Donte Hamsher",
+        "SAMAccountname": "D.Hamsher",
+        "GivenName": "Donte",
+        "Surname": "Hamsher",
+        "DisplayName": "Donte Hamsher",
+        "Description": null,
+        "Department": "Consumer Affairs"
+    },
+    {
+        "DistinguishedName": "CN=K.Moshos,DC=Company,DC=pri",
+        "Name": "Kendall Moshos",
+        "SAMAccountname": "K.Moshos",
+        "GivenName": "Kendall",
+        "Surname": "Moshos",
+        "DisplayName": "Kendall Moshos",
+        "Description": null,
+        "Department": "Manufacturing"
+    }
+]

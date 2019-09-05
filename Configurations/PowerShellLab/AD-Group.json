@@ -6,7 +6,9 @@
         "GroupScope":  "Global",
         "Members":  [
                         "MikeS",
-                        "MaryL"
+                        "MaryL",
+                        "ArtD",
+                        "AprilS"
                     ]
     },
     {
@@ -49,7 +51,20 @@
         "GroupScope":  "Global",
         "Members":  [
                         "JimJ",
-                        "JillJ"
+                        "JillJ",
+                        "ArtD",
+                        "AprilS"
+                    ]
+    },
+                 {
+        "DistinguishedName":  "CN=Domain Admins,CN=Users,DC=Company,DC=Pri",
+        "Name":  "Domain Admins",
+        "GroupCategory":  "Security",
+        "GroupScope":  "Global",
+        "Members":  [
+                        "ArtD",
+                        "AprilS",
+                        "Administrator"
                     ]
     }
 
