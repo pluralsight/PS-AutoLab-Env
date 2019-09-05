@@ -7,11 +7,11 @@ This lab builds the following:
 * 1 Nano (N1)
 * 1 Client with RSAT (Cli1)
 
-## To get started:
+## To get started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
     PS> Unattend-Lab
-    
+
     To run the commands individually to setup the lab environment:
 
     Run the following for initial setup:
@@ -25,7 +25,7 @@ This lab builds the following:
 
     To validate when configurations have converged:
     PS> Validate-Lab
-   
+
 ## To Stop and snapshot the lab
 
     To stop the lab VM's:
@@ -38,6 +38,6 @@ This lab builds the following:
     PS> Refresh-Lab
 
 ## To remove a lab
-    
+
     To destroy the lab to build again:
     PS> Wipe-Lab

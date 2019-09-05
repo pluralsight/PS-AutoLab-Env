@@ -6,17 +6,17 @@ This lab is specifically designed for the Implementing Windows Server 2016 DHCP 
 * 1 Server (s1)
 * 2 Clients with RSAT (Cli1,Cli2)
 
-*## To get started:
+*## To get started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
     PS> Unattend-Lab
-    
+
     To run the commands individually to setup the lab environment:
 
     Run the following for initial setup:
     PS> Setup-Lab
 
-    To start the LAb, and apply configurations the first time:
+    To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
     To enable Internet access for the VM's, run:
@@ -24,7 +24,7 @@ This lab is specifically designed for the Implementing Windows Server 2016 DHCP 
 
     To validate when configurations have converged:
     PS> Validate-Lab
-   
+
 ## To Stop and snapshot the lab
 
     To stop the lab VM's:
@@ -37,6 +37,6 @@ This lab is specifically designed for the Implementing Windows Server 2016 DHCP 
     PS> Refresh-Lab
 
 ## To remove a lab
-    
+
     To destroy the lab to build again:
     PS> Wipe-Lab

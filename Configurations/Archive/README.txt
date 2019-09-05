@@ -1,1 +1,1 @@
-The configurations in this directory have been retained for archive and reference purposes. There is no guarantee that any of these configurations are current or will work later versions of Autolab.
+The configurations in this directory have been retained for archive and reference purposes. There is no guarantee that any of these configurations are current or will work with newer versions of Autolab.

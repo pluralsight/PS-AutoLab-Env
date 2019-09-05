@@ -699,10 +699,18 @@ Function Invoke-UnattendLab {
 
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
-    Invoke-SetupLab @psboundparameters
-    Invoke-RunLab
-    Enable-Internet
-    Invoke-ValidateLab
+    if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
+        Invoke-SetupLab @psboundparameters
+    }
+    if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
+        Invoke-RunLab
+    }
+    if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
+        Enable-Internet
+    }
+    if ($pscmdlet.ShouldProcess("Validate-Lab","Run Unattended")) {
+        Invoke-ValidateLab
+    }
 
     Write-Host -ForegroundColor Green -Object @"
 
