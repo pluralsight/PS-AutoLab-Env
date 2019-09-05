@@ -7,38 +7,40 @@ Currently on her public DSC hub located here: https://github.com/majst32/DSC_pub
 
 Additional contributors of note: Jeff Hicks
 
-       
+
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the 
+Note: These demos should not be run as a script. These are the commands that I use in the
 demonstrations and would need to be modified for your environment.
 
-#> 
+#>
 
 Configuration AutoLab {
 
 $LabData = Import-PowerShellDataFile -Path .\*.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
-$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure 
+$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
-        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="5.0.0.0"},
-        @{ModuleName="xActiveDirectory";ModuleVersion="2.14.0.0"},
-        @{ModuleName="xComputerManagement";ModuleVersion="1.8.0.0"},
-        @{ModuleName="xNetworking";ModuleVersion="3.0.0.0"},
-        @{ModuleName="xDhcpServer";ModuleVersion="1.5.0.0"},
-        @{ModuleName='xWindowsUpdate';ModuleVersion = '2.5.0.0'},
-        @{ModuleName='xPendingReboot';ModuleVersion = '0.3.0.0'},
-        @{ModuleName='xADCSDeployment';ModuleVersion = '1.0.0.0'}
+        @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="8.9.0.0"},
+        @{ModuleName="xActiveDirectory";ModuleVersion="3.0.0.0"},
+        @{ModuleName="xComputerManagement";ModuleVersion="2.0.0.0"},
+        @{ModuleName="xNetworking";ModuleVersion="5.7.0.0"},
+        @{ModuleName="xDhcpServer";ModuleVersion="2.0.0.0"},
+        @{ModuleName='xWindowsUpdate';ModuleVersion = '2.8.0.0'},
+        @{ModuleName='xPendingReboot';ModuleVersion = '0.4.0.0'},
+        @{ModuleName='xADCSDeployment';ModuleVersion = '1.4.0.0'},
+        @{ModuleName='xDnsServer';ModuleVersion = '1.14.0.0'},
+        @{ModuleName='xWebAdministration';ModuleVersion = '2.7.0.0'}
 
 #endregion
 #region All Nodes
     node $AllNodes.Where({$true}).NodeName {
 #endregion
 #region LCM configuration
-       
+
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
@@ -46,19 +48,17 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
         }
 
 #endregion
-  
-#region IPaddress settings 
 
- 
+#region IPaddress settings
+
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
             InterfaceAlias = $node.InterfaceAlias
-            PrefixLength     = $node.SubnetMask
             AddressFamily  = $node.AddressFamily
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {     
+        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
             xDefaultGatewayAddress 'PrimaryDefaultGateway' {
                 InterfaceAlias = $node.InterfaceAlias
                 Address = $node.DefaultGateway
@@ -66,7 +66,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             }
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {                    
+        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
             xDnsServerAddress 'PrimaryDNSClient' {
                 Address        = $node.DnsServerAddress
                 InterfaceAlias = $node.InterfaceAlias
@@ -81,7 +81,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             }
         }
     } #End IF
-            
+
 #endregion
 
 #region Firewall Rules
@@ -104,20 +104,20 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
 
     $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
-         
-        xComputer ComputerName { 
-            Name = $Node.NodeName 
-        }            
+
+        xComputer ComputerName {
+            Name = $Node.NodeName
+        }
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
-                'DNS',                           
+                'DNS',
                 'AD-Domain-Services',
-                'RSAT-AD-Tools', 
+                'RSAT-AD-Tools',
                 'RSAT-AD-PowerShell',
                 'GPMC'
                 #For Gui, might like
-                #'RSAT-DNS-Server',                     
+                #'RSAT-DNS-Server',
                 #'RSAT-AD-AdminCenter',
                 #'RSAT-ADDS-Tools'
 
@@ -135,16 +135,15 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 SafemodeAdministratorPassword = $Credential
                 DatabasePath = $Node.DCDatabasePath
                 LogPath = $Node.DCLogPath
-                SysvolPath = $Node.SysvolPath 
+                SysvolPath = $Node.SysvolPath
                 DependsOn = '[WindowsFeature]ADDomainServices'
-            }  
-        
+            }
+
         #Add OU, Groups, and Users
     $OUs = (Get-Content .\AD-OU.json | ConvertFrom-Json)
     $Users = (Get-Content .\AD-Users.json | ConvertFrom-Json)
     $Groups = (Get-Content .\AD-Group.json | ConvertFrom-Json)
 
-    
         foreach ($OU in $OUs) {
             xADOrganizationalUnit $OU.Name {
             Path = $node.DomainDN
@@ -155,9 +154,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             DependsOn = '[xADDomain]FirstDC'
         }
         } #OU
-        
+
         foreach ($user in $Users) {
-        
+
             xADUser $user.samaccountname {
                 Ensure = "Present"
                 Path = $user.distinguishedname.split(",",2)[1]
@@ -192,7 +191,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     #prestage Web Server Computer objects
 
         [string[]]$WebServers = $Null
-        
+
         foreach ($N in $AllNodes) {
             if ($N.Role -eq "Web") {
 
@@ -210,7 +209,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             }
 
      #add Web Servers group with Web Server computer objects as members
-            
+
             xADGroup WebServerGroup {
                 GroupName = 'Web Servers'
                 GroupScope = 'Global'
@@ -222,9 +221,29 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 Ensure = 'Present'
                 }
 
+#region DNS
+            #add a DNS entry for the workgroup server
+                xDnsRecord SRV3 {
+                    Name = "srv3"
+                    Target = "192.168.3.60"
+                    Type = 'ARecord'
+                    Zone = "company.pri"
+                    Ensure = 'present'
+                    DependsOn = '[xADDomain]FirstDC'
+                }
+
+                #Add reverse lookup zone
+                xDNSServerPrimaryZone Reverse {
+                    Name = "3.168.192.in-addr.arpa"
+                    Ensure = "present"
+                    DynamicUpdate = "NonsecureAndSecure"
+                    DependsOn = '[xADDomain]FirstDC'
+
+                }
+ #endregion
     } #end nodes DC
 
-#endregion 
+#endregion
 
 #region DHCP
     node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
@@ -235,20 +254,21 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             )) {
 
             WindowsFeature $feature.Replace('-','') {
-                Ensure = 'Present';
-                Name = $feature;
+                Ensure = 'Present'
+                Name = $feature
                 IncludeAllSubFeature = $False;
                 DependsOn = '[xADDomain]FirstDC'
             }
-        } #End foreach  
-        
+        } #End foreach
+
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
-            Ensure = 'Present';
+            Ensure = 'Present'
             DependsOn = '[WindowsFeature]DHCP'
         }
-        
+
         xDhcpServerScope 'DhcpScope' {
-            Name = $Node.DHCPName;
+            Name = $Node.DHCPName
+            ScopeID = $node.DHCPScopeID
             IPStartRange = $Node.DHCPIPStartRange
             IPEndRange = $Node.DHCPIPEndRange
             SubnetMask = $Node.DHCPSubnetMask
@@ -264,25 +284,72 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             Router = $node.DHCPRouter
             AddressFamily = $Node.DHCPAddressFamily
             DependsOn = '[xDhcpServerScope]DhcpScope'
-        }  
- 
+        }
+
     } #end DHCP Config
  #endregion
 
 #region Web config
    node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
-        
+
         foreach ($feature in @(
                 'web-Server'
- 
+
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present'
                 Name = $feature
-                IncludeAllSubFeature = $False
+                IncludeAllSubFeature = $True
             }
         }
-        
+
+        File SampleService {
+            Ensure = 'Present'
+            Type = 'Directory'
+            DestinationPath = 'C:\MyWebServices'
+        }
+
+$asmx = @"
+<%@ WebService language = "C#" class = "FirstService" %>
+
+using System;
+using System.Web.Services;
+using System.Xml.Serialization;
+
+[WebService(Namespace="http://localhost/MyWebServices/")]
+public class FirstService : WebService
+{
+   [WebMethod]
+   public int Add(int a, int b)
+   {
+      return a + b;
+   }
+
+   [WebMethod]
+   public String SayHello()
+   {
+   return "Hello World. It is a wonderful day for learning PowerShell.";
+
+   }
+
+}
+"@
+        File SampleServiceASMX {
+            Ensure = 'Present'
+            Type = 'File'
+            DependsOn = "[File]SampleService"
+            DestinationPath = "c:\MyWebServices\firstservice.asmx"
+            Contents = $asmx
+            Force = $True
+        }
+        xWebApplication SampleWebService {
+            DependsOn = "[File]SampleServiceASMX"
+            Website = 'default web site'
+            PhysicalPath = 'c:\MyWebServices'
+            Name = 'MyWebServices'
+            WebAppPool = 'DefaultAppPool'
+        }
+
     }#end Web Config
 #endregion
 
@@ -290,7 +357,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
    node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
 
     $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
- 
+
         xWaitForADDomain DscForestWait {
             DomainName = $Node.DomainName
             DomainUserCredential = $DomainCredential
@@ -310,7 +377,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 #region RSAT config
    node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
         # Adds RSAT
-      
+
         xHotfix RSAT {
             Id = 'KB2693643'
             Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
@@ -319,12 +386,18 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             Ensure = 'Present'
         }
 
-        xPendingReboot Reboot { 
+        xPendingReboot Reboot {
             Name = 'AfterRSATInstall'
             DependsOn = '[xHotFix]RSAT'
         }
 
-        
+        #since RSAT is added to the client go ahead and create a Scripts folder
+        File scripts {
+            DestinationPath = 'C:\Scripts'
+            Ensure = 'present'
+            type = 'directory'
+        }
+
     }#end RSAT Config
 
 #region RDP config
@@ -354,7 +427,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 #region ADCS
 
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
- 
+
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
                 'ADCS-Cert-Authority',
@@ -372,16 +445,16 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                 IncludeAllSubFeature = $False;
                 DependsOn = '[xADDomain]FirstDC'
             }
-        } #End foreach  
-    
+        } #End foreach
+
          xWaitForADDomain WaitForADADCSRole {
                 DomainName = $Node.DomainName
                 RetryIntervalSec = '30'
                 RetryCount = '10'
                 DomainUserCredential = $DomainCredential
                 DependsOn = '[WindowsFeature]ADCSCertAuthority'
-                }  
-            
+                }
+
         xAdcsCertificationAuthority ADCSConfig
         {
             CAType = $Node.ADCSCAType
@@ -395,7 +468,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             LogDirectory = $Node.CALogPath
             ValidityPeriod = $node.ADCSValidityPeriod
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
-            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'    
+            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'
         }
 
     #Add GPO for PKI AutoEnroll
@@ -405,7 +478,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             TestScript = {
                             if ((get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName -ErrorAction SilentlyContinue) -eq $Null) {
                                 return $False
-                            } 
+                            }
                             else {
                                 return $True}
                         }
@@ -416,9 +489,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                             $GPO= (get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
                             return @{Result = $($GPO.DisplayName)}
                         }
-            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'   
+            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'
             }
-       
+
         script setAEGPRegSetting1
         {
             Credential = $DomainCredential
@@ -440,7 +513,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             DependsOn = '[Script]CreatePKIAEGpo'
         }
 
-        script setAEGPRegSetting2 
+        script setAEGPRegSetting2
         {
             Credential = $DomainCredential
             TestScript = {
@@ -461,7 +534,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
             DependsOn = '[Script]setAEGPRegSetting1'
 
         }
-                               
+
         script setAEGPRegSetting3
         {
             Credential = $DomainCredential
@@ -482,7 +555,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                         }
             DependsOn = '[Script]setAEGPRegSetting2'
         }
-         
+
         Script SetAEGPLink
         {
             Credential = $DomainCredential
@@ -498,7 +571,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                                 }
                          }
             SetScript = {
-                            New-GPLink -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes 
+                            New-GPLink -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes
                         }
             GetScript = {
                            $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
@@ -506,8 +579,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                            return @{Result = "$($GPLinks.DisplayName) = $($GPLinks.Enabled)"}
                         }
             DependsOn = '[Script]setAEGPRegSetting3'
-        }  
-        
+        }
+
 #region Create and publish templates
 
 #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
@@ -558,7 +631,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                                     }
                             }
         }
-    
+
 
  #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
         script CreateDSCTemplate
@@ -610,9 +683,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                                     }
                             }
         }
-                  
-        script PublishWebServerTemplate2 
-        {       
+
+        script PublishWebServerTemplate2
+        {
            DependsOn = '[Script]CreateWebServer2Template'
            Credential = $DomainCredential
            TestScript = {
@@ -628,9 +701,9 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                             return @{Result=$pubws2.Name}
                         }
          }
-          
-          script PublishDSCTemplate 
-        {       
+
+          script PublishDSCTemplate
+        {
            DependsOn = '[Script]CreateDSCTemplate'
            Credential = $DomainCredential
            TestScript = {
@@ -647,8 +720,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                             return @{Result=$pubDSC.Name}
                         }
          }
-        
-                                                   
+
+
 #endregion - Create and publish templates
 
 #region template permissions
@@ -702,7 +775,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                             }
                         }
                  }
-                      
+
                 script "Perms_DSCCert_$($P)"
                 {
                     DependsOn = '[Script]CreateWebServer2Template'
@@ -745,8 +818,8 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
                             }
                         }
                  }
-      }   
-                         
+      }
+
     } #end ADCS Config
 
 } # End AllNodes
