@@ -34,6 +34,8 @@ Function Invoke-RefreshHost {
     if ($pscmdlet.ShouldProcess($Destination, "Copy configurations")) {
         Copy-Item -Path $SourcePath\* -recurse -Destination $Destination -force
     }
+
+    Write-host "This process will not remove any configurations that have been deleted from the module." -ForegroundColor yellow
 }
 
 Function Invoke-SetupHost {
@@ -187,11 +189,12 @@ Function Invoke-SetupLab {
     [cmdletbinding(SupportsShouldProcess)]
     [Alias("Setup-Lab")]
     Param (
-        [string]$Path = $PSScriptRoot,
+        [string]$Path = ".",
         [switch]$IgnorePendingReboot
     )
 
-    $LabData = Import-PowerShellDataFile -Path $Path\*.psd1
+    $labname = split-path (get-location) -leaf
+    $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
     $DSCResources = $LabData.NonNodeData.Lability.DSCResource
     if (-Not $DSCResources) {
         Write-Warning "Failed to find DSC Resource information. Are you in a directory with configuration data .psd1 file?"
@@ -227,8 +230,19 @@ Function Invoke-SetupLab {
     Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
 
     Foreach ($DSCResource in $DSCResources) {
+        #test if current version is installed otherwise update or install it
+        $dscmod = Get-Module $DSCResource.name -ListAvailable | Sort-Object Version -Descending
 
-        Install-Module -Name $($DSCResource).Name -RequiredVersion $($DSCResource).RequiredVersion
+        if ($dscmod[0].version -ne ($DSCResource.RequiredVersion -as [version])) {
+             if ($pscmdlet.ShouldProcess($DSCResource.name, "Update-Module")) {
+                Update-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
+            }
+        }
+        elseif (-not $dscmod) {
+            if ($pscmdlet.ShouldProcess($DSCResource.name, "Install-Module")) {
+                Install-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
+            }
+        }
 
     }
 
@@ -239,7 +253,7 @@ Function Invoke-SetupLab {
     }
     # Build the lab without a snapshot
     #
-    Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
+    Write-Host -ForegroundColor Cyan -Object "Building the lab environment for $labname"
     # Creates the lab environment without making a Hyper-V Snapshot
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
@@ -252,7 +266,8 @@ Function Invoke-SetupLab {
         WarningAction       = "SilentlyContinue"
     }
 
-    if ($PSCmdlet.ShouldProcess($($startParams | Out-String))) {
+    $startParams | Out-String | Write-Host -ForegroundColor cyan
+    if ($PSCmdlet.ShouldProcess($labname,"Start-LabConfiguration")) {
         Start-LabConfiguration @startParams
         # Disable secure boot for VM's
         Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
@@ -673,7 +688,7 @@ Function Invoke-UnattendLab {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Unattend-Lab")]
     Param (
-        [string]$Path = $PSScriptRoot
+        [string]$Path = "."
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -684,10 +699,10 @@ Function Invoke-UnattendLab {
 
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
-    Setup-Lab @psboundparameters
-    Run-Lab
+    Invoke-SetupLab @psboundparameters
+    Invoke-RunLab
     Enable-Internet
-    Validate-Lab
+    Invoke-ValidateLab
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -711,7 +726,7 @@ $mod = get-module psautolab -ListAvailable
 if ($mod) {
     $modpath = split-path $mod[0].path
     $msg = @"
-    
+
     An outdated version of this module was detected on this computer.
     It may conflict with the current commands. The recommendation is that
     you manually remove the files at $modpath.

@@ -23,10 +23,10 @@ $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsP
 $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
 Import-DscResource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
-Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "5.0.0.0"
+Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "8.9.0.0"
 Import-DscResource -ModuleName "xComputerManagement" -ModuleVersion "1.8.0.0"
-Import-DscResource -ModuleName "xNetworking" -ModuleVersion "3.0.0.0"
-Import-DscResource -ModuleName "xWindowsUpdate" -ModuleVersion "2.5.0.0"
+Import-DscResource -ModuleName "xNetworking" -ModuleVersion "5.7.0.0"
+Import-DscResource -ModuleName "xWindowsUpdate" -ModuleVersion "2.8.0.0"
 Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
 
     Node $AllNodes.Where({$true}).NodeName {
@@ -79,7 +79,6 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
             InterfaceAlias = $node.InterfaceAlias
-            PrefixLength   = $node.SubnetMask
             AddressFamily  = $node.AddressFamily
         }
 
