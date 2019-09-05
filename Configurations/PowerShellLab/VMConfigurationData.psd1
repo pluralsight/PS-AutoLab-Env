@@ -172,7 +172,7 @@ demonstrations and would need to be modified for your environment.
             NodeName = 'SRV3'
             IPAddress = '192.168.3.60'
             Lability_BootOrder = 20
-            Lability_Media = ' 2019_x64_Standard_EN_Core_Eval'
+            Lability_Media = '2019_x64_Standard_EN_Core_Eval'
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
         },
