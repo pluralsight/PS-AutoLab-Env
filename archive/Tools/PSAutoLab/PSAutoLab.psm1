@@ -3,27 +3,167 @@
 Authors: Jason Helmick and Melissa (Missy) Janusko
 Additional contributors of note: Jeff Hicks
 
-Note: 
+Note:
 This module should not be considered to follow best practices. This is a collection of 'Control' scripts,
 that use helping information that does not follow Advanced Function best practices.
 This is intentional for the benefit and ease of use for students less familiar with PowerShell.
 The goal was to make maintainence of the control scripts easier.
-    
-       
+
+
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the 
+Note: These demos should not be run as a script. These are the commands that I use in the
 demonstrations and would need to be modified for your environment.
 
-#> 
+#>
 
-#Requires -version 5.0
-#Requires -runasadministrator
+Function Invoke-SetupHost {
+    [CmdletBinding(SupportsShouldProcess)]
+    [alias("Setup-Host")]
+    Param(
+        [string]$DestinationPath = "C:\Autolab"
+    )
+
+    # Setup Path Variables
+    $SourcePath = $PSScriptRoot
+
+    Clear-Host
+    Write-Host -ForegroundColor Cyan -Object "The default installation path is $DestinationPath"
+    $result = Read-Host "Would you like to change the default path? (y/n)"
+    If ($Result -eq 'y') {
+        $DestinationPath = Read-Host "Enter complete path including drive letter"
+        Write-Output "New path is $DestinationPath"
+    }
+
+
+    Write-Host -ForegroundColor Green -Object @"
+
+    This is the Setup-Host script. This script will perform the following:
+
+    * For PowerShell Remoting, configure the host 'TrustedHosts' value to *
+    * Install the Lability module from PSGallery
+    * Install Hyper-V
+    * Create the $DestinationPath folder (DO NOT DELETE)
+    * Copy configurations and resources to $DestinationPath
+    * You will then need to reboot the host before continuing
+
+    Note! - You may delete the folder $SourcePath when this setup finished and the system
+            has been rebooted.
+
+"@
+
+    Write-Host -ForegroundColor Yellow -Object @"
+
+    !!IMPORTANT SECURITY NOTE!!
+
+    This module will set trusted hosts to connect to ANY remote machine. This is NOT a recommended
+    security practice. It is assumed you are installing this module on a non-production machine
+    and are willing to accept this potential risk for the sake of a training and test environment.
+
+    If you do not want to proceed, press Ctrl-C.
+"@
+
+    Pause
+
+    # For remoting commands to VM's - have the host set trustedhosts
+    Enable-PSremoting -force -SkipNetworkProfileCheck
+
+    Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
+    $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
+    if ($Trust.Value -eq "*") {
+        Write-Host -ForegroundColor Green -Object "TrustedHosts is already set to *. No changes needed"
+    }
+    else {
+        $add = '*' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
+        Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
+        Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
+    }
+
+    # Lability install
+
+    Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap | Out-Null
+
+    <#
+ Test if the current version of Lability is already installed. If so, do nothing.
+ If an older version is installed, update the version, otherwise install the latest version.
+#>
+
+    $requiredVersion = '0.18.0'
+    $LabilityMod = Get-Module -Name Lability -ListAvailable | Sort-Object Version -Descending
+    if (-Not $LabilityMod) {
+        Write-Host -ForegroundColor Cyan "Installing Lability Module version $requiredVersion for the lab build"
+        Install-Module -Name Lability -RequiredVersion $requiredVersion -Force
+    }
+    elseif ($LabilityMod[0].Version.ToString() -eq $requiredVersion) {
+        Write-Host "Version $requiredVersion of Lability is already installed" -ForegroundColor Cyan
+    }
+    elseif ($LabilityMod[0]) {
+        Write-Host -ForegroundColor Cyan "Updating Lability Module for the lab build"
+        Update-Module -Name Lability -force #-RequiredVersion $requiredVersion -Force
+    }
+
+    # Install PSAutoLab Module
+   # Write-Host -ForegroundColor Cyan "Installing PSAutoLab Module for the lab build"
+   # Copy-Item -Path "$SourcePath\Tools\PSAutoLab" -Destination 'C:\Program Files\WindowsPowerShell\Modules' -Recurse -Force
+
+    # Set Lability folder structure
+    $DirDef = @{
+        ConfigurationPath   = "$DestinationPath\Configurations"
+        DifferencingVhdPath = "$DestinationPath\VMVirtualHardDisks"
+        HotfixPath          = "$DestinationPath\Hotfixes"
+        IsoPath             = "$DestinationPath\ISOs"
+        ModuleCachePath     = "C:\ProgramData\Lability\Modules"
+        ParentVhdPath       = "$DestinationPath\MasterVirtualHardDisks"
+        ResourcePath        = "$DestinationPath\Resources"
+    }
+
+    Set-LabHostDefault @DirDef
+
+    # Setup host Environment.
+    # Dev Note -- Should use If state with Test-LabHostConfiguration -- it returns true or false
+
+    $HostStatus = Test-LabHostConfiguration
+    If ($HostStatus -eq $False) {
+        Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V"
+        Start-LabHostConfiguration -ErrorAction SilentlyContinue
+    }
+
+    ###### COPY Configs to host machine
+    Write-Host -ForegroundColor Cyan -Object "Copying configs to $DestinationPath\Configurations"
+    Copy-item -Path $SourcePath\Configurations\* -recurse -Destination $DestinationPath\Configurations -force
+
+    Write-Host -ForegroundColor Green -Object @"
+
+    The Host is about to reboot.
+    After the reboot, open Powershell, navigate to a configuration directory
+    $DestinationPath\Configuration\<yourconfigfolder>
+    And run:
+
+    PS $DestinationPath\Configuration\<yourconfigfolder>Setup-Lab -ignorependingreboot
+    or
+    PS $DestinationPath\Configuration\<yourconfigfolder>Unattend-Lab -ignorependingreboot
+
+"@
+
+    Write-Host -ForegroundColor Yellow -Object "Note! - You may delete the folder $SourcePath when this setup finished and the system has been rebooted."
+
+    Write-Warning "System needs to reboot"
+    $reboot = Read-Host "Do you wish to reboot now? (y/n)"
+    If ($reboot -eq 'y') {
+        Write-Output "Rebooting now"
+        Restart-Computer
+    }
+
+
+
+
+}
 
 #region Setup-Lab
-Function Setup-Lab {
+Function Invoke-SetupLab {
     [cmdletbinding(SupportsShouldProcess)]
+    [Alias("Setup-Lab")]
     Param (
         [string]$Path = $PSScriptRoot,
         [switch]$IgnorePendingReboot
@@ -34,7 +174,7 @@ Function Setup-Lab {
         This is the Setup-Lab script. This script will perform the following:
         * Run the configs to generate the required .mof files
         Note! - If there is an error creating the .mofs, the setup will fail
-        
+
         * Run the lab setup
         Note! If this is the first time you have run this, it can take several
         hours to download the .ISO's and resources.
@@ -69,11 +209,11 @@ Function Setup-Lab {
     Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
 
-    $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
+    $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
         ConfigurationData = ".\*.psd1"
         Path              = ".\"
-        NoSnapshot        = $True 
+        NoSnapshot        = $True
         Password          = $Password
     }
     if ($IgnorePendingReboot) {
@@ -81,7 +221,7 @@ Function Setup-Lab {
     }
 
     if ($PSCmdlet.ShouldProcess($($startParams | Out-String))) {
-        Start-LabConfiguration @startParams 
+        Start-LabConfiguration @startParams
         # Disable secure boot for VM's
         Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
@@ -90,7 +230,7 @@ Function Setup-Lab {
         Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
-        
+
         When complete, run:
         Run-Lab
 
@@ -110,7 +250,7 @@ Function Setup-Lab {
         Refresh-Lab
 
         To destroy the lab to build again:
-        Wipe-Lab   
+        Wipe-Lab
 
 "@
 
@@ -120,7 +260,9 @@ Function Setup-Lab {
 #endregion Setup-lab
 
 #region Run-Lab
-Function Run-Lab {
+Function Invoke-RunLab {
+    [cmdletbinding()]
+    [alias("Run-Lab")]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -128,18 +270,18 @@ Function Run-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Run-Lab script. This script will perform the following:
-    
+
         * Start the Lab environment
-    
+
         Note! If this is the first time you have run this, it can take up to an hour
-        for the DSC configs to apply. 
+        for the DSC configs to apply.
         This only occurs the first time.
 
 "@
 
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
-    Start-Lab -ConfigurationData .\*.psd1 
+    Start-Lab -ConfigurationData .\*.psd1
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -161,7 +303,7 @@ Function Run-Lab {
         Refresh-Lab
 
         To destroy the lab to build again:
-        Wipe-Lab  
+        Wipe-Lab
 
 
 "@
@@ -170,6 +312,7 @@ Function Run-Lab {
 
 #region Enable-Internet
 Function Enable-Internet {
+    [cmdletbinding()]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -177,12 +320,12 @@ Function Enable-Internet {
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Enable-Internet script. This script will perform the following:
-    
-        * Enable Internet to the VM's 
-    
+
+        * Enable Internet to the VM's
+
         * Note! - If this generates an error, you are already enabled, or one of the default settings below
                     does not match your .PSD1 configuration
-   
+
         *DevNote! - Currently working on a better solution to pull those values
 
 "@
@@ -190,7 +333,7 @@ Function Enable-Internet {
 
 
     $LabData = Import-PowerShellDataFile -Path .\*.psd1
-    $LabSwitchName = $labdata.NonNodeData.Lability.Network.name 
+    $LabSwitchName = $labdata.NonNodeData.Lability.Network.name
     $GatewayIP = $Labdata.AllNodes.DefaultGateway
     $GatewayPrefix = $Labdata.AllNodes.SubnetMask
     $NatNetwork = $Labdata.AllNodes.IPnetwork
@@ -200,12 +343,12 @@ Function Enable-Internet {
     $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
     New-NetIPAddress -InterfaceIndex $Index -IPAddress $GatewayIP -PrefixLength $GatewayPrefix -ErrorAction SilentlyContinue
     # Creating the NAT on Server 2016 -- maybe not work on 2012R2
-    New-NetNat -Name $NatName -InternalIPInterfaceAddressPrefix $NatNetwork -ErrorAction SilentlyContinue   
+    New-NetNat -Name $NatName -InternalIPInterfaceAddressPrefix $NatNetwork -ErrorAction SilentlyContinue
 
     Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
-    
+
         When complete, run:
         Run-Lab
 
@@ -217,7 +360,9 @@ Function Enable-Internet {
 #endregion Enable-Internet
 
 #region Validate-Lab
-Function Validate-Lab {
+Function Invoke-ValidateLab {
+    [cmdletbinding()]
+    [alias("Validate-Lab")]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -253,7 +398,9 @@ Function Validate-Lab {
 #endregion Validate-Lab
 
 #region Shutdown-Lab
-Function Shutdown-Lab {
+Function Invoke-ShutdownLab {
+    [cmdletbinding()]
+    [alias("Shutdown-Lab")]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -261,14 +408,14 @@ Function Shutdown-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Shutdown-Lab script. This script will perform the following:
-    
+
         * Shutdown the Lab environment:
 
 "@
 
     Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
-    Stop-Lab -ConfigurationData .\*.psd1 
+    Stop-Lab -ConfigurationData .\*.psd1
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -291,7 +438,9 @@ Function Shutdown-Lab {
 #endregion Shutdown-Lab
 
 #region Snapshot-Lab
-Function Snapshot-Lab {
+Function Invoke-SnapshotLab {
+    [cmdletbinding()]
+    [alias("Snapshot-Lab")]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -299,16 +448,16 @@ Function Snapshot-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Snapshot-Lab script. This script will perform the following:
-    
+
         * Snapshot the lab environment for easy and fast rebuilding
-    
+
         Note! This should be done after the configurations have finished
 
 "@
 
     Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
-    Stop-Lab -ConfigurationData .\*.psd1 
+    Stop-Lab -ConfigurationData .\*.psd1
     Checkpoint-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured
 
     Write-Host -ForegroundColor Green -Object @"
@@ -329,7 +478,9 @@ Function Snapshot-Lab {
 #endregion
 
 #region Refresh-Lab
-Function Refresh-Lab {
+Function Invoke-RefreshLab {
+    [cmdletbinding()]
+    [alias("Refresh-Lab")]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -337,9 +488,9 @@ Function Refresh-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Refresh-Lab script. This script will perform the following:
-    
-        * Refresh the lab from a previous Snapshot 
-    
+
+        * Refresh the lab from a previous Snapshot
+
         Note! This can only be done if you created a snapshot!
         Snapshot-lab
 
@@ -347,7 +498,7 @@ Function Refresh-Lab {
 
     Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
-    Stop-Lab -ConfigurationData .\*.psd1 
+    Stop-Lab -ConfigurationData .\*.psd1
     Restore-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured -force
 
     Write-Host -ForegroundColor Green -Object @"
@@ -368,7 +519,9 @@ Function Refresh-Lab {
 #endregion Refresh-Lab
 
 #region Wipe-Lab
-Function Wipe-Lab {
+Function Invoke-WipeLab {
+    [cmdletbinding()]
+    [alias("Wipe-Lab")]
     Param (
         [string]$Path = $PSScriptRoot
     )
@@ -376,8 +529,8 @@ Function Wipe-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
         This is the wipe-Lab script. This script will perform the following:
-    
-        * Wipe the lab and VM's from your system 
+
+        * Wipe the lab and VM's from your system
 
 "@
 
@@ -386,12 +539,12 @@ Function Wipe-Lab {
     Write-Host -ForegroundColor Cyan -Object 'Removing the lab environment'
     # Stop the VM's
     Stop-Lab -ConfigurationData .\*.psd1
-    # Remove .mof iles 
+    # Remove .mof iles
     Remove-Item -Path .\*.mof
     # Delete NAT
     $LabData = Import-PowerShellDataFile -Path .\*.psd1
     $NatName = $Labdata.AllNodes.IPNatName
-    Remove-NetNat -Name $NatName 
+    Remove-NetNat -Name $NatName
     # Delete vM's
     Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch
     Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
@@ -431,8 +584,9 @@ Function Wipe-Lab {
 #endregion Wipe-Lab
 
 #region Unattend-Lab
-Function Unattend-Lab {
+Function Invoke-UnattendLab {
     [cmdletbinding(SupportsShouldProcess)]
+    [alias("Unattend-Lab")]
     Param (
         [string]$Path = $PSScriptRoot,
         [switch]$IgnorePendingReboot
@@ -441,9 +595,9 @@ Function Unattend-Lab {
     Write-Host -ForegroundColor Green -Object @"
 
        This runs Setup-Lab, Run-Lab, and validate-Lab
-    
+
 "@
- 
+
     Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
 
 

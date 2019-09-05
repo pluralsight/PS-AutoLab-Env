@@ -2,27 +2,25 @@
 
 <# Notes:
 
-Authors: Jason Helmick and Melissa (Missy) Januszko
+Authors: Jason Helmick,Melissa (Missy) Januszko, and Jeff Hicks
 
 The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
 Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
 
-Additional contributors of note: Jeff Hicks
 
-       
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the 
+Note: These demos should not be run as a script. These are the commands that I use in the
 demonstrations and would need to be modified for your environment.
 
-#> 
+#>
 
 Configuration AutoLab {
 
 $LabData = Import-PowerShellDataFile -Path .\VMConfigurationData.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
-$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure 
+$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
 Import-DscResource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
 Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "5.0.0.0"
@@ -75,8 +73,8 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
             ConfigurationMode = 'ApplyOnly'
         }
 #endregion
-  
-#region IPaddress settings 
+
+#region IPaddress settings
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
@@ -85,7 +83,7 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
             AddressFamily  = $node.AddressFamily
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {     
+        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
             xDefaultGatewayAddress 'PrimaryDefaultGateway' {
                 InterfaceAlias = $node.InterfaceAlias
                 Address = $node.DefaultGateway
@@ -93,7 +91,7 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
             }
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {                    
+        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
             xDnsServerAddress 'PrimaryDNSClient' {
                 Address        = $node.DnsServerAddress
                 InterfaceAlias = $node.InterfaceAlias
@@ -108,11 +106,11 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
             }
         }
     } #End IF
-            
+
 #endregion
 
 #region Firewall Rules
-    
+
     $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
@@ -127,13 +125,13 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
 #region RSAT config
    node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
         # Adds RSAT
-      
+
         xHotfix RSAT {
             Id = 'KB2693643'
             Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
             Ensure = 'Present'
         }
-    
+
     } #end RSAT Config
 
 #region RDP config
@@ -160,7 +158,7 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
     } # End RDP
     }
 #endregion
-}   
+}
 
 AutoLab -OutputPath .\ -ConfigurationData .\VMConfigurationData.psd1
 
