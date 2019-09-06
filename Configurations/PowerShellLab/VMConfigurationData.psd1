@@ -184,11 +184,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource = @('Win10RSAT')
-            CustomBootStrap = @'
-                    # To enable PSRemoting on the client and install RSAT
-                    Enable-PSRemoting -SkipNetworkProfileCheck -Force;
-                    Get-WindowsCapability -online -name Rsat* | Where-object {$_.State -ne 'Installed'} | Add-WindowsCapability -online
-'@
+            CustomBootStrap = @()
         }
 #>
 

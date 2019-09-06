@@ -9,7 +9,7 @@ demonstrations and would need to be modified for your environment.
 #>
 
 @{
-    AllNodes = @(
+    AllNodes    = @(
         @{
             NodeName                    = '*'
 
@@ -80,54 +80,49 @@ demonstrations and would need to be modified for your environment.
             #>
         }
 
-<#    Available Roles for computers
+        <#    Available Roles for computers
         DC = Domain Controller
         DHCP = Dynamic Host Configuration Protocol
         ADCS = Active Directory Certificate SErvices - plus autoenrollment GPO's and DSC and web server certs
         Web = Basic web server
-        RSAT = Remote Server Administration Tools for the client - DEPRECRATED
+        RSAT = Remote Server Administration Tools for the client
         RDP = enables RDP and opens up required firewall rules
         DomainJoin = joins a computer to the domain
 #>
 
         @{
-            NodeName = 'Win10Ent'
-            IPAddress = '192.168.3.101'
-            Role = @('RDP')
+            NodeName                = 'Win10Ent'
+            IPAddress               = '192.168.3.101'
+            Role                    = @('RSAT','RDP')
             Lability_ProcessorCount = 2
-            Lability_MinimumMemory = 2GB
-            Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
-            Lability_BootOrder = 20
-            Lability_timeZone = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Resource = @()
-            CustomBootStrap         = @'
-                    # To enable PSRemoting on the client and install RSAT
-                    Enable-PSRemoting -SkipNetworkProfileCheck -Force;
-                    Get-WindowsCapability -online -name Rsat* | Where-object {$_.State -ne 'Installed'} | Add-WindowsCapability -online
-'@
+            Lability_MinimumMemory  = 2GB
+            Lability_Media          = 'WIN10_x64_Enterprise_EN_Eval'
+            Lability_BootOrder      = 20
+            Lability_timeZone       = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_Resource       = @()
         }
     );
     NonNodeData = @{
         Lability = @{
             # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
 
-            Network = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true;}
+            Network     = @( # Virtual switch in Hyper-V
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery';},
+                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '8.9.0.0'; Provider = 'PSGallery'},
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; Provider = 'PSGallery'}
             );
-            Resource = @(
+            Resource    = @(
                 @{
-                    Id = 'Win10RSAT'
+                    Id       = 'Win10RSAT'
                     Filename = 'WindowsTH-RSAT_WS2016-x64.msu'
-                    Uri = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS2016-x64.msu'
-                    Expand = $false
+                    Uri      = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS2016-x64.msu'
+                    Expand   = $false
                     #DestinationPath = '\software' # Default is resources folder
                 }
             );
