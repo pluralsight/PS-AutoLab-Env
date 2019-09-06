@@ -214,6 +214,13 @@ Describe Win10 {
         $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
     }
 
+    It "[Win10] Should have RSAT installed" {
+        $pkg = Invoke-Command {Get-WindowsCapability -online -name *rsat*} -session $cl
+
+        # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
+        $pkg.State| should match "Installed"
+
+    }
 } #client
 
 $all | Remove-PSSession

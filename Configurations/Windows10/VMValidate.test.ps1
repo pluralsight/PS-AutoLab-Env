@@ -18,14 +18,7 @@ $DNSAddress = $LabData.allnodes[0].DnsServerAddress
 
 Describe $Computername {
 
-    try {
-        $cl = New-PSSession -VMName $Computername -Credential $cred -ErrorAction Stop
-    }
-    Catch {
-        Write-Warning "Failed to create PSSession to $Computername using credential for $($cred.UserName). $($_.exception.message)"
-        #bail out
-        Return
-    }
+    $cl = New-PSSession -VMName $Computername -Credential $cred -ErrorAction SilentlyContinue
 
     It "[$Computername] Should have an IP address of $IP" {
         $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
@@ -57,10 +50,10 @@ Describe $Computername {
         # Write-Host ($admins | Out-string) -ForegroundColor cyan
     }
     It "[$Computername] Should have RSAT installed" {
-        $pkg = Invoke-Command { Get-WindowsPackage -PackageName *RemoteServerAdministrationTools* -online} -session $cl
+        $pkg = Invoke-Command {Get-WindowsCapability -online -name *rsat*} -session $cl
 
-        # write-host ($pkg | out-string) -ForegroundColor cyan
-        $pkg.PackageState| should match "Install"
+        # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
+        $pkg.State| should match "Installed"
 
     }
 
