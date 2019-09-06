@@ -376,20 +376,8 @@ public class FirstService : WebService
 
 #region RSAT config
    node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
-        # Adds RSAT
 
-        xHotfix RSAT {
-            Id = 'KB2693643'
-            Path = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
-            Credential = $DomainCredential
-            DependsOn = '[xcomputer]JoinDC'
-            Ensure = 'Present'
-        }
-
-        xPendingReboot Reboot {
-            Name = 'AfterRSATInstall'
-            DependsOn = '[xHotFix]RSAT'
-        }
+ywipe
 
         #since RSAT is added to the client go ahead and create a Scripts folder
         File scripts {

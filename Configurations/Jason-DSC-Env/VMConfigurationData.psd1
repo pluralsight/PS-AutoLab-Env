@@ -189,11 +189,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @('Win10RSAT')
-            CustomBootStrap         = @'
-                    # To enable PSRemoting on the client
-                    Enable-PSRemoting -SkipNetworkProfileCheck -Force;
-                    Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value *
-'@
+            CustomBootStrap         = @()
         }
 
     );

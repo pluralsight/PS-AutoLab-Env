@@ -306,20 +306,28 @@ Configuration AutoLab {
     #endregion
 
     #region RSAT config
-    node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
-        # Adds RSAT
+  # Adds RSAT which is now a Windows Capability in Windows 10
 
-        xHotfix RSAT {
-            Id         = 'KB2693643'
-            Path       = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
-            Credential = $DomainCredential
-            DependsOn  = '[xcomputer]JoinDC'
-            Ensure     = 'Present'
-        }
+        Script RSAT {
+            TestScript = {
+                $packages = Get-WindowsCapability -online -Name Rsat*
+                if ($packages.state -match "Installed") {
+                    Return $True
+                }
+                else {
+                    Return $False
+                }
+            }
 
-        xPendingReboot Reboot {
-            Name      = 'AfterRSATInstall'
-            DependsOn = '[xHotFix]RSAT'
+            GetScript  =  {
+                $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
+                $installed = $packages.Where({$_.state -eq "Installed"})
+                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
+            }
+
+            SetScript  = {
+                Get-WindowsCapability -online -Name Rsat* | Where-Object {$_.state -ne "installed"} | Add-WindowsCapability -online
+            }
         }
 
 
