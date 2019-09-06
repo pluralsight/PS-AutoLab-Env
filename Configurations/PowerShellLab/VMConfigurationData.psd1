@@ -117,9 +117,6 @@ demonstrations and would need to be modified for your environment.
             WIN10_x86_Enterprise_EN_Eval            Windows 10 32bit Enterprise 1903 English Evaluation
             WIN10_x64_Enterprise_LTSC_EN_Eval       Windows 10 64bit Enterprise LTSC 2019 English Evaluation
             WIN10_x86_Enterprise_LTSC_EN_Eval       Windows 10 32bit Enterprise LTSC 2019 English Evaluation
-
-
-
             #>
         },
 
@@ -180,7 +177,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'WIN10'
             IPAddress = '192.168.3.100'
-            Role = @('domainJoin', 'RSAT', 'RDP')
+            Role = @('domainJoin', 'RDP')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
@@ -188,8 +185,9 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource = @('Win10RSAT')
             CustomBootStrap = @'
-                    # To enable PSRemoting on the client
+                    # To enable PSRemoting on the client and install RSAT
                     Enable-PSRemoting -SkipNetworkProfileCheck -Force;
+                    Get-WindowsCapability -online -name Rsat* | Where-object {$_.State -ne 'Installed'} | Add-WindowsCapability -online
 '@
         }
 #>
