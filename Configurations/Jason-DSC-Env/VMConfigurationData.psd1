@@ -189,7 +189,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @('Win10RSAT')
-            CustomBootStrap         = @()
+            CustomBootStrap         = ''
         }
 
     );
