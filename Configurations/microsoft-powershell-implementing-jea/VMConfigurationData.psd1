@@ -159,7 +159,7 @@ demonstrations and would need to be modified for your environment.
             IPAddress = '192.168.3.60'
             #Role = 'Nano'
             Lability_BootOrder = 20
-            Lability_Media = ' 2016_x64_Standard_Nano_EN_Eval'
+            Lability_Media = '2016_x64_Standard_Nano_EN_Eval'
             Lability_ProcessorCount = 1
             Lability_StartupMemory = 1GB
         }

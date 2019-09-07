@@ -174,7 +174,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval       Windows 10 32bit Enterprise LTSC 2019 En
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @('Win10RSAT')
-            CustomBootStrap         = @()
+            CustomBootStrap         = ''
         }
         @{
             NodeName                = 'Cli2'
@@ -185,7 +185,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval       Windows 10 32bit Enterprise LTSC 2019 En
             Lability_Media          = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            CustomBootStrap         = @()
+            CustomBootStrap         = ''
         }
         #>
 

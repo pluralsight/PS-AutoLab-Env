@@ -79,6 +79,7 @@ demonstrations and would need to be modified for your environment.
             Lability_SwitchName = 'LabNet'
             Lability_ProcessorCount = 1
             Lability_MinimumMemory = 1GB
+            Lability_MaximumMemory = 3GB
             SecureBoot = $false
             Lability_Media = '2016_x64_Standard_Core_EN_Eval'
             <#
@@ -177,14 +178,14 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName = 'WIN10'
             IPAddress = '192.168.3.100'
-            Role = @('domainJoin', 'RDP')
+            Role = @('domainJoin', 'RDP','RSAT')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory = 2GB
             Lability_Media = 'WIN10_x64_Enterprise_EN_Eval'
             Lability_BootOrder = 20
             Lability_timeZone = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Resource = @('Win10RSAT')
-            CustomBootStrap = @()
+            Lability_Resource = @()
+            CustomBootStrap = ''
         }
 #>
 

@@ -13,7 +13,7 @@ This lab builds the following:
 To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab. You should run all commands from the directory with the MOF and psd1 files.
 
 ```powershell
-PS> Unattend-Lab -ignorePendingReboot
+PS> Unattend-Lab
 ```
 
 To run the commands individually to setup the lab environment:
@@ -21,7 +21,7 @@ To run the commands individually to setup the lab environment:
 Run the following for initial setup:
 
 ```powershell
-PS> Setup-Lab -ignorePendingReboot
+PS> Setup-Lab 
 ```
 
 To start the Lab, and apply configurations the first time:

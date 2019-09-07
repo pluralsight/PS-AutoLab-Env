@@ -306,7 +306,10 @@ Configuration AutoLab {
     #endregion
 
     #region RSAT config
-  # Adds RSAT which is now a Windows Capability in Windows 10
+    node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
+        # Adds RSAT
+
+        # Adds RSAT which is now a Windows Capability in Windows 10
 
         Script RSAT {
             TestScript = {
@@ -319,9 +322,9 @@ Configuration AutoLab {
                 }
             }
 
-            GetScript  =  {
+            GetScript  = {
                 $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
-                $installed = $packages.Where({$_.state -eq "Installed"})
+                $installed = $packages.Where( {$_.state -eq "Installed"})
                 Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
             }
 
@@ -332,6 +335,7 @@ Configuration AutoLab {
 
 
     }#end RSAT Config
+
 
     #region RDP config
     node $AllNodes.Where( {$_.Role -eq 'RDP'}).NodeName {

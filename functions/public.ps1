@@ -94,8 +94,10 @@ Function Invoke-SetupHost {
 #>
 
     #use the module defined variable and a private function
-    _LabilityCheck $LabilityVersion
-    Import-Module Lability
+    if ($pscmdlet.ShouldProcess("Lability $labilityVersion","Install or Update Lability")) {
+        _LabilityCheck $LabilityVersion
+        Import-Module Lability
+    }
 
     # Set Lability folder structure
     $DirDef = @{
@@ -388,7 +390,27 @@ Function Invoke-ValidateLab {
         [string]$Path = $PSScriptRoot
     )
 
-    Write-Host "[$(Get-Date)] Starting the VM testing process. This could take some time complete. Errors are expected until all tests complete successfully." -ForegroundColor Cyan
+    $msg = @"
+    [$(Get-Date)]
+    Starting the VM testing process. This could take some time to
+    complete depending on the complexity of the configuration. You can press
+    Ctrl+C at any time to break out of the testing loop.
+
+    If you feel the test is taking too long, break out of the testing loop
+    and manually run the test:
+
+    invoke-pester .\vmvalidate.test.ps1
+
+    If only one of the VMs appears to be failing, you might try stopping
+    and restarting it with the Hyper-V Manager or the cmdlets:
+
+    Stop-VM <vmname>
+    Start-VM <vmname>
+
+    Errors are expected until all tests complete successfully.
+
+"@
+    Write-Host $msg  -ForegroundColor Cyan
 
     $Complete = $False
 
@@ -427,7 +449,7 @@ Function Invoke-ShutdownLab {
 
     Write-Host -ForegroundColor Green -Object @"
 
-        This is the Shutdown-Lab script. This script will perform the following:
+        This is the Shutdown-Lab command. It will perform the following:
 
         * Shutdown the Lab environment:
 
@@ -477,7 +499,7 @@ Function Invoke-SnapshotLab {
 
     Write-Host -ForegroundColor Green -Object @"
 
-        This is the Snapshot-Lab script. This script will perform the following:
+        This is the Snapshot-Lab command. It will perform the following:
 
         * Snapshot the lab environment for easy and fast rebuilding
 
