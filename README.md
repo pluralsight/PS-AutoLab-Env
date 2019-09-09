@@ -36,6 +36,8 @@ Install-Module PSAutoLab
 If prompted, answer yes to update the nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted.
 If you have an old copy from before Pluralsight took ownership you will get an error.
 Manually remove the old module files and try again.
+Do not download or use any of the release packages on Github.
+Only install from the PowerShell Gallery.
 
 **DO NOT run this module on any mission-critical production system.**
 
