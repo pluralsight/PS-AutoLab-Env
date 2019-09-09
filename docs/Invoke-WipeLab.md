@@ -1,0 +1,74 @@
+---
+external help file: PSAutoLab-help.xml
+Module Name: PSAutoLab
+online version:
+schema: 2.0.0
+---
+
+# Invoke-WipeLab
+
+## SYNOPSIS
+
+Remove an Autolab configuration
+
+## SYNTAX
+
+```yaml
+Invoke-WipeLab [[-Path] <String>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+You can use this command to remove all files and virtual machines related to an Autolab configuration.
+The command will stop any running virtual machines for you.
+It is assumed you will be running this command from within a configuration folder.
+
+If you intend to rebuild the lab or create another configuration, you do not need to delete the LabNat item.
+
+You will most likely use the Wipe-Lab alias.
+
+## EXAMPLES
+
+### Example 1
+
+```powershell
+PS C:\AutoLab\Configurations\Windows10> Wipe-Lab
+```
+
+Follow any onscreen prompts or instructions.
+
+## PARAMETERS
+
+### -Path
+
+The path to the configuration folder. Normally, you should run all commands from within the configuration folder.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: Current Directory
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+### None
+
+## OUTPUTS
+
+### System.Object
+
+## NOTES
+
+## RELATED LINKS
+
+[Setup-Lab]()

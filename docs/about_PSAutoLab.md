@@ -1,63 +1,17 @@
-# PSAutoLab
+﻿# PSAutoLab
 
-This project serves as a set of "wrapper" commands that utilize the [Lability])https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems.
+## about_PSAutoLab
+
+# SHORT DESCRIPTION
+
+This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems.
 The downside is that it is a difficult module for less experienced PowerShell users.
 The configurations and control scripts for the Hyper-V virtual machine's are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability.
 If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
-This project and all files are released under an MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want.
 
-**While this project is under the Pluralsight banner, it is offered AS-IS as a free tool with no official support from Pluralsight.
-Pluralsight makes no guarantees or warranties.
-This project is intended to be used for educational purposes only.**
+# LONG DESCRIPTION
 
-## Aliases and Language
-
-While this module follows proper naming conventions, the commands you will typically used employ aliases that use non-standard verbs.
-This is to avoid conflicts with commands in the Lability module and to maintain backwards compatibility.
-You can use the aliases or the full function name.
-All references in this document use the aliases.
-
-## Previous Versions
-
-If you installed previous versions of this module, and struggled, hopefully this version will be an improvement.
-To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`.
-The previous version was not installed using PowerShell Get so it can't be updated or easily overwritten.
-
-## Installation
-
-This project has been published to the PowerShell Gallery.
-It is recommended that you have at least version 2.2 of the PowerShellGet module which handled module installations.
-Open an elevated PowerShell prompt and run:
-
-```powershell
-Install-Module PSAutolab
-```
-
-If prompted, answer yes to update the nuget version and to install from an untrusted repository.
-If you have an old copy from before Pluralsight took ownership you will get an error.
-Manually remove the old module files and try again.
-
-**DO NOT run this module on any mission-critical production system.**
-
-### Requirements
-
-This Lab tool currently supports running on either Windows Server 2016 (not fully tested) or a Windows 10 client that supports virtualization.
-It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1.
-
-The host computer must have the following:
-
-* Windows PowerShell 5.1
-* An internet connection
-* Minimum 16GB of Ram
-* Minimum 100GB free disk space
-
-*This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7.*
-
-### Note for VMware users
-
-If you are going to build a Host VM of Server 2016 or Windows 10, In the general settings for your VM, you must change the OS type to Hyper-V(Unsupported) or the Host Hyper-V will not work!
-
-## Setup
+## SETUP
 
 The first time you use this module, you will need to configure the local machine or host.
 
@@ -77,7 +31,7 @@ Setup-Host -destinationpath D:\Autolab
 
 You will be prompted to reboot, which you should do especially if setup had to add Hyper-V.
 
-## Creating a Lab
+## CREATING A LAB
 
 Lab information is stored under the Autolab Configurations folder, which is C:\Autolab\Configurations by default.
 Open an elevated PowerShell prompt and change location to the desired configuration folder.
@@ -93,7 +47,7 @@ Or you can manage individual virtual machines using the Hyper-V manager or cmdle
 
 *It is assumed that you will only have one lab configuration created at a time.*
 
-### Manual Setup
+### MANUAL SETUP
 
 Most, if not all, configurations should follow the same manual process.
 Run each command after the previous one has completed.
@@ -114,7 +68,7 @@ Invoke-Pester VMValidate.test.ps1
 
 This can be useful for troubleshooting.
 
-### Unattended Setup
+### UNATTENDED SETUP
 
 As an alternative, you can setup a lab environment with minimal prompting.
 
@@ -125,7 +79,7 @@ Unattend-Lab
 Assuming you don't need to install a newer version of nuget, you can leave the setup alone.
 It will run all of the manual steps for you.
 
-### Stopping a Lab
+### STOPPING A LAB
 
 To stop the lab VM's, change to the configuration folder in an elevated Windows PowerShell session and run:
 
@@ -136,7 +90,7 @@ Shutdown-Lab
 You can also use the Hyper-V manager or cmdlets to shut down virtual machines.
 If your lab contains a domain controller such as DOM1 or DC1, that should be the last virtual machine to shut down.
 
-### Starting a Lab
+### STARTING A LAB
 
 The setup process will leave the virtual machines running.
 If you have stopped the lab and need to start it, change to the configuration folder in an elevated Windows PowerShell session and run:
@@ -148,7 +102,7 @@ Run-Lab
 You can also use the Hyper-V manager or cmdlets to start virtual machines.
 If your lab contains a domain controller such as DOM1 or DC1, that should be the first virtual machine to start up.
 
-### Lab Checkpoints
+### LAB CHECKPOINTS
 
 You can snapshot the entire lab very easily.
 Change to the configuration folder in an elevated Windows PowerShell session and run:
@@ -163,7 +117,7 @@ To quickly rebuild the labs from the checkpoint, run:
 Refresh-Lab
 ```
 
-### To Remove a Lab
+### TO REMOVE A LAB
 
 To destroy the lab completely, change to the configuration folder in an elevated Windows PowerShell session and run:
 
@@ -174,7 +128,7 @@ Wipe-Lab
 This will remove the virtual machines and DSC configuration files.
 If you intend to rebuild the lab or another configuration, you can keep the LabNat virtual switch.
 
-## Updating
+## UPDATING
 
 As this module is updated over time, new configurations may be added, or bugs fixed in existing configurations.
 There may also be new Lability updates.
@@ -199,7 +153,7 @@ Refresh-Host
 This will update Lability if required and copy all new configuration files to your Autolab\Configurations folder.
 It will NOT delete any files.
 
-## Troubleshooting
+## TROUBLESHOOTING
 
 The commands and configurations in this module are not foolproof.
 During testing a lab configuration will run quickly and without error on one Windows 10 desktop but fail or take much longer on a different Windows 10 desktop.
@@ -225,10 +179,10 @@ If you *still* are having problems, wipe the lab and try a different configurati
 This will help determine if the problem is with the configuration or a larger compatibility problem.
 
 At this point, you can open an issue in this repository.
-Open an elevated PowerShell prompt and run Get-PSAutolabSetting which will provide useful information.
+Open an elevated PowerShell prompt and run `Get-PSAutolabSetting` which will provide useful information.
 Copy and paste the results into a new issue along with any error messages you are seeing.
 
-## Known Issues
+## KNOWN ISSUES
 
 Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on.
 You might especially see this with the xNetworking module and the xIPAddress resource.
@@ -247,15 +201,11 @@ PS C:\> Uninstall-Module xNetworking -RequiredVersion 3.0.0.0
 
 It is recommended that you restart your PowerShell session and try the lab setup again.
 
-## Acknowledgments
+# SEE ALSO
 
-This module is a continuation of the work done by Jason Helmick and Melissa (Missy) Januszko, whose efforts are greatly appreciated.
-This module is unrelated to any projects Jason may be developing under similar names.
+[https://github.com/pluralsight/PS-AutoLab-Env](https://github.com/pluralsight/PS-AutoLab-Env)
 
-## Road Map
+# KEYWORDS
 
-These are some of the items that need to be addressed in future updates:
-
-* This project will need better help and documentation.
-* Single Windows Server 2019 configuration
-* While Lability currently is for Windows only, it would be nice to deploy a Linux VM
+* autolab
+* psautolab

@@ -4,10 +4,13 @@ v4.0.0
 
 Complete rewrite and update of all core module commands including better error handling
 Added Refresh-Host which can be used copy new configurations when updating this module
+Added Get-PSAutoLabSettings to get related version and setting information to aid in troubleshooting
 Added a Changelog
 Published Autolab module to the PowerShell Gallery
 Configuration updates
 Archived some configurations
+Added external help
+Documentation updates
 Updated README.md
 Updated LICENSE
 

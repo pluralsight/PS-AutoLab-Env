@@ -1,5 +1,7 @@
 ## Usage FAQ
 
+__This document is under review and update.__
+
 *"I get an error about my network connection type being set to Public."*
 
 ### Full error:
