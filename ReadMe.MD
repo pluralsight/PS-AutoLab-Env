@@ -2,7 +2,7 @@
 
 This project serves as a set of "wrapper" commands that utilize the [Lability])https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems.
 The downside is that it is a difficult module for less experienced PowerShell users.
-The configurations and control scripts for the Hyper-V virtual machine's are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability.
+The configurations and control commands for the Hyper-V virtual machines are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability.
 If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
 This project and all files are released under an MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want.
 
@@ -12,7 +12,7 @@ This project is intended to be used for educational purposes only.**
 
 ## Aliases and Language
 
-While this module follows proper naming conventions, the commands you will typically used employ aliases that use non-standard verbs.
+While this module follows proper naming conventions, the commands you will typically use employ aliases that use non-standard verbs such as `Run-Lab`.
 This is to avoid conflicts with commands in the Lability module and to maintain backwards compatibility.
 You can use the aliases or the full function name.
 All references in this document use the aliases.
@@ -21,19 +21,19 @@ All references in this document use the aliases.
 
 If you installed previous versions of this module, and struggled, hopefully this version will be an improvement.
 To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`.
-The previous version was not installed using PowerShell Get so it can't be updated or easily overwritten.
+The previous version was not installed using PowerShell' module cmdlets so it can't be updated or removed except manually.
 
 ## Installation
 
 This project has been published to the PowerShell Gallery.
-It is recommended that you have at least version 2.2 of the PowerShellGet module which handled module installations.
+It is recommended that you have at least version 2.2 of the `PowerShellGet` module which handled module installations.
 Open an elevated PowerShell prompt and run:
 
 ```powershell
-Install-Module PSAutolab
+Install-Module PSAutoLab
 ```
 
-If prompted, answer yes to update the nuget version and to install from an untrusted repository.
+If prompted, answer yes to update the nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted.
 If you have an old copy from before Pluralsight took ownership you will get an error.
 Manually remove the old module files and try again.
 
@@ -41,7 +41,7 @@ Manually remove the old module files and try again.
 
 ### Requirements
 
-This Lab tool currently supports running on either Windows Server 2016 (not fully tested) or a Windows 10 client that supports virtualization.
+This tool currently supports running on either Windows Server 2016 (not fully tested) or a Windows 10 client that supports virtualization.
 It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1.
 
 The host computer must have the following:
@@ -53,8 +53,9 @@ The host computer must have the following:
 
 *This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7.*
 
-### Note for VMware users
+### Note for VMware Users
 
+This project is designed to work with Hyper-V.
 If you are going to build a Host VM of Server 2016 or Windows 10, In the general settings for your VM, you must change the OS type to Hyper-V(Unsupported) or the Host Hyper-V will not work!
 
 ## Setup
@@ -68,18 +69,18 @@ Setup-Host
 ```
 
 This will install and configure the Lability module and install the Hyper-V feature if it is missing.
-By default, all Autolab files will be stored under C:\Autolab, which the setup will create.
+By default, all AutoLab files will be stored under C:\AutoLab, which the setup process will create.
 If you prefer to use a different drive, you can specify it during setup.
 
 ```powershell
-Setup-Host -destinationpath D:\Autolab
+Setup-Host -DestinationPath D:\AutoLab
 ```
 
 You will be prompted to reboot, which you should do especially if setup had to add Hyper-V.
 
 ## Creating a Lab
 
-Lab information is stored under the Autolab Configurations folder, which is C:\Autolab\Configurations by default.
+Lab information is stored under the AutoLab Configurations folder, which is C:\AutoLab\Configurations by default.
 Open an elevated PowerShell prompt and change location to the desired configuration folder.
 View the `Instructions.md` and/or readme files in the folder to learn more about the configuration.
 
@@ -190,13 +191,13 @@ And update:
 Update-Module PSAutoLab
 ```
 
-If you update, it is recommended that you update the computer running Autolab.
+If you update, it is recommended that you update the computer running AutoLab.
 
 ```powershell
 Refresh-Host
 ```
 
-This will update Lability if required and copy all new configuration files to your Autolab\Configurations folder.
+This will update Lability if required and copy all new configuration files to your AutoLab\Configurations folder.
 It will NOT delete any files.
 
 ## Troubleshooting
@@ -225,7 +226,7 @@ If you *still* are having problems, wipe the lab and try a different configurati
 This will help determine if the problem is with the configuration or a larger compatibility problem.
 
 At this point, you can open an issue in this repository.
-Open an elevated PowerShell prompt and run Get-PSAutolabSetting which will provide useful information.
+Open an elevated PowerShell prompt and run Get-PSAutoLabSetting which will provide useful information.
 Copy and paste the results into a new issue along with any error messages you are seeing.
 
 ## Known Issues
@@ -250,12 +251,15 @@ It is recommended that you restart your PowerShell session and try the lab setup
 ## Acknowledgments
 
 This module is a continuation of the work done by Jason Helmick and Melissa (Missy) Januszko, whose efforts are greatly appreciated.
-This module is unrelated to any projects Jason may be developing under similar names.
+Beginning with v4.0.0, this module is unrelated to any projects Jason may be developing under similar names.
 
 ## Road Map
 
 These are some of the items that need to be addressed in future updates:
 
-* This project will need better help and documentation.
+* This project will need better help and documentation
 * Single Windows Server 2019 configuration
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM
+* Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration
+
+Last Updated 2019-09-09 20:12:48Z UTC
