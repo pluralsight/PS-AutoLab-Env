@@ -1,5 +1,7 @@
 ## Authoring FAQ
 
+__This document is under review and update.__
+
 ### I'm getting an error when my VM is booting for the first time: *Windows could not parse or process unattend answer file*
 
 Full error: *Windows could not parse or process unattend answer file [C:\Windows\system32\sysprep\unattend.xml] for pass [specialize]. The answer file is invalid.*
@@ -16,7 +18,7 @@ otherwise Wipe-Lab won't work and you'll have to manually cleanup previously cre
 
 ### How can I manually clean up a lab?
 
-**todo**
+*in process*
 
 ### How can I change a VM's timezone?
 
@@ -28,7 +30,6 @@ otherwise Wipe-Lab won't work and you'll have to manually cleanup previously cre
 
 # Get your current timezone:
 (Get-TimeZone).Id
-
 ```
 
 2. Open the lab's `Lab-Name.psd1` and change `Lability_timeZone` per Node.

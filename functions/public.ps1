@@ -1,9 +1,32 @@
+Function Get-PSAutoLabSetting {
+    [cmdletbinding()]
+    Param()
 
+    $psver = $PSVersionTable
+    Try {
+        $cimos = Get-Ciminstance -class Win32_operatingsystem -Property caption,TotalVisibleMemorySize -ErrorAction Stop
+        $os = $cimos.caption
+        $mem = $cimos.TotalVisibleMemorySize
+    }
+    Catch {
+        $os = ""
+        $mem = ""
+    }
+
+    [pscustomobject]@{
+        PSVersion = $psver.PSVersion
+        Edition   = $psver.PSEdition
+        OS = $os
+        PSAutolab = (Get-Module -name PSAutolab -ListAvailable | Sort-object -Property Version -Descending | Select-Object -first 1).version
+        Lability  = (Get-Module -name Lability -ListAvailable | Sort-object -Property Version -Descending | Select-Object -first 1).version
+        Memory = $mem
+    }
+}
 Function Invoke-RefreshHost {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Refresh-Host")]
     Param(
-        [Parameter(Position = 0)]
+        [Parameter(Position = 0,HelpMessage = "The path to your Autolab configuration path, ie C:\Autolab\ConfigurationPath")]
         [ValidateNotNullorEmpty()]
         [ValidateScript({Test-Path $_})]
         [string]$Destination = (Get-LabHostDefault).configurationpath
@@ -156,6 +179,9 @@ Function Invoke-SetupLab {
     [cmdletbinding(SupportsShouldProcess)]
     [Alias("Setup-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript({Test-Path $_})]
         [string]$Path = ".",
         [switch]$IgnorePendingReboot
     )
@@ -277,6 +303,9 @@ Function Invoke-RunLab {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Run-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript({Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -336,6 +365,9 @@ Function Invoke-RunLab {
 Function Enable-Internet {
     [cmdletbinding(SupportsShouldProcess)]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript({Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -387,6 +419,9 @@ Function Invoke-ValidateLab {
     [cmdletbinding()]
     [alias("Validate-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript( {Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -444,6 +479,9 @@ Function Invoke-ShutdownLab {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Shutdown-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript( {Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -494,6 +532,9 @@ Function Invoke-SnapshotLab {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Snapshot-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript({Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -545,6 +586,9 @@ Function Invoke-RefreshLab {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Refresh-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript( {Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -598,6 +642,9 @@ Function Invoke-WipeLab {
     [cmdletbinding()]
     [alias("Wipe-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript({Test-Path $_})]
         [string]$Path = $PSScriptRoot
     )
 
@@ -675,6 +722,9 @@ Function Invoke-UnattendLab {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Unattend-Lab")]
     Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript({Test-Path $_})]
         [string]$Path = "."
     )
 
