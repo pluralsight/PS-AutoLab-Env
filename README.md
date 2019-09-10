@@ -38,6 +38,7 @@ If you have an old copy from before Pluralsight took ownership you will get an e
 Manually remove the old module files and try again.
 Do not download or use any of the release packages on Github.
 Only install from the PowerShell Gallery.
+The current version is `4.0.0`.
 
 **DO NOT run this module on any mission-critical production system.**
 
@@ -264,4 +265,5 @@ These are some of the items that need to be addressed in future updates:
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM
 * Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration
 
-Last Updated 2019-09-09 20:12:48Z UTC
+Last Updated 2019-09-10 13:22:31Z UTC
+
