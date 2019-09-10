@@ -21,7 +21,16 @@ All references in this document use the aliases.
 
 If you installed previous versions of this module, and struggled, hopefully this version will be an improvement.
 To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`.
-The previous version was not installed using PowerShell' module cmdlets so it can't be updated or removed except manually.
+You can run a command like:
+
+```powershell
+Get-Module PSAutolab -ListAvailable | Select-Object Path
+```
+
+To identify the module location.
+Delete the PSAutolab folder.
+
+The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.
 
 ## Installation
 
@@ -36,8 +45,9 @@ Install-Module PSAutoLab
 If prompted, answer yes to update the nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted.
 If you have an old copy from before Pluralsight took ownership you will get an error.
 Manually remove the old module files and try again.
-Do not download or use any of the release packages on Github.
-Only install from the PowerShell Gallery.
+*Do not download or use any of the release packages on Github.*
+Only install this module from the PowerShell Gallery.
+
 The current version is `4.0.0`.
 
 **DO NOT run this module on any mission-critical production system.**
