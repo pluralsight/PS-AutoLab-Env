@@ -14,7 +14,7 @@ Get host and module information related to the PSAutoLab module.
 ## SYNTAX
 
 ```yaml
-Get-PSAutoLabSettings [<CommonParameters>]
+Get-PSAutoLabSetting [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,12 +32,12 @@ PS C:\> Get-PSAutoLabSetting
 PSVersion : 5.1.18362.145
 Edition   : Desktop
 OS        : Microsoft Windows 10 Pro
-PSAutolab : 4.0.0
+PSAutolab : 4.1.0
 Lability  : 0.18.0
 Memory    : 33442716
 ```
 
-Copy and paste this information into a GitHub issue along with any relevent error messages.
+Copy and paste this information into a GitHub issue along with any relevant error messages.
 
 ## PARAMETERS
 

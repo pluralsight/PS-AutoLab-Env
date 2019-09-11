@@ -4,7 +4,7 @@ Function Get-PSAutoLabSetting {
 
     $psver = $PSVersionTable
     Try {
-        $cimos = Get-Ciminstance -class Win32_operatingsystem -Property caption,TotalVisibleMemorySize -ErrorAction Stop
+        $cimos = Get-Ciminstance -class Win32_operatingsystem -Property caption, TotalVisibleMemorySize -ErrorAction Stop
         $os = $cimos.caption
         $mem = $cimos.TotalVisibleMemorySize
     }
@@ -16,24 +16,24 @@ Function Get-PSAutoLabSetting {
     [pscustomobject]@{
         PSVersion = $psver.PSVersion
         Edition   = $psver.PSEdition
-        OS = $os
+        OS        = $os
         PSAutolab = (Get-Module -name PSAutolab -ListAvailable | Sort-object -Property Version -Descending | Select-Object -first 1).version
         Lability  = (Get-Module -name Lability -ListAvailable | Sort-object -Property Version -Descending | Select-Object -first 1).version
-        Memory = $mem
+        Memory    = $mem
     }
 }
 Function Invoke-RefreshHost {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Refresh-Host")]
     Param(
-        [Parameter(Position = 0,HelpMessage = "The path to your Autolab configuration path, ie C:\Autolab\ConfigurationPath")]
+        [Parameter(Position = 0, HelpMessage = "The path to your Autolab configuration path, ie C:\Autolab\ConfigurationPath")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
+        [ValidateScript( {Test-Path $_})]
         [string]$Destination = (Get-LabHostDefault).configurationpath
     )
 
     #test if a new version of lability is required
-    if ($pscmdlet.ShouldProcess("version $LabilityVersion","Check for Lability Requirements")) {
+    if ($pscmdlet.ShouldProcess("version $LabilityVersion", "Check for Lability Requirements")) {
         _LabilityCheck -requiredVersion $LabilityVersion
     }
 
@@ -117,7 +117,7 @@ Function Invoke-SetupHost {
 #>
 
     #use the module defined variable and a private function
-    if ($pscmdlet.ShouldProcess("Lability $labilityVersion","Install or Update Lability")) {
+    if ($pscmdlet.ShouldProcess("Lability $labilityVersion", "Install or Update Lability")) {
         _LabilityCheck $LabilityVersion
         Import-Module Lability
     }
@@ -181,12 +181,12 @@ Function Invoke-SetupLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
+        [ValidateScript( {Test-Path $_})]
         [string]$Path = ".",
         [switch]$IgnorePendingReboot
     )
 
-    $labname = split-path (get-location) -leaf
+    $labname = split-path $Path-leaf
     $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
     $DSCResources = $LabData.NonNodeData.Lability.DSCResource
     if (-Not $DSCResources) {
@@ -241,8 +241,8 @@ Function Invoke-SetupLab {
 
     # Run the config to generate the .mof files
     Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
-    if ($PSCmdlet.ShouldProcess('.\VMConfiguration.ps1')) {
-        .\VMConfiguration.ps1
+    if ($PSCmdlet.ShouldProcess("$path\VMConfiguration.ps1")) {
+        & "$path\VMConfiguration.ps1"
     }
     # Build the lab without a snapshot
     #
@@ -251,8 +251,8 @@ Function Invoke-SetupLab {
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
-        ConfigurationData   = ".\*.psd1"
-        Path                = ".\"
+        ConfigurationData   = "$path\*.psd1"
+        Path                = $(Convert-Path $path)
         NoSnapshot          = $True
         Password            = $Password
         IgnorePendingReboot = $True
@@ -263,7 +263,7 @@ Function Invoke-SetupLab {
     if ($PSCmdlet.ShouldProcess($labname, "Start-LabConfiguration")) {
         Start-LabConfiguration @startParams
         # Disable secure boot for VM's
-        Get-VM ( Get-LabVM -ConfigurationData .\*.psd1 ).Name -OutVariable vm
+        Get-VM ( Get-LabVM -ConfigurationData $path\*.psd1 ).Name -OutVariable vm
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
         Write-Host -ForegroundColor Green -Object @"
@@ -305,8 +305,8 @@ Function Invoke-RunLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [ValidateScript( {Test-Path $_})]
+        [string]$Path = "."
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -326,7 +326,7 @@ Function Invoke-RunLab {
     if ($pscmdlet.ShouldProcess($labname, "Start Lab")) {
 
         try {
-            Start-Lab -ConfigurationData .\*.psd1 -ErrorAction Stop
+            Start-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
         }
         Catch {
             Write-Warning "Failed to start lab. Are you running this in the correct configuration directory? $($_.exception.message)"
@@ -367,8 +367,8 @@ Function Enable-Internet {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [ValidateScript( {Test-Path $_})]
+        [string]$Path = "."
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -382,7 +382,7 @@ Function Enable-Internet {
 
 "@
 
-    $LabData = Import-PowerShellDataFile -Path .\*.psd1
+    $LabData = Import-PowerShellDataFile -Path $path\*.psd1
     $LabSwitchName = $labdata.NonNodeData.Lability.Network.name
     $GatewayIP = $Labdata.AllNodes.DefaultGateway
     $GatewayPrefix = $Labdata.AllNodes.SubnetMask
@@ -421,8 +421,9 @@ Function Invoke-ValidateLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [ValidateScript(
+            {Test-Path $_})]
+        [string]$Path = "."
     )
 
     $msg = @"
@@ -451,7 +452,7 @@ Function Invoke-ValidateLab {
 
     do {
 
-        $test = Invoke-Pester -Script .\VMValidate.Test.ps1 -Show none -PassThru
+        $test = Invoke-Pester -Script $path\VMValidate.Test.ps1 -Show none -PassThru
 
         if ($test.Failedcount -eq 0) {
             $Complete = $True
@@ -466,7 +467,7 @@ Function Invoke-ValidateLab {
     } until ($Complete)
 
     #re-run test one more time to show everything that was tested.
-    Invoke-Pester -Script .\VMValidate.Test.ps1
+    Invoke-Pester -Script $path\VMValidate.Test.ps1
 
     Write-Progress -Activity "VM Completion Test" -Completed
     Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
@@ -482,7 +483,7 @@ Function Invoke-ShutdownLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( {Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [string]$Path = "."
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -493,12 +494,12 @@ Function Invoke-ShutdownLab {
 
 "@
 
-    $labname = split-path (get-location) -leaf
+    $labname = split-path $path -leaf
     Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
         Try {
-            Stop-Lab -ConfigurationData .\*.psd1 -erroraction Stop
+            Stop-Lab -ConfigurationData $path\*.psd1 -erroraction Stop
         }
         Catch {
             Write-Warning "Failed to stop lab. Are you running this in the correct configuration directory? $($_.exception.message)"
@@ -534,8 +535,11 @@ Function Invoke-SnapshotLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [ValidateScript( {Test-Path $_})]
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Specify a name for the virtual machine checkpoint")]
+        [ValidateNotNullorEmpty()]
+        [string]$SnapshotName = "LabConfigured"
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -547,13 +551,13 @@ Function Invoke-SnapshotLab {
         Note! This should be done after the configurations have finished
 
 "@
-    $labname = split-path (get-location) -leaf
+    $labname = Split-Path $Path -leaf
     Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
 
         Try {
-            Stop-Lab -ConfigurationData .\*.psd1 -ErrorAction Stop
+            Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
         }
         Catch {
             Write-Warning "Failed to stop lab. Are you running this in the correct configuration directory? $($_.exception.message)"
@@ -562,7 +566,9 @@ Function Invoke-SnapshotLab {
         }
 
     }
-    Checkpoint-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured
+    if ($pscmdlet.ShouldProcess($labname, "Checkpoint-Lab")) {
+        Checkpoint-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName
+    }
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -573,9 +579,6 @@ Function Invoke-SnapshotLab {
 
         To quickly rebuild the labs from the checkpoint, run:
         Refresh-Lab
-
-        To stop the lab environment, run:
-        Shutdown-Lab
 
 "@
 }
@@ -589,7 +592,10 @@ Function Invoke-RefreshLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( {Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Specify a name for the virtual machine checkpoint")]
+        [ValidateNotNullorEmpty()]
+        [string]$SnapshotName = "LabConfigured"
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -598,16 +604,20 @@ Function Invoke-RefreshLab {
 
         * Refresh the lab from a previous Snapshot
 
-        Note! This can only be done if you created a snapshot!
-        Snapshot-Lab
+        You will be prompted to restore the snapshot
+        for each VM, although the prompt won't show
+        you the virtual machine name.
+
+        Note! This can only be done if you created a
+        snapshot using Snapshot-Lab
 
 "@
-    $labname = split-path (get-location) -leaf
+    $labname = Split-Path $path -leaf
     Write-Host -ForegroundColor Cyan -Object 'Restore the lab environment from a snapshot'
-    # Creates the lab environment without making a Hyper-V Snapshot
+
     Try {
         if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
-            Stop-Lab -ConfigurationData .\*.psd1 -ErrorAction Stop
+            Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
         }
     }
     Catch {
@@ -616,8 +626,8 @@ Function Invoke-RefreshLab {
         return
     }
 
-    if ($pscmdlet.ShouldProcess($labName, "Restore-Lab")) {
-        Restore-Lab -ConfigurationData .\*.psd1 -SnapshotName LabConfigured -force
+    if ($pscmdlet.ShouldProcess($SnapshotName, "Restore-Lab")) {
+        Restore-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName -force
     }
 
     Write-Host -ForegroundColor Green -Object @"
@@ -639,13 +649,13 @@ Function Invoke-RefreshLab {
 
 #region Wipe-Lab
 Function Invoke-WipeLab {
-    [cmdletbinding()]
+    [cmdletbinding(SupportsShouldProcess)]
     [alias("Wipe-Lab")]
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
-        [string]$Path = $PSScriptRoot
+        [ValidateScript( {Test-Path $_})]
+        [string]$Path = "."
     )
 
     Write-Host -ForegroundColor Green -Object @"
@@ -663,26 +673,39 @@ Function Invoke-WipeLab {
 
     Pause
 
-    $labname = split-path (get-location) -leaf
+    $labname = split-path $path -leaf
     Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
     # Stop the VM's
-    Try {
-        Stop-Lab -ConfigurationData .\*.psd1 -ErrorAction Stop
-    }
-    Catch {
-        Write-Warning "Failed to stop lab. Are you running this in the correct configuration directory? $($_.exception.message)"
-        #bail out because no other commands are likely to work
-        return
+    if ($pscmdlet.ShouldProcess("VMs", "Stop-Lab")) {
+
+        Try {
+            Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
+        }
+        Catch {
+            Write-Warning "Failed to stop lab. Are you running this in the correct configuration directory? $($_.exception.message)"
+            #bail out because no other commands are likely to work
+            return
+        }
     }
     # Remove .mof iles
-    Remove-Item -Path .\*.mof
+    Remove-Item -Path $path\*.mof
     # Delete NAT
-    $LabData = Import-PowerShellDataFile -Path .\*.psd1
+    $LabData = Import-PowerShellDataFile -Path $path\*.psd1
     $NatName = $Labdata.AllNodes.IPNatName
-    Remove-NetNat -Name $NatName
+    if ($pscmdlet.ShouldProcess("LabNat", "Remove NetNat")) {
+        Remove-NetNat -Name $NatName
+    }
     # Delete vM's
-    Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch
-    Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
+    if ($pscmdlet.ShouldProcess("VMConfigurationData.psd1", "Remove lab configuration")) {
+
+        Remove-LabConfiguration -ConfigurationData $path\*.psd1 -RemoveSwitch
+    }
+
+    #only delete the VHD files associated with the configuration as you might have more than one configuration
+    #running
+    $nodes = ($labdata.allnodes.nodename).where( {$_ -ne '*'})
+    Get-Childitem (Get-LabhostDefault).differencingVHDPath | where-object {$nodes -contains $_.basename} | Remove-Item
+    #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -724,7 +747,7 @@ Function Invoke-UnattendLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({Test-Path $_})]
+        [ValidateScript( {Test-Path $_})]
         [string]$Path = "."
     )
 
@@ -765,3 +788,20 @@ Function Invoke-UnattendLab {
 }
 #endregion Unattend-Lab
 
+Function Get-LabSnapshot {
+    [cmdletbinding()]
+    Param (
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript( {Test-Path $_})]
+        [string]$Path = "."
+    )
+
+    Write-Verbose "Getting mofs from $(Convert-Path $Path)"
+    #get the MOF file names
+    $VMs = (Get-Childitem -path $path -filter *.mof -exclude *meta* -recurse).Basename
+    Write-Verbose "Getting VMSnapshots"
+
+    Get-VMSnapshot -vmname  $VMs
+    Write-Host "All VMs in the configuration should belong to the same snapshot." -foreground green
+}

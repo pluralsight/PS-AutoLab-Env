@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Set up a PSAutolab configuration
+Set up an Autolab configuration
 
 ## SYNTAX
 
@@ -29,8 +29,8 @@ You will most likely use the Setup-Lab alias.
 ## EXAMPLES
 
 ### Example 1
-```powershell
 
+```powershell
 PS C:\Autolab\Configurations\Windows10> Setup-Lab
 ```
 
@@ -85,6 +85,7 @@ Accept wildcard characters: False
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
@@ -101,6 +102,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

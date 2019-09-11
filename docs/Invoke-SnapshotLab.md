@@ -13,8 +13,8 @@ Create virtual machine snapshots of your Autolab configuration
 
 ## SYNTAX
 
-```yamle
-Invoke-SnapshotLab [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```yaml
+Invoke-SnapshotLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +24,6 @@ You can later restore your configuration with Refresh-Lab.
 It is assumed you are running this command from within the configuration folder.
 
 You will most likely use the Snapshot-Lab alias.
-
 
 ## EXAMPLES
 
@@ -85,6 +84,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -SnapshotName
+
+Specify a name for the virtual machine checkpoint
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: LabConfigured
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -102,3 +117,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Refresh-Lab]()
+
+[Get-LabSnapshot]()

@@ -182,6 +182,19 @@ At this point, you can open an issue in this repository.
 Open an elevated PowerShell prompt and run `Get-PSAutolabSetting` which will provide useful information.
 Copy and paste the results into a new issue along with any error messages you are seeing.
 
+## CUSTOMIZING CONFIGURATIONS
+
+The expectation is that one of the included configurations will meet your needs or has been specified by a Pluralsight author.
+However, are free to modify or create your own configuration.
+This process assumes you have experience with writing Desired State Configuration (DSC) scripts, including the use of configuration data files (*.psd1) and Pester.
+Because configurations might be updated in future versions of the PSAutoLab module, you are encouraged to create a new configuration and not edit existing files.
+Find a configuration that is close to your needs and copy it to a new folder under Autolab\Configurations.
+Technically, you can put the configuration folder anywhere but it is easier if all of your configurations are in one location.
+
+Once the files have been copied, use your script editor to modify the files.
+Don't forget to update the pester test.
+Keep the same file names.
+
 ## KNOWN ISSUES
 
 Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on.
