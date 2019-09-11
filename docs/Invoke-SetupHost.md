@@ -32,7 +32,6 @@ You will most likely use the Setup-Host alias.
 ### Example 1
 
 ```powershell
-
 PS C:\> Setup-Host
 ```
 
@@ -59,7 +58,6 @@ Accept wildcard characters: False
 ### -DestinationPath
 
 Specify the parent path.
-The default is C:\Autolab.
 The command will create the folder.
 
 ```yaml
@@ -69,7 +67,7 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
+Default value: C:\Autolab
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

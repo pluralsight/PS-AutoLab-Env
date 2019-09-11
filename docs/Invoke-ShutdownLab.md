@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Shutdown a PSAutolab configuration
+Shutdown an Autolab configuration
 
 ## SYNTAX
 
@@ -29,11 +29,10 @@ You will most likely use the Shutdown-Lab alias.
 ## EXAMPLES
 
 ### Example 1
-```powershell
 
+```powershell
 PS C:\Autolab\Configurations\PowerShellLab> Shutdown-Lab
 ```
-
 
 ## PARAMETERS
 

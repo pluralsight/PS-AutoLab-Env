@@ -10,6 +10,27 @@ This project and all files are released under an MIT License - meaning you can c
 Pluralsight makes no guarantees or warranties.
 This project is intended to be used for educational purposes only.**
 
+## Requirements
+
+This tool currently supports running on either Windows Server 2016 (not fully tested) or a Windows 10 client that supports virtualization.
+Windows 10 Pro or Enterprise should be sufficient.
+It is unlikely that this module will work on Windows 10 Home or any Student edition.
+It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1.
+
+The host computer must have the following:
+
+* Windows PowerShell 5.1
+* An internet connection
+* Minimum 16GB of RAM (32GB is recommended)
+* Minimum 100GB free disk space preferably on a fast SSD device.
+* PowerShell Remoting enabled
+
+You must have administrator access and be able to update TrustedHosts.
+If you are in a corporate environment, these settings may be locked down or restricted.
+If this applies to you, this module may not work for you.
+
+*This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.*
+
 ## Aliases and Language
 
 While this module follows proper naming conventions, the commands you will typically use employ aliases that use non-standard verbs such as `Run-Lab`.
@@ -28,14 +49,15 @@ Get-Module PSAutolab -ListAvailable | Select-Object Path
 ```
 
 To identify the module location.
-Delete the PSAutolab folder.
+Use this information to delete the PSAutolab folder.
 
-The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.
+*The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.*
 
 ## Installation
 
 This project has been published to the PowerShell Gallery.
-It is recommended that you have at least version 2.2 of the `PowerShellGet` module which handled module installations.
+It is recommended that you have at least version 2.2 of the `PowerShellGet` module which handles module installations.
+
 Open an elevated PowerShell prompt and run:
 
 ```powershell
@@ -45,26 +67,13 @@ Install-Module PSAutoLab
 If prompted, answer yes to update the nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted.
 If you have an old copy from before Pluralsight took ownership you will get an error.
 Manually remove the old module files and try again.
-*Do not download or use any of the release packages on Github.*
-Only install this module from the PowerShell Gallery.
 
-The current version is `4.0.0`.
+*Do not download or use any of the release packages on Github.
+Only install this module from the PowerShell Gallery.*
+
+The current version is `4.1.0`.
 
 **DO NOT run this module on any mission-critical production system.**
-
-### Requirements
-
-This tool currently supports running on either Windows Server 2016 (not fully tested) or a Windows 10 client that supports virtualization.
-It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1.
-
-The host computer must have the following:
-
-* Windows PowerShell 5.1
-* An internet connection
-* Minimum 16GB of Ram
-* Minimum 100GB free disk space
-
-*This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7.*
 
 ### Note for VMware Users
 
@@ -118,7 +127,7 @@ Run each command after the previous one has completed.
 
 To verify that all virtual machines are properly configured you can run `Validate-Lab`.
 This will invoke a set of tests and loop until everything passes.
-Due to the nature of DSC and complexity of some configurations this could take 60-90 minutes.
+Due to the nature of DSC and complexity of some configurations this could take up to 60 minutes.
 You can use `Ctrl+C` to break out of the testing loop at any time.
 You can manually run the test one time to see the current state of the configuration.
 
@@ -141,7 +150,7 @@ It will run all of the manual steps for you.
 
 ### Stopping a Lab
 
-To stop the lab VM's, change to the configuration folder in an elevated Windows PowerShell session and run:
+To stop the lab VMs, change to the configuration folder in an elevated Windows PowerShell session and run:
 
 ```powershell
 Shutdown-Lab
@@ -270,10 +279,10 @@ Beginning with v4.0.0, this module is unrelated to any projects Jason may be dev
 
 These are some of the items that need to be addressed in future updates:
 
-* This project will need better help and documentation
-* Single Windows Server 2019 configuration
+* This project will need additional documentation
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM
 * Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration
 
-Last Updated 2019-09-10 13:22:31Z UTC
+A complete list of enhancements can be found in Issues.
 
+Last Updated 2019-09-11 18:54:52Z UTC

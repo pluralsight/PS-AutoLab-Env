@@ -1,5 +1,16 @@
 Changelog for PSAutoLab
 
+v4.1.0
+
+Added SingleServer configuration (Issue #186)
+Modified Snapshot-Lab and Refresh-Lab to allow user to specify a snapshot name (Issue #184)
+Added Get-LabSnapshot to list available snapshots
+Modified all commands with a -Path to use the parameter. Removed hard-coded reference to ".\".
+Added MultiRole configuration
+Updated Wipe-Lab to only remove VHD files associated with the virtual machines in the configuration
+Added WhatIf support to Wipe-Lab
+Help and documentation updates
+
 v4.0.0
 
 Complete rewrite and update of all core module commands including better error handling

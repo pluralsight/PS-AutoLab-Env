@@ -14,7 +14,7 @@ Refresh a PSAutolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-RefreshLab [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-RefreshLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,7 +27,6 @@ You will most likely use the Refresh-Lab alias.
 ### Example 1
 
 ```powershell
-
 PS C:\Autolab\Configurations\Windows10> Refresh-Lab
 ```
 
@@ -76,6 +75,22 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SnapshotName
+
+Specify a name for the virtual machine checkpoint
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
