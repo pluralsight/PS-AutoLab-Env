@@ -1,4 +1,4 @@
-﻿#requires -version 5.0
+﻿#requires -version 5.1
 
 #test if VM setup is complete
 

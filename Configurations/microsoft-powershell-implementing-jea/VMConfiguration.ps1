@@ -18,7 +18,7 @@ demonstrations and would need to be modified for your environment.
 
 Configuration AutoLab {
 
-    $LabData = Import-PowerShellDataFile -Path .\*.psd1
+    $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
@@ -85,7 +85,8 @@ Configuration AutoLab {
 
         #region Firewall Rules
 
-        $LabData = Import-PowerShellDataFile .\*.psd1
+
+$LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
         $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
@@ -139,9 +140,9 @@ Configuration AutoLab {
         }
 
         #Add OU, Groups, and Users
-        $OUs = (Get-Content .\AD-OU.json | ConvertFrom-Json)
-        $Users = (Get-Content .\AD-Users.json | ConvertFrom-Json)
-        $Groups = (Get-Content .\AD-Group.json | ConvertFrom-Json)
+        $OUs = (Get-Content $PSScriptRoot\AD-OU.json | ConvertFrom-Json)
+        $Users = (Get-Content $PSScriptRoot\AD-Users.json | ConvertFrom-Json)
+        $Groups = (Get-Content $PSScriptRoot\AD-Group.json | ConvertFrom-Json)
 
         foreach ($OU in $OUs) {
             xADOrganizationalUnit $OU.Name {
@@ -753,5 +754,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\*.psd1
+AutoLab -OutputPath $PSScriptRoot -ConfigurationData $PSScriptRoot\VMConfigurationData.psd1
 

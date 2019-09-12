@@ -1,11 +1,11 @@
-﻿#requires -version 5.0
+﻿#requires -version 5.1
 
 #test if VM setup is complete
 
 
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
-$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
 $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure

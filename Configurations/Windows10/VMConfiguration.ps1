@@ -1,4 +1,4 @@
-#requires -version 5.0
+#requires -version 5.1
 
 <# Notes:
 
@@ -18,111 +18,111 @@ demonstrations and would need to be modified for your environment.
 
 Configuration AutoLab {
 
-$LabData = Import-PowerShellDataFile -Path .\VMConfigurationData.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
-$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
+    $LabData = Import-PowerShellDataFile -Path $PSScriptroot\VMConfigurationData.psd1
+    $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+    $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
-Import-DscResource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
-Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "8.9.0.0"
-Import-DscResource -ModuleName "xComputerManagement" -ModuleVersion "1.8.0.0"
-Import-DscResource -ModuleName "xNetworking" -ModuleVersion "5.7.0.0"
-Import-DscResource -ModuleName "xWindowsUpdate" -ModuleVersion "2.8.0.0"
-Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
+    Import-DscResource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
+    Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "8.9.0.0"
+    Import-DscResource -ModuleName "xComputerManagement" -ModuleVersion "1.8.0.0"
+    Import-DscResource -ModuleName "xNetworking" -ModuleVersion "5.7.0.0"
+    Import-DscResource -ModuleName "xWindowsUpdate" -ModuleVersion "2.8.0.0"
+    Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
 
-    Node $AllNodes.Where({$true}).NodeName {
-         xComputer ComputerName {
-            Name = $Node.NodeName
+    Node $AllNodes.Where( {$true}).NodeName {
+        xComputer ComputerName {
+            Name          = $Node.NodeName
             WorkGroupName = "Lab"
         }
-         user Administrator {
-            UserName = "Administrator"
-            Disabled = $false
-            Password = $credential
+        user Administrator {
+            UserName               = "Administrator"
+            Disabled               = $false
+            Password               = $credential
             PasswordChangeRequired = $false
-            PasswordNeverExpires = $True
-         }
+            PasswordNeverExpires   = $True
+        }
 
-         #create a local account with the same name as the person
-         #running this config
-         user $env:username {
-            UserName = $env:username
-            Disabled = $false
-            Password = $credential
+        #create a local account with the same name as the person
+        #running this config
+        user $env:username {
+            UserName               = $env:username
+            Disabled               = $false
+            Password               = $credential
             PasswordChangeRequired = $false
-            PasswordNeverExpires = $True
-         }
+            PasswordNeverExpires   = $True
+        }
 
-         #add the user to the local Administrators group
-         group Administrators {
-             GroupName = "Administrators"
-             MembersToInclude = $env:username
-             DependsOn = "[user]$($env:username)"
-         }
+        #add the user to the local Administrators group
+        group Administrators {
+            GroupName        = "Administrators"
+            MembersToInclude = $env:username
+            DependsOn        = "[user]$($env:username)"
+        }
 
-         #force a reboot after completing everything
-         xPendingReboot Complete {
-            Name = "Post-Config Reboot"
+        #force a reboot after completing everything
+        xPendingReboot Complete {
+            Name                      = "Post-Config Reboot"
             SkipPendingComputerRename = $True
-            DependsOn = @("[group]Administrators","[xComputer]ComputerName","[user]Administrator")
-         }
+            DependsOn                 = @("[group]Administrators", "[xComputer]ComputerName", "[user]Administrator")
+        }
 
-#region LCM configuration
+        #region LCM configuration
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
-            ConfigurationMode = 'ApplyOnly'
+            ConfigurationMode    = 'ApplyOnly'
         }
-#endregion
+        #endregion
 
-#region IPaddress settings
-    If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
-        xIPAddress 'PrimaryIPAddress' {
-            IPAddress      = $node.IPAddress
-            InterfaceAlias = $node.InterfaceAlias
-            AddressFamily  = $node.AddressFamily
-        }
-
-        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
-            xDefaultGatewayAddress 'PrimaryDefaultGateway' {
-                InterfaceAlias = $node.InterfaceAlias
-                Address = $node.DefaultGateway
-                AddressFamily = $node.AddressFamily
-            }
-        }
-
-        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
-            xDnsServerAddress 'PrimaryDNSClient' {
-                Address        = $node.DnsServerAddress
+        #region IPaddress settings
+        If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
+            xIPAddress 'PrimaryIPAddress' {
+                IPAddress      = $node.IPAddress
                 InterfaceAlias = $node.InterfaceAlias
                 AddressFamily  = $node.AddressFamily
             }
-        }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DnsConnectionSuffix)) {
-            xDnsConnectionSuffix 'PrimaryConnectionSuffix' {
-                InterfaceAlias = $node.InterfaceAlias
-                ConnectionSpecificSuffix = $node.DnsConnectionSuffix
+            If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
+                xDefaultGatewayAddress 'PrimaryDefaultGateway' {
+                    InterfaceAlias = $node.InterfaceAlias
+                    Address        = $node.DefaultGateway
+                    AddressFamily  = $node.AddressFamily
+                }
             }
-        }
-    } #End IF
 
-#endregion
+            If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
+                xDnsServerAddress 'PrimaryDNSClient' {
+                    Address        = $node.DnsServerAddress
+                    InterfaceAlias = $node.InterfaceAlias
+                    AddressFamily  = $node.AddressFamily
+                }
+            }
 
-#region Firewall Rules
+            If (-not [System.String]::IsNullOrEmpty($node.DnsConnectionSuffix)) {
+                xDnsConnectionSuffix 'PrimaryConnectionSuffix' {
+                    InterfaceAlias           = $node.InterfaceAlias
+                    ConnectionSpecificSuffix = $node.DnsConnectionSuffix
+                }
+            }
+        } #End IF
 
-    $FireWallRules = $labdata.Allnodes.FirewallRuleNames
+        #endregion
+
+        #region Firewall Rules
+
+        $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
-        xFirewall $Rule {
-            Name = $Rule
-            Enabled = 'True'
-         }
+            xFirewall $Rule {
+                Name    = $Rule
+                Enabled = 'True'
+            }
         } #End foreach
     }
-#endregion
+    #endregion
 
-#region RSAT config
-   node $AllNodes.Where({$_.Role -eq 'RSAT'}).NodeName {
+    #region RSAT config
+    node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
         # Adds RSAT which is now a Windows Capability in Windows 10
 
         Script RSAT {
@@ -136,9 +136,9 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
                 }
             }
 
-            GetScript  =  {
+            GetScript  = {
                 $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
-                $installed = $packages.Where({$_.state -eq "Installed"})
+                $installed = $packages.Where( {$_.state -eq "Installed"})
                 Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
             }
 
@@ -148,31 +148,31 @@ Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
         }
     } #end RSAT Config
 
-#region RDP config
-   node $AllNodes.Where({$_.Role -eq 'RDP'}).NodeName {
+    #region RDP config
+    node $AllNodes.Where( {$_.Role -eq 'RDP'}).NodeName {
         # Adds RDP support and opens Firewall rules
 
         Registry RDP {
-            Key = 'HKLM:\System\ControlSet001\Control\Terminal Server'
+            Key       = 'HKLM:\System\ControlSet001\Control\Terminal Server'
             ValueName = 'fDenyTSConnections'
             ValueType = 'Dword'
             ValueData = '0'
-            Ensure = 'Present'
+            Ensure    = 'Present'
         }
         foreach ($Rule in @(
                 'RemoteDesktop-UserMode-In-TCP',
                 'RemoteDesktop-UserMode-In-UDP',
                 'RemoteDesktop-Shadow-In-TCP'
-        )) {
-        xFirewall $Rule {
-            Name = $Rule
-            Enabled = 'True'
-            DependsOn = '[Registry]RDP'
-        }
-    } # End RDP
+            )) {
+            xFirewall $Rule {
+                Name      = $Rule
+                Enabled   = 'True'
+                DependsOn = '[Registry]RDP'
+            }
+        } # End RDP
     }
-#endregion
+    #endregion
 }
 
-AutoLab -OutputPath .\ -ConfigurationData .\VMConfigurationData.psd1
+AutoLab -OutputPath $PSScriptRoot -ConfigurationData $PSScriptRoot\VMConfigurationData.psd1
 

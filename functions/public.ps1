@@ -186,7 +186,8 @@ Function Invoke-SetupLab {
         [switch]$IgnorePendingReboot
     )
 
-    $labname = split-path $Path-leaf
+    $Path = Convert-Path $path
+    $labname = split-path $Path -leaf
     $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
     $DSCResources = $LabData.NonNodeData.Lability.DSCResource
     if (-Not $DSCResources) {
@@ -242,7 +243,7 @@ Function Invoke-SetupLab {
     # Run the config to generate the .mof files
     Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
     if ($PSCmdlet.ShouldProcess("$path\VMConfiguration.ps1")) {
-        & "$path\VMConfiguration.ps1"
+        . "$path\VMConfiguration.ps1"
     }
     # Build the lab without a snapshot
     #
@@ -309,6 +310,8 @@ Function Invoke-RunLab {
         [string]$Path = "."
     )
 
+    $Path = Convert-Path $path
+
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Run-Lab script. This script will perform the following:
@@ -321,12 +324,14 @@ Function Invoke-RunLab {
 "@
 
     $labname = split-path (get-location) -leaf
-    Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
+    $datapath = Join-Path $(Convert-Path $path) -childpath "VMConfigurationData.psd1"
+    Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
+    $data = Import-PowerShellDataFile -path $datapath
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Start Lab")) {
 
         try {
-            Start-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
+            Start-Lab -ConfigurationData $data -ErrorAction Stop
         }
         Catch {
             Write-Warning "Failed to start lab. Are you running this in the correct configuration directory? $($_.exception.message)"
@@ -371,6 +376,7 @@ Function Enable-Internet {
         [string]$Path = "."
     )
 
+    $Path = Convert-Path $path
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Enable-Internet script. This script will perform the following:
@@ -426,6 +432,8 @@ Function Invoke-ValidateLab {
         [string]$Path = "."
     )
 
+    $Path = Convert-Path $path
+
     $msg = @"
     [$(Get-Date)]
     Starting the VM testing process. This could take some time to
@@ -450,9 +458,12 @@ Function Invoke-ValidateLab {
 
     $Complete = $False
 
+    #define a resolved path to the test file
+    $testPath = Join-Path -path $path -ChildPath VMValidate.test.ps1
     do {
 
-        $test = Invoke-Pester -Script $path\VMValidate.Test.ps1 -Show none -PassThru
+
+        $test = Invoke-Pester -Script $testpath -Show none -PassThru
 
         if ($test.Failedcount -eq 0) {
             $Complete = $True
@@ -461,7 +472,7 @@ Function Invoke-ValidateLab {
             #test every 5 minutes
             300..1 | ForEach-Object {
                 Write-Progress -Activity "VM Completion Test" -Status "Tests failed" -CurrentOperation "Waiting until next test run" -SecondsRemaining $_
-                Start-sleep -Seconds 1
+                Start-Sleep -Seconds 1
             }
         }
     } until ($Complete)
@@ -486,6 +497,7 @@ Function Invoke-ShutdownLab {
         [string]$Path = "."
     )
 
+    $Path = Convert-Path $path
     Write-Host -ForegroundColor Green -Object @"
 
         This is the Shutdown-Lab command. It will perform the following:
@@ -494,7 +506,7 @@ Function Invoke-ShutdownLab {
 
 "@
 
-    $labname = split-path $path -leaf
+    $labname = Split-Path $path -leaf
     Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
@@ -541,6 +553,8 @@ Function Invoke-SnapshotLab {
         [ValidateNotNullorEmpty()]
         [string]$SnapshotName = "LabConfigured"
     )
+
+    $Path = Convert-Path $path
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -597,6 +611,8 @@ Function Invoke-RefreshLab {
         [ValidateNotNullorEmpty()]
         [string]$SnapshotName = "LabConfigured"
     )
+
+    $Path = Convert-Path $path
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -657,6 +673,8 @@ Function Invoke-WipeLab {
         [ValidateScript( {Test-Path $_})]
         [string]$Path = "."
     )
+
+    $Path = Convert-Path $path
 
     Write-Host -ForegroundColor Green -Object @"
 
@@ -751,6 +769,7 @@ Function Invoke-UnattendLab {
         [string]$Path = "."
     )
 
+    $Path = Convert-Path $path
     Write-Host -ForegroundColor Green -Object @"
 
        This runs Setup-Lab, Run-Lab, and Validate-Lab
@@ -763,13 +782,13 @@ Function Invoke-UnattendLab {
         Invoke-SetupLab @psboundparameters
     }
     if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
-        Invoke-RunLab
+        Invoke-RunLab @psboundparameters
     }
     if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
-        Enable-Internet
+        Enable-Internet @psboundparameters
     }
     if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
-        Invoke-ValidateLab
+        Invoke-ValidateLab @psboundparameters
     }
 
     Write-Host -ForegroundColor Green -Object @"

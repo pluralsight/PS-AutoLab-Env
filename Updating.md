@@ -1,9 +1,9 @@
 # Updating from 3.x
 
 If you were running older versions of PSAutoLab, most likely v3.x, you might have encountered problems.
-It is hoped that the updates to 4.0.0 will resolve most if not all of those problems.
+It is hoped that the updates to 4.x will resolve most if not all of those problems.
 The plan going forward is to pay closer attention to issues and update the module as needed.
-This will be easier now that it is in the PowerShell Gallery.
+This will be easier now that the module is deployed through the PowerShell Gallery.
 
 __Note:__ We use AutoLab and PSAutoLab interchangeably.
 PSAutoLab is technically the PowerShell module that manages your AutoLab configuration.
@@ -11,8 +11,10 @@ PSAutoLab is technically the PowerShell module that manages your AutoLab configu
 ## Before You Upgrade
 
 The new module will be installed and updated from the PowerShell Gallery.
-To avoid conflicts you should clean up the previous setup before installing the new version.
-The recommended procedure is to wipe everything and start again.
+To avoid conflicts, you should clean up the previous setup before installing the new version.
+The recommended procedure is to wipe everything and start fresh.
+
+*All existing issues from the previous version have been closed as the previous code base is deprecated.*
 
 ### Wipe Labs
 
@@ -54,7 +56,7 @@ get-module psautolab -ListAvailable | Select-Object Path
 
 ### Delete AutoLab Folder
 
-Delete your AutoLab folder and all subfolders which should be C:\AutoLab if you accepted the defaults during installation.
+Delete your AutoLab folder and all sub-folders which should be C:\AutoLab if you accepted the defaults during installation.
 This will delete all of the ISO files which means you'll need to re-download them when you build a new configuration.
 But that is OK because the current version of the module contains the correct links to all the relevant evaluation ISO files.
 
@@ -97,4 +99,4 @@ Read the about help topic to learn more.
 help about_psautolab
 ```
 
-Or refer to the GitHub repository [README](README.MD) file.
+Or refer to the GitHub repository [README](./README.MD) file.

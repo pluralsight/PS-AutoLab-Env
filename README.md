@@ -1,5 +1,7 @@
 # PSAutoLab
 
+[![PSGallery Version](https://img.shields.io/powershellgallery/v/PSAutolab.png?style=for-the-badge&logo=powershell&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/PSAutolab/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/PSAutolab.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/PSAutoLab/)
+
 This project serves as a set of "wrapper" commands that utilize the [Lability])https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems.
 The downside is that it is a difficult module for less experienced PowerShell users.
 The configurations and control commands for the Hyper-V virtual machines are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability.
@@ -71,7 +73,8 @@ Manually remove the old module files and try again.
 *Do not download or use any of the release packages on Github.
 Only install this module from the PowerShell Gallery.*
 
-The current version is `4.1.0`.
+The current version is `4.1.1`.
+See the [Changelog](./changelog.txt) for update details.
 
 **DO NOT run this module on any mission-critical production system.**
 
@@ -277,12 +280,13 @@ Beginning with v4.0.0, this module is unrelated to any projects Jason may be dev
 
 ## Road Map
 
-These are some of the items that need to be addressed in future updates:
+These are some of the items that are being considered for future updates:
 
 * This project will need additional documentation
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM
 * Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration
+* Offer an easy way to customize a lab configuration such as time zone, node names and operating systems.
 
 A complete list of enhancements can be found in Issues.
 
-Last Updated 2019-09-11 18:54:52Z UTC
+Last Updated 2019-09-12 12:37:26Z UTC

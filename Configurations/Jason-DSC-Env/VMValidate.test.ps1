@@ -5,7 +5,7 @@
 
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
-$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
 $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
@@ -23,7 +23,7 @@ Describe DC1 {
     }
 
     #test for features
-    $feat = Invoke-Command { Get-WindowsFeature | Where installed} -session $dc
+    $feat = Invoke-Command { Get-WindowsFeature | Where-object installed} -session $dc
     $needed = 'AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
     'RSAT-AD-PowerShell'
     foreach ($item in $needed) {
