@@ -1,7 +1,7 @@
 
 Configuration AutoLab {
 
-    $LabData = Import-PowerShellDataFile -Path .\*.psd1
+    $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
@@ -62,7 +62,8 @@ Configuration AutoLab {
 
         #region Firewall Rules
 
-        $LabData = Import-PowerShellDataFile .\*.psd1
+
+        $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
         $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
@@ -78,5 +79,5 @@ Configuration AutoLab {
 } # End AllNodes
 #endregion
 
-AutoLab -OutputPath .\ -ConfigurationData .\*.psd1
+AutoLab -OutputPath $PSScriptRoot -ConfigurationData $PSScriptRoot\*.psd1
 

@@ -2,7 +2,7 @@
 
 #test if VM setup is complete
 
-$LabData = Import-PowerShellDataFile -Path .\*.psd1
+$LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
 $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "$Domain\Administrator", $Secure

@@ -115,3 +115,31 @@ Technically, you can put the configuration folder anywhere but it is easier if a
 Once the files have been copied, use your script editor to modify the files.
 Don't forget to update the pester test.
 Keep the same file names.
+
+### How can I change a VM's timezone?
+
+First, find your desired timezone using one of these techniques:
+
+```powershell
+# Filter all timezones, take the Id property from the desired timezone:
+[System.TimeZoneInfo]::GetSystemTimeZones().Where({$_.Id -like '*Eastern*'})
+
+# Get your current timezone:
+(Get-TimeZone).Id
+```
+
+Next, pen the lab's `VMConfigurarationData.psd1` in your script editor and change `Lability_timeZone` per Node.
+
+```powershell
+ @{
+            NodeName                = 'Win10Ent'
+            IPAddress               = '192.168.3.101'
+            Role                    = @('RSAT','RDP')
+            Lability_ProcessorCount = 2
+            Lability_MinimumMemory  = 2GB
+            Lability_Media          = 'WIN10_x64_Enterprise_EN_Eval'
+            Lability_BootOrder      = 20
+            Lability_timeZone       = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_Resource       = @()
+        }
+```

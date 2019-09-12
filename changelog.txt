@@ -1,5 +1,15 @@
 Changelog for PSAutoLab
 
+v4.1.1
+
+Updated configurations to run better outside the configuration folder so commands can be run with Start-Job
+Updated configuration tests to better handle paths outside the configuration folder
+Modified functions to better resolve the . path
+Updates to Usage-FAQ.md
+Updates to README.md
+Minor updates to Updating.md
+Archived Authoring-FAQ.md. Most material was integrated into Usage-FAQ.md
+
 v4.1.0
 
 Added SingleServer configuration (Issue #186)
