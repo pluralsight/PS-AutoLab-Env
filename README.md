@@ -2,10 +2,11 @@
 
 [![PSGallery Version](https://img.shields.io/powershellgallery/v/PSAutolab.png?style=for-the-badge&logo=powershell&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/PSAutolab/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/PSAutolab.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/PSAutoLab/)
 
-This project serves as a set of "wrapper" commands that utilize the [Lability])https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems.
+This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems.
 The downside is that it is a difficult module for less experienced PowerShell users.
 The configurations and control commands for the Hyper-V virtual machines are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability.
 If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
+Note that the Lability module is not owned or managed by Pluralsight.
 This project and all files are released under an MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want.
 
 **While this project is under the Pluralsight banner, it is offered AS-IS as a free tool with no official support from Pluralsight.
