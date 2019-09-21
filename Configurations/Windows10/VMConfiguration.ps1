@@ -24,10 +24,10 @@ Configuration AutoLab {
 
     Import-DscResource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
     Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "8.9.0.0"
-    Import-DscResource -ModuleName "xComputerManagement" -ModuleVersion "1.8.0.0"
+    Import-DscResource -ModuleName "xComputerManagement" -ModuleVersion "4.1.0.0"
     Import-DscResource -ModuleName "xNetworking" -ModuleVersion "5.7.0.0"
     Import-DscResource -ModuleName "xWindowsUpdate" -ModuleVersion "2.8.0.0"
-    Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.3.0.0"
+    Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.4.0.0"
 
     Node $AllNodes.Where( {$true}).NodeName {
         xComputer ComputerName {

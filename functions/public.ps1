@@ -28,7 +28,7 @@ Function Invoke-RefreshHost {
     Param(
         [Parameter(Position = 0, HelpMessage = "The path to your Autolab configuration path, ie C:\Autolab\ConfigurationPath")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Destination = (Get-LabHostDefault).configurationpath
     )
 
@@ -181,13 +181,13 @@ Function Invoke-SetupLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = ".",
         [switch]$IgnorePendingReboot
     )
 
     $Path = Convert-Path $path
-    $labname = split-path $Path -leaf
+    $labname = Split-Path $Path -leaf
     $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
     $DSCResources = $LabData.NonNodeData.Lability.DSCResource
     if (-Not $DSCResources) {
@@ -225,25 +225,30 @@ Function Invoke-SetupLab {
 
     Foreach ($DSCResource in $DSCResources) {
         #test if current version is installed otherwise update or install it
-        $dscmod = Get-Module $DSCResource.name -ListAvailable | Sort-Object Version -Descending
+        $dscmod = Get-Module -FullyQualifiedName @{Modulename = $DSCResource.name; ModuleVersion = $DSCResource.RequiredVersion } -ListAvailable
 
-        if ($dscmod[0].version -ne ($DSCResource.RequiredVersion -as [version])) {
-            if ($pscmdlet.ShouldProcess($DSCResource.name, "Update-Module")) {
-                Update-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
-            }
-        }
-        elseif (-not $dscmod) {
+        if ((-not $dscmod ) -or ($dscmod.version -ne $DSCResource.RequiredVersion)) {
+            write-host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Install-Module")) {
                 Install-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
-
+        elseif ($dscmod.version -ne ($DSCResource.RequiredVersion -as [version])) {
+            write-host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
+            if ($pscmdlet.ShouldProcess($DSCResource.name, "Update-Module")) {
+                Update-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
+            }
+        }
+        else {
+            write-host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
+        }
     }
 
     # Run the config to generate the .mof files
     Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
-    if ($PSCmdlet.ShouldProcess("$path\VMConfiguration.ps1")) {
-        . "$path\VMConfiguration.ps1"
+    $vmconfig = Join-Path -Path $path -ChildPath 'VMConfiguration.ps1'
+    if ($PSCmdlet.ShouldProcess($vmConfig)) {
+        . $VMConfig
     }
     # Build the lab without a snapshot
     #
@@ -252,19 +257,26 @@ Function Invoke-SetupLab {
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
-        ConfigurationData   = "$path\*.psd1"
-        Path                = $(Convert-Path $path)
+        ConfigurationData   = Import-PowerShellDatafile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
+        Path                = $Path
         NoSnapshot          = $True
         Password            = $Password
         IgnorePendingReboot = $True
         WarningAction       = "SilentlyContinue"
+        ErrorAction         = "stop"
     }
 
-    $startParams | Out-String | Write-Host -ForegroundColor cyan
+    # $startParams | Out-String | Write-Host -ForegroundColor cyan
     if ($PSCmdlet.ShouldProcess($labname, "Start-LabConfiguration")) {
-        Start-LabConfiguration @startParams
+        Try {
+            Start-LabConfiguration @startParams
+        }
+        Catch {
+            Write-Host "Failed to start lab configuration." -foreground red
+            throw $_
+        }
         # Disable secure boot for VM's
-        Get-VM ( Get-LabVM -ConfigurationData $path\*.psd1 ).Name -OutVariable vm
+        Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name -OutVariable vm
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
         Write-Host -ForegroundColor Green -Object @"
@@ -306,7 +318,7 @@ Function Invoke-RunLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -324,7 +336,7 @@ Function Invoke-RunLab {
 "@
 
     $labname = split-path (get-location) -leaf
-    $datapath = Join-Path $(Convert-Path $path) -childpath "VMConfigurationData.psd1"
+    $datapath = Join-Path $(Convert-Path $path) -childpath "*.psd1"
     Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
     $data = Import-PowerShellDataFile -path $datapath
     # Creates the lab environment without making a Hyper-V Snapshot
@@ -372,7 +384,7 @@ Function Enable-Internet {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -428,7 +440,7 @@ Function Invoke-ValidateLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript(
-            {Test-Path $_})]
+            { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -493,7 +505,7 @@ Function Invoke-ShutdownLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -547,7 +559,7 @@ Function Invoke-SnapshotLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = ".",
         [Parameter(HelpMessage = "Specify a name for the virtual machine checkpoint")]
         [ValidateNotNullorEmpty()]
@@ -605,7 +617,7 @@ Function Invoke-RefreshLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = ".",
         [Parameter(HelpMessage = "Specify a name for the virtual machine checkpoint")]
         [ValidateNotNullorEmpty()]
@@ -670,7 +682,7 @@ Function Invoke-WipeLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -721,8 +733,8 @@ Function Invoke-WipeLab {
 
     #only delete the VHD files associated with the configuration as you might have more than one configuration
     #running
-    $nodes = ($labdata.allnodes.nodename).where( {$_ -ne '*'})
-    Get-Childitem (Get-LabhostDefault).differencingVHDPath | where-object {$nodes -contains $_.basename} | Remove-Item
+    $nodes = ($labdata.allnodes.nodename).where( { $_ -ne '*' })
+    Get-Childitem (Get-LabhostDefault).differencingVHDPath | where-object { $nodes -contains $_.basename } | Remove-Item
     #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
     Write-Host -ForegroundColor Green -Object @"
@@ -765,7 +777,7 @@ Function Invoke-UnattendLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -812,7 +824,7 @@ Function Get-LabSnapshot {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 

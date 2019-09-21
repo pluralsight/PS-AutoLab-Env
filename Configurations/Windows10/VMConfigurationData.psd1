@@ -111,11 +111,11 @@ demonstrations and would need to be modified for your environment.
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xComputerManagement'; RequiredVersion = '1.8.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '8.9.0.0'; Provider = 'PSGallery'},
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.3.0.0'; Provider = 'PSGallery'}
+                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery'}
             );
             Resource    = @(
                 @{

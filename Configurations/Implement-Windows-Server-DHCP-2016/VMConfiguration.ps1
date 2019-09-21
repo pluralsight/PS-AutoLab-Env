@@ -26,7 +26,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,
     @{ModuleName="xPSDesiredStateConfiguration";ModuleVersion="8.9.0.0"},
     @{ModuleName="xActiveDirectory";ModuleVersion="3.0.0.0"},
-    @{ModuleName="xComputerManagement";ModuleVersion="2.0.0.0"},
+    @{ModuleName="xComputerManagement";ModuleVersion="4.1.0.0"},
     @{ModuleName="xNetworking";ModuleVersion="5.7.0.0"},
     @{ModuleName="xDhcpServer";ModuleVersion="2.0.0.0"},
     @{ModuleName='xWindowsUpdate';ModuleVersion = '2.8.0.0'},

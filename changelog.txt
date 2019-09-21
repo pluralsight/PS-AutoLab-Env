@@ -1,5 +1,10 @@
 Changelog for PSAutoLab
 
+v4.2.0
+
+Updates to Setup-Lab to better handle DSCResource installation (Issue #194)
+Updated DSC Resource module versions in configuration files
+
 v4.1.1
 
 Updated configurations to run better outside the configuration folder so commands can be run with Start-Job
