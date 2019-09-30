@@ -16,6 +16,7 @@ demonstrations and would need to be modified for your environment.
 
 #>
 
+
 Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile -Path $PSScriptroot\VMConfigurationData.psd1
@@ -23,13 +24,16 @@ Configuration AutoLab {
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
     Import-DscResource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
+
+    #import dscresources from the configuration data
     Import-DscResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion "8.9.0.0"
     Import-DscResource -ModuleName "xComputerManagement" -ModuleVersion "4.1.0.0"
     Import-DscResource -ModuleName "xNetworking" -ModuleVersion "5.7.0.0"
     Import-DscResource -ModuleName "xWindowsUpdate" -ModuleVersion "2.8.0.0"
     Import-DscResource -ModuleName "xPendingReboot" -ModuleVersion "0.4.0.0"
 
-    Node $AllNodes.Where( {$true}).NodeName {
+
+    Node $AllNodes.Where( { $true }).NodeName {
         xComputer ComputerName {
             Name          = $Node.NodeName
             WorkGroupName = "Lab"
@@ -122,7 +126,7 @@ Configuration AutoLab {
     #endregion
 
     #region RSAT config
-    node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'RSAT' }).NodeName {
         # Adds RSAT which is now a Windows Capability in Windows 10
 
         Script RSAT {
@@ -138,18 +142,18 @@ Configuration AutoLab {
 
             GetScript  = {
                 $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
-                $installed = $packages.Where( {$_.state -eq "Installed"})
-                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
+                $installed = $packages.Where( { $_.state -eq "Installed" })
+                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed" }
             }
 
             SetScript  = {
-                Get-WindowsCapability -online -Name Rsat* | Where-Object {$_.state -ne "installed"} | Add-WindowsCapability -online
+                Get-WindowsCapability -online -Name Rsat* | Where-Object { $_.state -ne "installed" } | Add-WindowsCapability -online
             }
         }
     } #end RSAT Config
 
     #region RDP config
-    node $AllNodes.Where( {$_.Role -eq 'RDP'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'RDP' }).NodeName {
         # Adds RDP support and opens Firewall rules
 
         Registry RDP {

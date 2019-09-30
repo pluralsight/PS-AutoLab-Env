@@ -1,4 +1,4 @@
-# Lab definition
+# Lab Definition
 
 This lab is specifically designed for the Implementing Windows Server 2016 DHCP from Pluralsight.com. It will provide a fully-function AD environment using company.pri for a domain, and it builds the following servers:
 

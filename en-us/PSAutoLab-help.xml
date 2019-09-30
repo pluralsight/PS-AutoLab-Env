@@ -1335,6 +1335,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AsJob</maml:name>
+          <maml:Description>
+            <maml:para>Run the unattend process in a PowerShell background job.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1366,6 +1377,18 @@ This process will not remove any configurations that have been deleted from the 
         <maml:name>WhatIf</maml:name>
         <maml:Description>
           <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>AsJob</maml:name>
+        <maml:Description>
+          <maml:para>Run the unattend process in a PowerShell background job.</maml:para>
         </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -1406,6 +1429,13 @@ This process will not remove any configurations that have been deleted from the 
         <dev:code>PS C:\Autolab\Configurations\PowerShellLab&gt; Unattend-Lab</dev:code>
         <dev:remarks>
           <maml:para>Follow any onscreen instructions or prompts.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\Autolab\Configurations\MultiRole&gt; Unattend-Lab -asJob</dev:code>
+        <dev:remarks>
+          <maml:para>Run the setup unattended in a background job.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1513,7 +1543,8 @@ This process will not remove any configurations that have been deleted from the 
     </command:details>
     <maml:description>
       <maml:para>You can use this command to remove all files and virtual machines related to an Autolab configuration. The command will stop any running virtual machines for you. It is assumed you will be running this command from within a configuration folder.</maml:para>
-      <maml:para>If you intend to rebuild the lab or create another configuration, you do not need to delete the LabNat item.</maml:para>
+      <maml:para>If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNat).</maml:para>
+      <maml:para>Use -Force to suppress all prompts.</maml:para>
       <maml:para>You will most likely use the Wipe-Lab alias.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1546,6 +1577,28 @@ This process will not remove any configurations that have been deleted from the 
           <maml:name>WhatIf</maml:name>
           <maml:Description>
             <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:Description>
+            <maml:para>Remove lab elements with no prompting.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RemoveSwitch</maml:name>
+          <maml:Description>
+            <maml:para>Remove the VM Switch. It is retained by default.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1592,6 +1645,30 @@ This process will not remove any configurations that have been deleted from the 
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:Description>
+          <maml:para>Remove lab elements with no prompting.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>RemoveSwitch</maml:name>
+        <maml:Description>
+          <maml:para>Remove the VM Switch. It is retained by default.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
@@ -1624,6 +1701,13 @@ This process will not remove any configurations that have been deleted from the 
         <dev:code>PS C:\AutoLab\Configurations\Windows10&gt; Wipe-Lab</dev:code>
         <dev:remarks>
           <maml:para>Follow any onscreen prompts or instructions.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\AutoLab\Configurations\SingleServer&gt; Wipe-Lab -force -RemoveSwitch</dev:code>
+        <dev:remarks>
+          <maml:para>Forcibly remove all lab elements including the virtual switch.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

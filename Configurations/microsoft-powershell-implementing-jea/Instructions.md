@@ -1,9 +1,9 @@
-# Lab definition
+# Lab Definition
 
 This lab builds the following:
 
-* 1 DC
-* 1 Server (s1)
+* 1 DC (DC1)
+* 1 Server (S1)
 * 1 Nano (N1)
 * 1 Client with RSAT (Cli1)
 

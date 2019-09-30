@@ -23,15 +23,15 @@ Configuration AutoLab {
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
-    Import-DSCresource -ModuleName PSDesiredStateConfiguration,
-    @{ModuleName = 'xActiveDirectory'; ModuleVersion = '3.0.0.0'},
-    @{ModuleName = 'xComputerManagement'; ModuleVersion = '4.1.0.0'},
-    @{ModuleName = 'xNetworking'; ModuleVersion = '5.7.0.0'},
-    @{ModuleName = 'xDhcpServer'; ModuleVersion = '2.0.0.0'},
-    @{ModuleName = 'xWindowsUpdate'; ModuleVersion = '2.8.0.0'},
-    @{ModuleName = 'xPSDesiredStateConfiguration'; ModuleVersion = '8.9.0.0'},
-    @{ModuleName = 'xPendingReboot'; ModuleVersion = '0.4.0.0'},
-    @{ModuleName = 'xADCSDeployment'; ModuleVersion = '1.4.0.0'}
+    Import-DSCResource -ModuleName 'PSDesiredStateConfiguration' -ModuleVersion '1.1'
+    Import-DSCResource -ModuleName 'xActiveDirectory' -ModuleVersion '3.0.0.0'
+    Import-DSCResource -ModuleName 'xComputerManagement' -ModuleVersion '4.1.0.0'
+    Import-DSCResource -ModuleName 'xNetworking' -ModuleVersion '5.7.0.0'
+    Import-DSCResource -ModuleName 'xDhcpServer' -ModuleVersion '2.0.0.0'
+    Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion '2.8.0.0'
+    Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' -ModuleVersion '8.9.0.0'
+    Import-DSCResource -ModuleName 'xPendingReboot' -ModuleVersion '0.4.0.0'
+    Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion '1.4.0.0'
 
 
     #endregion

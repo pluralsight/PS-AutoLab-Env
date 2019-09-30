@@ -17,8 +17,9 @@ Function Get-PSAutoLabSetting {
         PSVersion = $psver.PSVersion
         Edition   = $psver.PSEdition
         OS        = $os
-        PSAutolab = (Get-Module -name PSAutolab -ListAvailable | Sort-object -Property Version -Descending | Select-Object -first 1).version
-        Lability  = (Get-Module -name Lability -ListAvailable | Sort-object -Property Version -Descending | Select-Object -first 1).version
+        PSAutolab = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        Lability  = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        Pester    = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
         Memory    = $mem
     }
 }
@@ -73,6 +74,7 @@ Function Invoke-SetupHost {
 
     * For PowerShell Remoting, configure the host 'TrustedHosts' value to *
     * Install the Lability module from PSGallery
+    * Update the Pester module if necessary
     * Install Hyper-V
     * Create the $DestinationPath folder (DO NOT DELETE)
     * Copy configurations and resources to $DestinationPath
@@ -108,6 +110,7 @@ Function Invoke-SetupHost {
     }
 
     # Lability install
+    Install-PackageProvider -Name Nuget -ForceBootstrap
 
     Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap | Out-Null
 
@@ -115,6 +118,9 @@ Function Invoke-SetupHost {
  Test if the current version of Lability is already installed. If so, do nothing.
  If an older version is installed, update the version, otherwise install the latest version.
 #>
+
+    #update Pester as needed
+    _PesterCheck
 
     #use the module defined variable and a private function
     if ($pscmdlet.ShouldProcess("Lability $labilityVersion", "Install or Update Lability")) {
@@ -222,6 +228,8 @@ Function Invoke-SetupLab {
 
     Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
     Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+    #force updating/installing nuget to bypass the prompt
+    $nuget = Install-PackageProvider -Name nuget -force -ForceBootstrap
 
     Foreach ($DSCResource in $DSCResources) {
         #test if current version is installed otherwise update or install it
@@ -683,7 +691,11 @@ Function Invoke-WipeLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
-        [string]$Path = "."
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Remove the VM Switch. It is retained by default")]
+        [switch]$RemoveSwitch,
+        [Parameter(HelpMessage = "Remove lab elements with no prompting.")]
+        [switch]$Force
     )
 
     $Path = Convert-Path $path
@@ -701,10 +713,20 @@ Function Invoke-WipeLab {
 
 "@
 
-    Pause
+    if (-Not $Force) {
+        Pause
+}
 
+    $removeParams = @{
+        ConfigurationData = "$path\*.psd1"
+    }
+
+    if ($force) {
+        $removeParams.Add("confirm",$False)
+    }
     $labname = split-path $path -leaf
     Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
+
     # Stop the VM's
     if ($pscmdlet.ShouldProcess("VMs", "Stop-Lab")) {
 
@@ -719,16 +741,20 @@ Function Invoke-WipeLab {
     }
     # Remove .mof iles
     Remove-Item -Path $path\*.mof
-    # Delete NAT
-    $LabData = Import-PowerShellDataFile -Path $path\*.psd1
-    $NatName = $Labdata.AllNodes.IPNatName
-    if ($pscmdlet.ShouldProcess("LabNat", "Remove NetNat")) {
-        Remove-NetNat -Name $NatName
+
+    if ($RemoveSwitch) {
+        $removeParams.Add("RemoveSwitch",$True)
+        # Delete NAT
+        $LabData = Import-PowerShellDataFile -Path $path\*.psd1
+        $NatName = $Labdata.AllNodes.IPNatName
+        if ($pscmdlet.ShouldProcess("LabNat", "Remove NetNat")) {
+            Remove-NetNat -Name $NatName
+        }
     }
     # Delete vM's
     if ($pscmdlet.ShouldProcess("VMConfigurationData.psd1", "Remove lab configuration")) {
 
-        Remove-LabConfiguration -ConfigurationData $path\*.psd1 -RemoveSwitch
+        Remove-LabConfiguration @removeParams
     }
 
     #only delete the VHD files associated with the configuration as you might have more than one configuration
@@ -778,32 +804,45 @@ Function Invoke-UnattendLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
-        [string]$Path = "."
+        [string]$Path = ".",
+        [switch]$AsJob
     )
 
     $Path = Convert-Path $path
-    Write-Host -ForegroundColor Green -Object @"
 
-       This runs Setup-Lab, Run-Lab, and Validate-Lab
 
+    $sb = {
+        [cmdletbinding()]
+        Param([string]$Path,[bool]$WhatIf)
+
+        $WhatIfPreference = $WhatIf
+        [void]$psboundparameters.remove("WhatIf")
+
+        $msg = @"
+
+        This runs Setup-Lab, Run-Lab, and Validate-Lab commands
+        Starting the lab environment
 "@
 
-    Write-Host -ForegroundColor Cyan -Object 'Starting the lab environment'
+        Write-Host $msg -ForegroundColor Green
 
-    if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
-        Invoke-SetupLab @psboundparameters
-    }
-    if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
-        Invoke-RunLab @psboundparameters
-    }
-    if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
-        Enable-Internet @psboundparameters
-    }
-    if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
-        Invoke-ValidateLab @psboundparameters
-    }
+        if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
+            Invoke-SetupLab @psboundparameters
+        }
+        if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
+            Invoke-RunLab @psboundparameters
+        }
+        if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
+            Enable-Internet @psboundparameters
+        }
+        if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
+            Invoke-ValidateLab @psboundparameters
+        }
 
-    Write-Host -ForegroundColor Green -Object @"
+
+        $msg = @"
+
+        Unattended setup is complete.
 
         To stop the lab VM's:
         Shutdown-lab
@@ -813,9 +852,20 @@ Function Invoke-UnattendLab {
 
         To quickly rebuild the labs from the checkpoint, run:
         Refresh-Lab
-
 "@
+        Write-Host $msg -ForegroundColor Green
+    } #close scriptblock
 
+    $icmParams = @{
+        Computername = $env:computername
+        ArgumentList = @($Path,$WhatIfPreference)
+        Scriptblock  = $sb
+    }
+
+    if ($asjob) {
+        $icmParams.Add("AsJob",$True)
+    }
+    Invoke-Command @icmParams
 }
 #endregion Unattend-Lab
 
@@ -828,11 +878,28 @@ Function Get-LabSnapshot {
         [string]$Path = "."
     )
 
-    Write-Verbose "Getting mofs from $(Convert-Path $Path)"
-    #get the MOF file names
-    $VMs = (Get-Childitem -path $path -filter *.mof -exclude *meta* -recurse).Basename
-    Write-Verbose "Getting VMSnapshots"
+    Write-Verbose "Starting $($myinvocation.mycommand)"
 
-    Get-VMSnapshot -vmname  $VMs
-    Write-Host "All VMs in the configuration should belong to the same snapshot." -foreground green
+    $Path = Convert-Path $path
+    Write-Verbose "Getting mofs from $(Convert-Path $Path)"
+
+    $VMs = (Get-Childitem -path $path -filter *.mof -exclude *meta* -recurse).Basename
+    if ($VMs) {
+
+        Write-Verbose "Getting VMSnapshots for $($VMs -join ',')"
+
+        $snaps = Get-VMSnapshot -vmname  $VMs
+        if ($snaps) {
+            $snaps
+            Write-Host "All VMs in the configuration should belong to the same snapshot if you want to use Refresh-Lab." -foreground green
+        }
+        else {
+            Write-Host "No VM snapshots found for lab machines in $path." -ForegroundColor yellow
+        }
+    }
+    else {
+        Write-Warning "No configuration MOF files found in $Path."
+    }
+
+    Write-Verbose "Ending $($myinvocation.mycommand)"
 }

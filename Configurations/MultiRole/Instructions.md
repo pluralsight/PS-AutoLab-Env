@@ -5,8 +5,8 @@ If you were instructed to use that configuration, this one should work for you.
 
 The lab builds the following:
 
-* 1 DC
-* 1 Server (s1)
+* 1 DC (DC1)
+* 1 Server (S1)
 * 1 Nano (N1)
 * 1 Client with RSAT (Cli1)
 
@@ -20,7 +20,7 @@ The lab builds the following:
     Run the following for initial setup:
     PS> Setup-Lab
 
-    To start the LAb, and apply configurations the first time:
+    To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
     To enable Internet access for the VM's, run:

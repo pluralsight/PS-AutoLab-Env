@@ -1,4 +1,4 @@
-# Lab definition
+# Lab Definition
 
 This lab builds the following:
 
@@ -16,7 +16,7 @@ It will also create a local user account with a password of `P@ssw0rd` using sam
     Run the following for initial setup:
     PS> Setup-Lab
 
-    To start the LAb, and apply configurations the first time:
+    To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
     To enable Internet access for the VM's, run:
