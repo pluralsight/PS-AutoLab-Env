@@ -1,12 +1,12 @@
-# Lab definition
+# Lab Definition
 
 This lab builds the following:
 
-* 1 Windows Server 2016 domain controller with users, groups and OU's - GUI
-* 1 DHCP server on the DOM1
+* 1 Windows Server 2016 domain controller (DOM1) with users, groups and OU's - Server Core
+* 1 DHCP server on DOM1
 * 2 Domain joined servers (SRV1 and SRV2) running Windows Server 2016 Core
 * 1 workgroup based server (SRV3) running Windows Server 2019 Core
-* 1 Domain joined Windows 10 Client with RSAT tools installed
+* 1 Domain joined Windows 10 Client (Win10) with RSAT tools installed
 
 ## To get started
 
@@ -21,7 +21,7 @@ To run the commands individually to setup the lab environment:
 Run the following for initial setup:
 
 ```powershell
-PS> Setup-Lab 
+PS> Setup-Lab
 ```
 
 To start the Lab, and apply configurations the first time:

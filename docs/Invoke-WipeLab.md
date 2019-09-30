@@ -14,7 +14,7 @@ Remove an Autolab configuration
 ## SYNTAX
 
 ```yaml
-Invoke-WipeLab [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-WipeLab [[-Path] <String>] [-RemoveSwitch] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -23,7 +23,9 @@ You can use this command to remove all files and virtual machines related to an 
 The command will stop any running virtual machines for you.
 It is assumed you will be running this command from within a configuration folder.
 
-If you intend to rebuild the lab or create another configuration, you do not need to delete the LabNat item.
+If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNat).
+
+Use -Force to suppress all prompts.
 
 You will most likely use the Wipe-Lab alias.
 
@@ -36,6 +38,14 @@ PS C:\AutoLab\Configurations\Windows10> Wipe-Lab
 ```
 
 Follow any onscreen prompts or instructions.
+
+### Example 2
+
+```powershell
+PS C:\AutoLab\Configurations\SingleServer> Wipe-Lab -force -RemoveSwitch
+```
+
+Forcibly remove all lab elements including the virtual switch.
 
 ## PARAMETERS
 
@@ -79,6 +89,38 @@ Shows what would happen if the cmdlet runs. The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Remove lab elements with no prompting.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RemoveSwitch
+
+Remove the VM Switch. It is retained by default.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

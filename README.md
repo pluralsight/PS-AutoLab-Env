@@ -151,6 +151,7 @@ Unattend-Lab
 
 Assuming you don't need to install a newer version of nuget, you can leave the setup alone.
 It will run all of the manual steps for you.
+Beginning in version 4.3.0 you also have the option to run the unattend process in a PowerShell background job.
 
 ### Stopping a Lab
 
@@ -288,6 +289,6 @@ These are some of the items that are being considered for future updates:
 * Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration
 * Offer an easy way to customize a lab configuration such as time zone, node names and operating systems.
 
-A complete list of enhancements can be found in Issues.
+A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2019-09-21 03:35:56Z UTC
+Last Updated 2019-09-30 16:50:51Z UTC

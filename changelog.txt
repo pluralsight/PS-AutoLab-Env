@@ -1,5 +1,16 @@
 Changelog for PSAutoLab
 
+v4.3.0
+
+Added code when setting up host to update Pester (Issue #195)
+Updated configurations to use xComputerManagement (Issue #196)
+Updated configuration scripts to better import DSC resource modules
+Modified Wipe-Lab to allow removing lab elements without prompting and removing Lab switch is now optional. (Issue #191)
+Modified Unattend-Lab to run in a background job (Issue #190)
+Updated Get-PSAutolabSetting to get Pester version (Issue #197)
+Updated Get-Labsnapshot (Issue #192)
+Help updates
+
 v4.2.0
 
 Updates to Setup-Lab to better handle DSCResource installation (Issue #194)

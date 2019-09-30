@@ -1,5 +1,28 @@
 #there are private, non-exported functions
 
+Function _PesterCheck {
+    [CmdletBinding(SupportsShouldProcess)]
+    Param()
+
+    $PesterMod = Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -descending | Select-Object -First 1
+
+    If ($pestermod.version -eq '3.4.0') {
+        Write-Host "Installing a newer version of Pester" -ForegroundColor Cyan
+        if ($pscmdlet.ShouldProcess("Pester", "Install-Module")) {
+            Install-Module -name Pester -Force -SkipPublisherCheck
+        }
+    }
+    elseif ($pestermod.version -lt '4.8.0') {
+        Write-Host "Updating a newer version of Pester" -ForegroundColor Cyan
+        if ($pscmdlet.ShouldProcess("Pester", "Update-Module")) {
+            Update-Module -name Pester -Force
+        }
+    }
+    else {
+        Write-Host "Running Pester version $($pestermod.version)" -ForegroundColor green
+    }
+}
+
 Function _LabilityCheck {
     [cmdletbinding(SupportsShouldProcess)]
     Param(

@@ -14,7 +14,8 @@ Create an Autolab configuration unattended
 ## SYNTAX
 
 ```yaml
-Invoke-UnattendLab [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+
+Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,6 +45,15 @@ PS C:\Autolab\Configurations\PowerShellLab> Unattend-Lab
 ```
 
 Follow any onscreen instructions or prompts.
+
+
+### Example 2
+
+```powershell
+PS C:\Autolab\Configurations\MultiRole> Unattend-Lab -asJob
+```
+
+Run the setup unattended in a background job.
 
 ## PARAMETERS
 
@@ -88,6 +98,22 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AsJob
+
+Run the unattend process in a PowerShell background job.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
