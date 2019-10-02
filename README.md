@@ -48,7 +48,7 @@ To avoid any other complications, it is STRONGLY recommended that you manually r
 You can run a command like:
 
 ```powershell
-Get-Module PSAutolab -ListAvailable | Select-Object Path
+PS C:\> Get-Module PSAutolab -ListAvailable | Select-Object Path
 ```
 
 To identify the module location.
@@ -64,7 +64,7 @@ It is recommended that you have at least version 2.2 of the `PowerShellGet` modu
 Open an elevated PowerShell prompt and run:
 
 ```powershell
-Install-Module PSAutoLab
+PS C:\> Install-Module PSAutoLab
 ```
 
 If prompted, answer yes to update the nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted.
@@ -74,7 +74,6 @@ Manually remove the old module files and try again.
 *Do not download or use any of the release packages on Github.
 Only install this module from the PowerShell Gallery.*
 
-The current version is `4.1.1`.
 See the [Changelog](./changelog.txt) for update details.
 
 **DO NOT run this module on any mission-critical production system.**
@@ -91,7 +90,7 @@ The first time you use this module, you will need to configure the local machine
 Open an elevated PowerShell session and run:
 
 ```powershell
-Setup-Host
+PS C:\> Setup-Host
 ```
 
 This will install and configure the Lability module and install the Hyper-V feature if it is missing.
@@ -99,7 +98,7 @@ By default, all AutoLab files will be stored under C:\AutoLab, which the setup p
 If you prefer to use a different drive, you can specify it during setup.
 
 ```powershell
-Setup-Host -DestinationPath D:\AutoLab
+PS C:\> Setup-Host -DestinationPath D:\AutoLab
 ```
 
 You will be prompted to reboot, which you should do especially if setup had to add Hyper-V.
@@ -136,7 +135,7 @@ You can use `Ctrl+C` to break out of the testing loop at any time.
 You can manually run the test one time to see the current state of the configuration.
 
 ```powershell
-Invoke-Pester VMValidate.test.ps1
+PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
 This can be useful for troubleshooting.
@@ -146,19 +145,23 @@ This can be useful for troubleshooting.
 As an alternative, you can setup a lab environment with minimal prompting.
 
 ```powershell
-Unattend-Lab
+PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 ```
 
 Assuming you don't need to install a newer version of nuget, you can leave the setup alone.
 It will run all of the manual steps for you.
 Beginning in version 4.3.0 you also have the option to run the unattend process in a PowerShell background job.
 
+```powershell
+PS C:\Autolab\Configurations\SingleServer\> unattend-lab -asjob
+```
+
 ### Stopping a Lab
 
 To stop the lab VMs, change to the configuration folder in an elevated Windows PowerShell session and run:
 
 ```powershell
-Shutdown-Lab
+PS C:\Autolab\Configurations\SingleServer\> Shutdown-Lab
 ```
 
 You can also use the Hyper-V manager or cmdlets to shut down virtual machines.
@@ -170,7 +173,7 @@ The setup process will leave the virtual machines running.
 If you have stopped the lab and need to start it, change to the configuration folder in an elevated Windows PowerShell session and run:
 
 ```powershell
-Run-Lab
+PS C:\Autolab\Configurations\SingleServer\> Run-Lab
 ```
 
 You can also use the Hyper-V manager or cmdlets to start virtual machines.
@@ -182,13 +185,13 @@ You can snapshot the entire lab very easily.
 Change to the configuration folder in an elevated Windows PowerShell session and run:
 
 ```powershell
-Snapshot-Lab
+PS C:\Autolab\Configurations\SingleServer\> Snapshot-Lab
 ```
 
 To quickly rebuild the labs from the checkpoint, run:
 
 ```powershell
-Refresh-Lab
+PS C:\Autolab\Configurations\SingleServer\> Refresh-Lab
 ```
 
 ### To Remove a Lab
@@ -196,7 +199,7 @@ Refresh-Lab
 To destroy the lab completely, change to the configuration folder in an elevated Windows PowerShell session and run:
 
 ```powershell
-Wipe-Lab
+PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 ```
 
 This will remove the virtual machines and DSC configuration files.
@@ -209,19 +212,19 @@ There may also be new Lability updates.
 Use PowerShell to check for new versions:
 
 ```powershell
-Find-Module PSAutoLab
+PS C:\> Find-Module PSAutoLab
 ```
 
 And update:
 
 ```powershell
-Update-Module PSAutoLab
+PS C:\> Update-Module PSAutoLab
 ```
 
 If you update, it is recommended that you update the computer running AutoLab.
 
 ```powershell
-Refresh-Host
+PS C:\> Refresh-Host
 ```
 
 This will update Lability if required and copy all new configuration files to your AutoLab\Configurations folder.
@@ -235,7 +238,7 @@ Most setups should be complete in under an hour.
 If validation is failing, manually run the validation test in the configuration folder.
 
 ```powershell
-Invoke-Pester VMValidate.test.ps1
+PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
 Take note of which virtual machines are generating errors.
