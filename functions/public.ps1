@@ -415,7 +415,7 @@ Function Enable-Internet {
     $NatNetwork = $Labdata.AllNodes.IPnetwork
     $NatName = $Labdata.AllNodes.IPNatName
 
-    $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
+    $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)*" | Select-Object -ExpandProperty InterfaceIndex
 
     if ($pscmdlet.ShouldProcess("Interface index $index", "New-NetIPAddress")) {
         New-NetIPAddress -InterfaceIndex $Index -IPAddress $GatewayIP -PrefixLength $GatewayPrefix -ErrorAction SilentlyContinue
