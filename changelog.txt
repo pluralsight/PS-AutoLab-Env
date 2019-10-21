@@ -1,5 +1,11 @@
 Changelog for PSAutoLab
 
+v4.3.1
+
+Modified Pester tests with a little more error handling.
+Updated xDNSServer required resource to 1.15.0.0
+Moved default user location to the Employees OU instead of the domain root for the PowerShellLab configuration
+
 v4.3.0
 
 Added code when setting up host to update Pester (Issue #195)

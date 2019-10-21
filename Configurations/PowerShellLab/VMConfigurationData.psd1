@@ -206,7 +206,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '8.9.0.0'; },
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery';},
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery';},
-                @{ Name = 'xDnsServer';RequiredVersion = "1.14.0.0";Provider = 'PSGallery';},
+                @{ Name = 'xDnsServer';RequiredVersion = "1.15.0.0";Provider = 'PSGallery';},
                 @{ Name = 'xWebAdministration';RequiredVersion = '2.7.0.0';Provider = 'PSGallery'}
 
             );
