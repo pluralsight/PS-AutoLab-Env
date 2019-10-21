@@ -32,7 +32,7 @@ Configuration AutoLab {
     Import-DSCResource -modulename 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
     Import-DSCResource -modulename 'xPendingReboot' -ModuleVersion  '0.4.0.0'
     Import-DSCResource -modulename 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
-    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.14.0.0'
+    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.15.0.0'
     Import-DSCResource -modulename 'xWebAdministration' -ModuleVersion  '2.7.0.0'
 
     #endregion
