@@ -189,12 +189,29 @@ Function Invoke-SetupLab {
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
         [string]$Path = ".",
-        [switch]$IgnorePendingReboot
+        [switch]$IgnorePendingReboot,
+        [string]$TimeZone = (Get-TimeZone).id #Defaults to local host timezonea
     )
 
     $Path = Convert-Path $path
     $labname = Split-Path $Path -leaf
-    $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
+    $LabData = Import-PowerShellDataFile .\VMConfigurationData.psd1
+    #Change the TimeZone to the same as the host computer by default
+
+    $ConfigTimeZone = $LabData.AllNodes.Lability_timeZone
+    if ($null -ne $ConfigTimeZone -and $ConfigTimeZone -ne $TimeZone ) {
+       
+        $tempconfig = Get-Content  .\VMConfigurationData.psd1
+        if ($tempconfig) {
+            $tempconfig = $tempconfig.Replace($ConfigTimeZone,$TimeZone)
+            $tempconfig | Out-File .\VMConfigurationData.psd1 -Force
+        }
+        
+    }
+   
+    $LabData = Import-PowerShellDataFile .\VMConfigurationData.psd1
+
+
     $DSCResources = $LabData.NonNodeData.Lability.DSCResource
     if (-Not $DSCResources) {
         Write-Warning "Failed to find DSC Resource information. Are you in a directory with configuration data .psd1 file?"
@@ -265,7 +282,7 @@ Function Invoke-SetupLab {
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
-        ConfigurationData   = Import-PowerShellDatafile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
+        ConfigurationData   = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
         Path                = $Path
         NoSnapshot          = $True
         Password            = $Password
@@ -284,7 +301,7 @@ Function Invoke-SetupLab {
             throw $_
         }
         # Disable secure boot for VM's
-        Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name -OutVariable vm
+        Get-VM ( Get-LabVM -ConfigurationData $LabData ).Name -OutVariable vm
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
         Write-Host -ForegroundColor Green -Object @"
