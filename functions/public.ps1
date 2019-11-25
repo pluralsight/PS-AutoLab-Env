@@ -1,28 +1,38 @@
+#region Get-PSAutoLabSetting
 Function Get-PSAutoLabSetting {
     [cmdletbinding()]
     Param()
 
     $psver = $PSVersionTable
     Try {
-        $cimos = Get-Ciminstance -class Win32_operatingsystem -Property caption, TotalVisibleMemorySize -ErrorAction Stop
+        $cimos = Get-CimInstance -class Win32_operatingsystem -Property caption, FreePhysicalMemory, TotalVisibleMemorySize -ErrorAction Stop
         $os = $cimos.caption
         $mem = $cimos.TotalVisibleMemorySize
+        $pctFree = [math]::round(($cimos.FreePhysicalMemory / $cimos.TotalVisibleMemorySize) * 100, 2)
     }
     Catch {
         $os = ""
-        $mem = ""
+        $mem = 0
+        $pctFree = 0
     }
 
     [pscustomobject]@{
-        PSVersion = $psver.PSVersion
-        Edition   = $psver.PSEdition
-        OS        = $os
-        PSAutolab = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
-        Lability  = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
-        Pester    = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
-        Memory    = $mem
+        PSVersion     = $psver.PSVersion
+        PSEdition     = $psver.PSEdition
+        OS            = $os
+        IsElevated    = (Test-IsAdministrator)
+        HyperV        = (Get-Item $env:windir\System32\vmms.exe).versioninfo.productversion
+        PSAutolab     = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending).version
+        Lability      = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending).version
+        Pester        = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        MemoryGB      = ($mem * 1kb) / 1GB -as [int]
+        PctFreeMemory = $pctFree
     }
 }
+
+#endregion
+
+#region Invoke-RefreshHost
 Function Invoke-RefreshHost {
     [cmdletbinding(SupportsShouldProcess)]
     [alias("Refresh-Host")]
@@ -51,9 +61,11 @@ Function Invoke-RefreshHost {
         }
     }
 
-    Write-host "This process will not remove any configurations that have been deleted from the module." -ForegroundColor yellow
+    Write-Host "This process will not remove any configurations that have been deleted from the module." -ForegroundColor yellow
 }
+#endregion
 
+#region Invoke-SetupHost
 Function Invoke-SetupHost {
     [CmdletBinding(SupportsShouldProcess)]
     [alias("Setup-Host")]
@@ -152,7 +164,7 @@ Function Invoke-SetupHost {
     ###### COPY Configs to host machine
     Write-Host -ForegroundColor Cyan -Object "Copying configs to $($DirDef.ConfigurationPath)"
     if ($pscmdlet.ShouldProcess($DirDef.ConfigurationPath, "Copy configurations")) {
-        Copy-item -Path $SourcePath\* -recurse -Destination $DirDef.ConfigurationPath -force
+        Copy-Item -Path $SourcePath\* -recurse -Destination $DirDef.ConfigurationPath -force
     }
 
     if ($pscmdlet.ShouldProcess($env:computername, "Prompt for restart")) {
@@ -179,6 +191,7 @@ Function Invoke-SetupHost {
     } #whatif
 
 }
+#endregion
 
 #region Setup-Lab
 Function Invoke-SetupLab {
@@ -229,26 +242,26 @@ Function Invoke-SetupLab {
     Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
     Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
     #force updating/installing nuget to bypass the prompt
-    $nuget = Install-PackageProvider -Name nuget -force -ForceBootstrap
+    [void](Install-PackageProvider -Name nuget -Force -ForceBootstrap)
 
     Foreach ($DSCResource in $DSCResources) {
         #test if current version is installed otherwise update or install it
         $dscmod = Get-Module -FullyQualifiedName @{Modulename = $DSCResource.name; ModuleVersion = $DSCResource.RequiredVersion } -ListAvailable
 
         if ((-not $dscmod ) -or ($dscmod.version -ne $DSCResource.RequiredVersion)) {
-            write-host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
+            Write-Host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Install-Module")) {
                 Install-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
         elseif ($dscmod.version -ne ($DSCResource.RequiredVersion -as [version])) {
-            write-host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
+            Write-Host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Update-Module")) {
                 Update-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
         else {
-            write-host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
+            Write-Host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
         }
     }
 
@@ -265,7 +278,7 @@ Function Invoke-SetupLab {
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
-        ConfigurationData   = Import-PowerShellDatafile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
+        ConfigurationData   = Import-PowerShellDataFile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
         Path                = $Path
         NoSnapshot          = $True
         Password            = $Password
@@ -343,7 +356,7 @@ Function Invoke-RunLab {
 
 "@
 
-    $labname = split-path (get-location) -leaf
+    $labname = Split-Path (Get-Location) -leaf
     $datapath = Join-Path $(Convert-Path $path) -childpath "*.psd1"
     Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
     $data = Import-PowerShellDataFile -path $datapath
@@ -715,16 +728,16 @@ Function Invoke-WipeLab {
 
     if (-Not $Force) {
         Pause
-}
+    }
 
     $removeParams = @{
         ConfigurationData = "$path\*.psd1"
     }
 
     if ($force) {
-        $removeParams.Add("confirm",$False)
+        $removeParams.Add("confirm", $False)
     }
-    $labname = split-path $path -leaf
+    $labname = Split-Path $path -leaf
     Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
 
     # Stop the VM's
@@ -743,7 +756,7 @@ Function Invoke-WipeLab {
     Remove-Item -Path $path\*.mof
 
     if ($RemoveSwitch) {
-        $removeParams.Add("RemoveSwitch",$True)
+        $removeParams.Add("RemoveSwitch", $True)
         # Delete NAT
         $LabData = Import-PowerShellDataFile -Path $path\*.psd1
         $NatName = $Labdata.AllNodes.IPNatName
@@ -760,7 +773,7 @@ Function Invoke-WipeLab {
     #only delete the VHD files associated with the configuration as you might have more than one configuration
     #running
     $nodes = ($labdata.allnodes.nodename).where( { $_ -ne '*' })
-    Get-Childitem (Get-LabhostDefault).differencingVHDPath | where-object { $nodes -contains $_.basename } | Remove-Item
+    Get-ChildItem (Get-LabHostDefault).differencingVHDPath | Where-Object { $nodes -contains $_.basename } | Remove-Item
     #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
     Write-Host -ForegroundColor Green -Object @"
@@ -813,7 +826,7 @@ Function Invoke-UnattendLab {
 
     $sb = {
         [cmdletbinding()]
-        Param([string]$Path,[bool]$WhatIf)
+        Param([string]$Path, [bool]$WhatIf)
 
         $WhatIfPreference = $WhatIf
         [void]$psboundparameters.remove("WhatIf")
@@ -858,17 +871,18 @@ Function Invoke-UnattendLab {
 
     $icmParams = @{
         Computername = $env:computername
-        ArgumentList = @($Path,$WhatIfPreference)
+        ArgumentList = @($Path, $WhatIfPreference)
         Scriptblock  = $sb
     }
 
     if ($asjob) {
-        $icmParams.Add("AsJob",$True)
+        $icmParams.Add("AsJob", $True)
     }
     Invoke-Command @icmParams
 }
 #endregion Unattend-Lab
 
+#region Get-LabSnapshot
 Function Get-LabSnapshot {
     [cmdletbinding()]
     Param (
@@ -883,7 +897,7 @@ Function Get-LabSnapshot {
     $Path = Convert-Path $path
     Write-Verbose "Getting mofs from $(Convert-Path $Path)"
 
-    $VMs = (Get-Childitem -path $path -filter *.mof -exclude *meta* -recurse).Basename
+    $VMs = (Get-ChildItem -path $path -filter *.mof -exclude *meta* -recurse).Basename
     if ($VMs) {
 
         Write-Verbose "Getting VMSnapshots for $($VMs -join ',')"
@@ -903,3 +917,79 @@ Function Get-LabSnapshot {
 
     Write-Verbose "Ending $($myinvocation.mycommand)"
 }
+
+#endregion
+
+#region Update-Lab
+
+Function Update-Lab {
+    [cmdletbinding()]
+    Param(
+        [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript( { Test-Path $_ })]
+        [string]$Path = ".",
+        [switch]$AsJob
+    )
+
+    Begin {
+        Write-Verbose "[$((Get-Date).TimeofDay) BEGIN  ] Starting $($myinvocation.mycommand)"
+        $data = Import-PowerShellDataFile -Path $path\*.psd1
+
+        $upParams = @{
+            VMName     = $null
+            Credential = $null
+        }
+        if ($AsJob) {
+            Write-Verbose "[$((Get-Date).TimeofDay) BEGIN  ] Will update as background job"
+            $upParams.Add("AsJob", $True)
+        }
+    } #begin
+
+    Process {
+        Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] Updating Lab"
+        if ($data) {
+            $pass = ConvertTo-SecureString -String $data.AllNodes.labpassword -AsPlainText -Force
+            $domain = $data.AllNodes.domainName
+            $domcred = New-Object PSCredential -ArgumentList "$($domain)\administrator", $pass
+            $wgcred = New-Object PSCredential -ArgumentList "administrator", $pass
+
+            #get defined nodes
+            $nodes = ($data.allnodes).where( { $_.nodename -ne '*' })
+            foreach ($node in $nodes) {
+                Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $($node.nodename)"
+
+                #verify VM is running
+                $vm = Get-VM -name $node.Nodename
+                if ($vm.state -ne 'running') {
+                    Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $($node.nodename)"
+                    $vm | Start-VM
+                    Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Waiting 30 seconds to give VM time to boot"
+                    Start-Sleep -seconds 30
+                }
+
+                $upParams.VMName = $node.nodename
+                if ($node.role -contains "DC" -or $node.role -contains "DomainJoin") {
+                    $upParams.Credential = $domcred
+                }
+                else {
+                    $upParams.Credential = $wgcred
+                }
+
+                Invoke-WUUpdate @upParams
+            }
+        }
+        else {
+            Throw "Failed to find lab configuration data"
+        }
+
+    } #process
+
+    End {
+        Write-Verbose "[$((Get-Date).TimeofDay) END    ] Ending $($myinvocation.mycommand)"
+
+    } #end
+
+} #close Update-Lab
+
+#endregion

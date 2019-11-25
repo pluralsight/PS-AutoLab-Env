@@ -1,11 +1,17 @@
 Changelog for PSAutoLab
 
-v4.3.1
+v4.4.0
 
 Modified Pester tests with a little more error handling.
-Updated xDNSServer required resource to 1.15.0.0
 Moved default user location to the Employees OU instead of the domain root for the PowerShellLab configuration
+Added Test-isAdministrator private function
 Updated Get-PSAutolabSetting to reflect memory in GB, report on percent free memory, and Hyper-V version
+Updated Get-PSAutolabSetting to show all installed versions of Lability and PSAutolab modules
+Updated Get-PSAutolabSetting to show if running with elevated privileges
+Updated xPSDesiredStateConfiguration resource to 8.10.0.0
+Updated xDNSServer to 1.15.0.0
+Added Invoke-WUUpdate as a private function with a public wrapper function of Update-Lab to install Windows Updates on the virtual machines.
+Help and documentation updates
 
 v4.3.0
 
@@ -15,7 +21,7 @@ Updated configuration scripts to better import DSC resource modules
 Modified Wipe-Lab to allow removing lab elements without prompting and removing Lab switch is now optional. (Issue #191)
 Modified Unattend-Lab to run in a background job (Issue #190)
 Updated Get-PSAutolabSetting to get Pester version (Issue #197)
-Updated Get-Labsnapshot (Issue #192)
+Updated Get-LabSnapshot (Issue #192)
 Help updates
 
 v4.2.0

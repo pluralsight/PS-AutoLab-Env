@@ -3,29 +3,28 @@
 
 SHORT DESCRIPTION
     This project serves as a set of "wrapper" commands that utilize the
-    Lability module which is a terrific tool for creating a lab environment of
-    Windows based systems. The downside is that it is a difficult module for less
-    experienced PowerShell users. The configurations and control scripts for the
-    Hyper-V virtual machine's are written in PowerShell using Desired State
-    Configuration (DSC) and deployed via Lability. If you feel sufficiently
-    skilled, you can skip using this project and use the Lability module on your
-    own.
+    Lability module which is a terrific tool for creating a lab environment
+    of Windows based systems. The downside is that it is a difficult module
+    for less experienced PowerShell users. The configurations and control
+    scripts for the Hyper-V virtual machine's are written in PowerShell
+    using Desired State Configuration (DSC) and deployed via Lability.
+
+    If you feel sufficiently skilled, you can skip using this project and
+    use the Lability module on yourown.
 
 LONG DESCRIPTION
 SETUP
     The first time you use this module, you will need to configure the local
-    machine or host.
+    machine or host.  Open an elevated PowerShell session and run:
 
-    Open an elevated PowerShell session (run as administrator ) and run:
-
-        Setup-Host
+    Setup-Host
 
     This will install and configure the Lability module and install the Hyper-V
     feature if it is missing. By default, all Autolab files will be stored under
     C:\Autolab, which the setup will create. If you prefer to use a different
     drive, you can specify it during setup.
 
-        Setup-Host -destinationpath D:\Autolab
+    Setup-Host -destinationpath D:\Autolab
 
     You will be prompted to reboot, which you should do especially if setup had
     to add Hyper-V.
@@ -40,11 +39,9 @@ CREATING A LAB
     depending on your Internet bandwidth. The downloads only happen when the
     required ISO is not found. When you wipe and rebuild a lab it won't download
     files a second time.
-
     Once the lab is created you can use the module commands for managing it. Or
     you can manage individual virtual machines using the Hyper-V manager or
     cmdlets.
-
     It is assumed that you will only have one lab configuration created at a
     time.
 
@@ -52,9 +49,9 @@ CREATING A LAB
     Most, if not all, configurations should follow the same manual process. Run
     each command after the previous one has completed.
 
-        * Setup-Lab
-        * Run-Lab
-        * Enable-Internet
+    * Setup-Lab
+    * Run-Lab
+    * Enable-Internet
 
     To verify that all virtual machines are properly configured you can run
     Validate-Lab. This will invoke a set of tests and loop until everything
@@ -63,23 +60,23 @@ CREATING A LAB
     loop at any time. You can manually run the test one time to see the current
     state of the configuration.
 
-        Invoke-Pester VMValidate.test.ps1
+    Invoke-Pester VMValidate.test.ps1
 
     This can be useful for troubleshooting.
 
     UNATTENDED SETUP
     As an alternative, you can setup a lab environment with minimal prompting.
 
-        Unattend-Lab
+    Unattend-Lab
 
-    Assuming you don't need to install a newer version of nuget, you can leave
-    the setup alone. It will run all of the manual steps for you.
+    Assuming you don't need to install a newer version of nuget, you can
+    leave the setup alone. It will run all of the manual steps for you.
 
     STOPPING A LAB
     To stop the lab VM's, change to the configuration folder in an elevated
     Windows PowerShell session and run:
 
-        Shutdown-Lab
+    Shutdown-Lab
 
     You can also use the Hyper-V manager or cmdlets to shut down virtual
     machines. If your lab contains a domain controller such as DOM1 or DC1, that
@@ -90,7 +87,7 @@ CREATING A LAB
     stopped the lab and need to start it, change to the configuration folder in
     an elevated Windows PowerShell session and run:
 
-        Run-Lab
+    Run-Lab
 
     You can also use the Hyper-V manager or cmdlets to start virtual machines.
     If your lab contains a domain controller such as DOM1 or DC1, that should be
@@ -100,37 +97,64 @@ CREATING A LAB
     You can snapshot the entire lab very easily. Change to the configuration
     folder in an elevated Windows PowerShell session and run:
 
-        Snapshot-Lab
+    Snapshot-Lab
 
     To quickly rebuild the labs from the checkpoint, run:
 
-        Refresh-Lab
+    Refresh-Lab
 
     TO REMOVE A LAB
     To destroy the lab completely, change to the configuration folder in an
     elevated Windows PowerShell session and run:
 
-        Wipe-Lab
+    Wipe-Lab
 
     This will remove the virtual machines and DSC configuration files. If you
     intend to rebuild the lab or another configuration, you can keep the LabNat
     virtual switch.
 
-UPDATING
+    WINDOWS UPDATES
+    When you build an lab, you are creating Windows virtual machines based on
+    evaluation software. You might still want to make sure the virtual machines
+    are up to date with security patches and updates. You can use
+    Update-Lab to invoke Windows update on all lab members. This can be a time
+    consuming process, so you have an option to run the updates as a background
+    job. Just be sure not to close your PowerShell session before the jobs
+    complete.
+
+    PS C:\Autolab\Configurations\PowerShellLab> update-lab -AsJob
+
+    Id     Name            PSJobTypeName   State         HasMoreData     Location      Command
+    --     ----            -------------   -----         -----------     --------      -------
+    18     WUUpdate        RemoteJob       Running       True            DOM1          WUUpdate
+    21     WUUpdate        RemoteJob       Running       True            SRV1          WUUpdate
+    24     WUUpdate        RemoteJob       Running       True            SRV2          WUUpdate
+    27     WUUpdate        RemoteJob       Running       True            SRV3          WUUpdate
+    30     WUUpdate        RemoteJob       Running       True            WIN10         WUUpdate
+
+    PS C:\Autolab\Configurations\PowerShellLab> receive-job -id 27 -Keep
+    [11/22/2019 12:05:43] Found 5 updates to install on SRV3
+    [11/22/2019 12:25:13] Update process complete on SRV3
+    WARNING: SRV3 requires a reboot
+
+    Run the update process as a background job. Use the PowerShell job cmdlets
+    to manage.
+
+UPDATING THE MODULE
     As this module is updated over time, new configurations may be added, or
     bugs fixed in existing configurations. There may also be new Lability
     updates. Use PowerShell to check for new versions:
 
-        Find-Module PSAutoLab
+    Find-Module PSAutoLab
 
     And update:
 
-        Update-Module PSAutoLab
+    Update-Module PSAutoLab
 
     If you update, it is recommended that you update the computer running
     Autolab.
 
-        Refresh-Host
+    Refresh-Host
 
     This will update Lability if required and copy all new configuration files
     to your Autolab\Configurations folder. It will NOT delete any files.
@@ -142,7 +166,7 @@ TROUBLESHOOTING
     desktop. Most setups should be complete in under an hour. If validation is
     failing, manually run the validation test in the configuration folder.
 
-        Invoke-Pester VMValidate.test.ps1
+    Invoke-Pester VMValidate.test.ps1
 
     Take note of which virtual machines are generating errors. Verify the
     virtual machine is running in Hyper-V. On occasion for reasons still
@@ -159,14 +183,13 @@ TROUBLESHOOTING
     As a last resort, manually break out of any testing loop, wipe the lab and
     start all-over.
 
-    If you still are having problems, wipe the lab and try a different configuration.
-    This will help determine if the problem is with the configuration or a larger
-    compatibility problem.
-
-    At this point, you can open an issue in this repository. Open an elevated
-    PowerShell prompt and run Get-PSAutolabSetting which will provide useful
-    information. Copy and paste the results into a new issue along with any
-    error messages you are seeing.
+    If you still are having problems, wipe the lab and try a different
+    configuration. This will help determine if the problem is with the
+    configuration or a larger compatibility problem. At this point, you can
+    open an issue in this repository. Open an elevated PowerShell prompt
+    and run Get-PSAutolabSetting which will provide useful information.
+    Copy and paste the results into a new issue along with any error
+    messages you are seeing.
 
 CUSTOMIZING CONFIGURATIONS
     The expectation is that one of the included configurations will meet your
@@ -180,7 +203,6 @@ CUSTOMIZING CONFIGURATIONS
     folder under Autolab\Configurations. Technically, you can put the
     configuration folder anywhere but it is easier if all of your configurations
     are in one location.
-
     Once the files have been copied, use your script editor to modify the files.
     Don't forget to update the pester test. Keep the same file names.
 
@@ -192,11 +214,11 @@ KNOWN ISSUES
     resource. If you have any version older than 5.7.0.0 you might encounter
     problems. Run this command to see what you have installed:
 
-        PS C:\> Get-DSCResource xIPAddress
+    PS C:\> Get-DSCResource xIPAddress
 
     If you have older versions of the module, uninstall them if you can.
 
-        PS C:\> Uninstall-Module xNetworking -RequiredVersion 3.0.0.0
+    PS C:\> Uninstall-Module xNetworking -RequiredVersion 3.0.0.0
 
     It is recommended that you restart your PowerShell session and try the lab
     setup again.

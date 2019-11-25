@@ -1,7 +1,8 @@
-# FAQ
+# Usage FAQ
 
 These are some common questions you might have about this module or errors that you might encounter.
-There is also an ongoing FAQ under Issues of common problems and resolutions.
+If you haven't already done so, you should read the [README](./README.md) file.
+And don't forget the [About_PSAutolab](./docs/about_PSAutoLab.md) file.
 
 ## I get an error about trying to modify TrustedHosts
 
@@ -74,14 +75,12 @@ The solution is to coordinate a single NAT network so it covers all of your NAT 
 
 - That likely means creating a larger NAT subnet that covers the IP ranges of all of your networks.
 - Which also means coordinating IP ranges across apps so they can fall under a single NAT subnet.
-- Also, the NAT subnet cannot overlap with the external network that the host is attached to. So if a host is attached to 192.168.0.0/24, you can't use 192.168.0.0/16 as a NAT network.
+- The NAT subnet cannot overlap with the external network that the host is attached to. If a host is attached to 192.168.0.0/24, you can't use 192.168.0.0/16 as a NAT network.
 
 Here's a visualization from the above limitations article:
 ![overlapping prefixes](https://msdnshared.blob.core.windows.net/media/2016/05/Overlapping-Internal-Prefixes.jpg)
 
 Refer to this article for help on creating NAT networks: https://msdn.microsoft.com/en-us/virtualization/hyperv_on_windows/user_guide/setup_nat_network
-
-Here are some helpful PowerShell commands
 
 #### List NAT networks, take note of the IP range and subnet
 
@@ -122,13 +121,14 @@ First, find your desired timezone using one of these techniques:
 
 ```powershell
 # Filter all timezones, take the Id property from the desired timezone:
+[System.TimeZoneInfo]::GetSystemTimeZones()
 [System.TimeZoneInfo]::GetSystemTimeZones().Where({$_.Id -like '*Eastern*'})
 
 # Get your current timezone:
 (Get-TimeZone).Id
 ```
 
-Next, pen the lab's `VMConfigurarationData.psd1` in your script editor and change `Lability_timeZone` per Node.
+Next, open the lab's `VMConfigurarationData.psd1` in your script editor and change `Lability_timeZone` per Node.
 
 ```powershell
  @{

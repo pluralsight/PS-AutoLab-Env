@@ -76,7 +76,7 @@ As an alternative, you can setup a lab environment with minimal prompting.
 Unattend-Lab
 ```
 
-Assuming you don't need to install a newer version of nuget, you can leave the setup alone.
+Assuming you don't need to install a newer version of _nuget_, you can leave the setup alone.
 It will run all of the manual steps for you.
 
 ### STOPPING A LAB
@@ -128,7 +128,34 @@ Wipe-Lab
 This will remove the virtual machines and DSC configuration files.
 If you intend to rebuild the lab or another configuration, you can keep the LabNat virtual switch.
 
-## UPDATING
+### WINDOWS UPDATES
+
+When you build an lab, you are creating Windows virtual machines based on evaluation software.
+You might still want to make sure the virtual machines are up to date with security patches and updates.
+You can use `Update-Lab` to invoke Windows update on all lab members.
+This can be a time consuming process, so you have an option to run the updates as a background job.
+Just be sure not to close your PowerShell session before the jobs complete.
+
+```powershell
+PS C:\Autolab\Configurations\PowerShellLab> update-lab -AsJob
+
+Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
+--     ----            -------------   -----         -----------     --------             -------
+18     WUUpdate        RemoteJob       Running       True            DOM1                  WUUpdate
+21     WUUpdate        RemoteJob       Running       True            SRV1                  WUUpdate
+24     WUUpdate        RemoteJob       Running       True            SRV2                  WUUpdate
+27     WUUpdate        RemoteJob       Running       True            SRV3                  WUUpdate
+30     WUUpdate        RemoteJob       Running       True            WIN10                 WUUpdate
+
+PS C:\Autolab\Configurations\PowerShellLab> receive-job -id 27 -Keep
+[11/22/2019 12:05:43] Found 5 updates to install on SRV3
+[11/22/2019 12:25:13] Update process complete on SRV3
+WARNING: SRV3 requires a reboot
+```
+
+Run the update process as a background job. Use the PowerShell job cmdlets to manage.
+
+## UPDATING THE MODULE
 
 As this module is updated over time, new configurations may be added, or bugs fixed in existing configurations.
 There may also be new Lability updates.

@@ -29,7 +29,7 @@ Configuration AutoLab {
     Import-DSCResource -ModuleName 'xNetworking' -ModuleVersion '5.7.0.0'
     Import-DSCResource -ModuleName 'xDhcpServer' -ModuleVersion '2.0.0.0'
     Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion '2.8.0.0'
-    Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' -ModuleVersion '8.9.0.0'
+    Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' -ModuleVersion '8.10.0.0'
     Import-DSCResource -ModuleName 'xPendingReboot' -ModuleVersion '0.4.0.0'
     Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion '1.4.0.0'
 

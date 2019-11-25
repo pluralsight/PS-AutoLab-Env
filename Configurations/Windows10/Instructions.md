@@ -2,7 +2,7 @@
 
 This lab builds the following:
 
-* 1 Workgroup joined Windows 10 Client with RSAT tools installed.
+* 1 Workgroup joined Windows 10 Client (Win10Ent) with RSAT tools installed.
 
 It will also create a local user account with a password of `P@ssw0rd` using same name as the person running the configuration. In other words, it will use the value of `$env:username`.
 

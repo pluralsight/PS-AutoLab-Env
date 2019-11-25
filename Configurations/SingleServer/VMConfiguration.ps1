@@ -7,7 +7,7 @@ Configuration AutoLab {
 
     #region DSC Resources
     Import-DSCresource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
-    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "8.9.0.0"
+    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "8.10.0.0"
     Import-DSCResource -modulename "xComputerManagement" -ModuleVersion  "4.1.0.0"
     Import-DSCResource -modulename "xNetworking" -ModuleVersion  "5.7.0.0"
 

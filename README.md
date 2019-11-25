@@ -32,7 +32,7 @@ You must have administrator access and be able to update TrustedHosts.
 If you are in a corporate environment, these settings may be locked down or restricted.
 If this applies to you, this module may not work for you.
 
-*This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.*
+**This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.**
 
 ## Aliases and Language
 
@@ -205,7 +205,34 @@ PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 This will remove the virtual machines and DSC configuration files.
 If you intend to rebuild the lab or another configuration, you can keep the LabNat virtual switch.
 
-## Updating
+## Windows Updates
+
+When you build an lab, you are creating Windows virtual machines based on evaluation software.
+You might still want to make sure the virtual machines are up to date with security patches and updates.
+You can use `Update-Lab``to invoke Windows update on all lab members.
+This can be a time consuming process, so you have an option to run the updates as a background job.
+Just be sure not to close your PowerShell session before the jobs complete.
+
+```powershell
+PS C:\Autolab\Configurations\PowerShellLab> update-lab -AsJob
+
+Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
+--     ----            -------------   -----         -----------     --------             -------
+18     WUUpdate        RemoteJob       Running       True            DOM1                  WUUpdate
+21     WUUpdate        RemoteJob       Running       True            SRV1                  WUUpdate
+24     WUUpdate        RemoteJob       Running       True            SRV2                  WUUpdate
+27     WUUpdate        RemoteJob       Running       True            SRV3                  WUUpdate
+30     WUUpdate        RemoteJob       Running       True            WIN10                 WUUpdate
+
+PS C:\Autolab\Configurations\PowerShellLab> receive-job -id 27 -Keep
+[11/22/2019 12:05:43] Found 5 updates to install on SRV3
+[11/22/2019 12:25:13] Update process complete on SRV3
+WARNING: SRV3 requires a reboot
+```
+
+Run the update process as a background job. Use the PowerShell job cmdlets to manage.
+
+## Updating PSAutolab
 
 As this module is updated over time, new configurations may be added, or bugs fixed in existing configurations.
 There may also be new Lability updates.
@@ -281,7 +308,7 @@ It is recommended that you restart your PowerShell session and try the lab setup
 ## Acknowledgments
 
 This module is a continuation of the work done by Jason Helmick and Melissa (Missy) Januszko, whose efforts are greatly appreciated.
-Beginning with v4.0.0, this module is unrelated to any projects Jason may be developing under similar names.
+Beginning with v4.0.0, this module is unrelated to any projects Jason or Missy may be developing under similar names.
 
 ## Road Map
 
@@ -294,4 +321,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2019-09-30 16:50:51Z UTC
+Last Updated 2019-11-22 17:11:37Z UTC

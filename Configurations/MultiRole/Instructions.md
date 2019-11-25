@@ -5,10 +5,10 @@ If you were instructed to use that configuration, this one should work for you.
 
 The lab builds the following:
 
-* 1 DC (DC1)
-* 1 Server (S1)
-* 1 Nano (N1)
-* 1 Client with RSAT (Cli1)
+* 1 DC (DC1 - Windows Server 2016 Core)
+* 1 Server (S1 - Windows Server 2016 Core)
+* 1 Nano (N1 - Windows Server 2016 Nano)
+* 1 Client with RSAT (Cli1 - Windows 10 Enterprise)
 
 ## To get started:
 
