@@ -2,10 +2,10 @@
 
 This lab builds the following:
 
-* 1 DC (DC1)
-* 1 Server (S1)
-* 1 Nano (N1)
-* 1 Client with RSAT (Cli1)
+* 1 DC (DC1 - Windows Server 2016 Core)
+* 1 Server (S1 - Windows Server 2016 Core)
+* 1 Nano (N1 - Windows Server 2016 Nano)
+* 1 Client with RSAT (Cli1 - Windows 10 Enterprise)
 
 ## To get started
 
@@ -17,7 +17,7 @@ This lab builds the following:
     Run the following for initial setup:
     PS> Setup-Lab
 
-    To start the LAb, and apply configurations the first time:
+    To start the Lsb, and apply configurations the first time:
     PS> Run-Lab
 
     To enable Internet access for the VM's, run:
