@@ -15,24 +15,24 @@ demonstrations and would need to be modified for your environment.
 #>
 
 @{
-    AllNodes = @(
+    AllNodes    = @(
         @{
-            NodeName = '*'
+            NodeName                    = '*'
 
             # Lab Password - assigned to Administrator and Users
-            LabPassword = 'P@ssw0rd'
+            LabPassword                 = 'P@ssw0rd'
 
             # Common networking
-            InterfaceAlias = 'Ethernet'
-            DefaultGateway = '192.168.3.1'
-            SubnetMask = 24
-            AddressFamily = 'IPv4'
-            IPNetwork = '192.168.3.0/24'
-            IPNatName = 'LabNat'
-            DnsServerAddress = '1.1.1.1'
+            InterfaceAlias              = 'Ethernet'
+            DefaultGateway              = '192.168.3.1'
+            SubnetMask                  = 24
+            AddressFamily               = 'IPv4'
+            IPNetwork                   = '192.168.3.0/24'
+            IPNatName                   = 'LabNat'
+            DnsServerAddress            = '1.1.1.1'
 
             # Firewall settings to enable
-            FirewallRuleNames = @(
+            FirewallRuleNames           = @(
                 'FPS-ICMP4-ERQ-In',
                 'FPS-ICMP6-ERQ-In',
                 'FPS-SMB-In-TCP',
@@ -43,15 +43,15 @@ demonstrations and would need to be modified for your environment.
             )
 
             PSDscAllowPlainTextPassword = $true
-            PSDscAllowDomainUser = $true
+            PSDscAllowDomainUser        = $true
 
             # Lability default node settings
-            Lability_SwitchName = 'LabNet'
-            Lability_ProcessorCount = 1
-            Lability_MinimumMemory = 1GB
-            Lability_MaximumMemory = 3GB
-            SecureBoot = $false
-            Lability_Media = '2016_x64_Standard_Core_EN_Eval'
+            Lability_SwitchName         = 'LabNet'
+            Lability_ProcessorCount     = 1
+            Lability_MinimumMemory      = 1GB
+            Lability_MaximumMemory      = 3GB
+            SecureBoot                  = $false
+            Lability_Media              = '2016_x64_Standard_Core_EN_Eval'
             <#
 
             Id                                      Description
@@ -91,7 +91,7 @@ demonstrations and would need to be modified for your environment.
             #>
         },
 
-<#    Available Roles for computers
+        <#    Available Roles for computers
         DC = Domain Controller
         DHCP = Dynamic Host Configuration Protocol
         ADCS = Active Directory Certificate SErvices - plus autoenrollment GPO's and DSC and web server certs
@@ -101,31 +101,31 @@ demonstrations and would need to be modified for your environment.
         DomainJoin = joins a computer to the domain
 #>
 
-       @{
-            NodeName = 'S1'
-            IPAddress = '192.168.3.19'
-            Lability_BootOrder = 20
-            Lability_Media = '2019_x64_Standard_EN_Core_Eval'
+        @{
+            NodeName                = 'S1'
+            IPAddress               = '192.168.3.19'
+            Lability_BootOrder      = 20
+            Lability_Media          = '2019_x64_Standard_EN_Core_Eval'
             Lability_ProcessorCount = 1
-            Lability_StartupMemory = 1GB
+            Lability_StartupMemory  = 1GB
         }
-#>
+        #>
 
     );
     NonNodeData = @{
         Lability = @{
             # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
-            Network = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true;}
+            Network     = @( # Virtual switch in Hyper-V
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '8.10.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; }
 
             );
-            Resource = @(
+            Resource    = @(
                 @{ }
             );
 

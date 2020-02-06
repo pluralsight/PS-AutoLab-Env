@@ -8,7 +8,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 
 #region DSC Resources
     Import-DSCresource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
-    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "8.9.0.0"
+    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "9.0.0"
     Import-DSCResource -modulename "xActiveDirectory" -ModuleVersion  "3.0.0.0"
     Import-DSCResource -modulename "xComputerManagement" -ModuleVersion  "4.1.0.0"
     Import-DSCResource -modulename "xNetworking" -ModuleVersion  "5.7.0.0"
@@ -16,7 +16,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     Import-DSCResource -modulename 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
     Import-DSCResource -modulename 'xPendingReboot' -ModuleVersion  '0.4.0.0'
     Import-DSCResource -modulename 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
-    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.14.0.0'
+    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.16.0.0'
 
 
 #endregion

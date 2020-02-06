@@ -15,9 +15,9 @@ This project is intended to be used for educational purposes only.**
 
 ## Requirements
 
-This tool currently supports running on either Windows Server 2016 (not fully tested) or a Windows 10 client that supports virtualization.
+This tool currently supports running on either Windows Server 2016 (not fully tested) or a __Windows 10__ client that supports virtualization.
 Windows 10 Pro or Enterprise should be sufficient.
-It is unlikely that this module will work on Windows 10 Home or any Student edition.
+This module will not work and and is unsupported on Windows 10 Home or any Student edition.
 It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1.
 
 The host computer must have the following:
@@ -32,7 +32,7 @@ You must have administrator access and be able to update TrustedHosts.
 If you are in a corporate environment, these settings may be locked down or restricted.
 If this applies to you, this module may not work for you.
 
-**This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.**
+**__This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.__**
 
 ## Aliases and Language
 
@@ -54,7 +54,7 @@ PS C:\> Get-Module PSAutolab -ListAvailable | Select-Object Path
 To identify the module location.
 Use this information to delete the PSAutolab folder.
 
-*The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.*
+**The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.**
 
 ## Installation
 
@@ -288,6 +288,14 @@ Copy and paste the results into a new issue along with any error messages you ar
 
 ## Known Issues
 
+### I get an error trying to update Lability
+
+If you try to run `Refresh-Host` you might see an error about a certificate mismatch.
+Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates.
+If you encounter this problem, run `Refresh-Host -SkipPublisherCheck`.
+
+### Multiple DSC Resources
+
 Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on.
 You might especially see this with the xNetworking module and the xIPAddress resource.
 If you have any version older than 5.7.0.0 you might encounter problems.
@@ -321,4 +329,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2019-11-22 17:11:37Z UTC
+Last Updated 2020-02-06 15:22:37Z UTC

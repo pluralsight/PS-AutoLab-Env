@@ -36,7 +36,7 @@ Describe $Computername {
     }
 
     It "[$Computername] Should have a local admin account for $env:username" {
-        $local = Invoke-Command {get-ciminstance -ClassName win32_useraccount -filter "Name='$using:env:username'"} -session $cl
+        $local = Invoke-Command {Get-CimInstance -ClassName win32_useraccount -filter "Name='$using:env:username'"} -session $cl
         $local.Accounttype | Should be 512
         $local.Name | Should Be $env:username
         # Write-Host ($local | Out-string) -ForegroundColor cyan
@@ -44,7 +44,7 @@ Describe $Computername {
 
     It "[$Computername] Should have 2 members in Administrators" {
         $admins = Invoke-Command {
-            get-ciminstance -ClassName win32_group -filter "name='Administrators'" | Get-CimAssociatedInstance -ResultClassName win32_useraccount
+            Get-CimInstance -ClassName win32_group -filter "name='Administrators'" | Get-CimAssociatedInstance -ResultClassName win32_useraccount
         } -session $cl
         $Admins.Count | Should be 2
         # Write-Host ($admins | Out-string) -ForegroundColor cyan

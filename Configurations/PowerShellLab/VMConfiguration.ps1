@@ -24,7 +24,7 @@ Configuration AutoLab {
 
     #region DSC Resources
     Import-DSCresource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
-    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "8.10.0.0"
+    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "9.0.0"
     Import-DSCResource -modulename "xActiveDirectory" -ModuleVersion  "3.0.0.0"
     Import-DSCResource -modulename "xComputerManagement" -ModuleVersion  "4.1.0.0"
     Import-DSCResource -modulename "xNetworking" -ModuleVersion  "5.7.0.0"
@@ -32,8 +32,8 @@ Configuration AutoLab {
     Import-DSCResource -modulename 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
     Import-DSCResource -modulename 'xPendingReboot' -ModuleVersion  '0.4.0.0'
     Import-DSCResource -modulename 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
-    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.15.0.0'
-    Import-DSCResource -modulename 'xWebAdministration' -ModuleVersion  '2.7.0.0'
+    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.16.0.0'
+    Import-DSCResource -modulename 'xWebAdministration' -ModuleVersion  '3.1.1'
 
     #endregion
     #region All Nodes

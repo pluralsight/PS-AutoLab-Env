@@ -93,7 +93,7 @@ demonstrations and would need to be modified for your environment.
         @{
             NodeName                = 'Win10Ent'
             IPAddress               = '192.168.3.101'
-            Role                    = @('RSAT','RDP')
+            Role                    = @('RSAT', 'RDP')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory  = 2GB
             Lability_Media          = 'WIN10_x64_Enterprise_EN_Eval'
@@ -114,7 +114,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '8.10.0.0'; Provider = 'PSGallery'},
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.0.0'; Provider = 'PSGallery'},
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery'}
             );
             Resource    = @(

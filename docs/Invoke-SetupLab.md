@@ -14,7 +14,8 @@ Set up an Autolab configuration
 ## SYNTAX
 
 ```yaml
-Invoke-SetupLab [[-Path] <String>] [-IgnorePendingReboot] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-SetupLab [[-Path] <String>] [-IgnorePendingReboot] [-UseLocalTimeZone] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -93,6 +94,22 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UseLocalTimeZone
+
+Override any configuration specified time zone and use the local time zone on this computer.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

@@ -28,14 +28,20 @@ Function _LabilityCheck {
     Param(
         [Parameter(Position = 0, Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$RequiredVersion
+        [string]$RequiredVersion,
+        [switch]$SkipPublisherCheck
     )
 
-
     $LabilityMod = Get-Module -Name Lability -ListAvailable | Sort-Object Version -Descending
+
+    $PSBoundParameters.Add("Name", "Lability")
+    $PSBoundParameters.Add("Force", $True)
+    $PSBoundParameters.Add("ErrorAction", "Stop")
+
+    $PSBoundParameters | Out-String | Write-Verbose
     if (-Not $LabilityMod) {
         Write-Host -ForegroundColor Cyan "Installing Lability module version $requiredVersion"
-        Install-Module -Name Lability -RequiredVersion $requiredVersion -Force
+        Install-Module @PSBoundparameters #-Name Lability -RequiredVersion $requiredVersion -Force
     }
     elseif ($LabilityMod[0].Version.ToString() -eq $requiredVersion) {
         Write-Host "Version $requiredVersion of Lability is already installed" -ForegroundColor Cyan
@@ -43,19 +49,24 @@ Function _LabilityCheck {
     elseif ($LabilityMod[0].Version.ToString() -ne $requiredVersion) {
         Write-Host -ForegroundColor Cyan "Updating Lability Module to version $RequiredVersion"
         #remove the currently loaded version
-        Remove-Module Lability -ErrorAction SilentlyContinue
+        Remove-Module -Name Lability -ErrorAction SilentlyContinue
         try {
-            Update-Module -Name Lability -force -erroraction stop -RequiredVersion $requiredVersion
+            if ($SkipPublisherCheck) {
+                Write-Verbose "Skipping publisher check and calling Install-Package"
+                Install-Package @PSBoundParameters
+            }
+            else {
+                Write-Verbose "Calling Update-Module"
+                [void]($PSBoundParameters.remove("SkipPublisherCheck"))
+                Update-Module @PSBoundParameters
+            }
         }
         Catch {
-            Write-Warning "Failed to update to the current version of Lability. $($_.exception.message)"
-            #bail out
-            return
+            Write-Warning "Failed to update to the current version of Lability. If the error message is about a certificate mismatch, re-run this command and use the -SkipPublisherCHeck parameter. `n$($_.exception.message)"
         }
     }
 } #end function
 
-#region Invoke-WUUpdate
 Function Invoke-WUUpdate {
     [cmdletbinding(DefaultParameterSetName = "computer")]
 
@@ -201,13 +212,8 @@ Function Invoke-WUUpdate {
 
 }
 
-#endregion
-
-#region Test-ISAdministrator
-
-function Test-IsAdministrator {
+Function Test-IsAdministrator {
     $user = [Security.Principal.WindowsIdentity]::GetCurrent();
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
-#endregion

@@ -4,6 +4,12 @@ These are some common questions you might have about this module or errors that 
 If you haven't already done so, you should read the [README](./README.md) file.
 And don't forget the [About_PSAutolab](./docs/about_PSAutoLab.md) file.
 
+## I get an error trying to update Lability
+
+If you try to run `Refresh-Host` you might see an error about a certificate mismatch.
+Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates.
+If you encounter this problem, run `Refresh-Host -SkipPublisherCheck`.
+
 ## I get an error about trying to modify TrustedHosts
 
 The module commands must be able to use PowerShell remoting to configure and test the virtual machines within a configuration.
