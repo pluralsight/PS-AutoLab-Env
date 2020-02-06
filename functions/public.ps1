@@ -40,12 +40,13 @@ Function Invoke-RefreshHost {
         [Parameter(Position = 0, HelpMessage = "The path to your Autolab configuration path, ie C:\Autolab\ConfigurationPath")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
-        [string]$Destination = (Get-LabHostDefault).configurationpath
+        [string]$Destination = (Get-LabHostDefault).configurationpath,
+        [switch]$SkipPublisherCheck
     )
 
     #test if a new version of lability is required
     if ($pscmdlet.ShouldProcess("version $LabilityVersion", "Check for Lability Requirements")) {
-        _LabilityCheck -requiredVersion $LabilityVersion
+        _LabilityCheck -requiredVersion $LabilityVersion -skipPublishercheck:$SkipPublisherCheck
     }
 
     # Setup Path Variables
@@ -202,7 +203,9 @@ Function Invoke-SetupLab {
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
         [string]$Path = ".",
-        [switch]$IgnorePendingReboot
+        [switch]$IgnorePendingReboot,
+        [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
+        [switch]$UseLocalTimeZone
     )
 
     $Path = Convert-Path $path
@@ -236,6 +239,23 @@ Function Invoke-SetupLab {
         *You will be able to wipe and rebuild this lab without needing to perform
         the downloads again.
 "@
+    if ($UseLocalTimeZone) {
+        $localtz = [System.TimeZone]::CurrentTimeZone.StandardName
+        if ($LabData.allnodes.count -gt 1) {
+            Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
+            $nodes = $labdata.allnodes.where( {$_.nodename -ne "*"})
+            foreach ($node in $nodes) {
+                $tz = $node.Lability_timezone
+                $node.Lability_timeZone = $localtz
+            }
+        }
+        else {
+            write-Host "Updating Allnodes to $localtz" -ForegroundColor Yellow
+            $LabData.AllNodes.Lability_TimeZone = $localtz
+        }
+    } #use local timezone
+
+     $LabData.allnodes | Out-String | Write-Verbose
 
     # Install DSC Resource modules specified in the .PSD1
 
@@ -278,7 +298,8 @@ Function Invoke-SetupLab {
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
-        ConfigurationData   = Import-PowerShellDataFile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
+        ConfigurationData   = $LabData
+        #Import-PowerShellDataFile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
         Path                = $Path
         NoSnapshot          = $True
         Password            = $Password
@@ -816,17 +837,18 @@ Function Invoke-UnattendLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( { Test-Path $_ })]
+        [ValidateScript({ Test-Path $_ })]
         [string]$Path = ".",
-        [switch]$AsJob
+        [switch]$AsJob,
+        [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
+        [switch]$UseLocalTimeZone
     )
 
     $Path = Convert-Path $path
 
-
     $sb = {
         [cmdletbinding()]
-        Param([string]$Path, [bool]$WhatIf)
+        Param([string]$Path, [bool]$UseLocalTimeZone, [bool]$WhatIf)
 
         $WhatIfPreference = $WhatIf
         [void]$psboundparameters.remove("WhatIf")
@@ -842,6 +864,8 @@ Function Invoke-UnattendLab {
         if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
             Invoke-SetupLab @psboundparameters
         }
+        #this parameter isn't used in the remaining commands
+        [void]($psboundparameters.remove("UseLocalTimeZone"))
         if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
             Invoke-RunLab @psboundparameters
         }
@@ -851,7 +875,6 @@ Function Invoke-UnattendLab {
         if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
             Invoke-ValidateLab @psboundparameters
         }
-
 
         $msg = @"
 
@@ -871,7 +894,7 @@ Function Invoke-UnattendLab {
 
     $icmParams = @{
         Computername = $env:computername
-        ArgumentList = @($Path, $WhatIfPreference)
+        ArgumentList = @($Path,$UseLocalTimeZone,$WhatIfPreference)
         Scriptblock  = $sb
     }
 
@@ -991,5 +1014,154 @@ Function Update-Lab {
     } #end
 
 } #close Update-Lab
+
+#endregion
+
+#region Invoke-WUUpdate
+
+
+Function Invoke-WUUpdate {
+    [cmdletbinding(DefaultParameterSetName = "computer")]
+    [alias("Patch-Lab")]
+    Param(
+        [Parameter(Position = 0, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "computer")]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$Computername,
+        [Parameter(Position = 0, ParameterSetName = "VM")]
+        [string[]]$VMName,
+        [ValidateNotNullorEmpty()]
+        [pscredential]$Credential,
+        [switch]$AsJob
+    )
+
+    Begin {
+        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+
+        $all = @()
+
+        #this is a nested function to deploy remotely
+        Function WUUpdate {
+            [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName = "Computer")]
+            Param(
+                [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "Computer")]
+                [ValidateNotNullOrEmpty()]
+                [string[]]$Computername = $env:COMPUTERNAME
+
+            )
+            Begin {
+                Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+
+                $ns = "ROOT/Microsoft/Windows/WindowsUpdate"
+            } #begin
+
+            Process {
+
+                #test if using the new Class
+                Try {
+                    [void](Get-CimClass -Namespace $ns -ClassName 'MSFT_WUOperations' -ErrorAction Stop)
+                    $class = 'MSFT_WUOperations'
+                    $scanArgs = @{SearchCriteria = "IsInstalled=0"}
+                    #always scan even if the function is run with -whatif
+                    Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cyan
+                    $scan = Invoke-CimMethod -Namespace $ns -ClassName $class -MethodName 'ScanForUpdates' -Arguments $scanArgs -WhatIf:$false -ErrorAction Stop
+
+                    Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
+                    if ($scan.Updates.count -gt 0) {
+                        if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Install Updates" )) {
+                            [void](Invoke-CimMethod -Namespace $ns -ClassName MSFT_WUOperations -MethodName InstallUpdates -Arguments @{Updates = $scan.updates})
+                        }
+                    }
+                } #try
+                Catch {
+                    #uncomment for debugging and troubleshooting
+                    #Write-Host "Failed to find MSFT_WUOperations on $env:computername" -ForegroundColor yellow
+                    $class = 'MSFT_WUOperationsSession'
+                    $scanArgs = @{OnlineScan = $True; SearchCriteria = "IsInstalled=0"}
+                    $ci = New-CimInstance -Namespace $ns -ClassName $class -Whatif:$False
+                    Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cya
+                    $scan = $ci | Invoke-CimMethod -MethodName 'ScanForUpdates' -Arguments $scanArgs -whatif:$False
+
+                    Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
+                    if ($scan.Updates.count -gt 0) {
+                        if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Apply Updates" )) {
+                            [void]($ci | Invoke-CimMethod -MethodName applyApplicableUpdates )
+                        }
+                    }
+                } #catch
+
+                if ($scan.updates.count -gt 0) {
+                    Write-Host "[$(Get-Date)] Update process complete on $env:computername" -ForegroundColor Cyan
+                }
+
+                #check for reboot
+
+                $r = Invoke-CimMethod -Namespace $ns -ClassName 'MSFT_WUSettings' -MethodName 'IsPendingReboot'
+                if ($r.PendingReboot) {
+                    Write-Warning "$($env:computername) requires a reboot"
+                }
+
+                if ($ci) {
+                    Remove-Variable ci
+                }
+
+            } #process
+
+            End {
+                Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+            } #end
+        } #end nested function
+
+        #get the contents of the nested function
+        $fun = ${function:WUUpdate}
+
+        $icmParams = @{
+            HideComputername = $True
+            Session          = $null
+            Scriptblock      = {WUUpdate}
+        }
+
+        if ($AsJob) {
+            $icmparams.AsJob = $True
+            $icmParams.JobName = "WUUpdate"
+        }
+
+    } #begin
+
+    Process {
+
+        if ($PSBoundParameters.ContainsKey("AsJob")) {
+            [void]$PSBoundParameters.remove("AsJob")
+        }
+
+        #write-Verbose ($PSBoundParameters | Out-String)
+
+        Try {
+            Write-Verbose "[PROCESS] Creating PSSessions"
+            $sess = New-PSSession @psboundParameters -ErrorAction stop
+            Write-Verbose "[PROCESS] Copy the function to the remote computer"
+            [void](Invoke-Command -ScriptBlock { New-Item -Path Function:WUUpdate -Value $using:fun -force } -Session $sess)
+
+            $icmParams.Session = $sess
+        }
+        Catch {
+            write-Warning "Failed to create session to $Computer. $($_.exception.message)"
+        }
+        Write-Verbose "[PROCESS] Run the remote function"
+        $r = Invoke-Command @icmParams
+        if ($AsJob) {
+            $r
+        }
+        else {
+            $r | Select-Object -Property * -ExcludeProperty RunspaceID
+            Write-Verbose "[PROCESS] Cleaning up sessions"
+            $sess | Remove-PSSession
+        }
+
+    } #process
+    End {
+        Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+    } #end
+
+}
 
 #endregion

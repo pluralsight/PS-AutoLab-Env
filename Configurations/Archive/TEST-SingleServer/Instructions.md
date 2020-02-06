@@ -1,4 +1,4 @@
-# Lab definition
+# Lab Definition
 
 This lab builds the following:
 

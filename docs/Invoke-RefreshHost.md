@@ -9,12 +9,12 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Refresh local host Autolab configuration
+Refresh local host AutoLab configuration
 
 ## SYNTAX
 
 ```yaml
-Invoke-RefreshHost [[-Destination] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-RefreshHost [[-Destination] <String>] [-SkipPublisherCheck] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -81,6 +81,22 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipPublisherCheck
+
+If you try to refresh the host and get an error or warning about a certificate mismatch, use this parameter to bypass skipping the code signing certificate.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

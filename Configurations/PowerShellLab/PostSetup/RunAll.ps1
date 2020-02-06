@@ -17,7 +17,6 @@ if (-Not $Force) {
  modified anything in the configuration files.
 
  The script will do the following:
-   - Run Windows Update on all virtual machines
    - Download Git on the Win10 client
    - Download Sysinternals tools on the Win10 client
    - Install VSCode on the Win10 client
@@ -75,8 +74,6 @@ Write-Host "[$(Get-Date -format T)] Waiting for sessions to become available"
 Do {
     Start-Sleep -Seconds 1
 } Until ( ($all| Get-PSSession).Availability -notcontains 'busy')
-Write-Host "[$(Get-Date -format T)] Running Windows Update"
-&$PSScriptRoot\Run-WindowsUpdate.ps1 -session $all -asJob
 
 Write-Host "[$(Get-Date -format T)] Waiting for Win10 session to become available"
 

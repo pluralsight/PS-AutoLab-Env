@@ -14,8 +14,7 @@ Create an Autolab configuration unattended
 ## SYNTAX
 
 ```yaml
-
-Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-UseLocalTimeZone] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,7 +44,6 @@ PS C:\Autolab\Configurations\PowerShellLab> Unattend-Lab
 ```
 
 Follow any onscreen instructions or prompts.
-
 
 ### Example 2
 
@@ -109,6 +107,22 @@ Accept wildcard characters: False
 ### -AsJob
 
 Run the unattend process in a PowerShell background job.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UseLocalTimeZone
+
+Override any configuration specified time zone and use the local time zone on this computer.
 
 ```yaml
 Type: SwitchParameter
