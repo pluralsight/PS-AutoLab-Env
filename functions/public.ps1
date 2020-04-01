@@ -52,7 +52,7 @@ Function Invoke-RefreshHost {
     # Setup Path Variables
     $SourcePath = $ConfigurationPath
 
-    Write-Host "Updating configuration files from $sourcePath" -ForegroundColor Cyan
+    Microsoft.PowerShell.Utility\Write-Host "Updating configuration files from $sourcePath" -ForegroundColor Cyan
     if ($pscmdlet.ShouldProcess($Destination, "Copy configurations")) {
         if (Test-Path $Destination) {
             Copy-Item -Path $SourcePath\* -recurse -Destination $Destination -force
@@ -62,7 +62,7 @@ Function Invoke-RefreshHost {
         }
     }
 
-    Write-Host "This process will not remove any configurations that have been deleted from the module." -ForegroundColor yellow
+    Microsoft.PowerShell.Utility\Write-Host "This process will not remove any configurations that have been deleted from the module." -ForegroundColor yellow
 }
 #endregion
 
@@ -81,7 +81,7 @@ Function Invoke-SetupHost {
 
     Clear-Host
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
     This is the Setup-Host script. This script will perform the following:
 
@@ -95,7 +95,7 @@ Function Invoke-SetupHost {
 
 "@
 
-    Write-Host -ForegroundColor Yellow -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Yellow -Object @"
 
     !!IMPORTANT SECURITY NOTE!!
 
@@ -111,14 +111,14 @@ Function Invoke-SetupHost {
     # For remoting commands to VM's - have the host set trustedhosts
     Enable-PSRemoting -force -SkipNetworkProfileCheck
 
-    Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
     $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
     if (($Trust.Value -eq "*") -or ($trust.Value -match "<local>")) {
-        Write-Host -ForegroundColor Green -Object "TrustedHosts is already set to *. No changes needed"
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object "TrustedHosts is already set to *. No changes needed"
     }
     else {
         $add = '<local>' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
-        Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
         Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
     }
 
@@ -156,21 +156,21 @@ Function Invoke-SetupHost {
 
     $HostStatus = Test-LabHostConfiguration
     If (-Not $HostStatus ) {
-        Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V"
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V"
         if ($pscmdlet.shouldprocess($DirDef.ConfigurationPath)) {
             Start-LabHostConfiguration -ErrorAction SilentlyContinue
         }
     }
 
     ###### COPY Configs to host machine
-    Write-Host -ForegroundColor Cyan -Object "Copying configs to $($DirDef.ConfigurationPath)"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Copying configs to $($DirDef.ConfigurationPath)"
     if ($pscmdlet.ShouldProcess($DirDef.ConfigurationPath, "Copy configurations")) {
         Copy-Item -Path $SourcePath\* -recurse -Destination $DirDef.ConfigurationPath -force
     }
 
     if ($pscmdlet.ShouldProcess($env:computername, "Prompt for restart")) {
 
-        Write-Host -ForegroundColor Green -Object @"
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         The localhost is about to reboot.
         After the reboot, open a Windows PowerShell prompt, navigate to a configuration directory
@@ -208,6 +208,8 @@ Function Invoke-SetupLab {
         [switch]$UseLocalTimeZone
     )
 
+    Write-Verbose "Starting $($myinvocation.mycommand)"
+
     $Path = Convert-Path $path
     $labname = Split-Path $Path -leaf
     $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
@@ -218,7 +220,7 @@ Function Invoke-SetupLab {
         return
     }
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Setup-Lab script. This script will perform the following:
 
@@ -242,7 +244,7 @@ Function Invoke-SetupLab {
     if ($UseLocalTimeZone) {
         $localtz = [System.TimeZone]::CurrentTimeZone.StandardName
         if ($LabData.allnodes.count -gt 1) {
-            Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
+            Microsoft.PowerShell.Utility\Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
             $nodes = $labdata.allnodes.where( {$_.nodename -ne "*"})
             foreach ($node in $nodes) {
                 $tz = $node.Lability_timezone
@@ -250,17 +252,17 @@ Function Invoke-SetupLab {
             }
         }
         else {
-            write-Host "Updating Allnodes to $localtz" -ForegroundColor Yellow
+            Microsoft.PowerShell.Utility\Write-Host "Updating Allnodes to $localtz" -ForegroundColor Yellow
             $LabData.AllNodes.Lability_TimeZone = $localtz
         }
     } #use local timezone
 
-     $LabData.allnodes | Out-String | Write-Verbose
+    $LabData.allnodes | Out-String | Write-Verbose
 
     # Install DSC Resource modules specified in the .PSD1
 
-    Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
-    Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
     #force updating/installing nuget to bypass the prompt
     [void](Install-PackageProvider -Name nuget -Force -ForceBootstrap)
 
@@ -269,31 +271,31 @@ Function Invoke-SetupLab {
         $dscmod = Get-Module -FullyQualifiedName @{Modulename = $DSCResource.name; ModuleVersion = $DSCResource.RequiredVersion } -ListAvailable
 
         if ((-not $dscmod ) -or ($dscmod.version -ne $DSCResource.RequiredVersion)) {
-            Write-Host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
+            Microsoft.PowerShell.Utility\Write-Host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Install-Module")) {
                 Install-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
         elseif ($dscmod.version -ne ($DSCResource.RequiredVersion -as [version])) {
-            Write-Host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
+            Microsoft.PowerShell.Utility\Write-Host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Update-Module")) {
                 Update-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
         else {
-            Write-Host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
+            Microsoft.PowerShell.Utility\Write-Host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
         }
     }
 
     # Run the config to generate the .mof files
-    Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
     $vmconfig = Join-Path -Path $path -ChildPath 'VMConfiguration.ps1'
     if ($PSCmdlet.ShouldProcess($vmConfig)) {
         . $VMConfig
     }
     # Build the lab without a snapshot
     #
-    Write-Host -ForegroundColor Cyan -Object "Building the lab environment for $labname"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Building the lab environment for $labname"
     # Creates the lab environment without making a Hyper-V Snapshot
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
@@ -308,20 +310,21 @@ Function Invoke-SetupLab {
         ErrorAction         = "stop"
     }
 
-    # $startParams | Out-String | Write-Host -ForegroundColor cyan
+    Write-Verbose "Using these start parameters"
+    Write-Verbose ($startParams | Out-String)
     if ($PSCmdlet.ShouldProcess($labname, "Start-LabConfiguration")) {
         Try {
             Start-LabConfiguration @startParams
         }
         Catch {
-            Write-Host "Failed to start lab configuration." -foreground red
+            Microsoft.PowerShell.Utility\Write-Host "Failed to start lab configuration." -foreground red
             throw $_
         }
         # Disable secure boot for VM's
         Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name -OutVariable vm
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
-        Write-Host -ForegroundColor Green -Object @"
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -350,6 +353,7 @@ Function Invoke-SetupLab {
 
     } #should process
 
+    Write-Verbose "Ending $($myinvocation.mycommand)"
 }
 #endregion Setup-lab
 
@@ -366,7 +370,7 @@ Function Invoke-RunLab {
 
     $Path = Convert-Path $path
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Run-Lab script. This script will perform the following:
 
@@ -379,7 +383,7 @@ Function Invoke-RunLab {
 
     $labname = Split-Path (Get-Location) -leaf
     $datapath = Join-Path $(Convert-Path $path) -childpath "*.psd1"
-    Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
     $data = Import-PowerShellDataFile -path $datapath
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Start Lab")) {
@@ -392,7 +396,7 @@ Function Invoke-RunLab {
             #bail out because no other commands are likely to work
             return
         }
-        Write-Host -ForegroundColor Green -Object @"
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -431,7 +435,7 @@ Function Enable-Internet {
     )
 
     $Path = Convert-Path $path
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Enable-Internet script. This script will perform the following:
 
@@ -460,7 +464,7 @@ Function Enable-Internet {
         New-NetNat -Name $NatName -InternalIPInterfaceAddressPrefix $NatNetwork -ErrorAction SilentlyContinue
     }
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -486,7 +490,9 @@ Function Invoke-ValidateLab {
         [string]$Path = "."
     )
 
+    Write-Verbose "Starting $($myinvocation.mycommand)"
     $Path = Convert-Path $path
+    Write-Verbose "Using path $path"
 
     $msg = @"
     [$(Get-Date)]
@@ -508,14 +514,13 @@ Function Invoke-ValidateLab {
     Errors are expected until all tests complete successfully.
 
 "@
-    Write-Host $msg  -ForegroundColor Cyan
+    Microsoft.PowerShell.Utility\Write-Host $msg  -ForegroundColor Cyan
 
     $Complete = $False
 
     #define a resolved path to the test file
     $testPath = Join-Path -path $path -ChildPath VMValidate.test.ps1
     do {
-
 
         $test = Invoke-Pester -Script $testpath -Show none -PassThru
 
@@ -535,8 +540,9 @@ Function Invoke-ValidateLab {
     Invoke-Pester -Script $path\VMValidate.Test.ps1
 
     Write-Progress -Activity "VM Completion Test" -Completed
-    Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
+    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
 
+    Write-Verbose "Ending $($myinvocation.mycommand)"
 }
 #endregion Validate-Lab
 
@@ -552,7 +558,7 @@ Function Invoke-ShutdownLab {
     )
 
     $Path = Convert-Path $path
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Shutdown-Lab command. It will perform the following:
 
@@ -561,7 +567,7 @@ Function Invoke-ShutdownLab {
 "@
 
     $labname = Split-Path $path -leaf
-    Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
         Try {
@@ -574,7 +580,7 @@ Function Invoke-ShutdownLab {
         }
     }
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
      Next Steps:
 
@@ -610,7 +616,7 @@ Function Invoke-SnapshotLab {
 
     $Path = Convert-Path $path
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Snapshot-Lab command. It will perform the following:
 
@@ -620,7 +626,7 @@ Function Invoke-SnapshotLab {
 
 "@
     $labname = Split-Path $Path -leaf
-    Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
 
@@ -638,7 +644,7 @@ Function Invoke-SnapshotLab {
         Checkpoint-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName
     }
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
        Next Steps:
 
@@ -668,7 +674,7 @@ Function Invoke-RefreshLab {
 
     $Path = Convert-Path $path
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This command will perform the following:
 
@@ -683,7 +689,7 @@ Function Invoke-RefreshLab {
 
 "@
     $labname = Split-Path $path -leaf
-    Write-Host -ForegroundColor Cyan -Object 'Restore the lab environment from a snapshot'
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Restore the lab environment from a snapshot'
 
     Try {
         if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
@@ -700,7 +706,7 @@ Function Invoke-RefreshLab {
         Restore-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName -force
     }
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -734,7 +740,7 @@ Function Invoke-WipeLab {
 
     $Path = Convert-Path $path
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This command will perform the following:
 
@@ -759,7 +765,7 @@ Function Invoke-WipeLab {
         $removeParams.Add("confirm", $False)
     }
     $labname = Split-Path $path -leaf
-    Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
 
     # Stop the VM's
     if ($pscmdlet.ShouldProcess("VMs", "Stop-Lab")) {
@@ -797,7 +803,7 @@ Function Invoke-WipeLab {
     Get-ChildItem (Get-LabHostDefault).differencingVHDPath | Where-Object { $nodes -contains $_.basename } | Remove-Item
     #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
-    Write-Host -ForegroundColor Green -Object @"
+    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -837,42 +843,58 @@ Function Invoke-UnattendLab {
     Param (
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript({ Test-Path $_ })]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = ".",
         [switch]$AsJob,
         [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
         [switch]$UseLocalTimeZone
     )
-
+    Write-Verbose "Starting $($myinvocation.mycommand)"
     $Path = Convert-Path $path
+    Write-Verbose "Using Path $path"
 
     $sb = {
         [cmdletbinding()]
-        Param([string]$Path, [bool]$UseLocalTimeZone, [bool]$WhatIf)
+        Param([string]$Path, [bool]$UseLocalTimeZone, [bool]$WhatIf, [string]$VerboseAction)
 
+        $VerbosePreference = $VerboseAction
+        if ($VerboseAction -eq "Continue") {
+            [void]$psboundparameters.Add("Verbose", $True)
+        }
+
+        [void]$psboundparameters.remove("VerboseAction")
+
+        Write-Verbose "Starting the unattended scriptblock"
         $WhatIfPreference = $WhatIf
         [void]$psboundparameters.remove("WhatIf")
+        Write-Verbose "Using these scriptblock parameters:"
+        Write-Verbose  ($psboundparameters | Out-String)
 
         $msg = @"
 
-        This runs Setup-Lab, Run-Lab, and Validate-Lab commands
+        This runs Setup-Lab, Run-Lab, and Validate-Lab commands.
         Starting the lab environment
 "@
 
-        Write-Host $msg -ForegroundColor Green
+        Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
 
         if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
+            Write-Verbose "Setup-Lab"
             Invoke-SetupLab @psboundparameters
         }
+
         #this parameter isn't used in the remaining commands
         [void]($psboundparameters.remove("UseLocalTimeZone"))
         if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
+            Write-Verbose "Run-Lab"
             Invoke-RunLab @psboundparameters
         }
         if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
+            Write-Verbose "Enable-Internet"
             Enable-Internet @psboundparameters
         }
         if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
+            Write-Verbose "Validate-Lab"
             Invoke-ValidateLab @psboundparameters
         }
 
@@ -889,19 +911,23 @@ Function Invoke-UnattendLab {
         To quickly rebuild the labs from the checkpoint, run:
         Refresh-Lab
 "@
-        Write-Host $msg -ForegroundColor Green
+        Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
     } #close scriptblock
 
     $icmParams = @{
         Computername = $env:computername
-        ArgumentList = @($Path,$UseLocalTimeZone,$WhatIfPreference)
+        ArgumentList = @($Path, $UseLocalTimeZone, $WhatIfPreference, $VerbosePreference)
         Scriptblock  = $sb
     }
 
     if ($asjob) {
         $icmParams.Add("AsJob", $True)
     }
+    Write-Verbose "Invoking command with these parameters"
+    $icmParams | Out-String | Write-Verbose
     Invoke-Command @icmParams
+
+    Write-Verbose "Ending $($myinvocation.mycommand)"
 }
 #endregion Unattend-Lab
 
@@ -928,10 +954,10 @@ Function Get-LabSnapshot {
         $snaps = Get-VMSnapshot -vmname  $VMs
         if ($snaps) {
             $snaps
-            Write-Host "All VMs in the configuration should belong to the same snapshot if you want to use Refresh-Lab." -foreground green
+            Microsoft.PowerShell.Utility\Write-Host "All VMs in the configuration should belong to the same snapshot if you want to use Refresh-Lab." -foreground green
         }
         else {
-            Write-Host "No VM snapshots found for lab machines in $path." -ForegroundColor yellow
+            Microsoft.PowerShell.Utility\Write-Host "No VM snapshots found for lab machines in $path." -ForegroundColor yellow
         }
     }
     else {
@@ -1062,10 +1088,10 @@ Function Invoke-WUUpdate {
                     $class = 'MSFT_WUOperations'
                     $scanArgs = @{SearchCriteria = "IsInstalled=0"}
                     #always scan even if the function is run with -whatif
-                    Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cyan
+                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cyan
                     $scan = Invoke-CimMethod -Namespace $ns -ClassName $class -MethodName 'ScanForUpdates' -Arguments $scanArgs -WhatIf:$false -ErrorAction Stop
 
-                    Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
+                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
                     if ($scan.Updates.count -gt 0) {
                         if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Install Updates" )) {
                             [void](Invoke-CimMethod -Namespace $ns -ClassName MSFT_WUOperations -MethodName InstallUpdates -Arguments @{Updates = $scan.updates})
@@ -1074,14 +1100,14 @@ Function Invoke-WUUpdate {
                 } #try
                 Catch {
                     #uncomment for debugging and troubleshooting
-                    #Write-Host "Failed to find MSFT_WUOperations on $env:computername" -ForegroundColor yellow
+                    #Microsoft.PowerShell.Utility\Write-Host "Failed to find MSFT_WUOperations on $env:computername" -ForegroundColor yellow
                     $class = 'MSFT_WUOperationsSession'
                     $scanArgs = @{OnlineScan = $True; SearchCriteria = "IsInstalled=0"}
                     $ci = New-CimInstance -Namespace $ns -ClassName $class -Whatif:$False
-                    Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cya
+                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cya
                     $scan = $ci | Invoke-CimMethod -MethodName 'ScanForUpdates' -Arguments $scanArgs -whatif:$False
 
-                    Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
+                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
                     if ($scan.Updates.count -gt 0) {
                         if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Apply Updates" )) {
                             [void]($ci | Invoke-CimMethod -MethodName applyApplicableUpdates )
@@ -1090,7 +1116,7 @@ Function Invoke-WUUpdate {
                 } #catch
 
                 if ($scan.updates.count -gt 0) {
-                    Write-Host "[$(Get-Date)] Update process complete on $env:computername" -ForegroundColor Cyan
+                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Update process complete on $env:computername" -ForegroundColor Cyan
                 }
 
                 #check for reboot
@@ -1144,7 +1170,7 @@ Function Invoke-WUUpdate {
             $icmParams.Session = $sess
         }
         Catch {
-            write-Warning "Failed to create session to $Computer. $($_.exception.message)"
+            Write-Warning "Failed to create session to $Computer. $($_.exception.message)"
         }
         Write-Verbose "[PROCESS] Run the remote function"
         $r = Invoke-Command @icmParams

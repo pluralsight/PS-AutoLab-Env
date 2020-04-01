@@ -18,27 +18,26 @@ demonstrations and would need to be modified for your environment.
 
 Configuration AutoLab {
 
-    $LabData = Import-PowerShellDataFile $PSScriptRoot\VMConfigurationData.psd1
+    $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
-    Import-DSCResource -ModuleName 'PSDesiredStateConfiguration' -ModuleVersion '1.1'
-    Import-DSCResource -ModuleName 'xActiveDirectory' -ModuleVersion '3.0.0.0'
-    Import-DSCResource -ModuleName 'xComputerManagement' -ModuleVersion '4.1.0.0'
-    Import-DSCResource -ModuleName 'xNetworking' -ModuleVersion '5.7.0.0'
-    Import-DSCResource -ModuleName 'xDhcpServer' -ModuleVersion '2.0.0.0'
-    Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion '2.8.0.0'
-    Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' -ModuleVersion '9.0.0'
-    Import-DSCResource -ModuleName 'xPendingReboot' -ModuleVersion '0.4.0.0'
-    Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion '1.4.0.0'
-
+    Import-DSCresource -Modulename @{ModuleName = "PSDesiredStateConfiguration";ModuleVersion="1.1"},
+    @{ModuleName = "xPSDesiredStateConfiguration"; ModuleVersion = "9.1.0"},
+    @{ModuleName = "xActiveDirectory"; ModuleVersion = "3.0.0.0"},
+    @{ModuleName = "xComputerManagement"; ModuleVersion = "4.1.0.0"},
+    @{ModuleName = "xNetworking"; ModuleVersion = "5.7.0.0"},
+    @{ModuleName = "xDhcpServer"; ModuleVersion = "2.0.0.0"},
+    @{ModuleName = 'xWindowsUpdate'; ModuleVersion = '2.8.0.0'},
+    @{ModuleName = 'xPendingReboot'; ModuleVersion = '0.4.0.0'},
+    @{ModuleName = 'xADCSDeployment'; ModuleVersion = '1.4.0.0'}
 
     #endregion
     #region All Nodes
     node $AllNodes.Where( {$true}).NodeName {
         #endregion
-    #region LCM configuration
+        #region LCM configuration
 
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
@@ -47,8 +46,8 @@ Configuration AutoLab {
         }
 
         #endregion
-    #region IPaddress settings
 
+        #region IPaddress settings
 
         If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
             xIPAddress 'PrimaryIPAddress' {
@@ -82,10 +81,10 @@ Configuration AutoLab {
         } #End IF
 
         #endregion
-    #region Firewall Rules
 
+        #region Firewall Rules
 
-        $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
+        $LabData = Import-PowerShellDataFile .\*.psd1
         $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
@@ -97,6 +96,7 @@ Configuration AutoLab {
 
     } #end Firewall Rules
     #endregion
+
     #region Domain Controller config
 
     node $AllNodes.Where( {$_.Role -eq 'DC'}).NodeName {
@@ -113,11 +113,11 @@ Configuration AutoLab {
                 'AD-Domain-Services',
                 'RSAT-AD-Tools',
                 'RSAT-AD-PowerShell',
-                'GPMC'
+                'GPMC',
                 #For Gui, might like
-                #'RSAT-DNS-Server',
-                #'RSAT-AD-AdminCenter',
-                #'RSAT-ADDS-Tools'
+                'RSAT-DNS-Server',
+                'RSAT-AD-AdminCenter',
+                'RSAT-ADDS-Tools'
 
             )) {
             WindowsFeature $feature.Replace('-', '') {
@@ -140,7 +140,8 @@ Configuration AutoLab {
         #Add OU, Groups, and Users
         $OUs = (Get-Content $PSScriptRoot\AD-OU.json | ConvertFrom-Json)
         $Users = (Get-Content $PSScriptRoot\AD-Users.json | ConvertFrom-Json)
-        $Groups = (Get-Content $PSScriptRoot\AD-Group.json | ConvertFrom-Json)
+        $Groups = (Get-Content $PSScriptroot\AD-Group.json | ConvertFrom-Json)
+
 
         foreach ($OU in $OUs) {
             xADOrganizationalUnit $OU.Name {
@@ -222,6 +223,7 @@ Configuration AutoLab {
     } #end nodes DC
 
     #endregion
+
     #region DHCP
     node $AllNodes.Where( {$_.Role -eq 'DHCP'}).NodeName {
 
@@ -244,7 +246,7 @@ Configuration AutoLab {
         }
 
         xDhcpServerScope 'DhcpScope' {
-            Name          = $Node.DHCPName
+            Name          = $Node.DHCPName;
             ScopeID       = $Node.DHCPScopeID
             IPStartRange  = $Node.DHCPIPStartRange
             IPEndRange    = $Node.DHCPIPEndRange
@@ -265,6 +267,7 @@ Configuration AutoLab {
 
     } #end DHCP Config
     #endregion
+
     #region Web config
     node $AllNodes.Where( {$_.Role -eq 'Web'}).NodeName {
 
@@ -281,6 +284,7 @@ Configuration AutoLab {
 
     }#end Web Config
     #endregion
+
     #region DomainJoin config
     node $AllNodes.Where( {$_.Role -eq 'DomainJoin'}).NodeName {
 
@@ -301,34 +305,27 @@ Configuration AutoLab {
         }
     }#end DomainJoin Config
     #endregion
+
     #region RSAT config
     node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
-         # Adds RSAT which is now a Windows Capability in Windows 10
+        # Adds RSAT
 
-        Script RSAT {
-            TestScript = {
-                $packages = Get-WindowsCapability -online -Name Rsat*
-                if ($packages.state -match "Installed") {
-                    Return $True
-                }
-                else {
-                    Return $False
-                }
-            }
-
-            GetScript  =  {
-                $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
-                $installed = $packages.Where({$_.state -eq "Installed"})
-                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
-            }
-
-            SetScript  = {
-                Get-WindowsCapability -online -Name Rsat* | Where-Object {$_.state -ne "installed"} | Add-WindowsCapability -online
-            }
+        xHotfix RSAT {
+            Id         = 'KB2693643'
+            Path       = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
+            Credential = $DomainCredential
+            DependsOn  = '[xcomputer]JoinDC'
+            Ensure     = 'Present'
         }
 
+        xPendingReboot Reboot {
+            Name      = 'AfterRSATInstall'
+            DependsOn = '[xHotFix]RSAT'
+        }
+
+
     }#end RSAT Config
-    #endregion
+
     #region RDP config
     node $AllNodes.Where( {$_.Role -eq 'RDP'}).NodeName {
         # Adds RDP support and opens Firewall rules
@@ -364,8 +361,8 @@ Configuration AutoLab {
                 'ADCS-Enroll-Web-Svc',
                 'ADCS-Web-Enrollment'
                 # For the GUI version - uncomment the following
-                #'RSAT-ADCS',
-                #'RSAT-ADCS-Mgmt'
+                'RSAT-ADCS',
+                'RSAT-ADCS-Mgmt'
             )) {
 
             WindowsFeature $feature.Replace('-', '') {
@@ -384,7 +381,8 @@ Configuration AutoLab {
             DependsOn            = '[WindowsFeature]ADCSCertAuthority'
         }
 
-        xAdcsCertificationAuthority ADCSConfig {
+        xAdcsCertificationAuthority ADCSConfig
+        {
             CAType                    = $Node.ADCSCAType
             Credential                = $Credential
             CryptoProviderName        = $Node.ADCSCryptoProviderName
@@ -403,7 +401,7 @@ Configuration AutoLab {
         script CreatePKIAEGpo {
             Credential = $DomainCredential
             TestScript = {
-                if ((get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName -ErrorAction SilentlyContinue) -eq $Null) {
+                if ((Get-GPO -name "PKI AutoEnroll" -domain $Using:Node.DomainName -ErrorAction SilentlyContinue) -eq $Null) {
                     return $False
                 }
                 else {
@@ -411,10 +409,10 @@ Configuration AutoLab {
                 }
             }
             SetScript  = {
-                new-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName
+                New-GPO -name "PKI AutoEnroll" -domain $Using:Node.DomainName
             }
             GetScript  = {
-                $GPO = (get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
+                $GPO = (Get-GPO -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
                 return @{Result = $($GPO.DisplayName)}
             }
             DependsOn  = '[xWaitForADDomain]WaitForADADCSRole'
@@ -485,7 +483,7 @@ Configuration AutoLab {
             Credential = $DomainCredential
             TestScript = {
                 try {
-                    $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
+                    $GPLink = (Get-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
                     $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
                     if ($GPLinks.Enabled -eq $True) {return $True}
                     else {return $False}
@@ -498,13 +496,14 @@ Configuration AutoLab {
                 New-GPLink -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes
             }
             GetScript  = {
-                $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
+                $GPLink = (Get-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
                 $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
                 return @{Result = "$($GPLinks.DisplayName) = $($GPLinks.Enabled)"}
             }
             DependsOn  = '[Script]setAEGPRegSetting3'
         }
 
+        #region Create and publish templates
 
         #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
         script CreateWebServer2Template {
@@ -512,7 +511,7 @@ Configuration AutoLab {
             Credential = $DomainCredential
             TestScript = {
                 try {
-                    $WSTemplate = get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    $WSTemplate = Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                     return $True
                 }
                 catch {
@@ -546,7 +545,7 @@ Configuration AutoLab {
             }
             GetScript  = {
                 try {
-                    $WS2 = get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    $WS2 = Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                     return @{Result = $WS2.DistinguishedName}
                 }
                 catch {
@@ -562,7 +561,7 @@ Configuration AutoLab {
             Credential = $DomainCredential
             TestScript = {
                 try {
-                    $DSCTemplate = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    $DSCTemplate = Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                     return $True
                 }
                 catch {
@@ -598,7 +597,7 @@ Configuration AutoLab {
             }
             GetScript  = {
                 try {
-                    $dsctmpl = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    $dsctmpl = Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                     return @{Result = $dsctmpl.DistinguishedName}
                 }
                 catch {
@@ -616,7 +615,7 @@ Configuration AutoLab {
                 else {return $True}
             }
             SetScript  = {
-                add-CATemplate -name "WebServer2" -force
+                Add-CATemplate -name "WebServer2" -force
             }
             GetScript  = {
                 $pubWS2 = Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}
@@ -633,8 +632,8 @@ Configuration AutoLab {
                 else {return $True}
             }
             SetScript  = {
-                add-CATemplate -name "DSCTemplate" -force
-                write-verbose -Message ("Publishing Template DSCTemplate...")
+                Add-CATemplate -name "DSCTemplate" -force
+                Write-Verbose -Message ("Publishing Template DSCTemplate...")
             }
             GetScript  = {
                 $pubDSC = Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
@@ -644,7 +643,8 @@ Configuration AutoLab {
 
 
         #endregion - Create and publish templates
-    #region template permissions
+
+        #region template permissions
         #Permission beginning with 0e10... is "Enroll".  Permission beginning with "a05b" is autoenroll.
         #TODO:  Write-Verbose in other script resources.
         #TODO:  Make $Perms a has table with GUID and permission name.  Use name in resource name.
@@ -658,34 +658,34 @@ Configuration AutoLab {
                 Credential = $DomainCredential
                 TestScript = {
                     Import-Module activedirectory -Verbose:$false
-                    $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
+                    $WebServerCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
                     if ($WebServerCertACL -eq $Null) {
-                        write-verbose -message ("Web Servers Group does not have permissions on Web Server template...")
+                        Write-Verbose -message ("Web Servers Group does not have permissions on Web Server template...")
                         Return $False
                     }
                     elseif (($WebServerCertACL.ActiveDirectoryRights -like "*ExtendedRight*") -and ($WebServerCertACL.ObjectType -notcontains $Using:P)) {
-                        write-verbose -message ("Web Servers group has permission, but not the correct permission...")
+                        Write-Verbose -message ("Web Servers group has permission, but not the correct permission...")
                         Return $False
                     }
                     else {
-                        write-verbose -message ("ACL on Web Server Template is set correctly for this GUID for Web Servers Group...")
+                        Write-Verbose -message ("ACL on Web Server Template is set correctly for this GUID for Web Servers Group...")
                         Return $True
                     }
                 }
                 SetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $WebServersGroup = get-adgroup -Identity "Web Servers" | Select-Object SID
+                    $WebServersGroup = Get-ADGroup -Identity "Web Servers" | Select-Object SID
                     $EnrollGUID = [GUID]::Parse($Using:P)
-                    $ACL = get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
+                    $ACL = Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
                     $ACL.AddAccessRule((New-Object System.DirectoryServices.ExtendedRightAccessRule $WebServersGroup.SID, 'Allow', $EnrollGUID, 'None'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
-                    set-ACL "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
-                    write-verbose -Message ("Permissions set for Web Servers Group")
+                    Set-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
+                    Write-Verbose -Message ("Permissions set for Web Servers Group")
                 }
                 GetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
+                    $WebServerCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
                     if ($WebServerCertACL -ne $Null) {
                         return @{Result = $WebServerCertACL}
                     }
@@ -700,34 +700,34 @@ Configuration AutoLab {
                 Credential = $DomainCredential
                 TestScript = {
                     Import-Module activedirectory -Verbose:$false
-                    $DSCCertACL = (get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers*"}
+                    $DSCCertACL = (Get-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers*"}
                     if ($DSCCertACL -eq $Null) {
-                        write-verbose -Message ("Domain Computers does not have permissions on DSC template")
+                        Write-Verbose -Message ("Domain Computers does not have permissions on DSC template")
                         Return $False
                     }
                     elseif (($DSCCertACL.ActiveDirectoryRights -like "*ExtendedRight*") -and ($DSCCertACL.ObjectType -notcontains $Using:P)) {
-                        write-verbose -Message ("Domain Computers group has permission, but not the correct permission...")
+                        Write-Verbose -Message ("Domain Computers group has permission, but not the correct permission...")
                         Return $False
                     }
                     else {
-                        write-verbose -Message ("ACL on DSC Template is set correctly for this GUID for Domain Computers...")
+                        Write-Verbose -Message ("ACL on DSC Template is set correctly for this GUID for Domain Computers...")
                         Return $True
                     }
                 }
                 SetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $DomainComputersGroup = get-adgroup -Identity "Domain Computers" | Select-Object SID
+                    $DomainComputersGroup = Get-ADGroup -Identity "Domain Computers" | Select-Object SID
                     $EnrollGUID = [GUID]::Parse($Using:P)
-                    $ACL = get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
+                    $ACL = Get-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
                     $ACL.AddAccessRule((New-Object System.DirectoryServices.ExtendedRightAccessRule $DomainComputersGroup.SID, 'Allow', $EnrollGUID, 'None'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
-                    set-ACL "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
-                    write-verbose -Message ("Permissions set for Domain Computers...")
+                    Set-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
+                    Write-Verbose -Message ("Permissions set for Domain Computers...")
                 }
                 GetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $DSCCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers"}
+                    $DSCCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers"}
                     if ($DSCCertACL -ne $Null) {
                         return @{Result = $DSCCertACL}
                     }
@@ -739,10 +739,9 @@ Configuration AutoLab {
         }
 
     } #end ADCS Config
+
+} # End AllNodes
 #endregion
 
-} # End configuration
-
-
-AutoLab -OutputPath $PSScriptRoot -ConfigurationData $PSScriptRoot\VMConfigurationData.psd1
+AutoLab -OutputPath $PSScriptRoot -ConfigurationData $PSScriptRoot\*.psd1
 
