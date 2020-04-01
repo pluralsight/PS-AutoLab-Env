@@ -371,7 +371,7 @@ public class FirstService : WebService
             Credential = $DomainCredential
             DependsOn  = '[xWaitForADDomain]DSCForestWait'
         }
-    }#end DomianJoin Config
+    }#end DomainJoin Config
     #endregion
 
     #region RSAT config

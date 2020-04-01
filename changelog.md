@@ -1,5 +1,25 @@
 # Change Log for PSAutoLab
 
+## v4.6.0
+
+### Add
+
++ Configuration `SingleServer-GUI-2016` (Issue 208)
++ Configuration `MultiRole-Server-2016` (Issue 209)
+
+### Change
+
++ Updated manifest tags
++ Changed `Write-Host` commands to use fully qualified name `Microsoft.PowerShell.Utility\Write-Host`
++ Modified `Invoke-UnattendLab` to pass `-Verbose` to the scriptblock for better troubleshooting
++ Modified `Invoke-SetupLab` and `Invoke-ValidateLab` to provide more verbose detail
++ Fixed minor spelling error in `VMConfiguration.ps1` scripts
++ Updated `README.md`
+
+### Delete
+
++ none
+
 ## v4.5.0
 
 ### Add

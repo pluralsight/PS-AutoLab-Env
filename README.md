@@ -108,6 +108,15 @@ You will be prompted to reboot, which you should do especially if setup had to a
 Lab information is stored under the AutoLab Configurations folder, which is C:\AutoLab\Configurations by default.
 Open an elevated PowerShell prompt and change location to the desired configuration folder.
 View the `Instructions.md` and/or readme files in the folder to learn more about the configuration.
+Where possible information about what course goes with a particular Pluralsight course will be indicated.
+
+> ### A Note on Pluralsight Labs
+>
+> This module started several years ago and there are a number of Pluralsight courses that rely on configurations that may no longer exist.
+> Configurations that were named as `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case.
+> If you are trying to setup a lab for a specific course and can't find the configuration the instructor calls for, please post an issue
+> indicating the configuration you are looking for and the title of the Pluralsight course.
+> Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration.
 
 The first time you setup a lab, Lability will download evaluation versions of required operating systems in ISO format.
 This may take some time depending on your Internet bandwidth.
@@ -329,4 +338,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-02-06 15:22:37Z UTC
+Last Updated 2020-04-01 18:04:36Z UTC
