@@ -1,5 +1,23 @@
 # Change Log for PSAutoLab
 
+## v4.7.0
+
+### Add
+
++ none
+
+### Change
+
++ Corrected minor typos in `VMValidate.test.ps1` in the `PowerShellLab` configuration.
++ Updated Lability module version to `0.19.1`.
++ Updated `xPSDesiredStateConfiguration` to version `9.1.0`.
++ Expanded command aliases in `VMValidate.Test.ps1` in the `Microsoft-PowerShell-Implementing-JEA` configuration.
++ Updated `README.md` with improved setup instructions and background information.
+
+### Delete
+
++ none
+
 ## v4.6.0
 
 ### Add

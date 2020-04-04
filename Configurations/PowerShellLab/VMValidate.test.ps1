@@ -27,7 +27,7 @@ Describe DOM1 {
     }
 
     It "[DOM1] Should belong to the COMPANY domain" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_computersystem -property domain } -session $DC
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_computersystem -property domain } -session $DC
         $test.domain | Should Be "company.pri"
     }
 
@@ -42,16 +42,16 @@ Describe DOM1 {
     }
 
     It "[DOM1] Should have an IP address of 192.168.3.10" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -Session $dc
-        $i.ipv4Address | should be '192.168.3.10'
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -Session $dc
+        $i.ipv4Address | Should be '192.168.3.10'
     }
 
     It "[DOM1] Should have a domain name of $domain" {
-        $r = Invoke-command { Get-ADDomain -ErrorAction SilentlyContinue } -session $dc
-        $r.name | should Be $domain
+        $r = Invoke-Command { Get-ADDomain -ErrorAction SilentlyContinue } -session $dc
+        $r.name | Should Be $domain
     }
 
-    $OUs = Invoke-command { Get-ADorganizationalUnit -filter * -ErrorAction SilentlyContinue } -session $dc
+    $OUs = Invoke-Command { Get-ADOrganizationalUnit -filter * -ErrorAction SilentlyContinue } -session $dc
     $needed = 'IT', 'Dev', 'Marketing', 'Sales', 'Accounting', 'JEA_Operators', 'Servers'
     foreach ($item in $needed) {
         It "[DOM1] Should have organizational unit $item" {
@@ -68,9 +68,9 @@ Describe DOM1 {
 
     }
 
-    $users = Invoke-Command { Get-AdUser -filter * -ErrorAction SilentlyContinue } -session $dc
+    $users = Invoke-Command { Get-ADUser -filter * -ErrorAction SilentlyContinue } -session $dc
     It "[DOM1] Should have at least 15 user accounts" {
-        $users.count | should BeGreaterThan 15
+        $users.count | Should BeGreaterThan 15
     }
 
     $admins = Invoke-Command { Get-ADGroupMember "Domain Admins"-ErrorAction SilentlyContinue } -session $dc
@@ -95,14 +95,14 @@ Describe DOM1 {
         $computer.name -contains "SRV2" | Should Be "True"
     }
 
-    $rec = Invoke-command { Resolve-DNSName Srv3.company.pri } -session $DC
+    $rec = Invoke-Command { Resolve-DnsName Srv3.company.pri } -session $DC
     It "[DOM1] Should have a DNS record for SRV3.COMPANY.PRI" {
         $rec.name | Should be 'srv3.company.pri'
         $rec.ipaddress | Should be '192.168.3.60'
     }
 
     It "[DOM1] Should be running Windows Server 2016" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_operatingsystem -property caption } -session $dc
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property caption } -session $dc
         $test.caption | Should BeLike '*2016*'
     }
 } #DOM1
@@ -113,17 +113,17 @@ Describe SRV1 {
         $all += $srv1
     }
     Catch {
-        Write-Warning "Failed to create PSSession to DOM1. $($_.exception.message)"
+        Write-Warning "Failed to create PSSession to SRV1. $($_.exception.message)"
         #bail out of the test
         Return
     }    It "[SRV1] Should belong to the COMPANY domain" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_computersystem -property domain } -session $SRV1
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_computersystem -property domain } -session $SRV1
         $test.domain | Should Be "company.pri"
     }
 
     It "[SRV1] Should have an IP address of 192.168.3.50" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -Session $SRV1
-        $i.ipv4Address | should be '192.168.3.50'
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -Session $SRV1
+        $i.ipv4Address | Should be '192.168.3.50'
     }
     $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -session $SRV1
     It "[SRV1] Should have a DNS server configuration of 192.168.3.10" {
@@ -131,7 +131,7 @@ Describe SRV1 {
     }
 
     It "[SRV1] Should be running Windows Server 2016" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_operatingsystem -property caption } -session $srv1
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property caption } -session $srv1
         $test.caption | Should BeLike '*2016*'
     }
 } #SRV1
@@ -142,17 +142,17 @@ Describe SRV2 {
         $all += $srv2
     }
     Catch {
-        Write-Warning "Failed to create PSSession to DOM1. $($_.exception.message)"
+        Write-Warning "Failed to create PSSession to SRV2. $($_.exception.message)"
         #bail out of the test
         Return
     }    It "[SRV2] Should belong to the COMPANY domain" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_computersystem -property domain } -session $SRV2
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_computersystem -property domain } -session $SRV2
         $test.domain | Should Be "company.pri"
     }
 
     It "[SRV2] Should have an IP address of 192.168.3.51" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -Session $SRV2
-        $i.ipv4Address | should be '192.168.3.51'
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -Session $SRV2
+        $i.ipv4Address | Should be '192.168.3.51'
     }
     $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -session $SRV2
     It "[SRV2] Should have a DNS server configuration of 192.168.3.10" {
@@ -160,26 +160,25 @@ Describe SRV2 {
     }
 
     It "[SRV2] Should have the Web-Server feature installed" {
-        $feature = Invoke-command { Get-WindowsFeature -Name web-server } -session $SRV2
+        $feature = Invoke-Command { Get-WindowsFeature -Name web-server } -session $SRV2
         $feature.Installed | Should be $True
     }
 
     It "[SRV2] Should have a sample web service file" {
-        $file = Invoke-Command { Get-item C:\MyWebServices\firstservice.asmx } -session $SRV2
-        $file.name | should be 'firstservice.asmx'
+        $file = Invoke-Command { Get-Item C:\MyWebServices\firstservice.asmx } -session $SRV2
+        $file.name | Should be 'firstservice.asmx'
     }
     It "[SRV2] Should have a WebApplication called MyWebServices" {
-        $app = Invoke-command { Get-WebApplication -Name MyWebServices } -session $SRV2
+        $app = Invoke-Command { Get-WebApplication -Name MyWebServices } -session $SRV2
         $app.path | Should be "/MyWebServices"
-        $app.physicalpath | should be "c:\MyWebServices"
+        $app.physicalpath | Should be "c:\MyWebServices"
     }
 
     It "[SRV2] Should be running Windows Server 2016" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_operatingsystem -property caption } -session $srv2
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property caption } -session $srv2
         $test.caption | Should BeLike '*2016*'
     }
 } #SRV2
-
 
 Describe SRV3 {
     Try {
@@ -187,7 +186,7 @@ Describe SRV3 {
         $all += $srv3
     }
     Catch {
-        Write-Warning "Failed to create PSSession to DOM1. $($_.exception.message)"
+        Write-Warning "Failed to create PSSession to SRV3. $($_.exception.message)"
         #bail out of the test
         Return
     }
@@ -206,10 +205,9 @@ Describe SRV3 {
     }
 
     It "[SRV3] Should be running Windows Server 2019" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_operatingsystem -property caption } -session $srv3
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property caption } -session $srv3
         $test.caption | Should BeLike '*2019*'
     }
-
 }
 #>
 
@@ -225,18 +223,18 @@ Describe Win10 {
         Return
     }
     It "[WIN10] Should belong to the COMPANY domain" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_computersystem -property domain } -session $cl
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_computersystem -property domain } -session $cl
         $test.domain | Should Be "company.pri"
     }
 
     It "[WIN10] Should be running Windows 10 Enterprise version 18362" {
-        $test = Invoke-Command { Get-Ciminstance -ClassName win32_operatingsystem -property version, caption } -session $cl
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property version, caption } -session $cl
         $test.Version | Should Be '10.0.18362'
         $test.caption | Should BeLike "*Enterprise*"
     }
 
     It "[Win10] Should have an IP address of 192.168.3.100" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -session $cl
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4 } -session $cl
         $i.ipv4Address | Should be '192.168.3.100'
     }
 
@@ -249,7 +247,7 @@ Describe Win10 {
         $pkg = Invoke-Command { Get-WindowsCapability -online -name *rsat* } -session $cl
 
         # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
-        $pkg.State | should match "Installed"
+        $pkg.State | Should match "Installed"
 
     }
 } #client

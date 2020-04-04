@@ -1,6 +1,6 @@
 
 #declare the currently supported version of Lability
-$LabilityVersion = "0.19.0"
+$LabilityVersion = "0.19.1"
 $ConfigurationPath = Join-Path -path $PSScriptRoot -ChildPath Configurations
 
 #dot source functions

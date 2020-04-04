@@ -197,7 +197,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xDhcpServer'; RequiredVersion = '2.0.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.0.0'; },
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; },
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery'; }
