@@ -2,7 +2,6 @@
 
 #test if VM setup is complete
 
-
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
@@ -11,11 +10,11 @@ $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
 
 #define an array to hold PSSessions
-$all=@()
+$all = @()
 Describe DC1 {
 
     $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction SilentlyContinue
-    $all+=$dc
+    $all += $dc
     #set error action preference to suppress all error messsages
     Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
 
@@ -24,7 +23,7 @@ Describe DC1 {
     }
 
     #test for features
-    $feat = Invoke-Command { Get-WindowsFeature | Where installed} -session $dc
+    $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed} -session $dc
     $needed = 'AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
     'RSAT-AD-PowerShell'
     foreach ($item in $needed) {
@@ -34,16 +33,16 @@ Describe DC1 {
     }
 
     It "[DC1] Should have an IP address of 192.168.3.10" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $dc
-        $i.ipv4Address | should be '192.168.3.10'
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $dc
+        $i.ipv4Address | Should be '192.168.3.10'
     }
 
     It "[DC1] Should have a domain name of $domain" {
-        $r = Invoke-command { Get-ADDomain -ErrorAction SilentlyContinue } -session $dc
-        $r.name | should Be $domain
+        $r = Invoke-Command { Get-ADDomain -ErrorAction SilentlyContinue } -session $dc
+        $r.name | Should Be $domain
     }
 
-    $OUs = Invoke-command { Get-ADorganizationalUnit -filter * -ErrorAction SilentlyContinue} -session $dc
+    $OUs = Invoke-Command { Get-ADOrganizationalUnit -filter * -ErrorAction SilentlyContinue} -session $dc
     $needed = 'IT', 'Dev', 'Marketing', 'Sales', 'Accounting', 'JEA_Operators'
     foreach ($item in $needed) {
         It "[DC1] Should have organizational unit $item" {
@@ -60,9 +59,9 @@ Describe DC1 {
 
     }
 
-    $users = Invoke-Command { Get-AdUser -filter * -ErrorAction SilentlyContinue} -session $dc
+    $users = Invoke-Command { Get-ADUser -filter * -ErrorAction SilentlyContinue} -session $dc
     It "[DC1] Should have at least 15 user accounts" {
-        $users.count | should BeGreaterThan 15
+        $users.count | Should BeGreaterThan 15
     }
 
     $computer = Invoke-Command { Get-ADComputer -filter * -ErrorAction SilentlyContinue} -session $dc
@@ -78,14 +77,14 @@ Describe DC1 {
 
 Describe S1 {
     $s1 = New-PSSession -VMName S1 -Credential $cred -ErrorAction SilentlyContinue
-    $all+=$s1
+    $all += $s1
     It "[S1] Should accept domain admin credential" {
         $s1.Count | Should Be 1
     }
 
     It "[S1] Should have an IP address of 192.168.3.50" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
-        $i.ipv4Address | should be '192.168.3.50'
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+        $i.ipv4Address | Should be '192.168.3.50'
     }
     $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
     It "[S1] Should have a DNS server configuration of 192.168.3.10" {
@@ -95,12 +94,11 @@ Describe S1 {
 
 } #S1
 
-
 Describe NanoServer {
 
     It "[Nano] Should respond to WSMan requests" {
         $script:sess = New-PSSession -VMName N1 -Credential $Cred -ErrorAction Stop
-        $all+=$script:sess
+        $all += $script:sess
         $script:sess.Computername | Should Be 'N1'
     }
 
@@ -115,25 +113,25 @@ Describe NanoServer {
     }
 
     It "[Nano] Should have the DSC package installed" {
-        $pkg = Invoke-command { (Get-WindowsPackage -PackageName *DSC* -Online).Where( {$_.packageState -eq 'Installed'})} -session $script:sess
+        $pkg = Invoke-Command { (Get-WindowsPackage -PackageName *DSC* -Online).Where( {$_.packageState -eq 'Installed'})} -session $script:sess
         $pkg.count | Should BeGreaterThan 0
 
     }
-}
+} #nano
 
 
 Describe Cli1 {
 
     $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction SilentlyContinue
-    $all+=$cl
+    $all += $cl
     It "[CLI] Should accept domain admin credential" {
         $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction SilentlyContinue
         $cl.Count | Should Be 1
     }
 
     It "[CLI] Should have an IP address of 192.168.3.100" {
-        $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
-        $i.ipv4Address | should be '192.168.3.100'
+        $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
+        $i.ipv4Address | Should be '192.168.3.100'
     }
 
     $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
@@ -143,4 +141,4 @@ Describe Cli1 {
 
 } #client
 
-$all| Remove-PSSession
+$all | Remove-PSSession

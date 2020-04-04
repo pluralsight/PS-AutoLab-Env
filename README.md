@@ -15,10 +15,11 @@ This project is intended to be used for educational purposes only.**
 
 ## Requirements
 
-This tool currently supports running on either Windows Server 2016 (not fully tested) or a __Windows 10__ client that supports virtualization.
+This tool currently supports running on a __Windows 10__ client that supports virtualization.
 Windows 10 Pro or Enterprise should be sufficient.
-This module will not work and and is unsupported on Windows 10 Home or any Student edition.
 It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1.
+This module will **not** work and and is unsupported on Windows 10 Home or any Student edition.
+The module _might_ run on Windows Server 2016 but this capability has not been fully tested nor supported.
 
 The host computer must have the following:
 
@@ -28,33 +29,11 @@ The host computer must have the following:
 * Minimum 100GB free disk space preferably on a fast SSD device.
 * PowerShell Remoting enabled
 
-You must have administrator access and be able to update TrustedHosts.
+You must have administrator access and be able to update the TrustedHosts setting for PowerShell remoting.
 If you are in a corporate environment, these settings may be locked down or restricted.
-If this applies to you, this module may not work for you.
+If this applies to you, this module may not work properly if at all.
 
 **__This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.__**
-
-## Aliases and Language
-
-While this module follows proper naming conventions, the commands you will typically use employ aliases that use non-standard verbs such as `Run-Lab`.
-This is to avoid conflicts with commands in the Lability module and to maintain backwards compatibility.
-You can use the aliases or the full function name.
-All references in this document use the aliases.
-
-## Previous Versions
-
-If you installed previous versions of this module, and struggled, hopefully this version will be an improvement.
-To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`.
-You can run a command like:
-
-```powershell
-PS C:\> Get-Module PSAutolab -ListAvailable | Select-Object Path
-```
-
-To identify the module location.
-Use this information to delete the PSAutolab folder.
-
-**The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.**
 
 ## Installation
 
@@ -71,22 +50,114 @@ If prompted, answer yes to update the nuget version and to install from an untru
 If you have an old copy from before Pluralsight took ownership you will get an error.
 Manually remove the old module files and try again.
 
-*Do not download or use any of the release packages on Github.
-Only install this module from the PowerShell Gallery.*
+> **Do not download or use any of the release packages from this Github repository.
+> You must install this module from the PowerShell Gallery.**
 
 See the [Changelog](./changelog.txt) for update details.
 
 **DO NOT run this module on any mission-critical production system.**
 
+To verify the module is properly installed you should able to open an elevated PowerShell session and run this command:
+
+```powershell
+PS C:\> Get-PSAutoLabSetting
+
+
+PSVersion     : 5.1.18362.628
+PSEdition     : Desktop
+OS            : Microsoft Windows 10 Pro
+IsElevated    : True
+HyperV        : 10.0.18362.1
+PSAutolab     : {4.6.0, 4.5.0, 4.4.0, 4.3.0...}
+Lability      : {0.19.1, 0.19.0, 0.18.0}
+Pester        : 4.10.1
+MemoryGB      : 32
+PctFreeMemory : 45.47
+```
+
+### Hyper-V
+
+This module and its configurations should not conflict with any existing Hyper-V virtual machines or networking.
+But you should be aware that the module will create a new., internal Hyper-V switch called `LabNet`.
+This switch will use a NAT configuration called `LabNat`.
+
+```powershell
+PS C:\> Get-NetNat LabNat
+
+
+Name                             : LabNat
+ExternalIPInterfaceAddressPrefix :
+InternalIPInterfaceAddressPrefix : 192.168.3.0/24
+IcmpQueryTimeout                 : 30
+TcpEstablishedConnectionTimeout  : 1800
+TcpTransientConnectionTimeout    : 120
+TcpFilteringBehavior             : AddressDependentFiltering
+UdpFilteringBehavior             : AddressDependentFiltering
+UdpIdleSessionTimeout            : 120
+UdpInboundRefresh                : False
+Store                            : Local
+Active                           : True
+```
+
+The `Instructions.md` file in each configuration folder should provide an indication of what VMs will be created.
+You can also check the `VMConfigurationData.psd1` file.
+
+```powershell
+PS C:\Autolab\Configurations\MultiRole> (Import-PowerShellDataFile .\VMConfigurationData.psd1).allnodes.Nodename
+*
+DC1
+S1
+N1
+Cli1
+```
+
+Current configurations will use these names:
+
+* DC1
+* S1
+* S2
+* Cli1
+* N1
+* Cli2
+* PullServer
+* DOM1
+* SRV1
+* SRV2
+* SRV3
+* WIN10
+* Win10Ent
+
+### Previous Versions
+
+If you installed previous versions of this module, and struggled, hopefully this version will be an improvement.
+To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`.
+You can run a command like:
+
+```powershell
+PS C:\> Get-Module PSAutolab -ListAvailable | Select-Object Path
+```
+
+To identify the module location.
+Use this information to delete the PSAutolab folder.
+
+**The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.**
+
 ### Note for VMware Users
 
 This project is designed to work with Hyper-V.
-If you are going to build a Host VM of Server 2016 or Windows 10, In the general settings for your VM, you must change the OS type to Hyper-V(Unsupported) or the Host Hyper-V will not work!
+If you are going to build a Host VM of Server 2016 or Windows 10, In the general settings for your VM, you must change the OS type to `Hyper-V(Unsupported)` or the Host Hyper-V will not work!
+This module and its configurations have __not__ been tested for compatibility with VMware.
+
+## Aliases and Language
+
+While this module follows proper naming conventions, the commands you will typically use employ aliases that use non-standard verbs such as `Run-Lab`.
+This is to avoid conflicts with commands in the Lability module and to maintain backwards compatibility.
+You can use the aliases or the full function name.
+All references in this document use the aliases.
 
 ## Setup
 
 The first time you use this module, you will need to configure the local machine or host.
-
 Open an elevated PowerShell session and run:
 
 ```powershell
@@ -94,18 +165,18 @@ PS C:\> Setup-Host
 ```
 
 This will install and configure the Lability module and install the Hyper-V feature if it is missing.
-By default, all AutoLab files will be stored under C:\AutoLab, which the setup process will create.
+By default, all AutoLab files will be stored under `C:\AutoLab`, which the setup process will create.
 If you prefer to use a different drive, you can specify it during setup.
 
 ```powershell
 PS C:\> Setup-Host -DestinationPath D:\AutoLab
 ```
 
-You will be prompted to reboot, which you should do especially if setup had to add Hyper-V.
+You will be prompted to reboot, which you should do especially if setup had to add the Hyper-V feature.
 
 ## Creating a Lab
 
-Lab information is stored under the AutoLab Configurations folder, which is C:\AutoLab\Configurations by default.
+Lab information is stored under the AutoLab Configurations folder, which is `C:\AutoLab\Configurations` by default.
 Open an elevated PowerShell prompt and change location to the desired configuration folder.
 View the `Instructions.md` and/or readme files in the folder to learn more about the configuration.
 Where possible information about what course goes with a particular Pluralsight course will be indicated.
@@ -159,11 +230,13 @@ PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 
 Assuming you don't need to install a newer version of nuget, you can leave the setup alone.
 It will run all of the manual steps for you.
-Beginning in version 4.3.0 you also have the option to run the unattend process in a PowerShell background job.
+Beginning in version `4.3.0` you also have the option to run the unattend process in a PowerShell background job.
 
 ```powershell
 PS C:\Autolab\Configurations\SingleServer\> unattend-lab -asjob
 ```
+
+Use the job cmdlets to manage.
 
 ### Stopping a Lab
 
@@ -173,8 +246,8 @@ To stop the lab VMs, change to the configuration folder in an elevated Windows P
 PS C:\Autolab\Configurations\SingleServer\> Shutdown-Lab
 ```
 
-You can also use the Hyper-V manager or cmdlets to shut down virtual machines.
-If your lab contains a domain controller such as DOM1 or DC1, that should be the last virtual machine to shut down.
+You can also use the Hyper-V manager or cmdlets to manually shut down virtual machines.
+If your lab contains a domain controller such as `DOM1` or `DC1`, that should be the last virtual machine to shut down.
 
 ### Starting a Lab
 
@@ -185,8 +258,8 @@ If you have stopped the lab and need to start it, change to the configuration fo
 PS C:\Autolab\Configurations\SingleServer\> Run-Lab
 ```
 
-You can also use the Hyper-V manager or cmdlets to start virtual machines.
-If your lab contains a domain controller such as DOM1 or DC1, that should be the first virtual machine to start up.
+You can also use the Hyper-V manager or cmdlets to manually start virtual machines.
+If your lab contains a domain controller such as `DOM1` or `DC1`, that should be the first virtual machine to start up.
 
 ### Lab Checkpoints
 
@@ -203,6 +276,8 @@ To quickly rebuild the labs from the checkpoint, run:
 PS C:\Autolab\Configurations\SingleServer\> Refresh-Lab
 ```
 
+Or you can use the Hyper-V cmdlets to create and manage VM snaphots.
+
 ### To Remove a Lab
 
 To destroy the lab completely, change to the configuration folder in an elevated Windows PowerShell session and run:
@@ -212,7 +287,13 @@ PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 ```
 
 This will remove the virtual machines and DSC configuration files.
-If you intend to rebuild the lab or another configuration, you can keep the LabNat virtual switch.
+If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch.
+In fact, that is the default behavior.
+If you want to remove everything you would need to run a command like this:
+
+```powershell
+PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
+```
 
 ## Windows Updates
 
@@ -266,6 +347,32 @@ PS C:\> Refresh-Host
 This will update Lability if required and copy all new configuration files to your AutoLab\Configurations folder.
 It will NOT delete any files.
 
+## Removing PSAutolab
+
+If you want to completely remove the PSAutoLab module, first use `Wipe-Lab` to remove any existing lab configurations including the Hyper-V switch.
+Run this command to uninstall the module and its dependencies
+
+```powershell
+PS C:\> Uninstall-Module PSAutolab,Lability
+```
+
+You may need to manually delete the `C:\Autolab` folder.
+
+If you want to remove the NAT configuration"
+
+```powershell
+PS C:\> Remove-NetNat LabNat
+```
+
+If you want to remove Hyper-V you can use the Control Panel to manually remove the optional feature.
+Or you can try using PowerShell.
+
+```powershell
+ PS C:\> Get-WindowsOptionalFeature -FeatureName *Hyper* -online | Disable-WindowsOptionalFeature -Online
+```
+
+You will almost certainly need to reboot to complete the removal process.
+
 ## Troubleshooting
 
 The commands and configurations in this module are not foolproof.
@@ -306,7 +413,7 @@ If you encounter this problem, run `Refresh-Host -SkipPublisherCheck`.
 ### Multiple DSC Resources
 
 Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on.
-You might especially see this with the xNetworking module and the xIPAddress resource.
+You might especially see this with the xNetworking module and the `xIPAddress` resource.
 If you have any version older than 5.7.0.0 you might encounter problems.
 Run this command to see what you have installed:
 
@@ -338,4 +445,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-04-01 18:04:36Z UTC
+Last Updated 2020-04-04 15:42:19Z UTC
