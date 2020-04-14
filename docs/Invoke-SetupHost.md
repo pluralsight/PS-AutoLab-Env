@@ -37,6 +37,15 @@ PS C:\> Setup-Host
 
 Follow the on-screen prompts. If you have to install the Hyper-V feature you definitely should reboot before setting up any lab configurations.
 
+
+### Example 2
+
+```powershell
+PS C:\> Setup-Host -destination D:\Autolab
+```
+
+This will setup the Autolab module but put the necessary files on the D: drive. It is recommended that you use Autolab as the folder name. 
+
 ## PARAMETERS
 
 ### -Confirm
