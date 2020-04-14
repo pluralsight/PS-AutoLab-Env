@@ -1,5 +1,35 @@
 # Change Log for PSAutoLab
 
+## v4.8.0
+
+### Add
+
++ Added "Detailed-Setup-Instructions.md`.
++ Added code to module file to check for new version in the PowerShell Gallery.
++ Added `SingleServer-GUI-2019` configuration.
++ Added `Get-LabSummary` function.
++ Added a `-NoMessages` parameter to most commands in the module to offer an option to suppress the status and information messages displayed with `Write-Host`.
+
+### Change
+
++ Modified `Get-PSAutoLabSetting` to include additional information.
++ Updated `Instructions.md` to provide more detail about each lab.
++ Updated `README.md` with information on customizing a configuration.
++ Updated validation test for `SingleServer-GUI-2016` to test RDP.
++ Increased the memory for `SingleServer` to 2GB.
++ Updated validation tests for all configurations for better performance and to suppress error messages while configurations are converging.
++ Updated DSC configurations for `SingleServer-GUI-2019`,`SingleServer`,`SingleServer-GUI-2016` to uninstall PowerShell-V2.
++ Fixed bug in `Wipe-Lab` that failed to properly import lab data.
++ Suppressing `Write-Warning` messages in `Wipe-Host` when VM is already shut down.
++ Modified `MultiRole` configuration to use Windows Server 2019.
++ Restored deleted Nano-related NonNode data in configurations that include a Nano server.
++ Help updates
+
+### Delete
+
++ Removed Active Directory json files from `SingleServer` configurations since they are not used.
++ Removed Active Directory, DHCP Server and ADCS DSC resources from `SingleServer*` configuration files since they are not used.
+
 ## v4.7.0
 
 ### Add

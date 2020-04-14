@@ -2,8 +2,13 @@
 
 This lab builds the following:
 
-* 1 workgroup based server (S1) running Windows Server 2019 Core with an IP address of 192.168.3.19.
-Administrator password is P@ssw0rd
+    Computername : S1
+    Description  : Windows Server 2019 Standard 64bit English Evaluation
+    Role         :
+    IPAddress    : 192.168.3.19
+    MemoryGB     : 1
+
+Administrator password is P@ssw0rd.
 
 ## To get started
 
@@ -27,7 +32,7 @@ To start the Lab, and apply configurations the first time:
 PS> Run-Lab
 ```
 
-To enable Internet access for the VM's, run:
+To enable Internet access for the VMs, run:
 
 ```powershell
 PS> Enable-Internet
@@ -47,13 +52,13 @@ PS> Invoke-Pester vmvalidate.test.ps1
 
 ## To Stop and snapshot the lab
 
-To stop the lab VM's:
+To stop the lab VMs:
 
 ```powershell
 PS> Shutdown-lab
 ```
 
-To checkpoint the VM's:
+To checkpoint the VMs:
 
 ```powershell
 PS> Snapshot-Lab

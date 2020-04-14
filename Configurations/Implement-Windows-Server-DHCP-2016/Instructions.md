@@ -2,11 +2,31 @@
 
 This lab is specifically designed for the Implementing Windows Server 2016 DHCP from Pluralsight.com. It will provide a fully-function AD environment using company.pri for a domain, and it builds the following servers:
 
-* 1 DC
-* 1 Server (s1)
-* 2 Clients with RSAT (Cli1,Cli2)
+    Computername : DC1
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DC}
+    IPAddress    : 192.168.3.10
+    MemoryGB     : 2
 
-*## To get started
+    Computername : S1
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DomainJoin}
+    IPAddress    : 192.168.3.50
+    MemoryGB     : 1
+
+    Computername : Cli1
+    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
+    Role         : {domainJoin, RSAT, RDP}
+    IPAddress    : 192.168.3.100
+    MemoryGB     : 2
+
+    Computername : Cli2
+    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
+    Role         : {domainJoin, RDP}
+    IPAddress    : 192.168.3.101
+    MemoryGB     : 2
+
+## To get started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
     PS> Unattend-Lab
@@ -19,7 +39,7 @@ This lab is specifically designed for the Implementing Windows Server 2016 DHCP 
     To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
-    To enable Internet access for the VM's, run:
+    To enable Internet access for the VMs, run:
     PS> Enable-Internet
 
     To validate when configurations have converged:
@@ -27,10 +47,10 @@ This lab is specifically designed for the Implementing Windows Server 2016 DHCP 
 
 ## To Stop and snapshot the lab
 
-    To stop the lab VM's:
+    To stop the lab VMs:
     PS> Shutdown-lab
 
-    To checkpoint the VM's:
+    To checkpoint the VMs:
     PS> Snapshot-Lab
 
     To quickly rebuild the labs from the checkpoint, run:

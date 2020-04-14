@@ -19,11 +19,11 @@ Invoke-SetupHost [[-DestinationPath] <String>] [-WhatIf] [-Confirm] [<CommonPara
 
 ## DESCRIPTION
 
-The first time you install the PSAutolab module, you will need to configure the localhost.
+The first time you install the PSAutoLab module, you will need to configure the localhost.
 This configuration will include adding the Hyper-V feature if it is not already installed.
 It will also install the supported version of the Lability module from the PowerShell Gallery.
 You only need to run this command once.
-If you update the PSAutolab module at some point, it is recommended that you run Refresh-Host.
+If you update the PSAutoLab module at some point, it is recommended that you run Refresh-Host.
 
 You will most likely use the Setup-Host alias.
 
@@ -57,7 +57,8 @@ Accept wildcard characters: False
 
 ### -DestinationPath
 
-Specify the parent path.
+Specify the parent path for your Autolab setup.
+The default is C:\Autolab
 The command will create the folder.
 
 ```yaml

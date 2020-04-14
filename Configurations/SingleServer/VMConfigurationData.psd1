@@ -111,24 +111,24 @@ demonstrations and would need to be modified for your environment.
         }
         #>
 
-    );
+    )
     NonNodeData = @{
         Lability = @{
             # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
             Network     = @( # Virtual switch in Hyper-V
                 @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
-            );
+            )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; }
 
-            );
+            )
             Resource    = @(
                 @{ }
-            );
+            )
 
-        };
-    };
-};
+        }
+    }
+}

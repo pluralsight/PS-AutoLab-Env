@@ -1,12 +1,34 @@
 # Lab Definition
 
+This is an updated and revised configuration of the now retired POC-Multirole.
+If you were instructed to use that configuration, this one should work for you.
+
 This lab builds the following:
 
-* 1 Domain controller DC1 running Windows Server 2016 Core
-* 1 Server (S1) running Windows Server 2016
-* 1 Nano server (N1)
-* 1 Window 10 Client with RSAT (Cli1)
+    Computername : DC1
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DC, DHCP, ADCS}
+    IPAddress    : 192.168.3.10
+    MemoryGB     : 2
 
+    Computername : S1
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DomainJoin, Web}
+    IPAddress    : 192.168.3.50
+    MemoryGB     : 1
+
+    Computername : N1
+    Description  : Windows Server 2016 Standard Nano 64bit English Evaluation
+    Role         :
+    IPAddress    : 192.168.3.60
+    MemoryGB     : 1
+
+    Computername : Cli1
+    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
+    Role         : {domainJoin, RSAT, RDP}
+    IPAddress    : 192.168.3.100
+    MemoryGB     : 2
+    
 ## To get started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
@@ -20,7 +42,7 @@ This lab builds the following:
     To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
-    To enable Internet access for the VM's, run:
+    To enable Internet access for the VMs, run:
     PS> Enable-Internet
 
     To validate when configurations have converged:

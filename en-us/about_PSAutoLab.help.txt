@@ -1,47 +1,51 @@
 ﻿TOPIC
-    about_PSAutolab
+    aboutPSAautoLab
 
 SHORT DESCRIPTION
     This project serves as a set of "wrapper" commands that utilize the
     Lability module which is a terrific tool for creating a lab environment
-    of Windows based systems. The downside is that it is a difficult module
-    for less experienced PowerShell users. The configurations and control
-    scripts for the Hyper-V virtual machine's are written in PowerShell
-    using Desired State Configuration (DSC) and deployed via Lability.
-
-    If you feel sufficiently skilled, you can skip using this project and
-    use the Lability module on yourown.
+    of Windows based systems. The downside is that it is a difficult module for
+    less experienced PowerShell users. The configurations and control scripts
+    for the  Hyper-V virtual machine's are written in PowerShell using Desired
+    State Configuration (DSC) and deployed via Lability. If you feel sufficiently
+    skilled, you can skip using this project and use the Lability module on your
+    own.
 
 LONG DESCRIPTION
 SETUP
     The first time you use this module, you will need to configure the local
-    machine or host.  Open an elevated PowerShell session and run:
+    machine or host.
+
+    Open an elevated PowerShell session and run:
 
     Setup-Host
 
     This will install and configure the Lability module and install the Hyper-V
-    feature if it is missing. By default, all Autolab files will be stored under
-    C:\Autolab, which the setup will create. If you prefer to use a different
+    feature if it is missing. By default, all AutoLab files will be stored under
+    C:\AutoLab, which the setup will create. If you prefer to use a different
     drive, you can specify it during setup.
 
-    Setup-Host -destinationpath D:\Autolab
+    Setup-Host -destinationpath D:\AutoLab
 
     You will be prompted to reboot, which you should do especially if setup had
     to add Hyper-V.
 
 CREATING A LAB
-    Lab information is stored under the Autolab Configurations folder, which is
-    C:\Autolab\Configurations by default. Open an elevated PowerShell prompt and
-    change location to the desired configuration folder. View the
-    Instructions.md and/or readme files in the folder to learn more about the configuration.
+    Lab information is stored under the AutoLab Configurations folder, which is
+    C:\AutoLab\Configurations by default. Open an elevated PowerShell prompt and
+    change location to the desired configuration folder. View the Instructions.md
+    and/or readme files in the folder to learn more about the configuration.
+
     The first time you setup a lab, Lability will download evaluation versions
     of required operating systems in ISO format. This may take some time
     depending on your Internet bandwidth. The downloads only happen when the
     required ISO is not found. When you wipe and rebuild a lab it won't download
     files a second time.
+
     Once the lab is created you can use the module commands for managing it. Or
     you can manage individual virtual machines using the Hyper-V manager or
     cmdlets.
+
     It is assumed that you will only have one lab configuration created at a
     time.
 
@@ -73,7 +77,7 @@ CREATING A LAB
     leave the setup alone. It will run all of the manual steps for you.
 
     STOPPING A LAB
-    To stop the lab VM's, change to the configuration folder in an elevated
+    To stop the lab VMs, change to the configuration folder in an elevated
     Windows PowerShell session and run:
 
     Shutdown-Lab
@@ -116,23 +120,22 @@ CREATING A LAB
     WINDOWS UPDATES
     When you build an lab, you are creating Windows virtual machines based on
     evaluation software. You might still want to make sure the virtual machines
-    are up to date with security patches and updates. You can use
-    Update-Lab to invoke Windows update on all lab members. This can be a time
-    consuming process, so you have an option to run the updates as a background
-    job. Just be sure not to close your PowerShell session before the jobs
-    complete.
+    are up to date with security patches and updates. You can use Update-Lab
+    to invoke Windows update on all lab members. This can be a time consuming
+    process, so you have an option to run the updates as a background job. Be
+    sure not to close your PowerShell session before the jobs complete.
 
-    PS C:\Autolab\Configurations\PowerShellLab> update-lab -AsJob
+    PS C:\AutoLab\Configurations\PowerShellLab> update-lab -AsJob
 
-    Id     Name            PSJobTypeName   State         HasMoreData     Location      Command
-    --     ----            -------------   -----         -----------     --------      -------
-    18     WUUpdate        RemoteJob       Running       True            DOM1          WUUpdate
-    21     WUUpdate        RemoteJob       Running       True            SRV1          WUUpdate
-    24     WUUpdate        RemoteJob       Running       True            SRV2          WUUpdate
-    27     WUUpdate        RemoteJob       Running       True            SRV3          WUUpdate
-    30     WUUpdate        RemoteJob       Running       True            WIN10         WUUpdate
+    Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
+    --     ----            -------------   -----         -----------     --------             -------
+    18     WUUpdate        RemoteJob       Running       True            DOM1                  WUUpdate
+    21     WUUpdate        RemoteJob       Running       True            SRV1                  WUUpdate
+    24     WUUpdate        RemoteJob       Running       True            SRV2                  WUUpdate
+    27     WUUpdate        RemoteJob       Running       True            SRV3                  WUUpdate
+    30     WUUpdate        RemoteJob       Running       True            WIN10                 WUUpdate
 
-    PS C:\Autolab\Configurations\PowerShellLab> receive-job -id 27 -Keep
+    PS C:\AutoLab\Configurations\PowerShellLab> receive-job -id 27 -Keep
     [11/22/2019 12:05:43] Found 5 updates to install on SRV3
     [11/22/2019 12:25:13] Update process complete on SRV3
     WARNING: SRV3 requires a reboot
@@ -147,17 +150,19 @@ UPDATING THE MODULE
 
     Find-Module PSAutoLab
 
-    And update:
+    Beginning in v4.8.0., the module will check for a new version when the
+    module is imported. If an update is required, you will see a message.
+    To update the module you run:
 
     Update-Module PSAutoLab
 
     If you update, it is recommended that you update the computer running
-    Autolab.
+    AutoLab by running this command:
 
     Refresh-Host
 
     This will update Lability if required and copy all new configuration files
-    to your Autolab\Configurations folder. It will NOT delete any files.
+    to your AutoLab\Configurations folder. It will NOT delete any files.
 
 TROUBLESHOOTING
     The commands and configurations in this module are not foolproof. During
@@ -185,24 +190,26 @@ TROUBLESHOOTING
 
     If you still are having problems, wipe the lab and try a different
     configuration. This will help determine if the problem is with the
-    configuration or a larger compatibility problem. At this point, you can
-    open an issue in this repository. Open an elevated PowerShell prompt
-    and run Get-PSAutolabSetting which will provide useful information.
-    Copy and paste the results into a new issue along with any error
-    messages you are seeing.
+    configuration or a larger compatibility problem.
+
+    At this point, you can open an issue in the module's GitHub repository.
+    Open an elevated PowerShell prompt and run Get-PSAutoLabSetting which
+    will provide useful information. Copy and paste the results into a new
+    issue along with any error messages you are seeing.
 
 CUSTOMIZING CONFIGURATIONS
     The expectation is that one of the included configurations will meet your
-    needs or has been specified by a Pluralsight author. However, are free to
-    modify or create your own configuration. This process assumes you have
+    needs or has been specified by a Pluralsight author. However, you are free
+    to modify or create your own configuration. This process assumes you have
     experience with writing Desired State Configuration (DSC) scripts, including
     the use of configuration data files (*.psd1) and Pester. Because
     configurations might be updated in future versions of the PSAutoLab module,
     you are encouraged to create a new configuration and not edit existing
     files. Find a configuration that is close to your needs and copy it to a new
-    folder under Autolab\Configurations. Technically, you can put the
+    folder under AutoLab\Configurations. Technically, you can put the
     configuration folder anywhere but it is easier if all of your configurations
     are in one location.
+
     Once the files have been copied, use your script editor to modify the files.
     Don't forget to update the pester test. Keep the same file names.
 
@@ -227,6 +234,6 @@ SEE ALSO
     https://github.com/pluralsight/PS-AutoLab-Env
 
 KEYWORDS
-    * autolab
-    * psautolab
+    * AutoLab
+    * psAutoLab
 

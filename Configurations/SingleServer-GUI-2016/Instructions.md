@@ -2,9 +2,11 @@
 
 This lab builds the following:
 
-* 1 Standalone Windows Server 2016 with Graphical Desktop
-
-The server name is S1 with a static IP address of 192.168.3.75
+    Computername : S1
+    Description  : Windows Server 2016 Standard 64bit English Evaluation (*GUI*)
+    Role         : RDP
+    IPAddress    : 192.168.3.75
+    MemoryGB     : 4
 
 Use this for the `Implementing Active Directory Certificate Services in Windows Server 2016`
 
@@ -21,7 +23,7 @@ Use this for the `Implementing Active Directory Certificate Services in Windows 
     To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
-    To enable Internet access for the VM's, run:
+    To enable Internet access for the VMs, run:
     PS> Enable-Internet
 
     To validate when configurations have converged:
@@ -31,10 +33,10 @@ Use this for the `Implementing Active Directory Certificate Services in Windows 
 
 ## To Stop and snapshot the lab
 
-    To stop the lab VM's:
+    To stop the lab VMs:
     PS> Shutdown-lab
 
-    To checkpoint the VM's:
+    To checkpoint the VMs:
     PS> Snapshot-Lab
 
     To quickly rebuild the labs from the checkpoint, run:

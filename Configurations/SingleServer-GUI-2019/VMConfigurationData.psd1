@@ -31,7 +31,7 @@ demonstrations and would need to be modified for your environment.
             AddressFamily               = 'IPv4'
             IPNetwork                   = '192.168.3.0/24'
             IPNatName                   = 'LabNat'
-            DnsServerAddress            = '4.2.2.2'
+            DnsServerAddress            = '1.1.1.1'
 
             # Firewall settings to enable
             FirewallRuleNames           = @(
@@ -40,47 +40,22 @@ demonstrations and would need to be modified for your environment.
                 'FPS-SMB-In-TCP'
             )
 
-            PSDscAllowPlainTextPassword = $true
-            PSDscAllowDomainUser        = $true
-
             # Lability default node settings
             Lability_SwitchName         = 'LabNet'
-            Lability_ProcessorCount     = 1
-            Lability_MinimumMemory      = 1GB
+            Lability_ProcessorCount     = 2
+            Lability_MinimumMemory      = 2GB
             SecureBoot                  = $false
-            Lability_Media              = '2016_x64_Standard_Core_EN_Eval' # Can be Core,Win10,2012R2,nano
-            # 2016_x64_Standard_EN_Eval
-            # 2016_x64_Standard_Core_EN_Eval
-            # 2016_x64_Datacenter_EN_Eval
-            # 2016_x64_Datacenter_Core_EN_Eval
-            # 2016_x64_Standard_Nano_EN_Eval
-            # 2016_x64_Datacenter_Nano_EN_Eval
-            # 2012R2_x64_Standard_EN_Eval
-            # 2012R2_x64_Standard_EN_V5_Eval
-            # 2012R2_x64_Standard_Core_EN_Eval
-            # 2012R2_x64_Standard_Core_EN_V5_Eval
-            # 2012R2_x64_Datacenter_EN_V5_Eval
-            # WIN10_x64_Enterprise_EN_Eval
-        }
+            Lability_Media              = '2019_x64_Standard_EN_Eval' # Can be Core,Win10,2012R2,nano
 
-        <#    Available Roles for computers
-        DC = Domain Controller
-        DHCP = Dynamic Host Configuration Protocol
-        ADCS = Active Directory Certificate SErvices - plus autoenrollment GPO's and DSC and web server certs
-        Web = Basic web server
-        RSAT = Remote Server Administration Tools for the client
-        RDP = enables RDP and opens up required firewall rules
-        DomainJoin = joons a computer to the domain
-#>
+        }
 
         @{
             NodeName               = 'S1'
-            IPAddress              = '192.168.3.75'
-            #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role                   = 'RDP' #@('DomainJoin', 'Web', 'RDP')
+            IPAddress              = '192.168.3.19'
+            Role                   = @('RDP')
             Lability_BootOrder     = 20
             Lability_timeZone      = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media         = '2016_x64_Standard_EN_Eval'
+            Lability_Media         = '2019_x64_Standard_EN_Eval'
             Lability_StartupMemory = 4GB
             Lability_MinimumMemory = 4GB
         }
@@ -92,6 +67,7 @@ demonstrations and would need to be modified for your environment.
             # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
             Media       = (
                 @{
+                #THIS IS NOT USED IN THIS CONFIGURATION
                     ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
                     ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
                     Id              = '2016_x64_Standard_Nano_DSC_EN_Eval';
@@ -116,7 +92,7 @@ demonstrations and would need to be modified for your environment.
                 }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
             )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
@@ -124,7 +100,9 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0' }
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0' }
+                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'}
+
+
             )
             Resource    = @(
                 @{
@@ -135,7 +113,6 @@ demonstrations and would need to be modified for your environment.
                     #DestinationPath = '\software' # Default is resources folder
                 }
             )
-
         }
     }
 }
