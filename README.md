@@ -27,6 +27,7 @@ The host computer must have the following:
 * An internet connection
 * Minimum 16GB of RAM (32GB is recommended)
 * Minimum 100GB free disk space preferably on a fast SSD device.
+* An Intel i5 processor or equivalent. An i7 is recommended for best performance.,
 * PowerShell Remoting enabled
 
 You must have administrator access and be able to update the TrustedHosts setting for PowerShell remoting.
@@ -36,6 +37,8 @@ If this applies to you, this module may not work properly if at all.
 **__This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.__**
 
 ## Installation
+
+> You can also look at these [detailed setup instructions](Detailed-Setup-Instructions.md).
 
 This project has been published to the PowerShell Gallery.
 It is recommended that you have at least version 2.2 of the `PowerShellGet` module which handles module installations.
@@ -63,16 +66,21 @@ To verify the module is properly installed you should able to open an elevated P
 PS C:\> Get-PSAutoLabSetting
 
 
-PSVersion     : 5.1.18362.628
-PSEdition     : Desktop
-OS            : Microsoft Windows 10 Pro
-IsElevated    : True
-HyperV        : 10.0.18362.1
-PSAutolab     : {4.6.0, 4.5.0, 4.4.0, 4.3.0...}
-Lability      : {0.19.1, 0.19.0, 0.18.0}
-Pester        : 4.10.1
-MemoryGB      : 32
-PctFreeMemory : 45.47
+AutoLab         : D:\Autolab
+PSVersion       : 5.1.18362.628
+PSEdition       : Desktop
+OS              : Microsoft Windows 10 Pro
+FreeSpaceGB     : 114.52
+MemoryGB        : 32
+PctFreeMemory   : 43.43
+Processor       : Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
+IsElevated      : True
+RemotingEnabled : True
+HyperV          : 10.0.18362.1
+PSAutolab       : 4.7.0
+Lability        : {0.19.1, 0.19.0, 0.18.0}
+Pester          : 4.10.1
+PowerShellGet   : 2.2.3
 ```
 
 ### Hyper-V
@@ -155,7 +163,7 @@ This is to avoid conflicts with commands in the Lability module and to maintain 
 You can use the aliases or the full function name.
 All references in this document use the aliases.
 
-## Setup
+## Setup Host
 
 The first time you use this module, you will need to configure the local machine or host.
 Open an elevated PowerShell session and run:
@@ -173,6 +181,24 @@ PS C:\> Setup-Host -DestinationPath D:\AutoLab
 ```
 
 You will be prompted to reboot, which you should do especially if setup had to add the Hyper-V feature.
+
+### Lab Summary
+
+Once the host setup is complete, you can use the module's `Get-LabSummary` command to better understand what the lab configuration will setup. Run the command in the configuration folder.
+
+```powershell
+PS C:\Autolab\Configurations\SingleServer-GUI-2016> Get-LabSummary
+
+
+Computername : S1
+InstallMedia : 2016_x64_Standard_EN_Eval
+Description  : Windows Server 2016 Standard 64bit English Evaluation
+Role         : RDP
+IPAddress    : 192.168.3.75
+MemoryGB     : 4
+Processors   : 1
+Lab          : SingleServer-GUI-2016
+```
 
 ## Creating a Lab
 
@@ -228,12 +254,12 @@ As an alternative, you can setup a lab environment with minimal prompting.
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 ```
 
-Assuming you don't need to install a newer version of nuget, you can leave the setup alone.
+Assuming you don't need to install a newer version of `nuget`, you can leave the setup alone.
 It will run all of the manual steps for you.
 Beginning in version `4.3.0` you also have the option to run the unattend process in a PowerShell background job.
 
 ```powershell
-PS C:\Autolab\Configurations\SingleServer\> unattend-lab -asjob
+PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -asjob
 ```
 
 Use the job cmdlets to manage.
@@ -294,6 +320,79 @@ If you want to remove everything you would need to run a command like this:
 ```powershell
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
 ```
+
+### Customizing a Lab
+
+It is possible to customize a lab configuration by editing the `VMConfigurationData.psd1` file that is in each configuration folder.
+You must modify the file before creating the lab.
+For example, the configuration my use Server Core and you want the Desktop Experience on the server.
+Open the file in your scripting editor and scroll down to find the Node definitions.
+
+```powershell
+@{
+    NodeName                = 'DOM1'
+    IPAddress               = '192.168.3.10'
+    Role                    = @('DC', 'DHCP', 'ADCS')
+    Lability_BootOrder      = 10
+    Lability_BootDelay      = 60 # Number of seconds to delay before others
+    Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+    Lability_Media          = '2016_x64_Standard_Core_EN_Eval'
+    Lability_MinimumMemory  = 2GB
+    Lability_ProcessorCount = 2
+    CustomBootStrap         = @'
+            # This must be set to handle larger .mof files
+            Set-Item -path wsman:\localhost\maxenvelopesize -value 1000
+'@
+},
+
+@{
+    NodeName           = 'SRV1'
+    IPAddress          = '192.168.3.50'
+    #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
+    Role               = @('DomainJoin')
+    Lability_BootOrder = 20
+    Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+    Lability_Media     = '2016_x64_Standard_Core_EN_Eval'
+},
+```
+
+You can edit the `Lability_Media` setting. Change the setting  using one of these ID values.
+
+```text
+Id                                      Description
+--                                      -----------
+2019_x64_Standard_EN_Eval               Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience
+2019_x64_Standard_EN_Core_Eval          Windows Server 2019 Standard 64bit English Evaluation
+2019_x64_Datacenter_EN_Eval             Windows Server 2019 Datacenter 64bit English Evaluation with Desktop Experience
+2019_x64_Datacenter_EN_Core_Eval        Windows Server 2019 Datacenter Evaluation in Core mode
+2016_x64_Standard_EN_Eval               Windows Server 2016 Standard 64bit English Evaluation
+2016_x64_Standard_Core_EN_Eval          Windows Server 2016 Standard Core 64bit English Evaluation
+2016_x64_Datacenter_EN_Eval             Windows Server 2016 Datacenter 64bit English Evaluation
+2016_x64_Datacenter_Core_EN_Eval        Windows Server 2016 Datacenter Core 64bit English Evaluation
+2016_x64_Standard_Nano_EN_Eval          Windows Server 2016 Standard Nano 64bit English Evaluation
+2016_x64_Datacenter_Nano_EN_Eval        Windows Server 2016 Datacenter Nano 64bit English Evaluation
+2012R2_x64_Standard_EN_Eval             Windows Server 2012 R2 Standard 64bit English Evaluation
+2012R2_x64_Standard_EN_V5_Eval          Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5
+2012R2_x64_Standard_EN_V5_1_Eval        Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5.1
+2012R2_x64_Standard_Core_EN_Eval        Windows Server 2012 R2 Standard Core 64bit English Evaluation
+2012R2_x64_Standard_Core_EN_V5_Eval     Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5
+2012R2_x64_Standard_Core_EN_V5_1_Eval   Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5.1
+2012R2_x64_Datacenter_EN_Eval           Windows Server 2012 R2 Datacenter 64bit English Evaluation
+2012R2_x64_Datacenter_EN_V5_Eval        Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5
+2012R2_x64_Datacenter_EN_V5_1_Eval      Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5.1
+2012R2_x64_Datacenter_Core_EN_Eval      Windows Server 2012 R2 Datacenter Core 64bit English Evaluation
+2012R2_x64_Datacenter_Core_EN_V5_Eval   Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5
+2012R2_x64_Datacenter_Core_EN_V5_1_Eval Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5.1
+```
+
+You can also make changes to values such as minimum memory and processor count.
+When you run `Unattend-Lab` or `Setup-Lab` you can use the `-UseLocalTimeZone` to set all virtual machines to use your time zone.
+You could make *minor* changes to the IP address such as changing the address from `192.168.3.50` to `192.168.3.60`.
+To change the entire subnet will require modifying the virtual switch and should not be attempted unless you are very proficient with PowerShell and Hyper-V.
+
+> Note that if you make changes, the validation test may fail.
+
+If you make a mistake or want to restore the original configurations run the `Refresh-Host` command.
 
 ## Windows Updates
 
@@ -399,7 +498,7 @@ If you *still* are having problems, wipe the lab and try a different configurati
 This will help determine if the problem is with the configuration or a larger compatibility problem.
 
 At this point, you can open an issue in this repository.
-Open an elevated PowerShell prompt and run Get-PSAutoLabSetting which will provide useful information.
+Open an elevated PowerShell prompt and run `Get-PSAutoLabSetting` which will provide useful information.
 Copy and paste the results into a new issue along with any error messages you are seeing.
 
 ## Known Issues
@@ -438,11 +537,10 @@ Beginning with v4.0.0, this module is unrelated to any projects Jason or Missy m
 
 These are some of the items that are being considered for future updates:
 
-* This project will need additional documentation
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM
 * Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration
 * Offer an easy way to customize a lab configuration such as time zone, node names and operating systems.
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-04-04 15:42:19Z UTC
+Last Updated 2020-04-14 17:26:06Z UTC

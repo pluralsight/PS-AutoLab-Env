@@ -29,20 +29,26 @@ Include the output in your GitHub issue.
 ```powershell
 PS C:\> Get-PSAutoLabSetting
 
-PSVersion     : 5.1.18362.145
-PSEdition     : Desktop
-OS            : Microsoft Windows 10 Pro
-IsElevated    : True
-HyperV        : 10.0.18362.1
-PSAutolab     : {4.3.0, 4.1.1, 4.1.0, 4.0.0}
-Lability      : {0.18.0, 0.12.4, 0.10.1}
-Pester        : 4.9.0
-MemoryGB      : 32
-PctFreeMemory : 15.24
+AutoLab         : C:\Autolab
+PSVersion       : 5.1.18362.628
+PSEdition       : Desktop
+OS              : Microsoft Windows 10 Pro
+FreeSpaceGB     : 114.52
+MemoryGB        : 32
+PctFreeMemory   : 43.43
+Processor       : Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
+IsElevated      : True
+RemotingEnabled : True
+HyperV          : 10.0.18362.1
+PSAutolab       : 4.7.0
+Lability        : {0.19.1, 0.19.0, 0.18.0}
+Pester          : 4.10.1
+PowerShellGet   : 2.2.3
 ```
 
-The output will also show previously installed versions of the PSAutolab and Lability modules.
+The output will also show previously installed versions of the PSAutoLab and Lability modules.
 Only the latest version should be loaded. You can remove the older versions if you no longer need them by running Uninstall-Module -name <modulename> -requiredversion <version number>.
+The FreeSpaceGB value is the amount of free space on the drive containing your AutoLab folder.
 
 Copy and paste this information into a GitHub issue along with any relevant error messages.
 
@@ -63,3 +69,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Get-Module]()
+
+[Get-Volume]()
+
+[Get-CimInstance]()

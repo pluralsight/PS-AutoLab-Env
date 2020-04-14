@@ -134,7 +134,7 @@ demonstrations and would need to be modified for your environment.
             Lability_BootOrder      = 10
             Lability_BootDelay      = 60 # Number of seconds to delay before others
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media          = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media          = '2019_x64_Standard_EN_Core_Eval'
             Lability_MinimumMemory  = 2GB
             Lability_ProcessorCount = 2
             CustomBootStrap         = @'
@@ -150,7 +150,7 @@ demonstrations and would need to be modified for your environment.
             Role               = @('DomainJoin', 'Web')
             Lability_BootOrder = 20
             Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media     = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media     = '2019_x64_Standard_EN_Core_Eval'
         }
 
         @{
@@ -158,7 +158,7 @@ demonstrations and would need to be modified for your environment.
             IPAddress               = '192.168.3.60'
             #Role = 'Nano'
             Lability_BootOrder      = 20
-            Lability_Media          = '2016_x64_Standard_Nano_EN_Eval'
+            Lability_Media          = '2016_x64_Standard_Nano_DSC_EN_Eval'
             Lability_ProcessorCount = 1
             Lability_StartupMemory  = 1GB
         }
@@ -180,27 +180,49 @@ demonstrations and would need to be modified for your environment.
         }
         #>
 
-    );
+    )
     NonNodeData = @{
         Lability = @{
             # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
             Media       = (
-                @{ }
+                @{
+                    ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
+                    ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
+                    Id              = '2016_x64_Standard_Nano_DSC_EN_Eval';
+                    Filename        = '2016_x64_EN_Eval.iso';
+                    Description     = 'Windows Server 2016 Standard Nano 64bit English Evaluation';
+                    Architecture    = 'x64';
+                    ImageName       = 'Windows Server 2016 SERVERSTANDARDNANO';
+                    MediaType       = 'ISO';
+                    OperatingSystem = 'Windows';
+                    Uri             = 'http://download.microsoft.com/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO';
+                    Checksum        = '18A4F00A675B0338F3C7C93C4F131BEB';
+                    CustomData      = @{
+                        SetupComplete = 'CoreCLR';
+                        PackagePath   = '\NanoServer\Packages';
+                        PackageLocale = 'en-US';
+                        WimPath       = '\NanoServer\NanoServer.wim';
+                        Package       = @(
+                            'Microsoft-NanoServer-Guest-Package',
+                            'Microsoft-NanoServer-DSC-Package'
+                        )
+                    }
+                }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
                 @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xActiveDirectory'; RequiredVersion = "3.0.0.0"; Provider = 'PSGallery'; },
-                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xDhcpServer'; RequiredVersion = '2.0.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xActiveDirectory'; RequiredVersion = "3.0.0.0"; Provider = 'PSGallery' },
+                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xDhcpServer'; RequiredVersion = '2.0.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; },
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery'; }
+                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery' }
 
             );
             Resource    = @(
@@ -212,8 +234,8 @@ demonstrations and would need to be modified for your environment.
                     Expand   = $false
                     #DestinationPath = '\software' # Default is resources folder
                 }
-            );
+            )
 
-        };
-    };
-};
+        }
+    }
+}

@@ -1,35 +1,16 @@
 # Lab Definition
 
-This is an updated and revised configuration of the now retired POC-Multirole.
-If you were instructed to use that configuration, this one should work for you.
-
-The lab builds the following:
-
-    Computername : DC1
-    Description  : Windows Server 2019 Standard 64bit English Evaluation
-    Role         : {DC, DHCP, ADCS}
-    IPAddress    : 192.168.3.10
-    MemoryGB     : 2
+This lab builds the following:
 
     Computername : S1
-    Description  : Windows Server 2019 Standard 64bit English Evaluation
-    Role         : {DomainJoin, Web}
-    IPAddress    : 192.168.3.50
-    MemoryGB     : 1
+    Description  : Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience
+    Role         : RDP
+    IPAddress    : 192.168.3.19
+    MemoryGB     : 4
 
-    Computername : N1
-    Description  : Windows Server 2016 Standard Nano 64bit English Evaluation
-    Role         :
-    IPAddress    : 192.168.3.60
-    MemoryGB     : 1
+DNS is configured for 1.1.1.1.
 
-    Computername : Cli1
-    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
-    Role         : {domainJoin, RSAT, RDP}
-    IPAddress    : 192.168.3.100
-    MemoryGB     : 2
-
-## To get started:
+## To get started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
     PS> Unattend-Lab
@@ -47,6 +28,8 @@ The lab builds the following:
 
     To validate when configurations have converged:
     PS> Validate-Lab
+
+    Once validation is complete you should connect to the VM, logon as the non-administrator account and let Windows 10 finish setting up. Then restart the computer applying any pending updates. After this you can, and should, snapshot the VM.
 
 ## To Stop and snapshot the lab
 

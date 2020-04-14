@@ -2,7 +2,11 @@
 
 This lab builds the following:
 
-* 1 Workgroup joined Windows 10 Client (Win10Ent) with RSAT installed.
+    Computername : Win10Ent
+    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
+    Role         : {RSAT, RDP}
+    IPAddress    : 192.168.3.101
+    MemoryGB     : 2
 
 It will also create a local user account with a password of `P@ssw0rd` using same name as the person running the configuration. In other words, it will use the value of `$env:username`.
 
@@ -19,7 +23,7 @@ It will also create a local user account with a password of `P@ssw0rd` using sam
     To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
-    To enable Internet access for the VM's, run:
+    To enable Internet access for the VM, run:
     PS> Enable-Internet
 
     To validate when configurations have converged:
@@ -29,10 +33,10 @@ It will also create a local user account with a password of `P@ssw0rd` using sam
 
 ## To Stop and snapshot the lab
 
-    To stop the lab VM's:
+    To stop the lab VM:
     PS> Shutdown-lab
 
-    To checkpoint the VM's:
+    To checkpoint the VM:
     PS> Snapshot-Lab
 
     To quickly rebuild the labs from the checkpoint, run:

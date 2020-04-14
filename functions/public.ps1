@@ -1,3 +1,107 @@
+#region Get-LabSummary
+
+Function Get-LabSummary {
+    [cmdletbinding()]
+    [Alias("Setup-Lab")]
+    Param (
+        [Parameter(Position = 0, ValueFromPipeline, HelpMessage = "The PATH to the lab configuration folder. Normally, you should run all commands from within the configuration folder. Do not include the psd1 file name.")]
+        [ValidateNotNullorEmpty()]
+        [ValidateScript( {Test-Path $_ })]
+        [string]$Path = "."
+    )
+
+    Begin {
+        Write-Verbose "Starting $($myinvocation.mycommand)"
+    }
+    Process {
+        $Path = Convert-Path $path
+        Write-Verbose "Searching in $path for VMConfigurationData.psd1"
+        $psd1 = $(Join-Path $Path -childpath Vmconfigurationdata.psd1)
+
+        if (Test-Path $psd1) {
+            $labname = Split-Path $Path -leaf
+            Write-Verbose "getting summary for $labname"
+
+            #could also use the Get-LabMedia command from the Lability module
+            $media = [ordered]@{
+                '2019_x64_Standard_EN_Eval'               = 'Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience'
+                '2019_x64_Standard_EN_Core_Eval'          = 'Windows Server 2019 Standard 64bit English Evaluation'
+                '2019_x64_Datacenter_EN_Eval'             = 'Windows Server 2019 Datacenter 64bit English Evaluation with Desktop Experience'
+                '2019_x64_Datacenter_EN_Core_Eval'        = 'Windows Server 2019 Datacenter Evaluation in Core mode'
+                '2016_x64_Standard_EN_Eval'               = 'Windows Server 2016 Standard 64bit English Evaluation'
+                '2016_x64_Standard_Nano_DSC_EN_Eval'      = 'Windows Server 2016 Standard Nano 64bit English Evaluation'
+                '2016_x64_Standard_Core_EN_Eval'          = 'Windows Server 2016 Standard Core 64bit English Evaluation'
+                '2016_x64_Datacenter_EN_Eval'             = 'Windows Server 2016 Datacenter 64bit English Evaluation'
+                '2016_x64_Datacenter_Core_EN_Eval'        = 'Windows Server 2016 Datacenter Core 64bit English Evaluation'
+                '2016_x64_Standard_Nano_EN_Eval'          = 'Windows Server 2016 Standard Nano 64bit English Evaluation'
+                '2016_x64_Datacenter_Nano_EN_Eval'        = 'Windows Server 2016 Datacenter Nano 64bit English Evaluation'
+                '2012R2_x64_Standard_EN_Eval'             = 'Windows Server 2012 R2 Standard 64bit English Evaluation'
+                '2012R2_x64_Standard_EN_V5_Eval'          = 'Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5'
+                '2012R2_x64_Standard_EN_V5_1_Eval'        = 'Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5.1'
+                '2012R2_x64_Standard_Core_EN_Eval'        = 'Windows Server 2012 R2 Standard Core 64bit English Evaluation'
+                '2012R2_x64_Standard_Core_EN_V5_Eval'     = 'Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5'
+                '2012R2_x64_Standard_Core_EN_V5_1_Eval'   = 'Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5.1'
+                '2012R2_x64_Datacenter_EN_Eval'           = 'Windows Server 2012 R2 Datacenter 64bit English Evaluation'
+                '2012R2_x64_Datacenter_EN_V5_Eval'        = 'Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5'
+                '2012R2_x64_Datacenter_EN_V5_1_Eval'      = 'Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5.1'
+                '2012R2_x64_Datacenter_Core_EN_Eval'      = 'Windows Server 2012 R2 Datacenter Core 64bit English Evaluation'
+                '2012R2_x64_Datacenter_Core_EN_V5_Eval'   = 'Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5'
+                '2012R2_x64_Datacenter_Core_EN_V5_1_Eval' = 'Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5.1'
+                'WIN81_x64_Enterprise_EN_Eval'            = 'Windows 8.1 64bit Enterprise English Evaluation'
+                'WIN81_x64_Enterprise_EN_V5_Eval'         = 'Windows 8.1 64bit Enterprise English Evaluation with WMF 5'
+                'WIN81_x64_Enterprise_EN_V5_1_Eval'       = 'Windows 8.1 64bit Enterprise English Evaluation with WMF 5.1'
+                'WIN81_x86_Enterprise_EN_Eval'            = 'Windows 8.1 32bit Enterprise English Evaluation'
+                'WIN81_x86_Enterprise_EN_V5_Eval'         = 'Windows 8.1 32bit Enterprise English Evaluation with WMF 5'
+                'WIN81_x86_Enterprise_EN_V5_1_Eval'       = 'Windows 8.1 32bit Enterprise English Evaluation with WMF 5.1'
+                'WIN10_x64_Enterprise_EN_Eval'            = 'Windows 10 64bit Enterprise 1903 English Evaluation'
+                'WIN10_x86_Enterprise_EN_Eval'            = 'Windows 10 32bit Enterprise 1903 English Evaluation'
+                'WIN10_x64_Enterprise_LTSC_EN_Eval'       = 'Windows 10 64bit Enterprise LTSC 2019 English Evaluation'
+                'WIN10_x86_Enterprise_LTSC_EN_Eval'       = 'Windows 10 32bit Enterprise LTSC 2019 English Evaluation'
+            }
+            Write-Verbose "Getting node data from $psd1"
+            $Nodes = (Import-PowerShellDataFile -Path $psd1).allNodes
+
+            $nodes.where( {$_.Nodename -ne '*'}).Foreach( {
+                    if ($_.lability_startupmemory) {
+                        $mem = $_.lability_startupmemory
+                    }
+                    elseif ($_.lability_MinimumMemory) {
+                        $mem = $_.lability_minimummemory
+                    }
+                    else {
+                        $mem = $nodes[0].Lability_MinimumMemory
+                    }
+                    if ($_.Lability_ProcessorCount) {
+                        $ProcCount = $_.Lability_ProcessorCount
+                    }
+                    else {
+                        $ProcCount = 1
+                    }
+                    [pscustomobject]@{
+                        PSTypeName   = "PSAutolabVM"
+                        Computername = $_.NodeName
+                        InstallMedia = $_.lability_media
+                        Description  = $media[$_.lability_media]
+                        Role         = $_.Role
+                        IPAddress    = $_.IPAddress
+                        MemoryGB     = $mem / 1GB
+                        Processors   = $ProcCount
+                        Lab          = $labname
+                    }
+                })
+        }
+        else {
+            Write-Warning "Failed to find $psd1."
+        }
+    } #process
+
+    End {
+        Write-Verbose "Ending $($myinvocation.mycommand)"
+    }
+}
+
+#endregion
+
 #region Get-PSAutoLabSetting
 Function Get-PSAutoLabSetting {
     [cmdletbinding()]
@@ -16,17 +120,33 @@ Function Get-PSAutoLabSetting {
         $pctFree = 0
     }
 
+    #get Autolab folder if installed and free hard drive space
+    Try {
+        $LabHost = Lability\Get-LabHostDefault -ErrorAction stop
+        $AutoLab = Split-Path $LabHost.ConfigurationPath
+        $free = (Get-Volume $autolab[0]).SizeRemaining
+    }
+    Catch {
+        $AutoLab = "NotFound"
+        $free = (Get-Volume C).SizeRemaining  #Assume C drive
+    }
+
     [pscustomobject]@{
-        PSVersion     = $psver.PSVersion
-        PSEdition     = $psver.PSEdition
-        OS            = $os
-        IsElevated    = (Test-IsAdministrator)
-        HyperV        = (Get-Item $env:windir\System32\vmms.exe).versioninfo.productversion
-        PSAutolab     = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending).version
-        Lability      = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending).version
-        Pester        = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
-        MemoryGB      = ($mem * 1kb) / 1GB -as [int]
-        PctFreeMemory = $pctFree
+        AutoLab         = $Autolab
+        PSVersion       = $psver.PSVersion
+        PSEdition       = $psver.PSEdition
+        OS              = $os
+        FreeSpaceGB     = [math]::Round($free / 1GB, 2)
+        MemoryGB        = ($mem * 1kb) / 1GB -as [int]
+        PctFreeMemory   = $pctFree
+        Processor       = (Get-CimInstance -classname Win32_Processor -property Name).Name
+        IsElevated      = (Test-IsAdministrator)
+        RemotingEnabled = $(try {[void](Test-WSMan  -erroraction stop); $True} catch { $false})
+        HyperV          = (Get-Item $env:windir\System32\vmms.exe).versioninfo.productversion
+        PSAutolab       = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending).version
+        Lability        = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending).version
+        Pester          = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        PowerShellGet   = (Get-Module -name PowerShellGet -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
     }
 }
 
@@ -205,7 +325,9 @@ Function Invoke-SetupLab {
         [string]$Path = ".",
         [switch]$IgnorePendingReboot,
         [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
-        [switch]$UseLocalTimeZone
+        [switch]$UseLocalTimeZone,
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     Write-Verbose "Starting $($myinvocation.mycommand)"
@@ -220,7 +342,9 @@ Function Invoke-SetupLab {
         return
     }
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Setup-Lab script. This script will perform the following:
 
@@ -241,10 +365,14 @@ Function Invoke-SetupLab {
         *You will be able to wipe and rebuild this lab without needing to perform
         the downloads again.
 "@
+    }
+
     if ($UseLocalTimeZone) {
         $localtz = [System.TimeZone]::CurrentTimeZone.StandardName
         if ($LabData.allnodes.count -gt 1) {
-            Microsoft.PowerShell.Utility\Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
+            if (-Not $NoMessages) {
+                Microsoft.PowerShell.Utility\Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
+            }
             $nodes = $labdata.allnodes.where( {$_.nodename -ne "*"})
             foreach ($node in $nodes) {
                 $tz = $node.Lability_timezone
@@ -252,7 +380,9 @@ Function Invoke-SetupLab {
             }
         }
         else {
-            Microsoft.PowerShell.Utility\Write-Host "Updating Allnodes to $localtz" -ForegroundColor Yellow
+            if (-Not $NoMessages) {
+                Microsoft.PowerShell.Utility\Write-Host "Updating Allnodes to $localtz" -ForegroundColor Yellow
+            }
             $LabData.AllNodes.Lability_TimeZone = $localtz
         }
     } #use local timezone
@@ -261,8 +391,10 @@ Function Invoke-SetupLab {
 
     # Install DSC Resource modules specified in the .PSD1
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+    If (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+    }
     #force updating/installing nuget to bypass the prompt
     [void](Install-PackageProvider -Name nuget -Force -ForceBootstrap)
 
@@ -271,31 +403,41 @@ Function Invoke-SetupLab {
         $dscmod = Get-Module -FullyQualifiedName @{Modulename = $DSCResource.name; ModuleVersion = $DSCResource.RequiredVersion } -ListAvailable
 
         if ((-not $dscmod ) -or ($dscmod.version -ne $DSCResource.RequiredVersion)) {
-            Microsoft.PowerShell.Utility\Write-Host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
+            if (-Not $NoMessages) {
+                Microsoft.PowerShell.Utility\Write-Host "install $($dscresource.name) version $($DSCResource.requiredversion)" -ForegroundColor yellow
+            }
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Install-Module")) {
                 Install-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
         elseif ($dscmod.version -ne ($DSCResource.RequiredVersion -as [version])) {
-            Microsoft.PowerShell.Utility\Write-Host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
+            if (-not $NoMessages) {
+                Microsoft.PowerShell.Utility\Write-Host "Update $($dscmod.name) to version $($DSCResource.requiredversion)" -ForegroundColor cyan
+            }
             if ($pscmdlet.ShouldProcess($DSCResource.name, "Update-Module")) {
                 Update-Module -Name $DSCResource.Name -RequiredVersion $DSCResource.RequiredVersion
             }
         }
         else {
-            Microsoft.PowerShell.Utility\Write-Host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
+            If (-Not $nomessages) {
+                Microsoft.PowerShell.Utility\Write-Host "$($dscmod.name) [v$($dscmod.version)] requires no updates." -ForegroundColor green
+            }
         }
     }
 
     # Run the config to generate the .mof files
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
+    If (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
+    }
     $vmconfig = Join-Path -Path $path -ChildPath 'VMConfiguration.ps1'
     if ($PSCmdlet.ShouldProcess($vmConfig)) {
         . $VMConfig
     }
     # Build the lab without a snapshot
-    #
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Building the lab environment for $labname"
+
+    if (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Building the lab environment for $labname"
+    }
     # Creates the lab environment without making a Hyper-V Snapshot
 
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
@@ -321,35 +463,38 @@ Function Invoke-SetupLab {
             throw $_
         }
         # Disable secure boot for VM's
-        Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name -OutVariable vm
+        $VM = Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
-        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+        If (-Not $NoMessages) {
 
-        Next Steps:
+            Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
-        When this task is complete, run:
-        Run-Lab
+            Next Steps:
 
-        To enable Internet access for the VM's, run:
-        Enable-Internet
+            When this task is complete, run:
+            Run-Lab
 
-        Run the following to validate when configurations have converged:
-        Validate-Lab
+            To enable Internet access for the VM's, run:
+            Enable-Internet
 
-        To stop the lab VM's:
-        Shutdown-lab
+            Run the following to validate when configurations have converged:
+            Validate-Lab
 
-        When the configurations have finished, you can checkpoint the VM's with:
-        Snapshot-Lab
+            To stop the lab VM's:
+            Shutdown-lab
 
-        To quickly rebuild the labs from the checkpoint, run:
-        Refresh-Lab
+            When the configurations have finished, you can checkpoint the VM's with:
+            Snapshot-Lab
 
-        To destroy the lab to build again:
-        Wipe-Lab
+            To quickly rebuild the labs from the checkpoint, run:
+            Refresh-Lab
+
+            To destroy the lab to build again:
+            Wipe-Lab
 
 "@
+        }
 
     } #should process
 
@@ -365,12 +510,16 @@ Function Invoke-RunLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
-        [string]$Path = "."
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     $Path = Convert-Path $path
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Run-Lab script. This script will perform the following:
 
@@ -380,10 +529,14 @@ Function Invoke-RunLab {
         for the DSC configurations to apply and converge.
 
 "@
+    }
 
     $labname = Split-Path (Get-Location) -leaf
     $datapath = Join-Path $(Convert-Path $path) -childpath "*.psd1"
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
+
+    if (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
+    }
     $data = Import-PowerShellDataFile -path $datapath
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Start Lab")) {
@@ -396,33 +549,36 @@ Function Invoke-RunLab {
             #bail out because no other commands are likely to work
             return
         }
-        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
-        Next Steps:
+        if (-Not $NoMessages) {
 
-        To enable Internet access for the VM's, run:
-        Enable-Internet
+            Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
-        Run the following to validatae when configurations have converged:
-        Validate-Lab
+            Next Steps:
 
-        To stop the lab VM's:
-        Shutdown-lab
+            To enable Internet access for the VM's, run:
+            Enable-Internet
 
-        When the configurations have finished, you can checkpoint the VM's with:
-        Snapshot-Lab
+            Run the following to validatae when configurations have converged:
+            Validate-Lab
 
-        To quickly rebuild the labs from the checkpoint, run:
-        Refresh-Lab
+            To stop the lab VM's:
+            Shutdown-lab
 
-        To destroy the lab to build again:
-        Wipe-Lab
+            When the configurations have finished, you can checkpoint the VM's with:
+            Snapshot-Lab
 
+            To quickly rebuild the labs from the checkpoint, run:
+            Refresh-Lab
+
+            To destroy the lab to build again:
+            Wipe-Lab
 
 "@
+        }
     } #whatif
 }
-#endregion setup-lab
+#endregion Run-lab
 
 #region Enable-Internet
 Function Enable-Internet {
@@ -431,20 +587,26 @@ Function Enable-Internet {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
-        [string]$Path = "."
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     $Path = Convert-Path $path
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Enable-Internet script. This script will perform the following:
 
         * Enable Internet to the VM's using NAT
 
         * Note! - If this generates an error, you are already enabled, or one of the default settings below
-                  does not match your .PSD1 configuration
+        does not match your .PSD1 configuration
 
 "@
+    }
 
     $LabData = Import-PowerShellDataFile -Path $path\*.psd1
     $LabSwitchName = $labdata.NonNodeData.Lability.Network.name
@@ -464,7 +626,9 @@ Function Enable-Internet {
         New-NetNat -Name $NatName -InternalIPInterfaceAddressPrefix $NatNetwork -ErrorAction SilentlyContinue
     }
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -475,6 +639,7 @@ Function Enable-Internet {
         Validate-Lab
 
 "@
+    }
 }
 #endregion Enable-Internet
 
@@ -487,23 +652,27 @@ Function Invoke-ValidateLab {
         [ValidateNotNullorEmpty()]
         [ValidateScript(
             { Test-Path $_ })]
-        [string]$Path = "."
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     Write-Verbose "Starting $($myinvocation.mycommand)"
     $Path = Convert-Path $path
     Write-Verbose "Using path $path"
 
-    $msg = @"
-    [$(Get-Date)]
-    Starting the VM testing process. This could take some time to
-    complete depending on the complexity of the configuration. You can press
-    Ctrl+C at any time to break out of the testing loop.
+    If (-Not $NoMessages) {
 
-    If you feel the test is taking too long, break out of the testing loop
-    and manually run the test:
+        $msg = @"
+        [$(Get-Date)]
+        Starting the VM testing process. This could take some time to
+        complete depending on the complexity of the configuration. You can press
+        Ctrl+C at any time to break out of the testing loop.
 
-    invoke-pester .\vmvalidate.test.ps1
+        If you feel the test is taking too long, break out of the testing loop
+        and manually run the test:
+
+        invoke-pester .\vmvalidate.test.ps1
 
     If only one of the VMs appears to be failing, you might try stopping
     and restarting it with the Hyper-V Manager or the cmdlets:
@@ -514,7 +683,8 @@ Function Invoke-ValidateLab {
     Errors are expected until all tests complete successfully.
 
 "@
-    Microsoft.PowerShell.Utility\Write-Host $msg  -ForegroundColor Cyan
+        Microsoft.PowerShell.Utility\Write-Host $msg  -ForegroundColor Cyan
+    }
 
     $Complete = $False
 
@@ -540,8 +710,9 @@ Function Invoke-ValidateLab {
     Invoke-Pester -Script $path\VMValidate.Test.ps1
 
     Write-Progress -Activity "VM Completion Test" -Completed
-    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
-
+    if (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
+    }
     Write-Verbose "Ending $($myinvocation.mycommand)"
 }
 #endregion Validate-Lab
@@ -554,20 +725,28 @@ Function Invoke-ShutdownLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript( { Test-Path $_ })]
-        [string]$Path = "."
+        [string]$Path = ".",
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     $Path = Convert-Path $path
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Shutdown-Lab command. It will perform the following:
 
         * Shutdown the Lab environment:
 
 "@
+    }
 
     $labname = Split-Path $path -leaf
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
+    if (-Not $noMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
+    }
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
         Try {
@@ -580,9 +759,11 @@ Function Invoke-ShutdownLab {
         }
     }
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
 
-     Next Steps:
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+
+        Next Steps:
 
         When the configurations have finished, you can checkpoint the VM's with:
         Snapshot-Lab
@@ -597,6 +778,7 @@ Function Invoke-ShutdownLab {
         Wipe-Lab
 
 "@
+    }
 }
 #endregion Shutdown-Lab
 
@@ -611,12 +793,16 @@ Function Invoke-SnapshotLab {
         [string]$Path = ".",
         [Parameter(HelpMessage = "Specify a name for the virtual machine checkpoint")]
         [ValidateNotNullorEmpty()]
-        [string]$SnapshotName = "LabConfigured"
+        [string]$SnapshotName = "LabConfigured",
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     $Path = Convert-Path $path
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This is the Snapshot-Lab command. It will perform the following:
 
@@ -625,8 +811,11 @@ Function Invoke-SnapshotLab {
         Note! This should be done after the configurations have finished
 
 "@
+    }
     $labname = Split-Path $Path -leaf
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
+    if (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
+    }
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
 
@@ -638,15 +827,16 @@ Function Invoke-SnapshotLab {
             #bail out because no other commands are likely to work
             return
         }
-
     }
     if ($pscmdlet.ShouldProcess($labname, "Checkpoint-Lab")) {
         Checkpoint-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName
     }
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
 
-       Next Steps:
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+
+        Next Steps:
 
         To start the lab environment, run:
         Run-Lab
@@ -655,6 +845,7 @@ Function Invoke-SnapshotLab {
         Refresh-Lab
 
 "@
+    }
 }
 #endregion
 
@@ -669,12 +860,16 @@ Function Invoke-RefreshLab {
         [string]$Path = ".",
         [Parameter(HelpMessage = "Specify a name for the virtual machine checkpoint")]
         [ValidateNotNullorEmpty()]
-        [string]$SnapshotName = "LabConfigured"
+        [string]$SnapshotName = "LabConfigured",
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     $Path = Convert-Path $path
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This command will perform the following:
 
@@ -688,8 +883,12 @@ Function Invoke-RefreshLab {
         snapshot using Snapshot-Lab
 
 "@
+    }
     $labname = Split-Path $path -leaf
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Restore the lab environment from a snapshot'
+
+    if (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Restore the lab environment from a snapshot'
+    }
 
     Try {
         if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
@@ -706,7 +905,9 @@ Function Invoke-RefreshLab {
         Restore-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName -force
     }
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -720,6 +921,7 @@ Function Invoke-RefreshLab {
         Wipe-Lab
 
 "@
+    }
 }
 #endregion Refresh-Lab
 
@@ -735,12 +937,16 @@ Function Invoke-WipeLab {
         [Parameter(HelpMessage = "Remove the VM Switch. It is retained by default")]
         [switch]$RemoveSwitch,
         [Parameter(HelpMessage = "Remove lab elements with no prompting.")]
-        [switch]$Force
+        [switch]$Force,
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
 
     $Path = Convert-Path $path
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         This command will perform the following:
 
@@ -752,6 +958,7 @@ Function Invoke-WipeLab {
         Press Ctrl+C to abort this command.
 
 "@
+    }
 
     if (-Not $Force) {
         Pause
@@ -765,13 +972,16 @@ Function Invoke-WipeLab {
         $removeParams.Add("confirm", $False)
     }
     $labname = Split-Path $path -leaf
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
+    $LabData = Import-PowerShellDataFile -Path $path\*.psd1
+    if (-Not $NoMessages) {
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
+    }
 
     # Stop the VM's
     if ($pscmdlet.ShouldProcess("VMs", "Stop-Lab")) {
 
         Try {
-            Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
+            Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop -WarningAction SilentlyContinue
         }
         Catch {
             Write-Warning "Failed to stop lab. Are you running this in the correct configuration directory? $($_.exception.message)"
@@ -785,7 +995,6 @@ Function Invoke-WipeLab {
     if ($RemoveSwitch) {
         $removeParams.Add("RemoveSwitch", $True)
         # Delete NAT
-        $LabData = Import-PowerShellDataFile -Path $path\*.psd1
         $NatName = $Labdata.AllNodes.IPNatName
         if ($pscmdlet.ShouldProcess("LabNat", "Remove NetNat")) {
             Remove-NetNat -Name $NatName
@@ -803,7 +1012,9 @@ Function Invoke-WipeLab {
     Get-ChildItem (Get-LabHostDefault).differencingVHDPath | Where-Object { $nodes -contains $_.basename } | Remove-Item
     #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
-    Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
+    if (-Not $NoMessages) {
+
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
         Next Steps:
 
@@ -831,8 +1042,8 @@ Function Invoke-WipeLab {
         To destroy the lab to build again:
         Wipe-Lab
 
-
 "@
+    }
 }
 #endregion Wipe-Lab
 
@@ -847,7 +1058,9 @@ Function Invoke-UnattendLab {
         [string]$Path = ".",
         [switch]$AsJob,
         [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
-        [switch]$UseLocalTimeZone
+        [switch]$UseLocalTimeZone,
+        [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [switch]$NoMessages
     )
     Write-Verbose "Starting $($myinvocation.mycommand)"
     $Path = Convert-Path $path
@@ -855,7 +1068,7 @@ Function Invoke-UnattendLab {
 
     $sb = {
         [cmdletbinding()]
-        Param([string]$Path, [bool]$UseLocalTimeZone, [bool]$WhatIf, [string]$VerboseAction)
+        Param([string]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [string]$VerboseAction)
 
         $VerbosePreference = $VerboseAction
         if ($VerboseAction -eq "Continue") {
@@ -870,53 +1083,58 @@ Function Invoke-UnattendLab {
         Write-Verbose "Using these scriptblock parameters:"
         Write-Verbose  ($psboundparameters | Out-String)
 
-        $msg = @"
+        if (-Not $NoMessages) {
 
-        This runs Setup-Lab, Run-Lab, and Validate-Lab commands.
-        Starting the lab environment
+            $msg = @"
+
+            This runs Setup-Lab, Run-Lab, and Validate-Lab commands.
+            Starting the lab environment
 "@
 
-        Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
+            Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
+        }
 
         if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
             Write-Verbose "Setup-Lab"
             Invoke-SetupLab @psboundparameters
         }
-
         #this parameter isn't used in the remaining commands
         [void]($psboundparameters.remove("UseLocalTimeZone"))
-        if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
-            Write-Verbose "Run-Lab"
-            Invoke-RunLab @psboundparameters
-        }
+
         if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
             Write-Verbose "Enable-Internet"
             Enable-Internet @psboundparameters
+        }
+        if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
+            Write-Verbose "Run-Lab"
+            Invoke-RunLab @psboundparameters
         }
         if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
             Write-Verbose "Validate-Lab"
             Invoke-ValidateLab @psboundparameters
         }
 
-        $msg = @"
+        if (-Not $NoMessages) {
+            $msg = @"
 
-        Unattended setup is complete.
+                Unattended setup is complete.
 
-        To stop the lab VM's:
-        Shutdown-lab
+                To stop the lab VM's:
+                Shutdown-lab
 
-        When the configurations have finished, you can checkpoint the VM's with:
-        Snapshot-Lab
+                When the configurations have finished, you can checkpoint the VM's with:
+                Snapshot-Lab
 
-        To quickly rebuild the labs from the checkpoint, run:
-        Refresh-Lab
+                To quickly rebuild the labs from the checkpoint, run:
+                Refresh-Lab
 "@
-        Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
+            Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
+        }
     } #close scriptblock
 
     $icmParams = @{
         Computername = $env:computername
-        ArgumentList = @($Path, $UseLocalTimeZone, $WhatIfPreference, $VerbosePreference)
+        ArgumentList = @($Path, $UseLocalTimeZone, $NoMessages, $WhatIfPreference, $VerbosePreference)
         Scriptblock  = $sb
     }
 

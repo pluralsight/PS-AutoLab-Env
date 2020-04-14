@@ -25,6 +25,15 @@ Configuration AutoLab {
 
         #endregion
 
+        #region Remove PowerShell v2
+
+        WindowsFeature PS2 {
+            Name = 'PowerShell-V2'
+            Ensure = 'Absent'
+        }
+
+        #region
+
         #region IPaddress settings
 
         If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {

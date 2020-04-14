@@ -35,7 +35,6 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 
 #region IPaddress settings
 
-
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
@@ -70,7 +69,6 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 #endregion
 
 #region Firewall Rules
-
 
 $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
     $FireWallRules = $labdata.Allnodes.FirewallRuleNames
@@ -129,7 +127,6 @@ $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
     $OUs = (Get-Content $PSScriptRoot\AD-OU.json | ConvertFrom-Json)
     $Users = (Get-Content $PSScriptRoot\AD-Users.json | ConvertFrom-Json)
     $Groups = (Get-Content $PSScriptRoot\AD-Group.json | ConvertFrom-Json)
-
 
         foreach ($OU in $OUs) {
             xADOrganizationalUnit $OU.Name {

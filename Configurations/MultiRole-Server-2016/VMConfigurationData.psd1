@@ -155,7 +155,7 @@ demonstrations and would need to be modified for your environment.
         }
         #>
 
-    );
+    )
     NonNodeData = @{
         Lability = @{
             # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
@@ -185,17 +185,17 @@ demonstrations and would need to be modified for your environment.
                 }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
             );
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xActiveDirectory'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xDhcpServer'; RequiredVersion = '2.0.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; }
-                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; }
+                @{ Name = 'xActiveDirectory'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xDhcpServer'; RequiredVersion = '2.0.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0' }
+                @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0' }
 
             );
             Resource    = @(
@@ -207,8 +207,7 @@ demonstrations and would need to be modified for your environment.
                     Expand   = $false
                     #DestinationPath = '\software' # Default is resources folder
                 }
-            );
-
-        };
-    };
-};
+            )
+        }
+    }
+}

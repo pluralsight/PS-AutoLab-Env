@@ -2,10 +2,35 @@
 
 This lab builds the following:
 
-* 1 DC with users, groups and OU's - GUI
-* 1 DHCP server on the DC
-* 2 Domain joined servers (s1 and s2)
-* 1 Domain joined Windows 10 Client with RSAT tools
+    Computername : DC1
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DC, DHCP, ADCS}
+    IPAddress    : 192.168.3.10
+    MemoryGB     : 2
+
+    Computername : S1
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DomainJoin}
+    IPAddress    : 192.168.3.50
+    MemoryGB     : 1
+
+    Computername : S2
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DomainJoin}
+    IPAddress    : 192.168.3.51
+    MemoryGB     : 1
+
+    Computername : PullServer
+    Description  : Windows Server 2016 Standard Core 64bit English Evaluation
+    Role         : {DomainJoin}
+    IPAddress    : 192.168.3.70
+    MemoryGB     : 1
+
+    Computername : Cli1
+    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
+    Role         : {domainJoin, RSAT, RDP}
+    IPAddress    : 192.168.3.100
+    MemoryGB     : 2
 
 ## To get started
 
@@ -20,7 +45,7 @@ This lab builds the following:
     To start the Lab, and apply configurations the first time:
     PS> Run-Lab
 
-    To enable Internet access for the VM's, run:
+    To enable Internet access for the VMs, run:
     PS> Enable-Internet
 
     To validate when configurations have converged:
@@ -28,15 +53,15 @@ This lab builds the following:
 
 ## To Stop and snapshot the lab
 
-    To stop the lab VM's:
+    To stop the lab VMs:
     PS> Shutdown-lab
 
-    To checkpoint the VM's:
+    To checkpoint the VMs:
     PS> Snapshot-Lab
 
     To quickly rebuild the labs from the checkpoint, run:
     PS> Refresh-Lab
-    
+
 ## To Patch a lab
 
     If you want to make sure the virtual machines have the latest updates from Microsoft, you can run this command:
