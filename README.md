@@ -214,6 +214,7 @@ Where possible information about what course goes with a particular Pluralsight 
 > If you are trying to setup a lab for a specific course and can't find the configuration the instructor calls for, please post an issue
 > indicating the configuration you are looking for and the title of the Pluralsight course.
 > Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration.
+> In some cases, the course may assume a different password. All configurations use P@ssw0rd for all passwords.
 
 The first time you setup a lab, Lability will download evaluation versions of required operating systems in ISO format.
 This may take some time depending on your Internet bandwidth.
@@ -224,6 +225,8 @@ Once the lab is created you can use the module commands for managing it.
 Or you can manage individual virtual machines using the Hyper-V manager or cmdlets.
 
 *It is assumed that you will only have one lab configuration created at a time.*
+
+Please be aware that all configurations were created for a EN-US culture.
 
 ### Manual Setup
 
