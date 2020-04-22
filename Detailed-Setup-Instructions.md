@@ -11,7 +11,7 @@ It is assumed that you have administrator rights to your computer and can makes 
 If your computer is controlled by Group Policy, you may encounter problems.
 
 > It is *possible* to run this module with nested virtualization inside a Windows 10 Hyper-V virtual machine but it is **not** recommended.
-> Some networking features may not work properly and overall performancel will be reduced.
+> Some networking features may not work properly and overall performance will be reduced.
 
 ## Pre-Check
 
@@ -174,7 +174,7 @@ If Hyper-V is not installed you will see errors.
 Any errors indicate a problem with your setup.
 Please post this information when reporting an issue.
 
-### Setup a Configuration
+### Setup a Configuration Unattended
 
 In an elevated PowerShell session, **change directory** to the configuration folder that you want to use.
 
@@ -205,6 +205,24 @@ This is to be expected until all of the configurations merge.
 You can press `Ctrl+C` to break out of the testing.
 The virtual machines will continue to prepare themselves.
 
+### Manual Configuration Setup
+
+If you encounter errors running an unattended setup, it may have helpful to step through the process manually to identify where exactly and error is occuring. Make sure you are in an elevated PowerShell session and you have changed location to the configuration folder. If you have tried to setup the lab before run `Wipe-Lab` to remove previous set up files. Then run each of these commands individually:
+
+* `Setup-Lab`
+* `Enable-Internet`
+* `Run-Lab`
+
+Errors that affect setup should happen in one of these steps. If so, open an issue with configuration name, the step you were working on and the error message. Also include the output from `Get-PSAutolabSetting`.
+
+After about 10 minutes, you can manually test to see if the configuration has finalized.
+
+```powershell
+Invoke-Pester .\Vmvalidate.test.ps1
+```
+
+You might still see errors, in which case try again in 10 minute intervals until the test completely passes.
+
 ### Help
 
 All of the commands in this module have help and examples.
@@ -221,4 +239,4 @@ If you get the module installed, please include the results of `Get-PSAutolabset
 If your problem is meeting one of the requirements, we will do our best to help.
 Although if your computer is locked down or otherwise controlled by corporate policies there may not be much that we can do.
 
-last updated 2020-04-06 15:17:19Z UTC
+last updated 2020-04-22 01:36:20Z UTC
