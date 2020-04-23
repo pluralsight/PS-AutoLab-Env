@@ -10,6 +10,7 @@ if (-Not $LabData) {
     #bail out
     Return
 }
+
 $Secure = ConvertTo-SecureString -String $labdata.allnodes.labpassword -AsPlainText -Force
 $cred = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 $Computername = $labdata.allnodes[1].nodename
@@ -29,6 +30,10 @@ Describe $Computername {
         $cl = New-PSSession -VMName $Computername -Credential $cred -ErrorAction Stop
         Invoke-Command $prep -session $cl
 
+        It "[$Computernbanme] Should be running Windows 10" {
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property version, caption } -session $cl
+            $test.caption | Should BeLike "*Windows 10*"
+        }
         It "[$Computername] Should have an IP address of $IP" {
             $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
             $i.ipv4Address | Should be $IP

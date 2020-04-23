@@ -74,7 +74,7 @@ Describe DOM1 {
                 }
             }
         } #if ous
- 
+
         $groups = Invoke-Command {
             Try {
                 Get-ADGroup -filter * -ErrorAction Stop
@@ -156,7 +156,7 @@ Describe DOM1 {
         }
     }
     Catch {
-        It "[DOM1] Should allow a PSSession" {
+        It "[DOM1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
       }
@@ -193,7 +193,7 @@ Describe SRV1 {
         }
     }
     Catch {
-        It "[SRV1] Should allow a PSSession" {
+        It "[SRV1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
       }
@@ -244,7 +244,7 @@ Describe SRV2 {
         }
     }
     Catch {
-        It "[SRV2] Should allow a PSSession" {
+        It "[SRV2] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
      }
@@ -280,7 +280,7 @@ Describe SRV3 {
         }
     }
     Catch {
-        It "[SRV3] Should allow a PSSession" {
+        It "[SRV3] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }   }
 }
@@ -297,9 +297,8 @@ Describe Win10 {
             $test.domain | Should Be $Domain
         }
 
-        It "[WIN10] Should be running Windows 10 Enterprise version 18362" {
+        It "[WIN10] Should be running Windows 10 Enterprise" {
             $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property version, caption } -session $cl
-            $test.Version | Should Be '10.0.18362'
             $test.caption | Should BeLike "*Enterprise*"
         }
 
@@ -325,7 +324,7 @@ Describe Win10 {
         }
     }
     Catch {
-        It "[Win10] Should allow a PSSession" {
+        It "[Win10] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
        }

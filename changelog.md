@@ -1,5 +1,26 @@
 # Change Log for PSAutoLab
 
+## 4.9.0
+
+### Add
+
++ Added lab configurations `SingleServer2012R2` and `SingleServer2012R2-GUI` (Issue #215)
++ Updated `Authoring-FAQ.md` and restored it to this project.
+
+### Change
+
++ Modified validation test for `PowerShellLab` lab to that was testing for specific Windows 10 version number. (Issue #214)
++ Updated validation test for `PowerShellLab` lab to better display errors creating remoting sessions.
++ Modified validation test for `Windows10` lab to test for operating system.
++ Updated `Detailed-Setup-Instructions.md`.
++ Updated `README.md`
++ Minor revisions to `Updating.md`.
++ Minor revisions to `Updating.md`.
+
+### Delete
+
++ none
+
 ## v4.8.0
 
 ### Add
