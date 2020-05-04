@@ -9,12 +9,17 @@ $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsP
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
 
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+
 #define an array to hold PSSessions
 $all = @()
+
 Describe DC1 {
 
+    $VMName = "$($prefix)DC1"
     Try {
-        $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction Stop
+        $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $dc
         #set error action preference to suppress all error messsages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
@@ -74,15 +79,17 @@ Describe DC1 {
         }
     }
     Catch {
-        It "[DC1] Should allow a PSSession" {
+        It "[DC1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
 } #DC
 
 Describe S1 {
+
+    $VMName = "$($prefix)S1"
     Try {
-        $s1 = New-PSSession -VMName S1 -Credential $cred -ErrorAction stop
+        $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction stop
         $all += $s1
         It "[S1] Should accept domain admin credential" {
             $s1.Count | Should Be 1
@@ -98,7 +105,7 @@ Describe S1 {
         }
     }
     Catch {
-        It "[S1] Should allow a PSSession" {
+        It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -107,12 +114,13 @@ Describe S1 {
 
 Describe NanoServer {
 
+    $VMName = "$($prefix)N1"
     Try {
-        $nano = New-PSSession -VMName N1 -Credential $Cred -ErrorAction Stop
+        $nano = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
         $all += $nano
 
         It "[Nano] Should respond to WSMan requests" {
-            $nano.Computername | Should Be 'N1'
+            $nano.Computername | Should Be $VMName
         }
 
         It "[Nano] Should have an IP address of 192.168.3.60" {
@@ -132,7 +140,7 @@ Describe NanoServer {
         }
     }
     Catch {
-        It "[Nano] Should allow a PSSession" {
+        It "[Nano] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -141,8 +149,9 @@ Describe NanoServer {
 
 Describe Cli1 {
 
+    $VMName = "$($prefix)Cli1"
     Try {
-        $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction Stop
+        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl
 
         It "[CLI1] Should accept domain admin credential" {
@@ -167,7 +176,7 @@ Describe Cli1 {
         }
     }
     Catch {
-        It "[CLI1] Should allow a PSSession" {
+        It "[CLI1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }

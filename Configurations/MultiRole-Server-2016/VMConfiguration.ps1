@@ -7,12 +7,9 @@ Currently on her public DSC hub located here: https://github.com/majst32/DSC_pub
 
 Additional contributors of note: Jeff Hicks
 
-
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the
-demonstrations and would need to be modified for your environment.
 
 #>
 
@@ -43,6 +40,18 @@ Configuration AutoLab {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
             ConfigurationMode    = 'ApplyOnly'
+        }
+
+        #endregion
+
+        #region TLS Settings in registry
+
+        registry TLS {
+            Ensure = "present"
+            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+            ValueName = 'SchUseStrongCrypto'
+            ValueData = '1'
+            ValueType = 'DWord'
         }
 
         #endregion

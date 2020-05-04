@@ -2,7 +2,7 @@
 
 Please refer to this document to assist in installing and setting up the `PSAutolab` module on your computer. Run all commands from an **elevated** Windows PowerShell session. In other words, *run Windows PowerShell as administrator*. You will know you are elevated if you see the word `Administrator` in the title bar of the PowerShell window. Do NOT run this module in PowerShell 7. It is assumed you are running this on Windows 10 Professional or Enterprise editions.
 
-It is also assumed that you have administrator rights to your computer and can makes changes. If your computer is controlled by Group Policy, you may encounter problems.
+It is also assumed that you have administrator rights to your computer and can makes changes. If your computer is controlled by Group Policy, you may encounter problems. You should also be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
 
 > It is *possible* to run this module with nested virtualization inside a Windows 10 Hyper-V virtual machine but it is **not** recommended. Some networking features may not work properly and overall performance will likely be reduced.
 
@@ -200,6 +200,12 @@ All of the commands in this module have help and examples. You are also encourag
 PS C:\> help about_psautolab
 ```
 
+## Using the Environment Prefix
+
+In the `VMConfigurationData.psd1` file for each lab, you will see a commented out section for an environment prefix value. This value exists for special situations where you might have a virtual machine naming collision or want to be able to identify the virtual machines that belong to the AutoLab module. In a normal setup, the Hyper-V virtual machine name will be the same as the hostname in the VM guest. If the lab creates a guest with a computername of `S1`, the Hyper-V virtual machine will also be called `S1`. If you enable prefix setting, the Hyper-V virtual machine name will use the prefix, **but the guest computer name will not.**  For example, if you enable the default prefix (you can change it to anything you'd like), you will create a Hyper-V virtual machine with a VMName of `Autolab-S1` but the actual computername will still be `S1`. The validation tests will reference the guest computer name, not the Hyper-V virtual machine name.
+
+This setting should only be used in special situations as it can be confusing. While every effort has been made to ensure compatibility with commands in this module, there is no guarantee of 100% success. Also note that any changes you make to the configuration files could be overwritten in future updates.
+
 ## Troubleshooting Tips
 
 Occasionally, things can go wrong for no apparent reason. If you ran through the manual steps to setup a lab but the validations tests is still failing, you may need to stop and restart the virtual machine that is causing problems. For example, *sometimes* the SRV2 member in the `PowerShellLab` configuration simply won't pass validation, often because it can't be connected to. The best solution is to shut down the virtual machine in either the Hyper-V manager or from PowerShell.
@@ -218,7 +224,7 @@ Wait about 5 minutes and then test again.
 
 ## Getting Help
 
-If encounter problems getting any of this to work, you are welcome to post an Issue. If you get the module installed, please include the results of `Get-PSAutolabSetting`. If your problem is meeting one of the requirements, we will do our best to help.
-Although if your computer is locked down or otherwise controlled by corporate policies there may not be much that we can do.
+If encounter problems getting any of this to work, you are welcome to post an Issue. If you get the module installed, please include the results of `Get-PSAutolabSetting`. If your problem is meeting one of the requirements, we will do our best to help. Although if your computer is locked down or otherwise controlled by corporate policies there may not be much that we can do.
 
-last updated 2020-04-23 16:46:34Z UTC
+last updated 2020-05-04 13:18:50Z UTC
+

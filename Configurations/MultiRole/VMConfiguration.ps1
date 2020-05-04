@@ -33,6 +33,18 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 
 #endregion
 
+#region TLS Settings in registry
+
+registry TLS {
+    Ensure = "present"
+    Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+    ValueName = 'SchUseStrongCrypto'
+    ValueData = '1'
+    ValueType = 'DWord'
+}
+
+#endregion
+
 #region IPaddress settings
 
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {

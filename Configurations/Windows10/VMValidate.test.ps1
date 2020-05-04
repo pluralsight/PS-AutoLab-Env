@@ -17,6 +17,10 @@ $Computername = $labdata.allnodes[1].nodename
 $IP = $labdata.allnodes[1].IPAddress
 $DNSAddress = $LabData.allnodes[0].DnsServerAddress
 
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+$VMName = "$($prefix)$Computername"
+
 #set error action preference to suppress all error messsages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
@@ -27,7 +31,7 @@ $prep = {
 Describe $Computername {
 
     Try {
-        $cl = New-PSSession -VMName $Computername -Credential $cred -ErrorAction Stop
+        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         Invoke-Command $prep -session $cl
 
         It "[$Computernbanme] Should be running Windows 10" {
@@ -75,7 +79,7 @@ Describe $Computername {
         }
     }
     Catch {
-        It "[$Computername] Should allow a PSSession" {
+        It "[$Computername] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }

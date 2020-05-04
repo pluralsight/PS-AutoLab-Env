@@ -2,7 +2,6 @@
 
 #test if VM setup is complete
 
-
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
@@ -10,11 +9,15 @@ $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsP
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
 
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+
+
 $all = @()
 Describe DC1 {
-
+    $VMName = "$($prefix)DC1"
     Try {
-        $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction Stop
+        $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $dc
 
         #set error action preference to suppress all error messsage
@@ -77,7 +80,7 @@ Describe DC1 {
         }
     }
     Catch {
-        It "[DC1] Should allow a PSSession" {
+        It "[DC1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -85,8 +88,10 @@ Describe DC1 {
 } #DC
 
 Describe S1 {
+
+    $VMName = "$($prefix)S1"
     Try {
-        $s1 = New-PSSession -VMName S1 -Credential $cred -ErrorAction Stop
+        $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $s1
         It "[S1] Should accept domain admin credential" {
             $s1.Count | Should Be 1
@@ -102,7 +107,7 @@ Describe S1 {
         }
     }
     Catch {
-        It "[S1] Should allow a PSSession" {
+        It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -112,11 +117,12 @@ Describe S1 {
 
 Describe N1 {
 
+    $VMName = "$($prefix)N1"
     Try {
-        $N1 = New-PSSession -VMName N1 -Credential $Cred -ErrorAction Stop
+        $N1 = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
         $all += $n1
         It "[N1] Should respond to WSMan requests" {
-            $N1.Computername | Should Be 'N1'
+            $N1.Computername | Should Be $VMName
         }
 
         It "[N1] Should have an IP address of 192.168.3.60" {
@@ -139,7 +145,7 @@ Describe N1 {
         }
     }
     Catch {
-        It "[N1] Should allow a PSSession" {
+        It "[N1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -147,8 +153,9 @@ Describe N1 {
 
 Describe Cli1 {
 
+    $VMName = "$($prefix)Cli1"
     Try {
-        $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction stop
+        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction stop
         $all += $cl
         It "[CLI1]] Should accept domain admin credential" {
             $cl.Count | Should Be 1
@@ -173,7 +180,7 @@ Describe Cli1 {
         }
     }
     Catch {
-        It "[CLI1] Should allow a PSSession" {
+        It "[CLI1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }

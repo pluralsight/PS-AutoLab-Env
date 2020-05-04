@@ -7,13 +7,8 @@ Currently on her public DSC hub located here: https://github.com/majst32/DSC_pub
 
 Additional contributors of note: Jeff Hicks
 
-
 Disclaimer
-
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the
-demonstrations and would need to be modified for your environment.
-
 #>
 
 @{
@@ -78,19 +73,7 @@ demonstrations and would need to be modified for your environment.
             Lability_ProcessorCount     = 1
             Lability_MinimumMemory      = 1GB
             SecureBoot                  = $false
-            Lability_Media              = '2016_x64_Standard_Core_EN_Eval' # Can be Core,Win10,2012R2,nano
-            # 2016_x64_Standard_EN_Eval
-            # 2016_x64_Standard_Core_EN_Eval
-            # 2016_x64_Datacenter_EN_Eval
-            # 2016_x64_Datacenter_Core_EN_Eval
-            # 2016_x64_Standard_Nano_EN_Eval
-            # 2016_x64_Datacenter_Nano_EN_Eval
-            # 2012R2_x64_Standard_EN_Eval
-            # 2012R2_x64_Standard_EN_V5_Eval
-            # 2012R2_x64_Standard_Core_EN_Eval
-            # 2012R2_x64_Standard_Core_EN_V5_Eval
-            # 2012R2_x64_Datacenter_EN_V5_Eval
-            # WIN10_x64_Enterprise_EN_Eval
+            Lability_Media              = '2016_x64_Standard_Core_EN_Eval' 
         }
 
         <#    Available Roles for computers
@@ -158,25 +141,31 @@ demonstrations and would need to be modified for your environment.
     )
     NonNodeData = @{
         Lability = @{
-            # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
+ 
+            # You can uncomment this line to add a prefix to the virtual machine name.
+            # It will not change the guest computername
+            # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
+            # for more information.
+
+            #EnvironmentPrefix = 'AutoLab-'
             Media       = (
                 @{
                     ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
                     ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
-                    Id              = '2016_x64_Standard_Nano_DSC_EN_Eval';
-                    Filename        = '2016_x64_EN_Eval.iso';
-                    Description     = 'Windows Server 2016 Standard Nano 64bit English Evaluation';
-                    Architecture    = 'x64';
-                    ImageName       = 'Windows Server 2016 SERVERSTANDARDNANO';
-                    MediaType       = 'ISO';
-                    OperatingSystem = 'Windows';
-                    Uri             = 'http://download.microsoft.com/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO';
-                    Checksum        = '18A4F00A675B0338F3C7C93C4F131BEB';
+                    Id              = '2016_x64_Standard_Nano_DSC_EN_Eval'
+                    Filename        = '2016_x64_EN_Eval.iso'
+                    Description     = 'Windows Server 2016 Standard Nano 64bit English Evaluation'
+                    Architecture    = 'x64'
+                    ImageName       = 'Windows Server 2016 SERVERSTANDARDNANO'
+                    MediaType       = 'ISO'
+                    OperatingSystem = 'Windows'
+                    Uri             = 'http://download.microsoft.com/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
+                    Checksum        = '18A4F00A675B0338F3C7C93C4F131BEB'
                     CustomData      = @{
-                        SetupComplete = 'CoreCLR';
-                        PackagePath   = '\NanoServer\Packages';
-                        PackageLocale = 'en-US';
-                        WimPath       = '\NanoServer\NanoServer.wim';
+                        SetupComplete = 'CoreCLR'
+                        PackagePath   = '\NanoServer\Packages'
+                        PackageLocale = 'en-US'
+                        WimPath       = '\NanoServer\NanoServer.wim'
                         Package       = @(
                             'Microsoft-NanoServer-Guest-Package',
                             'Microsoft-NanoServer-DSC-Package'
@@ -186,7 +175,7 @@ demonstrations and would need to be modified for your environment.
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
                 @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
-            );
+            )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xActiveDirectory'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery' },
@@ -197,7 +186,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0' }
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0' }
 
-            );
+            )
             Resource    = @(
                 @{
 

@@ -1,5 +1,23 @@
 # Change Log for PSAutoLab
 
+## 4.10.0
+
+### Add
+
++ none
+
+### Change
+
++ Updated `README.md` with additional requirements and information.
++ Updated `Detailed-Setup-Instructions.md` with information about using an environment prefix.
++ Updated test files to show `New-PSSession` error message in output.
++ Updated commands and files to support using `EnvironmentPrefix` values. (Issue #217)
++ Updated lab configurations to use newer TLS settings via a registry change (Issue #216)
+
+### Delete
+
++ none
+
 ## 4.9.0
 
 ### Add
@@ -188,5 +206,5 @@ Beginning with this version, the change log is now in markdown and will provide 
 
 ## v3.1.0
 
-+ Updates PSAutolab module with `-IgnorePendingReboot` parameter for `Unattend-Lab` and `Setup-Lab`.
++ Updated PSAutolab module with `-IgnorePendingReboot` parameter for `Unattend-Lab` and `Setup-Lab`.
 + See GitHub releases for any previous changes

@@ -5,12 +5,8 @@ Authors: Jason Helmick, Melissa (Missy) Januszko, and Jeff Hicks
 The bulk of this DC, DHCP, ADCS config is authored by Melissa (Missy) Januszko and Jason Helmick.
 Currently on her public DSC hub located here: https://github.com/majst32/DSC_public.git
 
-
 Disclaimer
-
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the
-demonstrations and would need to be modified for your environment.
 
 #>
 
@@ -52,6 +48,7 @@ demonstrations and would need to be modified for your environment.
             Lability_MaximumMemory      = 4GB
             SecureBoot                  = $false
             Lability_Media              = '2012R2_x64_Standard_EN_V5_1_Eval'
+
             <#
 
             Id                                      Description
@@ -116,21 +113,26 @@ demonstrations and would need to be modified for your environment.
     )
     NonNodeData = @{
         Lability = @{
-            # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
+            
+            # You can uncomment this line to add a prefix to the virtual machine name.
+            # It will not change the guest computername
+            # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
+            # for more information.
+
+            #EnvironmentPrefix = 'AutoLab-'
             Network     = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
             )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; }
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery' },
+                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' }
 
             )
             Resource    = @(
                 @{ }
             )
-
         }
     }
 }

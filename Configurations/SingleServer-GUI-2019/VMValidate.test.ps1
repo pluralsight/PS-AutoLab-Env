@@ -9,6 +9,10 @@ $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsP
 $Domain = "S1"
 $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+$VMName = "$($prefix)S1"
+
 #set error action preference to suppress all error messsages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
@@ -19,7 +23,7 @@ $prep = {
 Describe S1 {
 
     Try {
-        $S1 = New-PSSession -VMName S1 -Credential $Cred -ErrorAction Stop
+        $S1 = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
         Invoke-Command $prep -session $s1
 
         It "[S1] Should accept administrator credential" {
@@ -27,7 +31,7 @@ Describe S1 {
         }
 
         It "[S1] Should respond to WSMan requests" {
-            $S1.Computername | Should Be 'S1'
+            $S1.Computername | Should Be $VMName
         }
 
         It "[S1] Should belong to a Workgroup" {
@@ -68,7 +72,7 @@ Describe S1 {
         }
     }
     catch {
-        It "[S1] Should allow a PSSession" {
+        It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
