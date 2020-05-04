@@ -101,22 +101,28 @@ demonstrations and would need to be modified for your environment.
             Lability_timeZone       = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()
         }
-    );
+    )
     NonNodeData = @{
         Lability = @{
-            # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
+           
+            # You can uncomment this line to add a prefix to the virtual machine name.
+            # It will not change the guest computername
+            # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
+            # for more information.
+
+            #EnvironmentPrefix = 'AutoLab-'
 
             Network     = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
-            );
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
+            )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery'; },
-                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery'; },
+                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery'},
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery'}
-            );
+            )
             Resource    = @(
                 @{
                     Id       = 'Win10RSAT'
@@ -125,7 +131,7 @@ demonstrations and would need to be modified for your environment.
                     Expand   = $false
                     #DestinationPath = '\software' # Default is resources folder
                 }
-            );
-        };
-    };
-};
+            )
+        }
+    }
+}

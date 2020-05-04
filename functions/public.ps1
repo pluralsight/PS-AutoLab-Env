@@ -1203,6 +1203,9 @@ Function Update-Lab {
         Write-Verbose "[$((Get-Date).TimeofDay) BEGIN  ] Starting $($myinvocation.mycommand)"
         $data = Import-PowerShellDataFile -Path $path\*.psd1
 
+        #The prefix only changes the name of the VM not the guest computername
+        $prefix = $data.NonNodeData.Lability.EnvironmentPrefix
+
         $upParams = @{
             VMName     = $null
             Credential = $null
@@ -1224,18 +1227,21 @@ Function Update-Lab {
             #get defined nodes
             $nodes = ($data.allnodes).where( { $_.nodename -ne '*' })
             foreach ($node in $nodes) {
-                Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $($node.nodename)"
+                $vmNode = ("{0}{1}" -f $prefix,$node.Nodename)
+                #Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $($node.nodename)"
+                Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $vmNode"
 
                 #verify VM is running
-                $vm = Get-VM -name $node.Nodename
+                $vm = Get-VM -name $VMNode # $node.Nodename
                 if ($vm.state -ne 'running') {
-                    Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $($node.nodename)"
+                 #   Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $($node.nodename)"
+                    Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $vmnnode"
                     $vm | Start-VM
                     Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Waiting 30 seconds to give VM time to boot"
                     Start-Sleep -seconds 30
                 }
 
-                $upParams.VMName = $node.nodename
+                $upParams.VMName = $VMNode #$node.nodename
                 if ($node.role -contains "DC" -or $node.role -contains "DomainJoin") {
                     $upParams.Credential = $domcred
                 }

@@ -7,12 +7,8 @@ Currently on her public DSC hub located here: https://github.com/majst32/DSC_pub
 
 Additional contributors of note: Jeff Hicks
 
-
 Disclaimer
-
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the
-demonstrations and would need to be modified for your environment.
 
 #>
 
@@ -183,7 +179,13 @@ demonstrations and would need to be modified for your environment.
     )
     NonNodeData = @{
         Lability = @{
-            # EnvironmentPrefix = 'PS-GUI-' # this will prefix the VM names
+
+            # You can uncomment this line to add a prefix to the virtual machine name.
+            # It will not change the guest computername
+            # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
+            # for more information.
+
+            #EnvironmentPrefix = 'AutoLab-'
             Media       = (
                 @{
                     ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
@@ -210,8 +212,8 @@ demonstrations and would need to be modified for your environment.
                 }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
-                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true; }
-            );
+                @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
+            )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xActiveDirectory'; RequiredVersion = "3.0.0.0"; Provider = 'PSGallery' },
@@ -224,10 +226,9 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery' }
 
-            );
+            )
             Resource    = @(
                 @{
-
                     Id       = 'Win10RSAT'
                     Filename = 'WindowsTH-RSAT_WS2016-x64.msu'
                     Uri      = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS2016-x64.msu'
@@ -235,7 +236,6 @@ demonstrations and would need to be modified for your environment.
                     #DestinationPath = '\software' # Default is resources folder
                 }
             )
-
         }
     }
 }

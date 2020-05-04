@@ -10,7 +10,7 @@ Pluralsight makes no guarantees or warranties. This project is intended to be us
 
 ## Requirements
 
-This tool currently supports running on a __Windows 10__ client that supports virtualization. Windows 10 Pro or Enterprise should be sufficient. It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1. This module will **not** work and and is unsupported on Windows 10 Home or any Student edition. Although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server 2016 but this capability has not been fully tested nor supported.
+This tool currently supports running on a __Windows 10__ client that supports virtualization. Windows 10 Pro or Enterprise should be sufficient. It is assumed you will be installing this on a Windows 10 desktop using Windows PowerShell 5.1. This module will **not** work and and is unsupported on Windows 10 Home or any Student edition. Although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server platforms but this capability has not been fully tested nor is it supported.
 
 The host computer must have the following:
 
@@ -20,6 +20,7 @@ The host computer must have the following:
 * Minimum 100GB free disk space preferably on a fast SSD device.
 * An Intel i5 processor or equivalent. An i7 is recommended for best performance.,
 * PowerShell Remoting enabled
+* You should be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
 
 You must have administrator access and be able to update the TrustedHosts setting for PowerShell remoting. If you are in a corporate environment, these settings may be locked down or restricted. If this applies to you, this module may not work properly if at all.
 
@@ -471,8 +472,8 @@ These are some of the items that are being considered for future updates:
 
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM.
 * Integrate the [PostSetup](.\Configurations\PowerShellLab\PostSetup\README.md) tools from the PowerShellLab configuration.
-* Offer an easy way to customize a lab configuration such as time zone, node names and operating systems.
+* Offer an easy way to customize a lab configuration such as node names and operating systems.
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-### Last Updated 2020-04-23 17:44:00Z UTC
+### Last Updated 2020-05-04 17:29:56Z UTC

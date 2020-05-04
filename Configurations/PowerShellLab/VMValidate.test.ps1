@@ -8,6 +8,9 @@ $Domain = $labdata.allnodes.domainname
 $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 $wgcred = New-Object PSCredential  "administrator", $secure
 
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+
 #set error action preference to suppress all error messsages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
@@ -19,8 +22,9 @@ $all = @()
 
 Describe DOM1 {
 
+    $VMName = "$($prefix)DOM1"
     Try {
-        $dc = New-PSSession -VMName DOM1 -Credential $cred -ErrorAction Stop
+        $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $dc
         Invoke-Command $prep -session $dc
 
@@ -164,8 +168,10 @@ Describe DOM1 {
 
 
 Describe SRV1 {
+
+    $VMName = "$($prefix)SRV1"
     Try {
-        $srv1 = New-PSSession -VMName SRV1 -Credential $cred -ErrorAction Stop
+        $srv1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $srv1
         Invoke-Command $prep -session $srv1
 
@@ -200,8 +206,10 @@ Describe SRV1 {
 } #SRV1
 
 Describe SRV2 {
+
+    $VMName = "$($prefix)SRV2"
     Try {
-        $SRV2 = New-PSSession -VMName SRV2 -Credential $cred -ErrorAction Stop
+        $SRV2 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $srv2
         Invoke-Command $prep -session $srv2
 
@@ -251,13 +259,15 @@ Describe SRV2 {
 } #SRV2
 
 Describe SRV3 {
+
+    $VMName = "$($prefix)SRV3"
     Try {
-        $srv3 = New-PSSession -VMName SRV3 -Credential $wgCred -ErrorAction Stop
+        $srv3 = New-PSSession -VMName $VMName -Credential $wgCred -ErrorAction Stop
         $all += $srv3
         Invoke-Command $prep -session $srv3
 
         It "[SRV3] Should respond to WSMan requests" {
-            $srv3.Computername | Should Be 'SRV3'
+            $srv3.Computername | Should Be $VMName
         }
 
         It "[SRV3] Should have an IP address of 192.168.3.60" {
@@ -282,13 +292,16 @@ Describe SRV3 {
     Catch {
         It "[SRV3] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
-        }   }
+        }   
+    }
 }
 
 Describe Win10 {
 
+    $VMName = "$($prefix)Win10"
+
     Try {
-        $cl = New-PSSession -VMName WIN10 -Credential $cred -ErrorAction Stop
+        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl
         Invoke-Command $prep -session $cl
 

@@ -19,6 +19,7 @@ Describe $Computername {
     Try {
         #Windows Server 2012 R2 cannot use PowerShell Direct
         $S1 = New-PSSession -ComputerName $Computername -Credential $wgCred -ErrorAction Stop
+
         Invoke-Command $prep -session $s1
 
         It "[$Computername] Should respond to WSMan requests" {

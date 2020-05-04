@@ -9,11 +9,15 @@ $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsP
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
 
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+
+
 $all = @()
 Describe DC1 {
-
+    $VMName = "$($prefix)DC1"
     Try {
-        $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction Stop
+        $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $dc
         #set error action preference to suppress all error messsages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
@@ -116,15 +120,18 @@ Describe DC1 {
         }
     }
     Catch {
-        It "[DC1] Should allow a PSSession" {
+        It "[DC1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
 } #DC
 
 Describe S1 {
+
+    $VMName = "$($prefix)S1"
+
     Try {
-        $s1 = New-PSSession -VMName S1 -Credential $cred -ErrorAction Stop
+        $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $s1
 
         #set error action preference to suppress all error messsages
@@ -143,15 +150,17 @@ Describe S1 {
         }
     }
     Catch {
-        It "[S1] Should allow a PSSession" {
+        It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
 } #S1
 
 Describe S2 {
+
+    $VMName = "$($prefix)S2"
     Try {
-        $s2 = New-PSSession -VMName S2 -Credential $cred -ErrorAction Stop
+        $s2 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $s2
         #set error action preference to suppress all error messsages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $s2
@@ -169,15 +178,17 @@ Describe S2 {
         }
     }
     Catch {
-        It "[S2] Should allow a PSSession" {
+        It "[S2] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
 } #S2
 
 Describe PullServer {
+
+    $VMName = "$($prefix)PullServer"
     Try {
-        $PullServer = New-PSSession -VMName PullServer -Credential $cred -ErrorAction Stop
+        $PullServer = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $PullServer
         #set error action preference to suppress all error messsages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $pullserver
@@ -203,8 +214,9 @@ Describe PullServer {
 
 Describe Cli1 {
 
+    $VMName = "$($prefix)Cli1"
     Try {
-        $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction Stop
+        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl
         #set error action preference to suppress all error messsages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $cl
@@ -229,7 +241,7 @@ Describe Cli1 {
         }
     }
     Catch {
-        It "[CLI1] Should allow a PSSession" {
+        It "[CLI1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }

@@ -9,11 +9,16 @@ $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsP
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
 
-$all = @()
-Describe DC1 {
+#The prefix only changes the name of the VM not the guest computername
+$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
 
+$all = @()
+
+Describe DC1 {
+    
+    $VMName = "$($prefix)DC1"
     Try {
-        $dc = New-PSSession -VMName DC1 -Credential $cred -ErrorAction Stop
+        $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $dc
 
         #set error action preference to suppress all error messsages
@@ -117,16 +122,18 @@ Describe DC1 {
         }
     }
     Catch {
-        It "[DC1] Should allow a PSSession" {
+        It "[DC1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
 } #DC
 
 Describe S1 {
+
+    $VMName = "$($prefix)S1"
     Try {
 
-        $s1 = New-PSSession -VMName S1 -Credential $cred -ErrorAction Stop
+        $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $s1
 
         #set error action preference to suppress all error messsages
@@ -146,7 +153,7 @@ Describe S1 {
         }
     }
     Catch {
-        It "[S1] Should allow a PSSession" {
+        It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -154,9 +161,10 @@ Describe S1 {
 
 Describe Cli1 {
 
+    $VMName = "$($prefix)Cli1"
     Try {
 
-        $cl = New-PSSession -VMName cli1 -Credential $cred -ErrorAction Stop
+        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl
 
         #set error action preference to suppress all error messsages
@@ -184,7 +192,7 @@ Describe Cli1 {
         }
     }
     Catch {
-        It "[CLI1] Should allow a PSSession" {
+        It "[CLI1] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
@@ -192,9 +200,11 @@ Describe Cli1 {
 
 Describe Cli2 {
 
+    $VMName = "$($prefix)Cli2"
+
     Try {
 
-        $cl2 = New-PSSession -VMName cli2 -Credential $cred -ErrorAction Stop
+        $cl2 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl2
 
         #set error action preference to suppress all error messsages
@@ -214,7 +224,7 @@ Describe Cli2 {
         }
     }
     Catch {
-        It "[CLI2] Should allow a PSSession" {
+        It "[CLI2] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
         }
     }
