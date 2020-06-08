@@ -1,5 +1,24 @@
 # Change Log for PSAutoLab
 
+## 4.11.0
+
+### Add
+
++ Added code to test for and install Pester v4.10.1. Pester v5 breaks the current validation tests. (Issue #223)
++ Added PSDesiredState module version information to `Get-PSAutoLabSetting`
+
+### Change
+
++ Updated documentation to reflect Pester requirements.
++ Updated `Invoke-ValidateLab` to explicitly import the supported version of Pester.
++ Updated module manifest to specify required module versions for Lability and Pester
++ Modified `Get-PSAutoLabSetting` to return all installed versions of Pester
++ Help updates
+
+### Delete
+
++ Removed Archived configurations from the Configurations path. This will not remove them for people who upgrade. The files are still part of this module for reference purposes.
+
 ## 4.10.0
 
 ### Add

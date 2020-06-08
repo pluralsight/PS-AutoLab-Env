@@ -4,23 +4,15 @@ Function _PesterCheck {
     [CmdletBinding(SupportsShouldProcess)]
     Param()
 
-    $PesterMod = Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -descending | Select-Object -First 1
-
-    If ($pestermod.version -eq '3.4.0') {
-        Write-Host "Installing a newer version of Pester" -ForegroundColor Cyan
-        if ($pscmdlet.ShouldProcess("Pester", "Install-Module")) {
-            Install-Module -name Pester -Force -SkipPublisherCheck
-        }
-    }
-    elseif ($pestermod.version -lt '4.8.0') {
-        Write-Host "Updating a newer version of Pester" -ForegroundColor Cyan
-        if ($pscmdlet.ShouldProcess("Pester", "Update-Module")) {
-            Update-Module -name Pester -Force
-        }
+    $currentPester = Get-Module -fullyqualifiedname @{ModuleName = "Pester"; ModuleVersion = "$pesterVersion"} -ListAvailable
+    if (-not $CurrentPester) {
+        Update-Module -Name Pester -RequiredVersion $PesterVersion -Force -skipPublishercheck
     }
     else {
-        Write-Host "Running Pester version $($pestermod.version)" -ForegroundColor green
+        Write-Host "Pester version $PesterVersion verified" -ForegroundColor green
     }
+
+    Import-Module -name Pester -RequiredVersion $PesterVersion -Force -Global
 }
 
 Function _LabilityCheck {
