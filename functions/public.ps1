@@ -141,12 +141,13 @@ Function Get-PSAutoLabSetting {
         PctFreeMemory   = $pctFree
         Processor       = (Get-CimInstance -classname Win32_Processor -property Name).Name
         IsElevated      = (Test-IsAdministrator)
-        RemotingEnabled = $(try {[void](Test-WSMan  -erroraction stop); $True} catch { $false})
+        RemotingEnabled = $(try {[void](Test-WSMan -erroraction stop); $True} catch { $false})
         HyperV          = (Get-Item $env:windir\System32\vmms.exe).versioninfo.productversion
         PSAutolab       = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending).version
         Lability        = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending).version
-        Pester          = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        Pester          = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending).version
         PowerShellGet   = (Get-Module -name PowerShellGet -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        PSDesiredStateConfiguration = (Get-Module -name PSDesiredStateConfiguration -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
     }
 }
 
@@ -167,6 +168,11 @@ Function Invoke-RefreshHost {
     #test if a new version of lability is required
     if ($pscmdlet.ShouldProcess("version $LabilityVersion", "Check for Lability Requirements")) {
         _LabilityCheck -requiredVersion $LabilityVersion -skipPublishercheck:$SkipPublisherCheck
+    }
+
+    #test and update Pester as needed
+    if ($pscmdlet.ShouldProcess("version $PesterVersion", "Check for required Pester version")) {
+        _PesterCheck
     }
 
     # Setup Path Variables
@@ -219,9 +225,10 @@ Function Invoke-SetupHost {
 
     !!IMPORTANT SECURITY NOTE!!
 
-    This module will set trusted hosts to connect to any machine on the local network. This is NOT a recommended
-    security practice. It is assumed you are installing this module on a non-production machine
-    and are willing to accept this potential risk for the sake of a training and test environment.
+    This module will set trusted hosts to connect to any machine on the local network.
+    This is NOT a recommended security practice. It is assumed you are installing this
+    module on a non-production machine and are willing to accept this potential risk
+    for the sake of a training and test environment.
 
     If you do not want to proceed, press Ctrl-C.
 "@
@@ -658,21 +665,24 @@ Function Invoke-ValidateLab {
     )
 
     Write-Verbose "Starting $($myinvocation.mycommand)"
+    Write-Verbose "Importing Pester module version $PesterVersion"
+
+    Import-Module -name Pester -RequiredVersion $PesterVersion -force -Global
     $Path = Convert-Path $path
     Write-Verbose "Using path $path"
 
     If (-Not $NoMessages) {
 
         $msg = @"
-        [$(Get-Date)]
-        Starting the VM testing process. This could take some time to
-        complete depending on the complexity of the configuration. You can press
-        Ctrl+C at any time to break out of the testing loop.
+    [$(Get-Date)]
+    Starting the VM testing process. This could take some time to
+    complete depending on the complexity of the configuration. You can press
+    Ctrl+C at any time to break out of the testing loop.
 
-        If you feel the test is taking too long, break out of the testing loop
-        and manually run the test:
+    If you feel the test is taking too long, break out of the testing loop
+    and manually run the test:
 
-        invoke-pester .\vmvalidate.test.ps1
+        Invoke-Pester .\vmvalidate.test.ps1
 
     If only one of the VMs appears to be failing, you might try stopping
     and restarting it with the Hyper-V Manager or the cmdlets:
@@ -808,7 +818,7 @@ Function Invoke-SnapshotLab {
 
         * Snapshot the lab environment for easy and fast rebuilding
 
-        Note! This should be done after the configurations have finished
+        Note! This should be done after the configurations have finished.
 
 "@
     }

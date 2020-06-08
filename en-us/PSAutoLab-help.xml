@@ -361,7 +361,7 @@ Lab          : MultiRole-Server-2016</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>If you need to report a problem with Autolab, use this command to get relevant configuration and host information. Include the output in your GitHub issue.</maml:para>
+      <maml:para>If you need to report a problem with AutoLab, use this command to get relevant configuration and host information. Please include the output in your GitHub issue.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -399,21 +399,22 @@ Lab          : MultiRole-Server-2016</dev:code>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-PSAutoLabSetting
 
-AutoLab         : C:\Autolab
-PSVersion       : 5.1.18362.628
-PSEdition       : Desktop
-OS              : Microsoft Windows 10 Pro
-FreeSpaceGB     : 114.52
-MemoryGB        : 32
-PctFreeMemory   : 43.43
-Processor       : Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
-IsElevated      : True
-RemotingEnabled : True
-HyperV          : 10.0.18362.1
-PSAutolab       : 4.7.0
-Lability        : {0.19.1, 0.19.0, 0.18.0}
-Pester          : 4.10.1
-PowerShellGet   : 2.2.3</dev:code>
+AutoLab                     : C:\Autolab
+PSVersion                   : 5.1.19041.1
+PSEdition                   : Desktop
+OS                          : Microsoft Windows 10 Pro
+FreeSpaceGB                 : 172.49
+MemoryGB                    : 32
+PctFreeMemory               : 44.66
+Processor                   : Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
+IsElevated                  : True
+RemotingEnabled             : True
+HyperV                      : 10.0.19041.1
+PSAutolab                   : {4.10.0, 4.9.0}
+Lability                    : {0.19.1, 0.19.0, 0.18.0}
+Pester                      : {4.10.1, 4.10.0, 4.9.0, 4.4.4...}
+PowerShellGet               : 2.2.3
+PSDesiredStateConfiguration : 1.1</dev:code>
         <dev:remarks>
           <maml:para>The output will also show previously installed versions of the PSAutoLab and Lability modules. Only the latest version should be loaded. You can remove the older versions if you no longer need them by running Uninstall-Module -name &lt;modulename&gt; -requiredversion &lt;version number&gt;. The FreeSpaceGB value is the amount of free space on the drive containing your AutoLab folder.</maml:para>
           <maml:para>Copy and paste this information into a GitHub issue along with any relevant error messages.</maml:para>
@@ -993,6 +994,13 @@ This process will not remove any configurations that have been deleted from the 
         <dev:code>PS C:\&gt; Setup-Host</dev:code>
         <dev:remarks>
           <maml:para>Follow the on-screen prompts. If you have to install the Hyper-V feature you definitely should reboot before setting up any lab configurations.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Setup-Host -destination D:\Autolab</dev:code>
+        <dev:remarks>
+          <maml:para>This will setup the Autolab module but put the necessary files on the D: drive. It is recommended that you use Autolab as the folder name.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
