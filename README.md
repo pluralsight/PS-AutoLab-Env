@@ -37,8 +37,10 @@ This project has been published to the PowerShell Gallery. It is recommended tha
 Open an elevated PowerShell prompt and run:
 
 ```powershell
-PS C:\> Install-Module PSAutoLab
+PS C:\> Install-Module PSAutoLab -Force -SkipPublisherCheck
 ```
+
+> The installation should install required dependencies which is why you need the additional parameters.
 
 If prompted, answer yes to update the nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted. If you have an old copy from before Pluralsight took ownership you will get an error. Manually remove the old module files and try again.
 
@@ -56,7 +58,7 @@ PS C:\> Get-Module PSAutolab
 
 ModuleType Version    Name                                ExportedCommands
 ---------- -------    ----                                ----------------
-Script     4.8.0      psautolab                           {Enable-Internet, Get-LabSnapshot,...}
+Script     4.11.0      psautolab                           {Enable-Internet, Get-LabSnapshot,...}
 ```
 
 Your version number may differ.
