@@ -14,6 +14,8 @@ Pluralsight makes no guarantees or warranties. This project is intended to be us
 
 This tool currently supports running on a __Windows 10__ client that supports virtualization. Windows 10 Pro or Enterprise should be sufficient. It is assumed you will be installing this on a Windows 10 desktop running Windows PowerShell 5.1. This module will **not** work and and is unsupported on Windows 10 Home or any Student edition. Although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server platforms but this capability has not been fully tested nor is it supported.
 
+> Using this in a nested virtual environment *may* work, but don't be surprised if there are problems, especially related to networking and NAT.
+
 The host computer must have the following:
 
 * Windows PowerShell 5.1
@@ -36,7 +38,7 @@ This project has been published to the PowerShell Gallery. It is recommended tha
 
 Open an elevated PowerShell prompt and run:
 
-```powershell
+```text
 PS C:\> Install-Module PSAutoLab -Force -SkipPublisherCheck
 ```
 
@@ -52,7 +54,7 @@ See the [Changelog](./changelog.txt) for update details.
 
 You can verify the module with these commands:
 
-```powershell
+```text
 PS C:\> Import-Module PSAutolab -force
 PS C:\> Get-Module PSAutolab
 
@@ -67,7 +69,7 @@ Your version number may differ.
 
 This module and its configurations should not conflict with any existing Hyper-V virtual machines or networking. But you should be aware that the module will create a new., internal Hyper-V switch called `LabNet`. This switch will use a NAT configuration called `LabNat`.
 
-```powershell
+```text
 PS C:\> Get-NetNat LabNat
 
 
@@ -87,12 +89,11 @@ Active                           : True
 
 The `Instructions.md` file in each configuration folder should provide an indication of what VMs will be created. You can also check the `VMConfigurationData.psd1` file.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\MultiRole> (Import-PowerShellDataFile .\VMConfigurationData.psd1).allnodes.Nodename
 *
 DC1
 S1
-N1
 Cli1
 ```
 
@@ -102,7 +103,6 @@ Current configurations will use these names for the virtual machine and computer
 * S1
 * S2
 * Cli1
-* N1
 * Cli2
 * PullServer
 * DOM1
@@ -114,11 +114,13 @@ Current configurations will use these names for the virtual machine and computer
 * S12R2
 * S12R2GUI
 
+> Nano Server images have been removed from configurations. These configurations were using the now deprecated version of Nano. Microsoft has changed direction and none of the existing configurations use this new version.
+
 ### Previous Versions
 
 If you installed previous versions of this module, and struggled, hopefully this version will be an improvement. To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`. You can run a command like:
 
-```powershell
+```text
 PS C:\> Get-Module PSAutolab -ListAvailable | Select-Object Path
 ```
 
@@ -138,19 +140,19 @@ While this module follows proper naming conventions, the commands you will typic
 
 The first time you use this module, you will need to configure the local machine or host. Open an elevated PowerShell session and run:
 
-```powershell
+```text
 PS C:\> Setup-Host
 ```
 
 This will install and configure the Lability module and install the Hyper-V feature if it is missing. By default, all AutoLab files will be stored under `C:\AutoLab`, which the setup process will create. If you prefer to use a different drive, you can specify it during setup.
 
-```powershell
+```text
 PS C:\> Setup-Host -DestinationPath D:\AutoLab
 ```
 
 You will be prompted to reboot, which you should do especially if setup had to add the Hyper-V feature. To verify your configuration open an elevated PowerShell session and run this command:
 
-```powershell
+```text
 PS C:\> Get-PSAutoLabSetting
 
 
@@ -178,7 +180,7 @@ Some of the your values may be different. Please include this information when r
 
 Once the host setup is complete, you can use the module's `Get-LabSummary` command to better understand what the lab configuration will setup. Run the command in the configuration folder.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer-GUI-2016> Get-LabSummary
 
 
@@ -218,7 +220,7 @@ Most, if not all, configurations should follow the same manual process. Run each
 
 To verify that all virtual machines are properly configured you can run `Validate-Lab`. This will invoke a set of tests and loop until everything passes. Due to the nature of DSC and complexity of some configurations this could take up to 60 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
@@ -228,13 +230,13 @@ This can be useful for troubleshooting.
 
 As an alternative, you can setup a lab environment with minimal prompting.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 ```
 
 Assuming you don't need to install a newer version of `nuget`, you can leave the setup alone. It will run all of the manual steps for you. Beginning in version `4.3.0` you also have the option to run the unattend process in a PowerShell background job.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -asjob
 ```
 
@@ -244,7 +246,7 @@ Use the job cmdlets to manage.
 
 To stop the lab VMs, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Shutdown-Lab
 ```
 
@@ -254,7 +256,7 @@ You can also use the Hyper-V manager or cmdlets to manually shut down virtual ma
 
 The setup process will leave the virtual machines running. If you have stopped the lab and need to start it, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Run-Lab
 ```
 
@@ -264,13 +266,13 @@ You can also use the Hyper-V manager or cmdlets to manually start virtual machin
 
 You can snapshot the entire lab very easily. Change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Snapshot-Lab
 ```
 
 To quickly rebuild the labs from the checkpoint, run:
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Refresh-Lab
 ```
 
@@ -280,13 +282,13 @@ Or you can use the Hyper-V cmdlets to create and manage VM snaphots.
 
 To destroy the lab completely, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 ```
 
 This will remove the virtual machines and DSC configuration files. If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch. In fact, that is the default behavior. If you want to remove everything you would need to run a command like this:
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
 ```
 
@@ -362,7 +364,7 @@ If you make a mistake or want to restore the original configurations run the `Re
 
 When you build an lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use `Update-Lab``to invoke Windows update on all lab members. This can be a time consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\PowerShellLab> update-lab -AsJob
 
 Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
@@ -385,42 +387,41 @@ Run the update process as a background job. Use the PowerShell job cmdlets to ma
 
 As this module is updated over time, new configurations may be added, or bugs fixed in existing configurations. There may also be new Lability updates. Use PowerShell to check for new versions:
 
-```powershell
+```text
 PS C:\> Find-Module PSAutoLab
 ```
 
 And update:
 
-```powershell
-PS C:\> Update-Module PSAutoLab
+```text
+PS C:\> Update-Module PSAutoLab -Force
 ```
 
-If you update, it is recommended that you update the computer running AutoLab.
+If you update, it is recommended that you update the AutoLab configuration.
 
-```powershell
+```text
 PS C:\> Refresh-Host
 ```
 
-This will update Lability if required and copy all new configuration files to your AutoLab\Configurations folder.
-It will NOT delete any files.
+This will update the Lability and Pester modules if required and copy all new configuration files to your AutoLab\Configurations folder. It will NOT delete any files.
 
 ## Removing PSAutolab
 
 If you want to completely remove the PSAutoLab module, first use `Wipe-Lab` to remove any existing lab configurations including the Hyper-V switch. Run this command to uninstall the module and its dependencies
 
-```powershell
+```text
 PS C:\> Uninstall-Module PSAutolab,Lability
 ```
 
 You may need to manually delete the `C:\Autolab` folder. If you want to remove the NAT configuration"
 
-```powershell
+```text
 PS C:\> Remove-NetNat LabNat
 ```
 
 If you want to remove Hyper-V you can use the Control Panel to manually remove the optional feature. Or you can try using PowerShell.
 
-```powershell
+```text
  PS C:\> Get-WindowsOptionalFeature -FeatureName *Hyper* -online | Disable-WindowsOptionalFeature -Online
 ```
 
@@ -434,7 +435,7 @@ The validation tests for each configuration are written for the Pester module. T
 
 The commands and configurations in this module are not foolproof. During testing a lab configuration will run quickly and without error on one Windows 10 desktop but fail or take much longer on a different Windows 10 desktop. Most setups should be complete in under an hour. If validation is failing, manually run the validation test in the configuration folder.
 
-```powershell
+```text
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
@@ -450,21 +451,37 @@ At this point, you can open an issue in this repository. Open an elevated PowerS
 
 ## Known Issues
 
-### I get an error trying to update Lability
+### *I get an error when importing the module*
+
+Starting with version 4.12.0 of this module, you might see this error when you import the module.
+
+```text
+Import-Module : Assertion operator name 'Be' has been added multiple times.
+```
+
+This is most likely due to a conflict in Pester versions. The solution is to remove the Pester module from your current session.
+
+```powershell
+Get-Module Pester | Remove-Module
+```
+
+Then import this module again.
+
+### *I get an error trying to update Lability*
 
 If you try to run `Refresh-Host` you might see an error about a certificate mismatch. Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates. If you encounter this problem, run `Refresh-Host -SkipPublisherCheck`.
 
-### Multiple DSC Resources
+### *Multiple DSC Resources*
 
 Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on. You might especially see this with the xNetworking module and the `xIPAddress` resource. If you have any version older than 5.7.0.0 you might encounter problems. Run this command to see what you have installed:
 
-```powershell
+```text
 PS C:\> Get-DSCResource xIPAddress
 ```
 
 If you have older versions of the module, uninstall them if you can.
 
-```powershell
+```text
 PS C:\> Uninstall-Module xNetworking -RequiredVersion 3.0.0.0
 ```
 
@@ -472,8 +489,7 @@ It is recommended that you restart your PowerShell session and try the lab setup
 
 ## Acknowledgments
 
-This module is a continuation of the work done by Jason Helmick and Melissa (Missy) Januszko, whose efforts are greatly appreciated.
-Beginning with v4.0.0, this module is unrelated to any projects Jason or Missy may be developing under similar names.
+This module is a continuation of the work done by Jason Helmick and Melissa (Missy) Januszko, whose efforts are greatly appreciated. Beginning with v4.0.0, this module is unrelated to any projects Jason or Missy may be developing under similar names.
 
 ## Road Map
 
@@ -485,4 +501,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-06-08 15:01:39Z UTC
+Last Updated 2020-06-11 15:35:17Z UTC

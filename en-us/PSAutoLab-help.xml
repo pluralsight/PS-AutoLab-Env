@@ -1943,6 +1943,139 @@ This process will not remove any configurations that have been deleted from the 
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Test-LabDSCResource</command:name>
+      <command:verb>Test</command:verb>
+      <command:noun>LabDSCResource</command:noun>
+      <maml:description>
+        <maml:para>Test for required DSC resources</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This is a troubleshooting command for the PSAutoLab module. It is designed to be be run in a lab configuration folder. It will report on the required Desired State Configuration (DSC) resources and any versions that may already be installed. This can be used to diagnose potential version conflicts. Resource are installed automatically when you build a configuration so you don't need to take any action unless directed.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Test-LabDSCResource</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:Description>
+            <maml:para>Specify the folder path of an AutoLab configuration or change locations to the folder and run this command.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>.</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:Description>
+          <maml:para>Specify the folder path of an AutoLab configuration or change locations to the folder and run this command.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>.</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\Auto\Lab\Configurations\MultiRole&gt; Test-LabDSCResource
+
+ModuleName        : xActiveDirectory
+RequiredVersion   : 3.0.0.0
+Installed         : True
+InstalledVersions : {3.0.0.0, 2.16.0.0, 2.14.0.0}
+Configuration     : MultiRole
+
+ModuleName        : xComputerManagement
+RequiredVersion   : 4.1.0.0
+Installed         : True
+InstalledVersions : {4.1.0.0, 2.0.0.0, 1.8.0.0}
+Configuration     : MultiRole
+
+ModuleName        : xNetworking
+RequiredVersion   : 5.7.0.0
+Installed         : True
+InstalledVersions : 5.7.0.0
+Configuration     : MultiRole
+
+ModuleName        : xDhcpServer
+RequiredVersion   : 2.0.0.0
+Installed         : True
+InstalledVersions : {2.0.0.0, 1.5.0.0}
+Configuration     : MultiRole
+
+ModuleName        : xWindowsUpdate
+RequiredVersion   : 2.8.0.0
+Installed         : True
+InstalledVersions : {2.8.0.0, 2.7.0.0, 2.5.0.0}
+Configuration     : MultiRole
+
+ModuleName        : xPSDesiredStateConfiguration
+RequiredVersion   : 9.1.0
+Installed         : True
+InstalledVersions : {9.1.0, 9.0.0, 8.10.0.0, 8.9.0.0…}
+Configuration     : MultiRole
+
+ModuleName        : xPendingReboot
+RequiredVersion   : 0.4.0.0
+Installed         : True
+InstalledVersions : {0.4.0.0, 0.3.0.0}
+Configuration     : MultiRole
+
+ModuleName        : xADCSDeployment
+RequiredVersion   : 1.4.0.0
+Installed         : True
+InstalledVersions : {1.4.0.0, 1.1.0.0, 1.0.0.0}
+Configuration     : MultiRole
+
+ModuleName        : xDnsServer
+RequiredVersion   : 1.16.0.0
+Installed         : True
+InstalledVersions : {1.16.0.0, 1.15.0.0, 1.14.0.0, 1.7.0.0}
+Configuration     : MultiRole</dev:code>
+        <dev:remarks>
+          <maml:para>Run this command from the lab configuration folder.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Update-Lab</command:name>
       <command:verb>Update</command:verb>
       <command:noun>Lab</command:noun>

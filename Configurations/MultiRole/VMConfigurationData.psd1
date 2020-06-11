@@ -148,7 +148,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media     = '2019_x64_Standard_EN_Core_Eval'
         }
-
+<#
         @{
             NodeName                = 'N1'
             IPAddress               = '192.168.3.60'
@@ -158,7 +158,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_ProcessorCount = 1
             Lability_StartupMemory  = 1GB
         }
-
+#>
         @{
             NodeName                = 'Cli1'
             IPAddress               = '192.168.3.100'
@@ -188,6 +188,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             #EnvironmentPrefix = 'AutoLab-'
             Media       = (
                 @{
+                    <#
                     ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
                     ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
                     Id              = '2016_x64_Standard_Nano_DSC_EN_Eval';
@@ -207,8 +208,9 @@ This example code is provided without copyright and AS IS.  It is free for you t
                         Package       = @(
                             'Microsoft-NanoServer-Guest-Package',
                             'Microsoft-NanoServer-DSC-Package'
-                        )
-                    }
+                            )
+                        }
+                    #>
                 }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V

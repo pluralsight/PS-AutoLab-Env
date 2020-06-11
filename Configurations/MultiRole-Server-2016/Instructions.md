@@ -2,6 +2,7 @@
 
 This is an updated and revised configuration of the now retired POC-Multirole.
 If you were instructed to use that configuration, this one should work for you.
+This configuration no longer includes the deprecated NanoServer image.
 
 This lab builds the following:
 
@@ -17,18 +18,12 @@ This lab builds the following:
     IPAddress    : 192.168.3.50
     MemoryGB     : 1
 
-    Computername : N1
-    Description  : Windows Server 2016 Standard Nano 64bit English Evaluation
-    Role         :
-    IPAddress    : 192.168.3.60
-    MemoryGB     : 1
-
     Computername : Cli1
     Description  : Windows 10 64bit Enterprise 1903 English Evaluation
     Role         : {domainJoin, RSAT, RDP}
     IPAddress    : 192.168.3.100
     MemoryGB     : 2
-    
+
 ## To get started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
