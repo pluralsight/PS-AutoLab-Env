@@ -1,5 +1,21 @@
 # Change Log for PSAutoLab
 
+## 4.12.0
+
+## Add
+
++ Added a new function, `Test-LabDSCResource` which can be used to see if the required DSC resources are already installed and to display what versions are installed.
+
+## Change
+
++ Updated `README` with clearer setup instructions
++ Updated `Detailed-Setup-Instructions.md`
++ Modified manifest to install and use required module versions.
+
+## Delete
+
++ Commented out NanoServer installations in configurations that used them since the original use case has been deprecated by Microsoft.
+
 ## 4.11.0
 
 ### Add

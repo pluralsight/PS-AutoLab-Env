@@ -1425,3 +1425,55 @@ Function Invoke-WUUpdate {
 }
 
 #endregion
+
+#region
+
+Function Test-LabDSCResource {
+    [cmdletbinding()]
+    Param(
+        [Parameter(Position = 0, HelpMessage = "Specify the folder path of an Autolab configuration or change locations to the folder and run this command.")]
+        [ValidateScript({Test-Path $_})]
+        [string]$Path = "."
+    )
+    Begin {
+        Write-Verbose "[$((Get-Date).TimeofDay) BEGIN  ] Starting $($myinvocation.mycommand)"
+        $cPath = Convert-Path -Path $Path
+        $config = Join-Path -path $cpath -ChildPath VMConfigurationData.psd1
+        $configName = Split-Path $cPath -Leaf
+    } #begin
+
+    Process {
+        Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] Testing resources in $cpath "
+        Try {
+            $data = Import-PowerShellDataFile -path $config -ErrorAction Stop
+        }
+        Catch {
+            Throw $_
+        }
+        if ($data.NonNodeData.Lability.DSCResource) {
+            $dsc = $data.NonNodeData.Lability.DSCResource
+            Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] Found $($dsc.count) required DSC resources"
+            $dsc.GetEnumerator() | ForEach-Object {
+                $installed = Get-Module $_.name -ListAvailable
+                [pscustomobject]@{
+                    ModuleName = $_.Name
+                    RequiredVersion = $_.RequiredVersion
+                    Installed = $installed.version -contains $_.requiredVersion
+                    InstalledVersions = $Installed.version
+                    Configuration = $configName
+                }
+            }
+        }
+        else {
+            Write-Warning "No DSC Resources found in $config."
+        }
+    } #process
+
+    End {
+        Write-Verbose "[$((Get-Date).TimeofDay) END    ] Ending $($myinvocation.mycommand)"
+
+    } #end
+
+} #close Test-LabDSCResource
+
+#endregion

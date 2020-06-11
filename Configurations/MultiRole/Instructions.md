@@ -2,6 +2,7 @@
 
 This is an updated and revised configuration of the now retired POC-Multirole.
 If you were instructed to use that configuration, this one should work for you.
+The NanoServer images has been removed from this configuration because it is no longer a valid platform.
 
 The lab builds the following:
 
@@ -15,12 +16,6 @@ The lab builds the following:
     Description  : Windows Server 2019 Standard 64bit English Evaluation
     Role         : {DomainJoin, Web}
     IPAddress    : 192.168.3.50
-    MemoryGB     : 1
-
-    Computername : N1
-    Description  : Windows Server 2016 Standard Nano 64bit English Evaluation
-    Role         :
-    IPAddress    : 192.168.3.60
     MemoryGB     : 1
 
     Computername : Cli1

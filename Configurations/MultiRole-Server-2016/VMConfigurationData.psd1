@@ -73,7 +73,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_ProcessorCount     = 1
             Lability_MinimumMemory      = 1GB
             SecureBoot                  = $false
-            Lability_Media              = '2016_x64_Standard_Core_EN_Eval' 
+            Lability_Media              = '2016_x64_Standard_Core_EN_Eval'
         }
 
         <#    Available Roles for computers
@@ -110,16 +110,17 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media     = '2016_x64_Standard_Core_EN_Eval'
         }
-
-        @{
-            NodeName                = 'N1'
-            IPAddress               = '192.168.3.60'
-            #Role = 'Nano'
-            Lability_BootOrder      = 20
-            Lability_Media          = '2016_x64_Standard_Nano_DSC_EN_Eval'
-            Lability_ProcessorCount = 1
-            Lability_StartupMemory  = 1GB
-        }
+<#
+@{
+    NodeName                = 'N1'
+    IPAddress               = '192.168.3.60'
+    #Role = 'Nano'
+    Lability_BootOrder      = 20
+    Lability_Media          = '2016_x64_Standard_Nano_DSC_EN_Eval'
+    Lability_ProcessorCount = 1
+    Lability_StartupMemory  = 1GB
+}
+#>
 
         @{
             NodeName                = 'Cli1'
@@ -141,7 +142,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
     )
     NonNodeData = @{
         Lability = @{
- 
+
             # You can uncomment this line to add a prefix to the virtual machine name.
             # It will not change the guest computername
             # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
@@ -150,6 +151,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             #EnvironmentPrefix = 'AutoLab-'
             Media       = (
                 @{
+                    <#
                     ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
                     ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
                     Id              = '2016_x64_Standard_Nano_DSC_EN_Eval'
@@ -169,8 +171,9 @@ This example code is provided without copyright and AS IS.  It is free for you t
                         Package       = @(
                             'Microsoft-NanoServer-Guest-Package',
                             'Microsoft-NanoServer-DSC-Package'
-                        )
-                    }
+                            )
+                        }
+                        #>
                 }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
@@ -189,7 +192,6 @@ This example code is provided without copyright and AS IS.  It is free for you t
             )
             Resource    = @(
                 @{
-
                     Id       = 'Win10RSAT'
                     Filename = 'WindowsTH-RSAT_WS2016-x64.msu'
                     Uri      = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS2016-x64.msu'

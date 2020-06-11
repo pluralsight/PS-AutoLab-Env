@@ -14,19 +14,15 @@ This lab builds the following:
     IPAddress    : 192.168.3.50
     MemoryGB     : 1
 
-    Computername : N1
-    Description  : Windows Server 2016 Standard Nano 64bit English Evaluation
-    Role         :
-    IPAddress    : 192.168.3.60
-    MemoryGB     : 1
-
     Computername : Cli1
     Description  : Windows 10 64bit Enterprise 1903 English Evaluation
     Role         : {domainJoin, RSAT, RDP}
     IPAddress    : 192.168.3.100
     MemoryGB     : 2
-    
-## To get started
+
+This configuration no longer includes the NanoServer image since it is now deprecated.
+
+## To Get Started
 
     To run the full lab setup, which includes Setup-Lab, Run-Lab, Enable-Internet, and Validate-Lab:
     PS> Unattend-Lab
@@ -45,7 +41,7 @@ This lab builds the following:
     To validate when configurations have converged:
     PS> Validate-Lab
 
-## To Stop and snapshot the lab
+## To Stop and Snapshot the Lab
 
     To stop the lab VMs:
     PS> Shutdown-lab
@@ -56,7 +52,7 @@ This lab builds the following:
     To quickly rebuild the labs from the checkpoint, run:
     PS> Refresh-Lab
 
-## To Patch a lab
+## To Patch a Lab
 
     If you want to make sure the virtual machines have the latest updates from Microsoft, you can run this command:
 
@@ -66,7 +62,7 @@ This lab builds the following:
 
     PS> Update-Lab -asjob
 
-## To remove a lab
+## To Remove a Lab
 
     To destroy the lab to build again:
     PS> Wipe-Lab

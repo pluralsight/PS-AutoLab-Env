@@ -12,7 +12,6 @@ $cred = New-Object PSCredential "Company\Administrator", $Secure
 #The prefix only changes the name of the VM not the guest computername
 $prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
 
-
 $all = @()
 Describe DC1 {
     $VMName = "$($prefix)DC1"
@@ -114,7 +113,7 @@ Describe S1 {
 
 } #S1
 
-
+<#
 Describe N1 {
 
     $VMName = "$($prefix)N1"
@@ -150,6 +149,7 @@ Describe N1 {
         }
     }
 }
+#>
 
 Describe Cli1 {
 

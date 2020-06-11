@@ -115,7 +115,7 @@ Describe S1 {
 
 } #S1
 
-
+<#
 Describe N1 {
 
     $VMName = "$($prefix)N1"
@@ -158,6 +158,7 @@ Describe N1 {
         }
     }
 }
+#>
 
 Describe Cli1 {
 
