@@ -1,5 +1,23 @@
 # Change Log for PSAutoLab
 
+## 4.13.0
+
+## Add
+
++ none
+
+## Change
+
++ Added more Verbose messaging to `Invoke-SetupLab`.
++ Modified `Invoke-ValidateLab` to import and use the approved version of the Pester module.
++ Updated validation test for `PowerShellLab` configuration to fix error validating domain admin membership. (Issue # 226)
++ Modified `Invoke-ValidateLab` to remove all versions of Pester and then load the version compatible with this module.
++ Updated `Invoke-SetupLab` to use `(Get-TimeZone).id` when using local time zone. (Issue #227)
+
+## Delete
+
++ None
+
 ## 4.12.0
 
 ## Add
