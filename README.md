@@ -4,8 +4,7 @@
 
 > **If you are running Pester v5.x you need to be running at least version 4.11.0 of this module.**
 
-This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems. The downside is that it is a difficult module for less experienced PowerShell users. The configurations and control commands for the Hyper-V virtual machines are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own. Note that the Lability module is not owned or managed by Pluralsight.
-This project and all files are released under an MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want.
+This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems. The downside is that it is a difficult module for less experienced PowerShell users. The configurations and control commands for the Hyper-V virtual machines are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own. Note that the Lability module is not owned or managed by Pluralsight. This project and all files are released under an MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want.
 
 **While this project is under the Pluralsight banner, it is offered AS-IS as a free tool with no official support from Pluralsight.
 Pluralsight makes no guarantees or warranties. This project is intended to be used for educational purposes only.**
@@ -21,7 +20,7 @@ The host computer must have the following:
 * Windows PowerShell 5.1
 * A high-speed internet connection
 * Minimum 16GB of RAM (32GB is recommended)
-* Minimum 100GB free disk space preferably on a fast SSD device
+* Minimum 100GB free disk space preferably on a fast SSD device or equivalent
 * An Intel i5 processor or equivalent. An i7 is recommended for best performance
 * Windows PowerShell Remoting enabled
 * You should be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
@@ -60,7 +59,7 @@ PS C:\> Get-Module PSAutolab
 
 ModuleType Version    Name                                ExportedCommands
 ---------- -------    ----                                ----------------
-Script     4.11.0      psautolab                           {Enable-Internet, Get-LabSnapshot,...}
+Script     4.12.0      PSAutolab                           {Enable-Internet, Get-LabSnapshot,...}
 ```
 
 Your version number may differ.
@@ -114,7 +113,7 @@ Current configurations will use these names for the virtual machine and computer
 * S12R2
 * S12R2GUI
 
-> Nano Server images have been removed from configurations. These configurations were using the now deprecated version of Nano. Microsoft has changed direction and none of the existing configurations use this new version.
+> Nano Server images have been removed from configurations. These configurations were using the now deprecated version of Nano. Microsoft has changed direction with regards to Nano Server and none of the existing configurations use this new version.
 
 ### Previous Versions
 
@@ -276,7 +275,7 @@ To quickly rebuild the labs from the checkpoint, run:
 PS C:\Autolab\Configurations\SingleServer\> Refresh-Lab
 ```
 
-Or you can use the Hyper-V cmdlets to create and manage VM snaphots.
+Or you can use the Hyper-V cmdlets to create and manage VM snapshots.
 
 ### To Remove a Lab
 
@@ -501,4 +500,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-06-11 15:35:17Z UTC
+Last Updated 2020-06-16 13:30:03Z UTC

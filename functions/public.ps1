@@ -375,7 +375,11 @@ Function Invoke-SetupLab {
     }
 
     if ($UseLocalTimeZone) {
-        $localtz = [System.TimeZone]::CurrentTimeZone.StandardName
+        #modifying this old code since it doesn't translate properly from some
+        #non-US locations. (Issue #227)
+        # $localtz = [System.TimeZone]::CurrentTimeZone.StandardName
+        $localtz = (Get-TimeZone).ID
+        Write-Verbose "Using local time zone $localtz"
         if ($LabData.allnodes.count -gt 1) {
             if (-Not $NoMessages) {
                 Microsoft.PowerShell.Utility\Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
@@ -396,7 +400,7 @@ Function Invoke-SetupLab {
 
     $LabData.allnodes | Out-String | Write-Verbose
 
-    # Install DSC Resource modules specified in the .PSD1
+    Write-Verbose "Install DSC Resource modules specified in the .PSD1"
 
     If (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
@@ -432,7 +436,7 @@ Function Invoke-SetupLab {
         }
     }
 
-    # Run the config to generate the .mof files
+    Write-Verbose "Run the config to generate the .mof files"
     If (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Build the .Mof files from the configs'
     }
@@ -445,8 +449,8 @@ Function Invoke-SetupLab {
     if (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Building the lab environment for $labname"
     }
-    # Creates the lab environment without making a Hyper-V Snapshot
 
+    # Creates the lab environment without making a Hyper-V Snapshot
     $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
     $startParams = @{
         ConfigurationData   = $LabData
@@ -463,13 +467,14 @@ Function Invoke-SetupLab {
     Write-Verbose ($startParams | Out-String)
     if ($PSCmdlet.ShouldProcess($labname, "Start-LabConfiguration")) {
         Try {
+            Write-Verbose "Invoking Start-LabConfiguration"
             Start-LabConfiguration @startParams
         }
         Catch {
             Microsoft.PowerShell.Utility\Write-Host "Failed to start lab configuration." -foreground red
             throw $_
         }
-        # Disable secure boot for VM's
+        Write-Verbose "Disable secure boot for VM's"
         $VM = Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name
         Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
@@ -665,15 +670,18 @@ Function Invoke-ValidateLab {
     )
 
     Write-Verbose "Starting $($myinvocation.mycommand)"
-    Write-Verbose "Importing Pester module version $PesterVersion"
 
+    #remove pester v5
+    Get-Module Pester | Remove-Module -force
+    Write-Verbose "Importing Pester module version $PesterVersion"
+    #use the module specific version of Pester
     Import-Module -name Pester -RequiredVersion $PesterVersion -force -Global
     $Path = Convert-Path $path
     Write-Verbose "Using path $path"
 
     If (-Not $NoMessages) {
 
-        $msg = @"
+    $msg = @"
     [$(Get-Date)]
     Starting the VM testing process. This could take some time to
     complete depending on the complexity of the configuration. You can press
@@ -684,11 +692,17 @@ Function Invoke-ValidateLab {
 
         Invoke-Pester .\vmvalidate.test.ps1
 
+    Make sure you are using version $PesterVsion of the Pester module.
+    Remove any other versions first and then re-import
+
+        Get-Module Pester | Remove-Module -force
+        Import-Module -name Pester -RequiredVersion $PesterVersion -force
+
     If only one of the VMs appears to be failing, you might try stopping
     and restarting it with the Hyper-V Manager or the cmdlets:
 
-    Stop-VM <vmname>
-    Start-VM <vmname>
+        Stop-VM <vmname>
+        Start-VM <vmname>
 
     Errors are expected until all tests complete successfully.
 

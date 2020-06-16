@@ -15,7 +15,7 @@ $prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
 #turn off progress bars
 $prep = {
     $ProgressPreference = "SilentlyContinue"
-    $errorActionPreference = 'silentlyContinue'
+    $errorActionPreference = 'SilentlyContinue'
 }
 #define an array to hold all of the PSSessions
 $all = @()
@@ -113,11 +113,11 @@ Describe DOM1 {
 
             $admins = Invoke-Command { Get-ADGroupMember "Domain Admins"-ErrorAction SilentlyContinue } -session $dc
             It "[DOM1] ArtD is a member of Domain Admins" {
-                $admins.name -contains 'artd'
+                $admins.name -contains 'artd' | Should Be True
             }
 
             It "[DOM1] AprilS is a member of Domain Admins" {
-                $admins.name -contains 'aprils'
+                $admins.name -contains 'aprils' | Should Be True
             }
         } #if users
 
@@ -292,7 +292,7 @@ Describe SRV3 {
     Catch {
         It "[SRV3] Should allow a PSSession but got error: $($_.exception.message)" {
             $false | Should Be $True
-        }   
+        }
     }
 }
 
