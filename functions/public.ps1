@@ -279,13 +279,13 @@ Function Invoke-SetupHost {
         ResourcePath        = "$DestinationPath\Resources"
     }
 
-    Set-LabHostDefault @DirDef
+    Lability\Set-LabHostDefault @DirDef
 
-    $HostStatus = Test-LabHostConfiguration
+    $HostStatus = Lability\Test-LabHostConfiguration
     If (-Not $HostStatus ) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V"
-        if ($pscmdlet.shouldprocess($DirDef.ConfigurationPath)) {
-            Start-LabHostConfiguration -ErrorAction SilentlyContinue
+        if ($pscmdlet.shouldprocess($DirDef.ConfigurationPath,"Lability\Start-LabHostConfiguration")) {
+            Lability\Start-LabHostConfiguration -ErrorAction SilentlyContinue
         }
     }
 
