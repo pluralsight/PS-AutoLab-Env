@@ -1,5 +1,20 @@
 # Change Log for PSAutoLab
 
+## 4.14.0
+
+### Add
+
++ Restored variable definition for `$LabilityVersion` in the psm1 file.
+
+### Change
+
++ Modified Lability commands in `Invoke-SetupHost` to use fully qualified command name.
++ Updated -WhatIf messages in `Invoke-Setup-Host`
+
+### Delete
+
++ none
+
 ## 4.13.0
 
 ## Add
