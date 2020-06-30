@@ -1,5 +1,21 @@
 # Change Log for PSAutoLab
 
+## 4.15.0
+
+### Add
+
++ Added troubleshooting content to `README` about potential TLS issues updating nuget or module. (Issue #224)
+
+### Change
+
++ Modified `Wipe-Lab` to simply turn off virtual machines (Issue #229)
++ Modified all commands to use fully qualified command names
++ Modified `Invoke-SetupHost` with additional verbose messaging
+
+### Delete
+
++ Deleted duplicate function `Invoke-WUUpdate` from `public.ps1`. This was a leftover before it was moved to a private function. (Issue #230)
+
 ## 4.14.0
 
 ### Add

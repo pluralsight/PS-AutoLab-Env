@@ -201,11 +201,14 @@ Function Invoke-SetupHost {
         [string]$DestinationPath = "C:\Autolab"
     )
 
+    Clear-Host
+
     # Setup Path Variables
     #use module defined variable
     $SourcePath = $ConfigurationPath
 
-    Clear-Host
+    Write-Verbose "Starting $($invocation.mycommand)"
+    Write-Verbose "SourcePath = $SourcePath"
 
     Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Green -Object @"
 
@@ -236,6 +239,7 @@ Function Invoke-SetupHost {
     Pause
 
     # For remoting commands to VM's - have the host set trustedhosts
+    Write-Verbose "Enable PSRemoting"
     Enable-PSRemoting -force -SkipNetworkProfileCheck
 
     Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
@@ -250,8 +254,9 @@ Function Invoke-SetupHost {
     }
 
     # Lability install
+    Write-Verbose "Bootstrapping Nuget install"
     Install-PackageProvider -Name Nuget -ForceBootstrap
-
+    Write-Verbose "Setting PSGallery as a trusted package source"
     Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted -Force -ForceBootstrap | Out-Null
 
     <#
@@ -260,10 +265,12 @@ Function Invoke-SetupHost {
 #>
 
     #update Pester as needed
+    Write-Verbose "Calling internal Pester check"
     _PesterCheck
 
     #use the module defined variable and a private function
     if ($pscmdlet.ShouldProcess("Lability $labilityVersion", "Install or Update Lability")) {
+        Write-Verbose "Calling internal Lability check"
         _LabilityCheck $LabilityVersion
         Import-Module Lability
     }
@@ -279,8 +286,10 @@ Function Invoke-SetupHost {
         ResourcePath        = "$DestinationPath\Resources"
     }
 
+    Write-Verbose "Set-LabHostDefault"
     Lability\Set-LabHostDefault @DirDef
 
+    Write-Verbose "Test-LabHostConfiguration"
     $HostStatus = Lability\Test-LabHostConfiguration
     If (-Not $HostStatus ) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V"
@@ -317,7 +326,7 @@ Function Invoke-SetupHost {
             Restart-Computer
         }
     } #whatif
-
+    Write-Verbose "Ending $($invocation.mycommand)"
 }
 #endregion
 
@@ -386,7 +395,7 @@ Function Invoke-SetupLab {
             }
             $nodes = $labdata.allnodes.where( {$_.nodename -ne "*"})
             foreach ($node in $nodes) {
-                $tz = $node.Lability_timezone
+               # $tz = $node.Lability_timezone
                 $node.Lability_timeZone = $localtz
             }
         }
@@ -468,15 +477,15 @@ Function Invoke-SetupLab {
     if ($PSCmdlet.ShouldProcess($labname, "Start-LabConfiguration")) {
         Try {
             Write-Verbose "Invoking Start-LabConfiguration"
-            Start-LabConfiguration @startParams
+            Lability\Start-LabConfiguration @startParams
         }
         Catch {
             Microsoft.PowerShell.Utility\Write-Host "Failed to start lab configuration." -foreground red
             throw $_
         }
         Write-Verbose "Disable secure boot for VM's"
-        $VM = Get-VM ( Get-LabVM -ConfigurationData "$path\*.psd1" ).Name
-        Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
+        $VM = Hyper-V\Get-VM ( Lability\Get-LabVM -ConfigurationData "$path\*.psd1" ).Name
+        Hyper-V\Set-VMFirmware -VM $vm -EnableSecureBoot Off -SecureBootTemplate MicrosoftUEFICertificateAuthority
 
         If (-Not $NoMessages) {
 
@@ -585,7 +594,6 @@ Function Invoke-RunLab {
 
             To destroy the lab to build again:
             Wipe-Lab
-
 "@
         }
     } #whatif
@@ -616,7 +624,6 @@ Function Enable-Internet {
 
         * Note! - If this generates an error, you are already enabled, or one of the default settings below
         does not match your .PSD1 configuration
-
 "@
     }
 
@@ -1005,6 +1012,10 @@ Function Invoke-WipeLab {
     if ($pscmdlet.ShouldProcess("VMs", "Stop-Lab")) {
 
         Try {
+            #Forcibly stop all VMS since they are getting deleted anyway (Issue #229)
+            Write-Verbose "Stopping all virtual machines in the configuration"
+            Hyper-V\Stop-VM -vmname (PSAutolab\Get-LabSummary -Path $Path).Computername -TurnOff
+            Write-Verbose "Calling Stop-Lab"
             Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop -WarningAction SilentlyContinue
         }
         Catch {
@@ -1014,26 +1025,30 @@ Function Invoke-WipeLab {
         }
     }
     # Remove .mof iles
+    Write-Verbose "Removing MOF files"
     Remove-Item -Path $path\*.mof
 
     if ($RemoveSwitch) {
+        Write-Verbose "Removing the Hyper-V switch"
         $removeParams.Add("RemoveSwitch", $True)
         # Delete NAT
         $NatName = $Labdata.AllNodes.IPNatName
         if ($pscmdlet.ShouldProcess("LabNat", "Remove NetNat")) {
+            Write-Verbose "Remoting NetNat"
             Remove-NetNat -Name $NatName
         }
     }
     # Delete vM's
     if ($pscmdlet.ShouldProcess("VMConfigurationData.psd1", "Remove lab configuration")) {
-
-        Remove-LabConfiguration @removeParams
+        Write-Verbose "Removing Lab Configuration"
+        Lability\Remove-LabConfiguration @removeParams
     }
 
     #only delete the VHD files associated with the configuration as you might have more than one configuration
     #running
+    Write-Verbose "Removing VHD files"
     $nodes = ($labdata.allnodes.nodename).where( { $_ -ne '*' })
-    Get-ChildItem (Get-LabHostDefault).differencingVHDPath | Where-Object { $nodes -contains $_.basename } | Remove-Item
+    Get-ChildItem (Lability\Get-LabHostDefault).differencingVHDPath | Where-Object { $nodes -contains $_.basename } | Remove-Item
     #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
     if (-Not $NoMessages) {
@@ -1120,37 +1135,37 @@ Function Invoke-UnattendLab {
 
         if ($pscmdlet.ShouldProcess("Setup-Lab", "Run Unattended")) {
             Write-Verbose "Setup-Lab"
-            Invoke-SetupLab @psboundparameters
+            PSAutolab\Invoke-SetupLab @psboundparameters
         }
         #this parameter isn't used in the remaining commands
         [void]($psboundparameters.remove("UseLocalTimeZone"))
 
         if ($pscmdlet.ShouldProcess("Enable-Internet", "Run Unattended")) {
             Write-Verbose "Enable-Internet"
-            Enable-Internet @psboundparameters
+            PSAutolab\Enable-Internet @psboundparameters
         }
         if ($pscmdlet.ShouldProcess("Run-Lab", "Run Unattended")) {
             Write-Verbose "Run-Lab"
-            Invoke-RunLab @psboundparameters
+            PSAutolab\Invoke-RunLab @psboundparameters
         }
         if ($pscmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
             Write-Verbose "Validate-Lab"
-            Invoke-ValidateLab @psboundparameters
+            PSAutolab\Invoke-ValidateLab @psboundparameters
         }
 
         if (-Not $NoMessages) {
             $msg = @"
 
-                Unattended setup is complete.
+        Unattended setup is complete.
 
-                To stop the lab VM's:
-                Shutdown-lab
+        To stop the lab VM's:
+        Shutdown-lab
 
-                When the configurations have finished, you can checkpoint the VM's with:
-                Snapshot-Lab
+        When the configurations have finished, you can checkpoint the VM's with:
+        Snapshot-Lab
 
-                To quickly rebuild the labs from the checkpoint, run:
-                Refresh-Lab
+        To quickly rebuild the labs from the checkpoint, run:
+        Refresh-Lab
 "@
             Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
         }
@@ -1193,7 +1208,7 @@ Function Get-LabSnapshot {
 
         Write-Verbose "Getting VMSnapshots for $($VMs -join ',')"
 
-        $snaps = Get-VMSnapshot -vmname  $VMs
+        $snaps = Hyper-V\Get-VMSnapshot -vmname  $VMs
         if ($snaps) {
             $snaps
             Microsoft.PowerShell.Utility\Write-Host "All VMs in the configuration should belong to the same snapshot if you want to use Refresh-Lab." -foreground green
@@ -1256,7 +1271,7 @@ Function Update-Lab {
                 Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $vmNode"
 
                 #verify VM is running
-                $vm = Get-VM -name $VMNode # $node.Nodename
+                $vm = Hyper-V\Get-VM -name $VMNode # $node.Nodename
                 if ($vm.state -ne 'running') {
                  #   Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $($node.nodename)"
                     Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $vmnnode"
@@ -1272,7 +1287,7 @@ Function Update-Lab {
                 else {
                     $upParams.Credential = $wgcred
                 }
-
+                #calling a private function
                 Invoke-WUUpdate @upParams
             }
         }
@@ -1291,156 +1306,8 @@ Function Update-Lab {
 
 #endregion
 
-#region Invoke-WUUpdate
 
-
-Function Invoke-WUUpdate {
-    [cmdletbinding(DefaultParameterSetName = "computer")]
-    [alias("Patch-Lab")]
-    Param(
-        [Parameter(Position = 0, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "computer")]
-        [ValidateNotNullOrEmpty()]
-        [string[]]$Computername,
-        [Parameter(Position = 0, ParameterSetName = "VM")]
-        [string[]]$VMName,
-        [ValidateNotNullorEmpty()]
-        [pscredential]$Credential,
-        [switch]$AsJob
-    )
-
-    Begin {
-        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
-
-        $all = @()
-
-        #this is a nested function to deploy remotely
-        Function WUUpdate {
-            [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName = "Computer")]
-            Param(
-                [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "Computer")]
-                [ValidateNotNullOrEmpty()]
-                [string[]]$Computername = $env:COMPUTERNAME
-
-            )
-            Begin {
-                Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
-
-                $ns = "ROOT/Microsoft/Windows/WindowsUpdate"
-            } #begin
-
-            Process {
-
-                #test if using the new Class
-                Try {
-                    [void](Get-CimClass -Namespace $ns -ClassName 'MSFT_WUOperations' -ErrorAction Stop)
-                    $class = 'MSFT_WUOperations'
-                    $scanArgs = @{SearchCriteria = "IsInstalled=0"}
-                    #always scan even if the function is run with -whatif
-                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cyan
-                    $scan = Invoke-CimMethod -Namespace $ns -ClassName $class -MethodName 'ScanForUpdates' -Arguments $scanArgs -WhatIf:$false -ErrorAction Stop
-
-                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
-                    if ($scan.Updates.count -gt 0) {
-                        if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Install Updates" )) {
-                            [void](Invoke-CimMethod -Namespace $ns -ClassName MSFT_WUOperations -MethodName InstallUpdates -Arguments @{Updates = $scan.updates})
-                        }
-                    }
-                } #try
-                Catch {
-                    #uncomment for debugging and troubleshooting
-                    #Microsoft.PowerShell.Utility\Write-Host "Failed to find MSFT_WUOperations on $env:computername" -ForegroundColor yellow
-                    $class = 'MSFT_WUOperationsSession'
-                    $scanArgs = @{OnlineScan = $True; SearchCriteria = "IsInstalled=0"}
-                    $ci = New-CimInstance -Namespace $ns -ClassName $class -Whatif:$False
-                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cya
-                    $scan = $ci | Invoke-CimMethod -MethodName 'ScanForUpdates' -Arguments $scanArgs -whatif:$False
-
-                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
-                    if ($scan.Updates.count -gt 0) {
-                        if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Apply Updates" )) {
-                            [void]($ci | Invoke-CimMethod -MethodName applyApplicableUpdates )
-                        }
-                    }
-                } #catch
-
-                if ($scan.updates.count -gt 0) {
-                    Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] Update process complete on $env:computername" -ForegroundColor Cyan
-                }
-
-                #check for reboot
-
-                $r = Invoke-CimMethod -Namespace $ns -ClassName 'MSFT_WUSettings' -MethodName 'IsPendingReboot'
-                if ($r.PendingReboot) {
-                    Write-Warning "$($env:computername) requires a reboot"
-                }
-
-                if ($ci) {
-                    Remove-Variable ci
-                }
-
-            } #process
-
-            End {
-                Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
-            } #end
-        } #end nested function
-
-        #get the contents of the nested function
-        $fun = ${function:WUUpdate}
-
-        $icmParams = @{
-            HideComputername = $True
-            Session          = $null
-            Scriptblock      = {WUUpdate}
-        }
-
-        if ($AsJob) {
-            $icmparams.AsJob = $True
-            $icmParams.JobName = "WUUpdate"
-        }
-
-    } #begin
-
-    Process {
-
-        if ($PSBoundParameters.ContainsKey("AsJob")) {
-            [void]$PSBoundParameters.remove("AsJob")
-        }
-
-        #write-Verbose ($PSBoundParameters | Out-String)
-
-        Try {
-            Write-Verbose "[PROCESS] Creating PSSessions"
-            $sess = New-PSSession @psboundParameters -ErrorAction stop
-            Write-Verbose "[PROCESS] Copy the function to the remote computer"
-            [void](Invoke-Command -ScriptBlock { New-Item -Path Function:WUUpdate -Value $using:fun -force } -Session $sess)
-
-            $icmParams.Session = $sess
-        }
-        Catch {
-            Write-Warning "Failed to create session to $Computer. $($_.exception.message)"
-        }
-        Write-Verbose "[PROCESS] Run the remote function"
-        $r = Invoke-Command @icmParams
-        if ($AsJob) {
-            $r
-        }
-        else {
-            $r | Select-Object -Property * -ExcludeProperty RunspaceID
-            Write-Verbose "[PROCESS] Cleaning up sessions"
-            $sess | Remove-PSSession
-        }
-
-    } #process
-    End {
-        Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
-    } #end
-
-}
-
-#endregion
-
-#region
+#region Test-LabDSCResource
 
 Function Test-LabDSCResource {
     [cmdletbinding()]
