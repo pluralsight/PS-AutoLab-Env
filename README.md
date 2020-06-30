@@ -432,6 +432,43 @@ The validation tests for each configuration are written for the Pester module. T
 
 ## Troubleshooting
 
+### Package Provider or Module Installation
+
+If you try to install a module or update the nuget provider, you might see warnings like these:
+
+```text
+WARNING: Unable to download from URI 'https://go.microsoft.com/fwlink/?LinkID=627338&clcid=0x409' to ''.
+WARNING: Unable to download the list of available providers. Check your internet connection.
+PackageManagement\Install-PackageProvider : No match was found for the specified search criteria for the provider 'NuGet'. The package provider requires 'PackageManagement' and
+'Provider' tags.
+```
+
+The first thing to check is to make sure you are using correct TLS settings. You can try running this command in PowerShell:
+
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+```
+
+You could also modify the registry in an elevated PowerShell session.
+
+```powershell
+Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\.NetFramework\v4.0.30319' -Name 'SchUseStrongCrypto' -Value 1
+```
+
+If the problem is the nuget provider, after making the TLS changes try:
+
+```powershell
+Install-PackageProvider nuget -force -forcebootstrap
+```
+
+You might also need to update the `PackageManagement` and/or `PowerShellGet` modules.
+
+```powershell
+Update-Module powershellget,packagemanagement -force
+```
+
+### Autolab Configurations
+
 The commands and configurations in this module are not foolproof. During testing a lab configuration will run quickly and without error on one Windows 10 desktop but fail or take much longer on a different Windows 10 desktop. Most setups should be complete in under an hour. If validation is failing, manually run the validation test in the configuration folder.
 
 ```text
@@ -495,9 +532,8 @@ This module is a continuation of the work done by Jason Helmick and Melissa (Mis
 These are some of the items that are being considered for future updates:
 
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM.
-* Integrate the [PostSetup](Configurations/PowerShellLab/PostSetup/README.md) tools from the PowerShellLab configuration.
 * Offer an easy way to customize a lab configuration such as node names and operating systems.
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-06-29 15:57:04Z UTC
+Last Updated 2020-06-30 13:47:44Z UTC

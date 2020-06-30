@@ -1,8 +1,11 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+param()
 
 #dot source functions
 . $PSScriptRoot\functions\public.ps1
 . $PSScriptRoot\functions\private.ps1
 
+#this variable is used for Refresh-Host to copy configurations from the module to Autolab\Configurations
 $ConfigurationPath = Join-Path -path $PSScriptRoot -ChildPath Configurations
 
 #declare the currently supported version of Pester
