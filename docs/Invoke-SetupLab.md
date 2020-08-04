@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-SetupLab.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Set up an Autolab configuration
+Set up an Autolab configuration.
 
 ## SYNTAX
 
@@ -20,12 +20,9 @@ Invoke-SetupLab [[-Path] <String>] [-IgnorePendingReboot] [-UseLocalTimeZone] [-
 
 ## DESCRIPTION
 
-Once you have configured the local host, change to a configuration folder under Autolab\Configurations and run a setup.
-It is recommended that you first review any readme or instruction files.
-This command will generate the DSC mofs, download required DSC resources and create the virtual machines.
-Follow any on screen instructions to continue.
+Once you have configured the local host, change to a configuration folder under Autolab\Configurations and run a setup. It is recommended that you first review any readme or instruction files. This command will generate the DSC MOFs, download required DSC resources and create the virtual machines. Follow on-screen instructions to continue.
 
-You will most likely use the Setup-Lab alias.
+You will typically use the Setup-Lab alias.
 
 ## EXAMPLES
 

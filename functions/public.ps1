@@ -59,8 +59,11 @@ Function Get-LabSummary {
                 'WIN10_x86_Enterprise_LTSC_EN_Eval'       = 'Windows 10 32bit Enterprise LTSC 2019 English Evaluation'
             }
             Write-Verbose "Getting node data from $psd1"
-            $Nodes = (Import-PowerShellDataFile -Path $psd1).allNodes
+            $import = Import-PowerShellDataFile -Path $psd1
+            $Nodes = $import.allNodes
 
+            #get the optional prefix value
+            $EnvPrefix = $import.NonNodeData.Lability.EnvironmentPrefix
             $nodes.where( {$_.Nodename -ne '*'}).Foreach( {
                     if ($_.lability_startupmemory) {
                         $mem = $_.lability_startupmemory
@@ -79,7 +82,7 @@ Function Get-LabSummary {
                     }
                     [pscustomobject]@{
                         PSTypeName   = "PSAutolabVM"
-                        Computername = $_.NodeName
+                        Computername = "{0}{1}" -f $envPrefix,$_.NodeName
                         InstallMedia = $_.lability_media
                         Description  = $media[$_.lability_media]
                         Role         = $_.Role

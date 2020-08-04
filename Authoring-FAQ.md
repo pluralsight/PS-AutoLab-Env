@@ -43,7 +43,7 @@ Normally, when you run `Wipe-Lab` that should handle everything for you. But if 
 + Change to C:\Autolab\VMVirtualDisks (or the drive where you have Autolab configured).
 + Manually delete any files that are named with virtual machines from your configuration.
 
-## How can I change a VM's timezone
+## How can I change a virtual machine's timezone
 
 1. First, find your desired timezone using one of these PowerShell commands:
 
@@ -59,4 +59,4 @@ Normally, when you run `Wipe-Lab` that should handle everything for you. But if 
 
 Another option is to use the `-UseLocalTimeZone` parameter when running `Setup-Lab` or `Unattend-Lab`. This will configure all virtual machines in the lab configuration to use the same time zone as the local host.
 
-### last updated 2020-04-23 18:21:49Z UTC
+### last updated 2020-08-04 18:23:47Z UTC

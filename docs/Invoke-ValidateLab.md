@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-ValidateLab.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Validate an Autolab configuration
+Validate an Autolab configuration.
 
 ## SYNTAX
 
@@ -19,19 +19,12 @@ Invoke-ValidateLab [[-Path] <String>] [<CommonParameters>]
 
 ## DESCRIPTION
 
-Lab configurations in Autolab use Desired State Configuration.
-These configurations can take some time to finish and converge.
-This command will validate that all virtual machines in the configuration are properly configured.
-It will loop through every 5 minutes running a Pester test suite for the configuration.
-Once all tests pass, the command will run the test one more time to display the results.
-You will see errors until all tests have passed.
-Depending on the configuration, this test could take up to 60 minutes to complete.
-You can press Ctrl+C at any time to break out of the test.
-If you prefer, you can also manually run the Pester test.
+Lab configurations in Autolab use Desired State Configuration. These configurations can take some time to finish and converge. This command will validate that all virtual machines in the configuration are properly configured.
+It will loop through every 5 minutes running a Pester test suite for the configuration. Once all tests pass, the command will run the test one more time to display the results. You will see errors until all tests have passed. Depending on the configuration, this test could take up to 60 minutes to complete. You can press Ctrl+C at any time to break out of the test. If you prefer, you can also manually run the Pester test.
 
 PS C:\Autolab\Configurations\PowerShellLab> Invoke-Pester .\VMvalidate.test.ps1
 
-You will most likely use the Validate-Lab alias.
+You will typically use the Validate-Lab alias.
 
 ## EXAMPLES
 
@@ -41,9 +34,7 @@ You will most likely use the Validate-Lab alias.
 PS C:\AutoLab\Configurations\Windows10> Validate-Lab
 ```
 
-You will see errors until all tests have passed.
-Press Ctrl+C to break out of the test.
-Configuration merging will continue in the virtual machines.
+You will see errors until all tests have passed. Press Ctrl+C to break out of the test. Configuration merging will continue in the virtual machines.
 
 ## PARAMETERS
 

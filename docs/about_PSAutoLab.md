@@ -21,7 +21,7 @@ Setup-Host
 This will install and configure the Lability module and install the Hyper-V feature if it is missing. By default, all AutoLab files will be stored under C:\AutoLab, which the setup will create. If you prefer to use a different drive, you can specify it during setup.
 
 ```powershell
-Setup-Host -destinationpath D:\AutoLab
+Setup-Host -DestinationPath D:\AutoLab
 ```
 
 You will be prompted to reboot, which you should do especially if setup had to add Hyper-V.

@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-UnattendLab.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Create an Autolab configuration unattended
+Create an Autolab configuration unattended.
 
 ## SYNTAX
 
@@ -26,14 +26,11 @@ Normally when you set up an Autolab configuration, you can do it manually by run
 * Enable-Internet
 * Validate-Lab
 
-Or you can use this command which will string all of these commands together.
-You may need to answer an initial prompt to update the version of nuget.exe but otherwise the installation should run unattended.
-Note that the validation will loop for awhile until the configurations are finalized and converged.
-You can press Ctrl+C at any time to break out of the test.
+Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe but otherwise the installation should run unattended. Note that the validation will loop for awhile until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test.
 
 You should run this command from within the configuration folder.
 
-You will most likely use the Unattend-Lab alias.
+You will typically use the Unattend-Lab alias.
 
 ## EXAMPLES
 

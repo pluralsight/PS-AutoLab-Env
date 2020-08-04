@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-WipeLab.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Remove an Autolab configuration
+Remove an Autolab configuration.
 
 ## SYNTAX
 
@@ -19,15 +19,13 @@ Invoke-WipeLab [[-Path] <String>] [-RemoveSwitch] [-Force] [-WhatIf] [-Confirm] 
 
 ## DESCRIPTION
 
-You can use this command to remove all files and virtual machines related to an Autolab configuration.
-The command will stop any running virtual machines for you.
-It is assumed you will be running this command from within a configuration folder.
+You can use this command to remove all files and virtual machines related to an Autolab configuration. The command will stop any running virtual machines for you. It is assumed you will be running this command from within a configuration folder.
 
 If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNat).
 
 Use -Force to suppress all prompts.
 
-You will most likely use the Wipe-Lab alias.
+You will typically use the Wipe-Lab alias.
 
 ## EXAMPLES
 

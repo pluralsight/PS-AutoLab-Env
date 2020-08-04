@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-RefreshHost.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Refresh local host AutoLab configuration
+Refresh local host AutoLab configuration.
 
 ## SYNTAX
 
@@ -19,13 +19,9 @@ Invoke-RefreshHost [[-Destination] <String>] [-SkipPublisherCheck] [-WhatIf] [-C
 
 ## DESCRIPTION
 
-If you keep the PSAutoLab module for any length of time, you will most likely update from time to time.
-Part of the update might include fixes or enhancements to current configurations or even entirely new configurations.
-This command makes it easier to keep your configurations up to date.
-After updating the PSAutoLab module, run this command which will verify you have the correct version of the Lability module and copy configuration files to your Autolab\ConfigurationPath folder.
-This will not overwrite any MOF files or delete anything.
+If you keep the PSAutoLab module for any length of time, you will most likely update from time to time. Part of the update might include fixes or enhancements to current configurations or even entirely new configurations. This command makes it easier to keep your configurations up to date. After updating the PSAutoLab module, run this function which will verify you have the correct version of the Lability module and copy configuration files to your Autolab\ConfigurationPath folder. This will not overwrite any MOF files or delete anything.
 
-You will most likely use the Refresh-Host alias.
+You will typically use the Refresh-Host alias.
 
 ## EXAMPLES
 

@@ -1,5 +1,10 @@
 # Change Log for PSAutoLab
 
+## 4.16.0
+
++ Modified `Get-LabSummary` to include the environment prefix as part of the computername if specified. (Issue #231)
++ Minor help and documentation updates. Added online links to command help.
+
 ## 4.15.0
 
 ### Add
