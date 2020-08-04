@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Get-PSAutoLabSetting.md
 schema: 2.0.0
 ---
 
@@ -19,7 +19,7 @@ Get-PSAutoLabSetting [<CommonParameters>]
 
 ## DESCRIPTION
 
-If you need to report a problem with AutoLab, use this command to get relevant configuration and host information. Please include the output in your GitHub issue.
+If you need to report a problem with AutoLab, use this command to get relevant configuration and host information. Please include the output in your GitHub issue. 
 
 ## EXAMPLES
 

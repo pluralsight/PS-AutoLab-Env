@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Get-LabSummary.md
 schema: 2.0.0
 ---
 
@@ -20,6 +20,8 @@ Get-LabSummary [[-Path] <String>] [<CommonParameters>]
 ## DESCRIPTION
 
 This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough memory in your computer. Run the command in the root of the configuration folder.
+
+If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the computer name.
 
 ## EXAMPLES
 
@@ -81,9 +83,7 @@ The total results are displayed using Out-GridView.
 
 ### -Path
 
-The PATH to the lab configuration folder.
-Normally, you should run all commands from within the configuration folder.
-Do NOT include the psd1 file name.
+The PATH to the lab configuration folder. Normally, you should run all commands from within the configuration folder. Do NOT include the psd1 file name.
 
 ```yaml
 Type: String
@@ -112,3 +112,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Get-VM]()

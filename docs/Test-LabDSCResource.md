@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Test-LabDSCResource.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Test for required DSC resources
+Test for required DSC resources.
 
 ## SYNTAX
 

@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Enable-Internet.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Configure lab configuration with Internet access
+Configure lab configuration with Internet access.
 
 ## SYNTAX
 
@@ -19,8 +19,8 @@ Enable-Internet [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 
 ## DESCRIPTION
 
-This command will enable Internet access to the virtual machines in the current lab configuration using a NAT interface.
-This command should be run from within the configuration directory after the virtual machines have been set up.
+This function will enable Internet access for the virtual machines in the current lab configuration using a NAT interface.
+This command should be run from the configuration directory after the virtual machines have been set up.
 
 ## EXAMPLES
 

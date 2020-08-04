@@ -1,4 +1,5 @@
-#this script isn't used at this time
+$msg ="This script isn't used at this time."
+Write-Host $msg -ForegroundColor Red
 return
 
 <#

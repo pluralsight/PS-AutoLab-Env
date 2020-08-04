@@ -40,15 +40,15 @@ Remove-NetNat LabNat
 
 ### Remove Module
 
-The previous version was manually copied to your module folder, C:\Program Files\WindowsPowerShell\Modules. You can always find the install location with a command like this:
+The previous version was manually copied to your module folder, `C:\Program Files\WindowsPowerShell\Modules`. You can always find the install location with a command like this:
 
 ```powershell
-get-module psautolab -ListAvailable | Select-Object Path
+Get-Module PSAutoLab -ListAvailable | Select-Object Path
 ```
 
 ### Delete AutoLab Folder
 
-Delete your AutoLab folder and all sub-folders which should be C:\AutoLab if you accepted the defaults during installation. This will delete all of the ISO files which means you'll need to re-download them when you build a new configuration. But that is OK because the current version of the module contains the correct links to all the relevant evaluation ISO files.
+Delete your AutoLab folder and all sub-folders which should be `C:\AutoLab` if you accepted the defaults during installation. This will delete all of the ISO files which means you'll need to re-download them when you build a new configuration. But that is OK because the current version of the module contains the correct links to all the relevant evaluation ISO files.
 
 ## Update and Reboot
 
@@ -59,7 +59,7 @@ It is not necessary to remove Hyper-V. But it is recommended that you install al
 After reboot, open an elevated Windows PowerShell prompt. Type this command to verify you have removed the previous module:
 
 ```powershell
-Get-Module psautolab -listavailable
+Get-Module PSAutoLab -listavailable
 ```
 
 ## Install
@@ -83,9 +83,9 @@ If Hyper-V had to be installed, then you should definitely reboot.
 From this point, you should be set with the new version. Read the about help topic to learn more.
 
 ```powershell
-help about_psautolab
+help about_PSAutoLab
 ```
 
-Or refer to the GitHub repository [README](./README.MD) file.
+Or refer to the GitHub repository [README](README.MD) file.
 
-### last updated 2020-04-23 18:30:24Z UTC
+### last updated 2020-08-04 18:23:47Z UTC

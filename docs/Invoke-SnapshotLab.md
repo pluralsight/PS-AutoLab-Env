@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-SnapshotLab.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Create virtual machine snapshots of your Autolab configuration
+Create virtual machine snapshots of your Autolab configuration.
 
 ## SYNTAX
 
@@ -19,11 +19,9 @@ Invoke-SnapshotLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf] [-Confi
 
 ## DESCRIPTION
 
-Use this command to snapshot or checkpoint an entire Autolab configuration.
-You can later restore your configuration with Refresh-Lab.
-It is assumed you are running this command from within the configuration folder.
+Use this command to snapshot or checkpoint an entire Autolab configuration. You can later restore your configuration with Refresh-Lab. It is assumed you are running this command from within the configuration folder.
 
-You will most likely use the Snapshot-Lab alias.
+You will typically use the Snapshot-Lab alias.
 
 ## EXAMPLES
 

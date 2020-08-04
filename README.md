@@ -536,4 +536,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-06-30 13:47:44Z UTC
+Last Updated 2020-08-04 19:31:36Z UTC

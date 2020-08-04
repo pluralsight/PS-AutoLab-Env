@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-RunLab.md
 schema: 2.0.0
 ---
 
@@ -19,11 +19,9 @@ Invoke-RunLab [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 
 ## DESCRIPTION
 
-Use this command to start a PSAutolab configuration.
-This command will start all of the virtual machines in the proper order.
-It is assumed you are running this from within the configuration folder.
+Use this command to start a PSAutolab configuration. This command will start all of the virtual machines in the proper order. It is assumed you are running this from within the configuration folder.
 
-You will most likely use the Run-Lab alias.
+You will typically use the Run-Lab alias.
 
 ## EXAMPLES
 

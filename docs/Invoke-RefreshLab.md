@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-RefreshLab.md
 schema: 2.0.0
 ---
 
@@ -19,8 +19,7 @@ Invoke-RefreshLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf] [-Confir
 
 ## DESCRIPTION
 
-Use this command to restore your Autolab configuration from the last checkpoint.
-You will most likely use the Refresh-Lab alias.
+Use this command to restore your Autolab configuration from the last checkpoint. You will typically use the Refresh-Lab alias.
 
 ## EXAMPLES
 

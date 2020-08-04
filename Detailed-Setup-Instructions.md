@@ -81,13 +81,13 @@ The module requires the Hyper-V feature on Windows 10. Please refer to documenta
 If you meet the requirements, you are ready to download and install this module. **Do not download anything from this GitHub repository.** In your PowerShell session run this command:
 
 ```text
-PS C:\> Install-Module PSAutolab -force -skipPublishercheck
+PS C:\> Install-Module PSAutolab -force -SkipPublisherCheck
 ```
 
 You may be prompted to update to a newer version of `nuget`. Answer "yes". You might also be prompted about installing from an untrusted source. Again, you will need to say "yes". After installation you can verify using `Get-Module`.
 
 ```text
-PS C:\> Get-Module psautolab -list
+PS C:\> Get-Module PSAutoLab -list
 
     Directory: C:\Program Files\WindowsPowerShell\Modules
 
@@ -110,7 +110,7 @@ PS C:\> Setup-Host
 This command will create a directory structure for the module and all of its files. The default is `C:\Autolab` which you should be able to accept. If you are low on space or want to use an alternate drive, then you can specify an alternative top level path.
 
 ```text
-PS C:\> Setup-Host -destinationpath D:\Autolab
+PS C:\> Setup-Host -DestinationPath D:\Autolab
 ```
 
 If you select a drive other than C:\ it is recommended you use the `Autolab` folder name. The setup process will install additional modules and files.  If necessary, it will enable the Hyper-V feature. If Hyper-V is enabled, please reboot your computer before proceeding.
@@ -194,7 +194,7 @@ You might still see errors or failures, in which case try again in 10 minute int
 All of the commands in this module have help and examples. You are also encouraged to read the about help topic.
 
 ```text
-PS C:\> help about_psautolab
+PS C:\> help about_PSAutoLab
 ```
 
 ## Using the Environment Prefix

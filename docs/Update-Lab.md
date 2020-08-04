@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Update-Lab.md
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Run Windows update on Autolab virtual machines
+Run Windows update on Autolab virtual machines.
 
 ## SYNTAX
 
@@ -19,13 +19,7 @@ Update-Lab [[-Path] <String>] [-AsJob] [<CommonParameters>]
 
 ## DESCRIPTION
 
-When you build an lab, you are creating Windows virtual machines based on evaluation software.
-You might still want to make sure the virtual machines are up to date with security patches and updates.
-You can use this command to invoke Windows update on all lab members.
-This can be a time consuming process, especially for labs with multiple virtual machines.
-The recommended syntax is to use the -AsJob parameter which runs the update process for each virtual machine in a background job.
-Use PowerShell's job cmdlets to manage the jobs.
-Do not close your PowerShell session before the jobs complete.
+When you build an lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use this command to invoke Windows update on all lab members. This can be a time consuming process, especially for labs with multiple virtual machines. The recommended syntax is to use the -AsJob parameter which runs the update process for each virtual machine in a background job. Use PowerShell's job cmdlets to manage the jobs. Do not close your PowerShell session before the jobs complete.
 
 The virtual machine must be running in order to update it.
 
