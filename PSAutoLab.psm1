@@ -14,3 +14,25 @@ $PesterVersion = "4.10.1"
 
 #declare the currently supported version of Lability
 $LabilityVersion = "0.19.1"
+
+#configure TLS protocol to avoid problems downloading files from Microsoft
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+#open the PDF help file
+Function Open-PSAutoLabHelp {
+    [cmdletbinding()]
+    Param()
+
+    $pdf = Join-Path -path $PSScriptRoot -ChildPath PSAutoLabManual.pdf
+    if (Test-Path -Path $pdf) {
+        Try {
+            Start-Process -FilePath $pdf -ErrorAction Stop
+        }
+        Catch {
+            Write-Warning "Failed to automatically open the PDF. You will need to manually open $pdf."
+        }
+    }
+    else {
+        Write-Warning "Can't find $pdf."
+    }
+}

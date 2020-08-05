@@ -21,17 +21,18 @@ Get-LabSummary [[-Path] <String>] [<CommonParameters>]
 
 This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough memory in your computer. Run the command in the root of the configuration folder.
 
-If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the computer name.
+If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the virtual machine name.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\Autolab\Configurations\MultiRole-Server-2016> Get-LabSummary
+PS C:\Autolab\Configurations\MultiRole-Server-2016\> Get-LabSummary
 
 
 Computername : DC1
+VMName       : DC1
 InstallMedia : 2016_x64_Standard_Core_EN_Eval
 Description  : Windows Server 2016 Standard Core 64bit English Evaluation
 Role         : {DC, DHCP, ADCS}
@@ -41,6 +42,7 @@ Processors   : 2
 Lab          : MultiRole-Server-2016
 
 Computername : S1
+VMName       : S1
 InstallMedia : 2016_x64_Standard_Core_EN_Eval
 Description  : Windows Server 2016 Standard Core 64bit English Evaluation
 Role         : {DomainJoin, Web}
@@ -50,6 +52,7 @@ Processors   : 1
 Lab          : MultiRole-Server-2016
 
 Computername : N1
+VMName       : N1
 InstallMedia : 2016_x64_Standard_Nano_DSC_EN_Eval
 Description  :
 Role         :
@@ -59,6 +62,7 @@ Processors   : 1
 Lab          : MultiRole-Server-2016
 
 Computername : Cli1
+VMName       : Cli1
 InstallMedia : WIN10_x64_Enterprise_EN_Eval
 Description  : Windows 10 64bit Enterprise 1903 English Evaluation
 Role         : {domainJoin, RSAT, RDP}
@@ -73,7 +77,7 @@ Get the configuration for the MultiRole-Server-2016 lab.
 ### Example 2
 
 ```powershell
-PS C:\Autolab\Configurations> dir -Directory -exclude Archive | Get-LabSummary | Out-GridView
+PS C:\Autolab\Configurations\> dir -Directory -exclude Archive | Get-LabSummary | Out-GridView
 ```
 
 Go through every active configuration and pipe the folder to Get-LabSummary.

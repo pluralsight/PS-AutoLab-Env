@@ -1,5 +1,13 @@
 # Change Log for PSAutoLab
 
+## 4.17.0
+
++ Updated markdown documentation.
++ Added a PDF user manual and a command, `Open-PSAutoLabHelp`, to launch it.
++ Modified `Get-LabSummary` to better reflect computername and virtual machine name, especially when using the environment prefix. `Wipe-Lab` has also been modified to use this new information. Thank you @andreasjordan. (Issue #231)
++ Archived `Authoring-FAQ.md1`. Incorporated most of the content into `Usage-FAQ.md`.
++ Added TLS protocol update to the module file. (Issue #235)
+
 ## 4.16.0
 
 + Modified `Get-LabSummary` to include the environment prefix as part of the computername if specified. (Issue #231)

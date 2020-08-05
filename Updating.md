@@ -1,6 +1,6 @@
-# Updating from 3.x
+# Updating From PSAutoLab v3.x
 
-> At this point in time, this information should be irrelevant but will be retained just in case.
+At this point in time, this information should be irrelevant but will be retained just in case.
 
 If you were running older versions of PSAutoLab, most likely v3.x, you might have encountered problems. It is hoped that the updates to 4.x will resolve most if not all of those problems. The plan going forward is to pay closer attention to issues and update the module as needed. This will be easier now that the module is deployed through the PowerShell Gallery.
 
@@ -86,6 +86,6 @@ From this point, you should be set with the new version. Read the about help top
 help about_PSAutoLab
 ```
 
-Or refer to the GitHub repository [README](README.MD) file.
+Or refer to the GitHub repository [README](README.md) file.
 
-### last updated 2020-08-04 18:23:47Z UTC
+Last updated 2020-08-05 14:43:46Z UTC

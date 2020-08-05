@@ -19,7 +19,7 @@ Get-PSAutoLabSetting [<CommonParameters>]
 
 ## DESCRIPTION
 
-If you need to report a problem with AutoLab, use this command to get relevant configuration and host information. Please include the output in your GitHub issue. 
+If you need to report a problem with AutoLab, use this command to get relevant configuration and host information. Please include the output in your GitHub issue.
 
 ## EXAMPLES
 
@@ -46,7 +46,7 @@ PowerShellGet               : 2.2.3
 PSDesiredStateConfiguration : 1.1
 ```
 
-The output will also show previously installed versions of the PSAutoLab and Lability modules. Only the latest version should be loaded. You can remove the older versions if you no longer need them by running Uninstall-Module -name <modulename> -requiredversion <version number>. The FreeSpaceGB value is the amount of free space on the drive containing your AutoLab folder.
+The output will also show previously installed versions of the PSAutoLab and Lability modules. Only the latest version should be loaded. You can remove the older versions if you no longer need them by running a command like `Uninstall-Module -name Lability -requiredversion 0.18.0`. The FreeSpaceGB value is the amount of free space on the drive containing your AutoLab folder.
 
 Copy and paste this information into a GitHub issue along with any relevant error messages.
 

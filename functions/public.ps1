@@ -82,7 +82,8 @@ Function Get-LabSummary {
                     }
                     [pscustomobject]@{
                         PSTypeName   = "PSAutolabVM"
-                        Computername = "{0}{1}" -f $envPrefix,$_.NodeName
+                        Computername = $_.NodeName
+                        VMName       = "{0}{1}" -f $envPrefix, $_.NodeName
                         InstallMedia = $_.lability_media
                         Description  = $media[$_.lability_media]
                         Role         = $_.Role
@@ -1017,7 +1018,8 @@ Function Invoke-WipeLab {
         Try {
             #Forcibly stop all VMS since they are getting deleted anyway (Issue #229)
             Write-Verbose "Stopping all virtual machines in the configuration"
-            Hyper-V\Stop-VM -vmname (PSAutolab\Get-LabSummary -Path $Path).Computername -TurnOff
+            #use the VMName which might be using a prefix (Issue 231)
+            Hyper-V\Stop-VM -vmname (PSAutolab\Get-LabSummary -Path $Path).VMName -TurnOff
             Write-Verbose "Calling Stop-Lab"
             Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop -WarningAction SilentlyContinue
         }

@@ -114,4 +114,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Snapshot-Lab]()
+[Snapshot-Lab](Invoke-SnapshotLab.md)

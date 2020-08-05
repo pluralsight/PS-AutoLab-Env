@@ -110,4 +110,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Refresh-Host]()
+[Refresh-Host](Invoke-RefreshHost.md)

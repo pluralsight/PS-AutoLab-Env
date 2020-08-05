@@ -34,13 +34,15 @@ All VMs in the configuration should belong to the same snapshot.
 
 VMName Name          SnapshotType CreationTime          ParentSnapshotName
 ------ ----          ------------ ------------          ------------------
-S1     PreInstall     Standard     9/11/2019 12:06:51 PM```
+S1     PreInstall     Standard     9/11/2019 12:06:51 PM
+```
 
 You could restore this snapshot by name using Refresh-Lab.
 
 ## PARAMETERS
 
 ### -Path
+
 The path to the configuration folder. Normally, you should run all commands from within the configuration folder.
 
 ```yaml
@@ -71,6 +73,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Snapshot-Lab]()
+[Snapshot-Lab](Invoke-SnapshotLab.md)
 
-[Refresh-Lab]()
+[Refresh-Lab](Invoke-RefreshLab.md)
