@@ -98,4 +98,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Run-Lab]()
+[Run-Lab](Invoke-RunLab.md)

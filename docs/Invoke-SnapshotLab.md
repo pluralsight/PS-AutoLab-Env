@@ -114,6 +114,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Refresh-Lab]()
+[Refresh-Lab](Invoke-RefreshLab.md)
 
-[Get-LabSnapshot]()
+[Get-LabSnapshot](Get-LabSnapshot.md)

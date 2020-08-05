@@ -6,6 +6,8 @@
 
 This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems. The downside is that it is a difficult module for less experienced PowerShell users. The configurations and control scripts for the Hyper-V virtual machine's are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
 
+You can run [Open-PSAutoLabManual](Open-PSAutoLabManual.md) to view a PDF of documentation, including much of the content in this file.
+
 # LONG DESCRIPTION
 
 ## SETUP
@@ -52,6 +54,12 @@ Invoke-Pester VMValidate.test.ps1
 
 This can be useful for troubleshooting.
 
+#### An Important Pester Note
+
+**If you are running Pester v5.x you need to be running at least version 4.11.0 of this module.**
+
+The validation tests for each configuration are written for the Pester module. This is a widely adopted testing tool. In June of 2020, Pester version 5 was released. This version of Pester introduced a number of breaking changes to how tests are written. The tests in this module are **incompatible** with Pester 5.0 and will need to be re-written. As an interim step, this module will test for Pester v 4.10.1. If you don't have that version it will be installed when you run `Setup-Host`. Or if you've already setup Autolab you can run `Refresh-Host`. If you have Pester 5.x, it will not be uninstalled, but it will be removed from the current PowerShell session.
+
 ### UNATTENDED SETUP
 
 As an alternative, you can setup a lab environment with minimal prompting.
@@ -60,7 +68,7 @@ As an alternative, you can setup a lab environment with minimal prompting.
 Unattend-Lab
 ```
 
-Assuming you don't need to install a newer version of _nuget_, you can leave the setup alone. It will run all of the manual steps for you.
+Assuming you don't need to install a newer version of *nuget*, you can leave the setup alone. It will run all of the manual steps for you.
 
 ### STOPPING A LAB
 
@@ -109,20 +117,21 @@ This will remove the virtual machines and DSC configuration files. If you intend
 ### WINDOWS UPDATES
 
 When you build an lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use `Update-Lab` to invoke Windows update on all lab members.
+
 This can be a time consuming process, so you have an option to run the updates as a background job. Be sure not to close your PowerShell session before the jobs complete.
 
 ```powershell
-PS C:\AutoLab\Configurations\PowerShellLab> update-lab -AsJob
+PS C:\AutoLab\Configurations\PowerShellLab\> update-lab -AsJob
 
-Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
---     ----            -------------   -----         -----------     --------             -------
-18     WUUpdate        RemoteJob       Running       True            DOM1                  WUUpdate
-21     WUUpdate        RemoteJob       Running       True            SRV1                  WUUpdate
-24     WUUpdate        RemoteJob       Running       True            SRV2                  WUUpdate
-27     WUUpdate        RemoteJob       Running       True            SRV3                  WUUpdate
-30     WUUpdate        RemoteJob       Running       True            WIN10                 WUUpdate
+Id     Name            PSJobTypeName   State         HasMoreData     Location    Command
+--     ----            -------------   -----         -----------     --------   -------
+18     WUUpdate        RemoteJob       Running       True            DOM1       WUUpdate
+21     WUUpdate        RemoteJob       Running       True            SRV1       WUUpdate
+24     WUUpdate        RemoteJob       Running       True            SRV2       WUUpdate
+27     WUUpdate        RemoteJob       Running       True            SRV3       WUUpdate
+30     WUUpdate        RemoteJob       Running       True            WIN10      WUUpdate
 
-PS C:\AutoLab\Configurations\PowerShellLab> receive-job -id 27 -Keep
+PS C:\AutoLab\Configurations\PowerShellLab\> receive-job -id 27 -Keep
 [11/22/2019 12:05:43] Found 5 updates to install on SRV3
 [11/22/2019 12:25:13] Update process complete on SRV3
 WARNING: SRV3 requires a reboot

@@ -149,4 +149,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Setup-Lab]()
+[Setup-Lab](Invoke-SetupLab.md)

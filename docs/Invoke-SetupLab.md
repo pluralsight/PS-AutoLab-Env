@@ -20,16 +20,16 @@ Invoke-SetupLab [[-Path] <String>] [-IgnorePendingReboot] [-UseLocalTimeZone] [-
 
 ## DESCRIPTION
 
-Once you have configured the local host, change to a configuration folder under Autolab\Configurations and run a setup. It is recommended that you first review any readme or instruction files. This command will generate the DSC MOFs, download required DSC resources and create the virtual machines. Follow on-screen instructions to continue.
+Once you have configured the local host, change to a configuration folder under Autolab\Configurations and run a setup. It is recommended that you first review any readme or instruction files. This command will generate the Desired State Configuration (DSC) MOFs, download required DSC resources and create the virtual machines. Follow on-screen instructions to continue.
 
-You will typically use the Setup-Lab alias.
+You will typically use the `Setup-Lab` alias.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\Autolab\Configurations\Windows10> Setup-Lab
+PS C:\Autolab\Configurations\Windows10\> Setup-Lab
 ```
 
 Follow on screen instructions and prompts.
@@ -131,4 +131,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Unattend-Lab]()
+[Unattend-Lab](Invoke-UnattendLab.md)
