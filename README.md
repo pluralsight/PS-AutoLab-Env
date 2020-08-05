@@ -8,22 +8,22 @@ This project serves as a set of "wrapper" commands that utilize the [Lability](h
 
 **While this project is under the Pluralsight banner, it is offered AS-IS as a free tool with no official support from Pluralsight. Pluralsight makes no guarantees or warranties. This project is intended to be used for educational purposes only.**
 
-Beginning with module version 4.17.0, you can run `Open-PSAutoLabHelp` to view a local PDF version of this documentation.
+Beginning with module version 4.17.0, you can run `Open-PSAutoLabHelp` to view a local PDF version of the module's documentation.
 
 ## Requirements
 
-This module is designed and intended to be run on a __Windows 10__ client that supports virtualization. Windows 10 Pro or Enterprise should be sufficient. It is assumed you will be installing this on a Windows 10 desktop running Windows PowerShell 5.1. This module will **not** work and and is unsupported on Windows 10 Home or any Student edition. Although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server platforms but this capability has not been fully tested nor is it supported.
+This module is designed and intended to be run on a __Windows 10__ client that supports virtualization. Windows 10 Pro or Enterprise should be sufficient. It is assumed you will be installing this on a Windows 10 desktop running Windows PowerShell 5.1. This module will **not** work and and is unsupported on Windows 10 Home or any Student edition. Although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server (2016 or 2019) platforms, but this capability has not been fully tested nor is it supported.
 
 > Using this in a nested virtual environment *may* work, but don't be surprised if there are problems, especially related to networking and NAT.
 
 The host computer, where you are installing, must meet the following requirements:
 
-* Windows PowerShell 5.1
-* A high-speed internet connection
-* Minimum 16GB of RAM (32GB is recommended)
-* Minimum 100GB free disk space preferably on a fast SSD device or equivalent
-* An Intel i5 processor or equivalent. An i7 is recommended for best performance
-* Windows PowerShell Remoting enabled
+* Windows PowerShell 5.1.
+* A high-speed internet connection.
+* Minimum 16GB of RAM (32GB is recommended).
+* Minimum 100GB free disk space preferably on a fast SSD device or equivalent.
+* An Intel i5 processor or equivalent. An i7 is recommended for best performance.
+* Windows PowerShell Remoting enabled.
 * You should be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
 
 You must have administrator access and be able to update the TrustedHosts setting for PowerShell remoting. If you are in a corporate environment, these settings may be locked down or restricted. If this applies to you, this module may not work properly, if at all.
@@ -58,9 +58,9 @@ You can verify the module with these commands:
 PS C:\> Import-Module PSAutolab -force
 PS C:\> Get-Module PSAutolab
 
-ModuleType Version    Name                                ExportedCommands
----------- -------    ----                                ----------------
-Script     4.16.0      PSAutolab                           {Enable-Internet, Get-LabSnapshot,...}
+ModuleType Version    Name                   ExportedCommands
+---------- -------    ----                   ----------------
+Script     4.16.0      PSAutolab             {Enable-Internet, Get-LabSnapshot,...}
 ```
 
 Your version number may differ.
@@ -454,7 +454,7 @@ The first thing to check is to make sure you are using correct TLS settings. You
 
 Beginning with v4.17.0 of this module, this change is made when the module is imported. It will only last for as long as your PowerShell session is running.
 
-You could also modify the registry in an elevated PowerShell session or a more permanent solution.
+You could also modify the registry in an elevated PowerShell session for a more permanent solution.
 
 ```powershell
 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\.NetFramework\v4.0.30319' -Name 'SchUseStrongCrypto' -Value 1
@@ -538,6 +538,8 @@ It is recommended that you restart your PowerShell session and try the lab setup
 
 This module is a continuation of the work done by Jason Helmick and Melissa (Missy) Januszko, whose efforts are greatly appreciated. Beginning with v4.0.0, this module is unrelated to any projects Jason or Missy may be developing under similar names.
 
+We also appreciate all of the work that has gone into the Lability module. The Lability and PSAutoLab modules are completely separate and indepently maintained.
+
 ## Road Map
 
 These are some of the items that are being considered for future updates:
@@ -547,4 +549,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
 
-Last Updated 2020-08-05 17:39:25Z UTC
+Last Updated 2020-08-05 21:27:38Z UTC
