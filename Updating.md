@@ -4,7 +4,7 @@ At this point in time, this information should be irrelevant but will be retaine
 
 If you were running older versions of PSAutoLab, most likely v3.x, you might have encountered problems. It is hoped that the updates to 4.x will resolve most if not all of those problems. The plan going forward is to pay closer attention to issues and update the module as needed. This will be easier now that the module is deployed through the PowerShell Gallery.
 
-__Note:__ We use AutoLab and PSAutoLab interchangeably. PSAutoLab is technically the PowerShell module that manages your AutoLab configuration.
+__Note:__ The terms `AutoLab` and `PSAutoLab` are used interchangeably. PSAutoLab is technically the PowerShell module that manages your AutoLab configuration.
 
 ## Before You Upgrade
 
@@ -88,4 +88,4 @@ help about_PSAutoLab
 
 Or refer to the GitHub repository [README](README.md) file.
 
-Last updated 2020-08-05 14:43:46Z UTC
+Last updated 2020-10-06 15:37:01Z

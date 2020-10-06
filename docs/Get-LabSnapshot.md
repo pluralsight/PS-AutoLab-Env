@@ -21,7 +21,7 @@ Get-LabSnapshot [[-Path] <String>] [<CommonParameters>]
 
 You can use Snapshot-Lab to create a set of checkpoints for an Autolab configuration. The default snapshot name is "LabConfigured", but you can create a snapshot with your own name. You need to know the snapshot name in order to restore it with Refresh-Lab. This command makes it easier to discover what snapshots you have created.
 
-Note that if you want to remove a snapshot, use the Hyper-V manager or PowerShell cmdlets as you would any other snapshot.
+Note that if you want to remove a snapshot, use the Hyper-V Manager or PowerShell cmdlets as you would any other snapshot.
 
 ## EXAMPLES
 
@@ -32,9 +32,9 @@ PS C:\Autolab\Configurations\SingleServer> Get-LabSnapshot
 
 All VMs in the configuration should belong to the same snapshot.
 
-VMName Name          SnapshotType CreationTime          ParentSnapshotName
------- ----          ------------ ------------          ------------------
-S1     PreInstall     Standard     9/11/2019 12:06:51 PM
+VMName Name          SnapshotType  CreationTime          ParentSnapshotName
+------ ----          ------------  ------------          ------------------
+S1     PreInstall    Standard      9/11/2019 12:06:51 PM
 ```
 
 You could restore this snapshot by name using Refresh-Lab.

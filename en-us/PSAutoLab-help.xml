@@ -149,7 +149,7 @@
     </command:details>
     <maml:description>
       <maml:para>You can use Snapshot-Lab to create a set of checkpoints for an Autolab configuration. The default snapshot name is "LabConfigured", but you can create a snapshot with your own name. You need to know the snapshot name in order to restore it with Refresh-Lab. This command makes it easier to discover what snapshots you have created.</maml:para>
-      <maml:para>Note that if you want to remove a snapshot, use the Hyper-V manager or PowerShell cmdlets as you would any other snapshot.</maml:para>
+      <maml:para>Note that if you want to remove a snapshot, use the Hyper-V Manager or PowerShell cmdlets as you would any other snapshot.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -214,9 +214,9 @@
 
 All VMs in the configuration should belong to the same snapshot.
 
-VMName Name          SnapshotType CreationTime          ParentSnapshotName
------- ----          ------------ ------------          ------------------
-S1     PreInstall     Standard     9/11/2019 12:06:51 PM</dev:code>
+VMName Name          SnapshotType  CreationTime          ParentSnapshotName
+------ ----          ------------  ------------          ------------------
+S1     PreInstall    Standard      9/11/2019 12:06:51 PM</dev:code>
         <dev:remarks>
           <maml:para>You could restore this snapshot by name using Refresh-Lab.</maml:para>
         </dev:remarks>
@@ -247,7 +247,7 @@ S1     PreInstall     Standard     9/11/2019 12:06:51 PM</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough memory in your computer. Run the command in the root of the configuration folder.</maml:para>
+      <maml:para>This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running, and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough available memory in your computer. Run the command in the root of the configuration folder.</maml:para>
       <maml:para>If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the virtual machine name.</maml:para>
     </maml:description>
     <command:syntax>
@@ -309,55 +309,24 @@ S1     PreInstall     Standard     9/11/2019 12:06:51 PM</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\Autolab\Configurations\MultiRole-Server-2016\&gt; Get-LabSummary
+        <dev:code>PS C:\Autolab\Configurations\Windows10&gt; Get-LabSummary
 
 
-Computername : DC1
-VMName       : DC1
-InstallMedia : 2016_x64_Standard_Core_EN_Eval
-Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-Role         : {DC, DHCP, ADCS}
-IPAddress    : 192.168.3.10
-MemoryGB     : 2
-Processors   : 2
-Lab          : MultiRole-Server-2016
+   Computername: Win10Ent VMName: Win10Ent
 
-Computername : S1
-VMName       : S1
-InstallMedia : 2016_x64_Standard_Core_EN_Eval
-Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-Role         : {DomainJoin, Web}
-IPAddress    : 192.168.3.50
-MemoryGB     : 1
-Processors   : 1
-Lab          : MultiRole-Server-2016
-
-Computername : N1
-VMName       : N1
-InstallMedia : 2016_x64_Standard_Nano_DSC_EN_Eval
-Description  :
-Role         :
-IPAddress    : 192.168.3.60
-MemoryGB     : 1
-Processors   : 1
-Lab          : MultiRole-Server-2016
-
-Computername : Cli1
-VMName       : Cli1
-InstallMedia : WIN10_x64_Enterprise_EN_Eval
-Description  : Windows 10 64bit Enterprise 1903 English Evaluation
-Role         : {domainJoin, RSAT, RDP}
-IPAddress    : 192.168.3.100
-MemoryGB     : 2
-Processors   : 2
-Lab          : MultiRole-Server-2016</dev:code>
+Lab           IPAddress       MemGB Procs Role            Description
+---           ---------       ----- ----- ----            -----------
+Windows10     192.168.3.101       2     2 {RSAT, RDP}     Windows 10 64bit
+                                                          Enterprise 1903
+                                                          English Evaluation</dev:code>
         <dev:remarks>
-          <maml:para>Get the configuration for the MultiRole-Server-2016 lab.</maml:para>
+          <maml:para>Get the configuration for the Windows 10 lab. The command has an associated formatting file to display the results as you see here. You might also want to pipe the Get-LabSummary command to Format-List to see all properties.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\Autolab\Configurations\&gt; dir -Directory -exclude Archive | Get-LabSummary | Out-GridView</dev:code>
+        <dev:code>PS C:\Autolab\Configurations\&gt; Get-Childitem -Directory | Get-LabSummary |
+Select-Object * | Out-GridView</dev:code>
         <dev:remarks>
           <maml:para>Go through every active configuration and pipe the folder to Get-LabSummary. The total results are displayed using Out-GridView.</maml:para>
         </dev:remarks>
@@ -1065,7 +1034,7 @@ This process will not remove any configurations that have been deleted from the 
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Once you have configured the local host, change to a configuration folder under Autolab\Configurations and run a setup. It is recommended that you first review any readme or instruction files. This command will generate the Desired State Configuration (DSC) MOFs, download required DSC resources and create the virtual machines. Follow on-screen instructions to continue.</maml:para>
+      <maml:para>Once you have configured the localhost, change to a configuration folder under Autolab\Configurations, and set up a lab configuration. It is recommended that you first review any readme or instruction files. This command will generate the Desired State Configuration (DSC) MOFs, download required DSC resources, and create the virtual machines. Follow the on-screen instructions to continue.</maml:para>
       <maml:para>You will typically use the `Setup-Lab` alias.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1221,7 +1190,7 @@ This process will not remove any configurations that have been deleted from the 
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\Autolab\Configurations\Windows10\&gt; Setup-Lab</dev:code>
         <dev:remarks>
-          <maml:para>Follow on screen instructions and prompts.</maml:para>
+          <maml:para>Follow on-screen instructions and prompts.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1246,7 +1215,7 @@ This process will not remove any configurations that have been deleted from the 
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Use this command to shutdown the virtual machines of an Autolab configuration in the proper order. You can also manually use the Hyper-V management console or cmdlets to do the same thing. It is recommended that you shutdown any domain controllers in your configuration last. It is assumed you are running this from within the configuration folder.</maml:para>
+      <maml:para>Use this command to shutdown the virtual machines of an Autolab configuration in the proper order. You can also manually use the Hyper-V management console or cmdlets to do the same thing. It is recommended that you shut down any domain controllers in your configuration last. It is assumed you are running this from within the configuration folder.</maml:para>
       <maml:para>You will typically use the Shutdown-Lab alias.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1550,7 +1519,7 @@ This process will not remove any configurations that have been deleted from the 
       <maml:para>* Enable-Internet</maml:para>
       <maml:para>* Validate-Lab</maml:para>
       <maml:para></maml:para>
-      <maml:para>Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe but otherwise the installation should run unattended. Note that the validation will loop for awhile until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test.</maml:para>
+      <maml:para>Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe otherwise the installation should run unattended. Note that the validation will loop until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test.</maml:para>
       <maml:para>You should run this command from within the configuration folder.</maml:para>
       <maml:para>You will typically use the Unattend-Lab alias.</maml:para>
     </maml:description>
@@ -1707,7 +1676,7 @@ This process will not remove any configurations that have been deleted from the 
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\Autolab\Configurations\PowerShellLab&gt; Unattend-Lab</dev:code>
         <dev:remarks>
-          <maml:para>Follow any onscreen instructions or prompts.</maml:para>
+          <maml:para>Follow any on-screen instructions or prompts.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -1830,7 +1799,7 @@ This process will not remove any configurations that have been deleted from the 
     </command:details>
     <maml:description>
       <maml:para>You can use this command to remove all files and virtual machines related to an Autolab configuration. The command will stop any running virtual machines for you. It is assumed you will be running this command from within a configuration folder.</maml:para>
-      <maml:para>If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNat).</maml:para>
+      <maml:para>If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNet).</maml:para>
       <maml:para>Use -Force to suppress all prompts.</maml:para>
       <maml:para>You will typically use the Wipe-Lab alias.</maml:para>
     </maml:description>
@@ -1987,7 +1956,7 @@ This process will not remove any configurations that have been deleted from the 
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\AutoLab\Configurations\Windows10&gt; Wipe-Lab</dev:code>
         <dev:remarks>
-          <maml:para>Follow any onscreen prompts or instructions.</maml:para>
+          <maml:para>Follow any on-screen prompts or instructions.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -2019,7 +1988,7 @@ This process will not remove any configurations that have been deleted from the 
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This module ships with a PDF that contains documentation files found in the GitHub repository as well copies of all command help. You might find it easier to read the PDF than to use PowerShell.</maml:para>
+      <maml:para>This module ships with a PDF that contains documentation files found in the GitHub repository as well all command help. You might find it easier to read the PDF than to use PowerShell.</maml:para>
       <maml:para>This command was introduced in version 4.17.0 of the PSAutoLab module.</maml:para>
     </maml:description>
     <command:syntax>
@@ -2079,7 +2048,7 @@ This process will not remove any configurations that have been deleted from the 
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This is a troubleshooting command for the PSAutoLab module. It is designed to be be run in a lab configuration folder. It will report on the required Desired State Configuration (DSC) resources and any versions that may already be installed. This can be used to diagnose potential version conflicts. Resource are installed automatically when you build a configuration so you don't need to take any action unless directed.</maml:para>
+      <maml:para>This is a troubleshooting command for the PSAutoLab module. It is designed to be  run in a lab configuration folder. It will report on the required Desired State Configuration (DSC) resources and any versions that may already be installed. This can be used to diagnose potential version conflicts. Resources are installed automatically when you build a configuration so you don't need to take any action unless directed.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -2217,8 +2186,8 @@ Configuration     : MultiRole</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>When you build an lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use this command to invoke Windows update on all lab members. This can be a time consuming process, especially for labs with multiple virtual machines. The recommended syntax is to use the -AsJob parameter which runs the update process for each virtual machine in a background job. Use PowerShell's job cmdlets to manage the jobs. Do not close your PowerShell session before the jobs complete.</maml:para>
-      <maml:para>The virtual machine must be running in order to update it.</maml:para>
+      <maml:para>When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use this command to invoke Windows update on all lab members. This can be a time-consuming process, especially for labs with multiple virtual machines. The recommended syntax is to use the -AsJob parameter which runs the update process for each virtual machine in a background job. Use PowerShell's job cmdlets to manage the jobs. Do not close your PowerShell session before the jobs complete.</maml:para>
+      <maml:para>The virtual machine must be running to update.</maml:para>
       <maml:para>It is recommended that you reboot all the lab virtual machines after updating.</maml:para>
     </maml:description>
     <command:syntax>
@@ -2305,13 +2274,13 @@ Configuration     : MultiRole</dev:code>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\Autolab\Configurations\PowerShellLab&gt; update-lab -AsJob
 
-Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
---     ----            -------------   -----         -----------     --------             -------
-18     WUUpdate        RemoteJob       Running       True            DOM1                  WUUpdate
-21     WUUpdate        RemoteJob       Running       True            SRV1                  WUUpdate
-24     WUUpdate        RemoteJob       Running       True            SRV2                  WUUpdate
-27     WUUpdate        RemoteJob       Running       True            SRV3                  WUUpdate
-30     WUUpdate        RemoteJob       Running       True            WIN10                 WUUpdate
+Id     Name       PSJobTypeName   State     HasMoreData     Location   Command
+--     ----       -------------   -----     -----------     --------   -------
+18     WUUpdate   RemoteJob       Running   True            DOM1       WUUpdate
+21     WUUpdate   RemoteJob       Running   True            SRV1       WUUpdate
+24     WUUpdate   RemoteJob       Running   True            SRV2       WUUpdate
+27     WUUpdate   RemoteJob       Running   True            SRV3       WUUpdate
+30     WUUpdate   RemoteJob       Running   True            WIN10      WUUpdate
 
 PS C:\Autolab\Configurations\PowerShellLab&gt; receive-job -id 27 -Keep
 [11/22/2019 12:05:43] Found 5 updates to install on SRV3
