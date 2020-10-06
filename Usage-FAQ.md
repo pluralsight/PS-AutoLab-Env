@@ -1,10 +1,10 @@
 # Usage FAQ
 
-These are some common questions you might have about this module or errors that you might encounter. Although most if this document is retained merely for archival reference purposes. If you haven't already done so, you should read the [README](https://github.com/pluralsight/PS-AutoLab-Env/blob/master/README.md) file. And don't forget the [About_PSAutolab](https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/about_PSAutoLab.md) file.
+These are some common questions you might have about this module or errors that you might encounter. Although most of this document is retained merely for archival reference purposes. If you haven't already done so, you should read the [README](https://github.com/pluralsight/PS-AutoLab-Env/blob/master/README.md) file. And don't forget the [About_PSAutolab](https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/about_PSAutoLab.md) file.
 
 + __I get an error trying to update Lability__
 
-If you try to run `Refresh-Host` you might see an error about a certificate mismatch. Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates.If you encounter this problem, run `Refresh-Host -SkipPublisherCheck`.
+If you try to run `Refresh-Host` you might see an error about a certificate mismatch. Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates. If you encounter this problem, run `Refresh-Host -SkipPublisherCheck`.
 
 + __I get an error about trying to modify TrustedHosts__
 
@@ -85,13 +85,13 @@ If you have an existing that is conflicting, _and that no longer need_, remove i
 Remove-NetNat DockerNAT
 ```
 
-You can then create a NAT network with coordinated subnet.
+You can then create a NAT network using the corresponding subnet.
 
 ```powershell
 New-NetNat -Name DockerAndLabilityNAT -InternalIPInterfaceAddressPrefix "192.168.3.0/24"
 ```
 
-Docker for Windows network settings can be updated from the windows tray icon. Lab network changes require modifying this modules source code. If you are running Docker for Windows *and* the PSAutoLab module, please post an issue on GitHub.
+Docker for Windows network settings can be updated from the windows tray icon. Lab network changes require modifying the module's source code. If you are running Docker for Windows *and* the PSAutoLab module, please post an issue on GitHub.
 
 + __How can I change a virtual machine's timezone?__
 
@@ -180,4 +180,4 @@ Make sure that the configuration changes you've made are valid. Specifically, th
 
 For all other questions, comments or problems, please post an [Issue](https://github.com/pluralsight/PS-AutoLab-Env/issues) in this repository.
 
-Last updated 2020-08-05 15:05:54Z UTC
+Last updated 2020-10-06 15:37:01Z

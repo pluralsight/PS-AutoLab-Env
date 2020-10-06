@@ -1,6 +1,6 @@
 # Detailed Setup Instructions
 
-Please refer to this document to assist in installing and setting up the `PSAutolab` module on your computer. Run all commands from an **elevated** Windows PowerShell session. In other words, *run Windows PowerShell as administrator*. You will know you are elevated if you see the word `Administrator` in the title bar of the PowerShell window. Do NOT run this module in PowerShell 7. It is assumed you are running this on Windows 10 Professional or Enterprise editions.
+Please refer to this document to assist in installing and setting up the `PSAutolab` module on your computer. Run all commands from an **elevated** Windows PowerShell session. In other words, *run Windows PowerShell as administrator*. You will know you are elevated if you see the word `Administrator` in the title bar of the PowerShell window. __Do NOT run this module in PowerShell 7__. It is assumed you are running this on Windows 10 Professional or Enterprise editions.
 
 It is also assumed that you have administrator rights to your computer and can makes changes. If your computer is controlled by Group Policy, you may encounter problems. You should also be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
 
@@ -68,11 +68,11 @@ D         477     183       38.41 Healthy
 C         237      87       36.71 Healthy
 ```
 
-You should have close to 100GB of free space on a fixed hard drive such as C or D. The module will setup an Autolab folder on drive C: by default, although you can specify an alternate drive. This module has not been tested running from a externally connected drive.
+You should have close to 100GB of free space on a fixed hard drive such as C or D. The module will setup an Autolab folder on drive C: by default, although you can specify an alternate drive. This module has not been tested running from an externally connected drive.
 
 ### Virtualization
 
-The module requires the Hyper-V feature on Windows 10. Please refer to documentation for your computer hardware to determine if it supports virtualization. You may need to configure settings in your BIOS. You don't need to manually enable the Hyper-V feature now, although you are welcome to if you want to verify it is available.
+The module requires the Hyper-V feature on Windows 10. Please refer to the documentation for your computer hardware to determine if it supports virtualization. You may need to configure settings in your BIOS. You don't need to manually enable the Hyper-V feature now, although you are welcome to if you want to verify it is available.
 
 ## Installation and Configuration
 
@@ -107,7 +107,7 @@ There is a one-time step to setup your computer for the AutoLab environment. In 
 Setup-Host
 ```
 
-This command will create a directory structure for the module and all of its files. The default is `C:\Autolab` which you should be able to accept. If you are low on space or want to use an alternate drive, then you can specify an alternative top level path.
+This command will create a directory structure for the module and all of its files. The default is `C:\Autolab` which you should be able to accept. If you are low on space or want to use an alternate drive, then you can specify an alternative top-level path.
 
 ```powershell
 Setup-Host -DestinationPath D:\Autolab
@@ -180,7 +180,7 @@ You can run `Unattend-Lab` for a completely hands-free experience.
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> unattend-lab
 ```
 
-The very first time you run a setup, the command will download ISO images of evaluation software from Microsoft. These files will be at least 4GB in size. If you are setting up a domain-based configuration, this means you will be downloading ISO images for Windows Server and Windows 10. This download only happens once.
+The very first time you setup a lab, the command will download ISO images of evaluation software from Microsoft. These files will be at least 4GB in size. If you are setting up a domain-based configuration, this means you will be downloading ISO images for Windows Server and Windows 10. This download only happens once.
 
 Note that during the validation phase you may see errors. This is to be expected until all of the configurations merge. You can press `Ctrl+C` to break out of the testing. The virtual machines will continue to prepare themselves. Later, you can manually validate the lab:
 
@@ -190,13 +190,13 @@ PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Invoke-Pester .\vmvalidate.
 
 ### Manual Configuration Setup
 
-If you encounter errors running an unattended setup, you should step through the process manually to identify where exactly an error is occurring. Make sure you are in an elevated PowerShell session and you have *changed location to the configuration folder*. If you have tried to setup the lab before run `Wipe-Lab` to remove previous set up files. Then run each of these commands individually:
+If you encounter errors running an unattended setup, you should step through the process manually to identify where exactly an error is occurring. Make sure you are in an elevated PowerShell session and you have *changed location to the configuration folder*. If you have tried to setup the lab before run `Wipe-Lab` to remove previous set-up files. Then run each of these commands individually:
 
 * `Setup-Lab`
 * `Enable-Internet`
 * `Run-Lab`
 
-Errors that affect setup should happen in one of these steps. If so, open an issue with configuration name, the command you were working on and the error message. Also include the output from `Get-PSAutolabSetting`.
+Errors that affect setup should happen in one of these steps. If so, open an issue with the configuration name, the command you were working on and the error message. Also include the output from `Get-PSAutolabSetting`.
 
 After about 10 minutes, you can manually test to see if the configuration has finalized.
 
@@ -204,7 +204,7 @@ After about 10 minutes, you can manually test to see if the configuration has fi
 Invoke-Pester .\vmvalidate.test.ps1
 ```
 
-You might still see errors or failures, in which case try again in 10 minute intervals until the test completely passes. You might also need to verify that the virtual machine is running using the Hyper-V manager and starting it if it has shutdown.
+You might still see errors or failures, in which case try again in 10-minute intervals until the test completely passes. You might also need to verify that the virtual machine is running using the Hyper-V manager and starting it if it has shutdown.
 
 ### Help
 
@@ -216,20 +216,20 @@ help about_PSAutoLab
 
 ## Using the Environment Prefix
 
-In the `VMConfigurationData.psd1` file for each lab, you will see a commented out section for an environment prefix value. This value exists for special situations where you might have a virtual machine naming collision or want to be able to identify the virtual machines that belong to the AutoLab module. In a normal setup and for almost all users, the Hyper-V virtual machine name will be the same as the hostname (computername) in the VM guest. If the lab creates a guest with a computername of `S1`, the Hyper-V virtual machine will also be called `S1`. If you enable the prefix setting, the Hyper-V virtual machine name will use the prefix, **but the guest computer name will not.**  For example, if you enable the default prefix (you can change it to anything you'd like), you will create a Hyper-V virtual machine with a VMName of `Autolab-S1` but the actual computername will still be `S1`. The validation tests will reference the guest computer name, not the Hyper-V virtual machine name.
+In the `VMConfigurationData.psd1` file for each lab, you will see a commented out section for an environment prefix value. This value exists for special situations where you might have a virtual machine naming collision or want to be able to identify the virtual machines that belong to the AutoLab module. In a normal setup and for almost all users, the Hyper-V virtual machine name will be the same as the hostname (computer name) in the VM guest. If the lab creates a guest with a computer name of `S1`, the Hyper-V virtual machine will also be called `S1`. If you enable the prefix setting, the Hyper-V virtual machine name will use the prefix, **but the guest computer name will not.**  For example, if you enable the default prefix (you can change it to anything you'd like), you will create a Hyper-V virtual machine with a VMName of `Autolab-S1` but the actual computer name will still be `S1`. The validation tests will reference the guest computer name, not the Hyper-V virtual machine name.
 
 If you must use this feature, open the `VMConfigurationData.psd1` file in a text or code editor. Scroll down to the `NonNodeData` section.
 
 ```powershell
-    NonNodeData = @{
-        Lability = @{
+NonNodeData = @{
+    Lability = @{
 
-            # You can uncomment this line to add a prefix to the virtual machine name.
-            # It will not change the guest computername
-            # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
-            # for more information.
+        # You can uncomment this line to add a prefix to the virtual machine name.
+        # It will not change the guest computer name
+        # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md
+        # for more information.
 
-            #EnvironmentPrefix = 'AutoLab-'
+        #EnvironmentPrefix = 'AutoLab-'
 ```
 
 Remove the `#` character before `EnvironmentPrefix`. If you want to change the value from `Autolab-` to something else go ahead. The prefix will be inserted before the computername to create the virtual machine name.
@@ -238,7 +238,7 @@ This setting should only be used in special situations as it can be confusing. W
 
 ## Troubleshooting Tips
 
-Occasionally, things can go wrong for no apparent reason. If you ran through the manual steps to setup a lab but the validations tests is still failing, you may need to stop and restart the virtual machine that is causing problems. For example, *sometimes* the SRV2 member in the `PowerShellLab` configuration simply won't pass validation, often because it can't be connected to. The best solution is to shut down the virtual machine in either the Hyper-V manager or from PowerShell.
+Occasionally, things can go wrong for no apparent reason. If you ran through the manual steps to setup a lab but the validations tests is still failing, you may need to stop and restart the virtual machine that is causing problems. For example, *sometimes* the SRV2 member in the `PowerShellLab` configuration simply won't pass validation, often because it can't be connected to. The best solution is to shut down the virtual machine in either the Hyper-V Manager or from PowerShell.
 
 ```powershell
 Stop-VM srv2 -force
@@ -256,4 +256,4 @@ Wait about 5 minutes and then test again.
 
 If encounter problems getting any of this to work, you are welcome to post an Issue. If you get the module installed, please include the results of `Get-PSAutolabSetting`. If your problem is meeting one of the requirements, we will do our best to help. Although if your computer is locked down or otherwise controlled by corporate policies there may not be much that we can do.
 
-last updated 2020-08-05 17:39:25Z UTC
+last updated 2020-10-06 15:37:01Z

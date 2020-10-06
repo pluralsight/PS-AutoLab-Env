@@ -19,7 +19,7 @@ Get-LabSummary [[-Path] <String>] [<CommonParameters>]
 
 ## DESCRIPTION
 
-This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough memory in your computer. Run the command in the root of the configuration folder.
+This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running, and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough available memory in your computer. Run the command in the root of the configuration folder.
 
 If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the virtual machine name.
 
@@ -28,56 +28,25 @@ If you have modified the configuration data file to use the EnvironmentPrefix se
 ### Example 1
 
 ```powershell
-PS C:\Autolab\Configurations\MultiRole-Server-2016\> Get-LabSummary
+PS C:\Autolab\Configurations\Windows10> Get-LabSummary
 
 
-Computername : DC1
-VMName       : DC1
-InstallMedia : 2016_x64_Standard_Core_EN_Eval
-Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-Role         : {DC, DHCP, ADCS}
-IPAddress    : 192.168.3.10
-MemoryGB     : 2
-Processors   : 2
-Lab          : MultiRole-Server-2016
+   Computername: Win10Ent VMName: Win10Ent
 
-Computername : S1
-VMName       : S1
-InstallMedia : 2016_x64_Standard_Core_EN_Eval
-Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-Role         : {DomainJoin, Web}
-IPAddress    : 192.168.3.50
-MemoryGB     : 1
-Processors   : 1
-Lab          : MultiRole-Server-2016
-
-Computername : N1
-VMName       : N1
-InstallMedia : 2016_x64_Standard_Nano_DSC_EN_Eval
-Description  :
-Role         :
-IPAddress    : 192.168.3.60
-MemoryGB     : 1
-Processors   : 1
-Lab          : MultiRole-Server-2016
-
-Computername : Cli1
-VMName       : Cli1
-InstallMedia : WIN10_x64_Enterprise_EN_Eval
-Description  : Windows 10 64bit Enterprise 1903 English Evaluation
-Role         : {domainJoin, RSAT, RDP}
-IPAddress    : 192.168.3.100
-MemoryGB     : 2
-Processors   : 2
-Lab          : MultiRole-Server-2016
+Lab           IPAddress       MemGB Procs Role            Description
+---           ---------       ----- ----- ----            -----------
+Windows10     192.168.3.101       2     2 {RSAT, RDP}     Windows 10 64bit
+                                                          Enterprise 1903
+                                                          English Evaluation
 ```
 
-Get the configuration for the MultiRole-Server-2016 lab.
+Get the configuration for the Windows 10 lab. The command has an associated formatting file to display the results as you see here. You might also want to pipe the Get-LabSummary command to Format-List to see all properties.
 
 ### Example 2
 
 ```powershell
-PS C:\Autolab\Configurations\> dir -Directory -exclude Archive | Get-LabSummary | Out-GridView
+PS C:\Autolab\Configurations\> Get-Childitem -Directory | Get-LabSummary |
+Select-Object * | Out-GridView
 ```
 
 Go through every active configuration and pipe the folder to Get-LabSummary.

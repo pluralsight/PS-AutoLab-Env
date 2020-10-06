@@ -1,23 +1,28 @@
 # Change Log for PSAutoLab
 
+## 4.18.0
+
++ Minor documentation clean up.
++ Added a custom format file, `psautolabvm-format.ps1xml`, to better format results from the `Get-LabSummary` command.
+
 ## 4.17.0
 
 + Updated markdown documentation.
 + Added a PDF user manual and a command, `Open-PSAutoLabHelp`, to launch it.
-+ Modified `Get-LabSummary` to better reflect computername and virtual machine name, especially when using the environment prefix. `Wipe-Lab` has also been modified to use this new information. Thank you @andreasjordan. (Issue #231)
++ Modified `Get-LabSummary` to better reflect the computer and virtual machine names, especially when using the environment prefix. `Wipe-Lab` has also been modified to use this new information. Thank you @andreasjordan. (Issue #231)
 + Archived `Authoring-FAQ.md1`. Incorporated most of the content into `Usage-FAQ.md`.
 + Added TLS protocol update to the module file. (Issue #235)
 
 ## 4.16.0
 
-+ Modified `Get-LabSummary` to include the environment prefix as part of the computername if specified. (Issue #231)
++ Modified `Get-LabSummary` to include the environment prefix as part of the computer name if specified. (Issue #231)
 + Minor help and documentation updates. Added online links to command help.
 
 ## 4.15.0
 
 ### Add
 
-+ Added troubleshooting content to `README` about potential TLS issues updating nuget or module. (Issue #224)
++ Added troubleshooting content to `README` about potential TLS issues updating the nuget provider or module. (Issue #224)
 
 ### Change
 
@@ -37,7 +42,7 @@
 
 ### Change
 
-+ Modified Lability commands in `Invoke-SetupHost` to use fully qualified command name.
++ Modified Lability commands in `Invoke-SetupHost` to use a fully qualified command name.
 + Updated -WhatIf messages in `Invoke-Setup-Host`
 
 ### Delete
@@ -125,8 +130,8 @@
 ### Change
 
 + Modified validation test for `PowerShellLab` lab to that was testing for specific Windows 10 version number. (Issue #214)
-+ Updated validation test for `PowerShellLab` lab to better display errors creating remoting sessions.
-+ Modified validation test for `Windows10` lab to test for operating system.
++ Updated the `PowerShellLab` lab validation test  to better display errors creating remoting sessions.
++ Modified the `Windows10` lab validation test to verify the correct operating system.
 + Updated `Detailed-Setup-Instructions.md`.
 + Updated `README.md`
 + Minor revisions to `Updating.md`.
@@ -141,7 +146,7 @@
 ### Add
 
 + Added "Detailed-Setup-Instructions.md`.
-+ Added code to module file to check for new version in the PowerShell Gallery.
++ Added code to module file to check for a new version in the PowerShell Gallery.
 + Added `SingleServer-GUI-2019` configuration.
 + Added `Get-LabSummary` function.
 + Added a `-NoMessages` parameter to most commands in the module to offer an option to suppress the status and information messages displayed with `Write-Host`.
@@ -163,7 +168,7 @@
 
 ### Delete
 
-+ Removed Active Directory json files from `SingleServer` configurations since they are not used.
++ Removed Active Directory JSON files from `SingleServer` configurations since they are not used.
 + Removed Active Directory, DHCP Server and ADCS DSC resources from `SingleServer*` configuration files since they are not used.
 
 ## v4.7.0
@@ -175,7 +180,7 @@
 ### Change
 
 + Corrected minor typos in `VMValidate.test.ps1` in the `PowerShellLab` configuration.
-+ Updated Lability module version to `0.19.1`.
++ Updated the Lability module version to `0.19.1`.
 + Updated `xPSDesiredStateConfiguration` to version `9.1.0`.
 + Expanded command aliases in `VMValidate.Test.ps1` in the `Microsoft-PowerShell-Implementing-JEA` configuration.
 + Updated `README.md` with improved setup instructions and background information.
@@ -194,7 +199,7 @@
 ### Change
 
 + Updated manifest tags
-+ Changed `Write-Host` commands to use fully qualified name `Microsoft.PowerShell.Utility\Write-Host`
++ Changed `Write-Host` commands to use a fully qualified name `Microsoft.PowerShell.Utility\Write-Host`
 + Modified `Invoke-UnattendLab` to pass `-Verbose` to the scriptblock for better troubleshooting
 + Modified `Invoke-SetupLab` and `Invoke-ValidateLab` to provide more verbose detail
 + Fixed minor spelling error in `VMConfiguration.ps1` scripts
@@ -216,7 +221,7 @@
 + Updated  `xPSDesiredStateConfiguration` DSC resource requirement to version 9.0.0
 + Updated `xDnsServer` DSC resource requirement requirement to 1.16.0.0
 + Updated `xWebAdministration` DSC resource requirement requirement to 3.1.1
-+ Updated `PSAutoLab.psm1` to display a message if Lability version is outdated.
++ Updated `PSAutoLab.psm1` to display a message if the Lability version is outdated.
 + Updated `Invoke-RefreshHost` to include a `-SkipPublisherCheck` parameter
 + Updated private function `_labilityCheck` to include a `-SkipPublisherCheck` parameter
 + Updated `LICENSE`
@@ -248,7 +253,7 @@ Beginning with this version, the change log is now in markdown and will provide 
 
 ## v4.3.0
 
-+ Added code when setting up host to update Pester (Issue #195)
++ Added code when setting up the host to update Pester (Issue #195)
 + Updated configurations to use xComputerManagement (Issue #196)
 + Updated configuration scripts to better import DSC resource modules
 + Modified `Wipe-Lab` to allow removing lab elements without prompting and removing Lab switch is now optional. (Issue #191)
@@ -270,12 +275,12 @@ Beginning with this version, the change log is now in markdown and will provide 
 + Updates to Usage-FAQ.md
 + Updates to README.md
 + Minor updates to Updating.md
-+ Archived Authoring-FAQ.md. Most material was integrated into Usage-FAQ.md
++ Archived `Authoring-FAQ.md`. Most of this material was integrated into `Usage-FAQ.md`.
 
 ## v4.1.0
 
 + Added SingleServer configuration (Issue #186)
-+ Modified `Snapshot-Lab` and `Refresh-Lab` to allow user to specify a snapshot name (Issue #184)
++ Modified `Snapshot-Lab` and `Refresh-Lab` to allow the user to specify a snapshot name (Issue #184)
 + Added `Get-LabSnapshot` to list available snapshots
 + Modified all commands with a -Path to use the parameter. Removed hard-coded reference to ".\".
 + Added MultiRole configuration

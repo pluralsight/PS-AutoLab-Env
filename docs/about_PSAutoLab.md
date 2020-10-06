@@ -4,7 +4,7 @@
 
 # SHORT DESCRIPTION
 
-This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows based systems. The downside is that it is a difficult module for less experienced PowerShell users. The configurations and control scripts for the Hyper-V virtual machine's are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
+This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows-based systems. The downside is that it is a difficult module for less-experienced PowerShell users. The configurations and control scripts for the Hyper-V virtual machines are written in PowerShell using Desired State Configuration (DSC) and deployed via Lability. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own.
 
 You can run [Open-PSAutoLabManual](Open-PSAutoLabManual.md) to view a PDF of documentation, including much of the content in this file.
 
@@ -26,13 +26,13 @@ This will install and configure the Lability module and install the Hyper-V feat
 Setup-Host -DestinationPath D:\AutoLab
 ```
 
-You will be prompted to reboot, which you should do especially if setup had to add Hyper-V.
+You will be prompted to reboot, which you should do, especially if `Setup-Host` had to add Hyper-V.
 
 ## CREATING A LAB
 
-Lab information is stored under the AutoLab Configurations folder, which is C:\AutoLab\Configurations by default. Open an elevated PowerShell prompt and change location to the desired configuration folder. View the `Instructions.md` and/or readme files in the folder to learn more about the configuration.
+Lab information is stored under the AutoLab Configurations folder, which is `C:\AutoLab\Configurations` by default. Open an elevated PowerShell prompt and change your location to the desired configuration folder. View the `Instructions.md` and/or `README.md` files in the folder to learn more about the configuration.
 
-The first time you setup a lab, Lability will download evaluation versions of required operating systems in ISO format. This may take some time depending on your Internet bandwidth. The downloads only happen when the required ISO is not found. When you wipe and rebuild a lab it won't download files a second time.
+The first time you set up a lab, Lability will download evaluation versions of required operating systems in ISO format. This may take some time depending on your Internet bandwidth. The downloads only happen when the required ISO is not found. When you wipe and rebuild a lab it won't download files a second time.
 
 Once the lab is created you can use the module commands for managing it. Or you can manage individual virtual machines using the Hyper-V manager or cmdlets.
 
@@ -46,7 +46,7 @@ Most, if not all, configurations should follow the same manual process. Run each
 * `Run-Lab`
 * `Enable-Internet`
 
-To verify that all virtual machines are properly configured you can run `Validate-Lab`. This will invoke a set of tests and loop until everything passes. Due to the nature of DSC and complexity of some configurations this could take 60-90 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
+To verify that all virtual machines are properly configured you can run `Validate-Lab`. This will invoke a set of tests and loop until everything passes. Due to the nature of DSC and the complexity of some configurations this could take 60-90 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
 
 ```powershell
 Invoke-Pester VMValidate.test.ps1
@@ -58,7 +58,7 @@ This can be useful for troubleshooting.
 
 **If you are running Pester v5.x you need to be running at least version 4.11.0 of this module.**
 
-The validation tests for each configuration are written for the Pester module. This is a widely adopted testing tool. In June of 2020, Pester version 5 was released. This version of Pester introduced a number of breaking changes to how tests are written. The tests in this module are **incompatible** with Pester 5.0 and will need to be re-written. As an interim step, this module will test for Pester v 4.10.1. If you don't have that version it will be installed when you run `Setup-Host`. Or if you've already setup Autolab you can run `Refresh-Host`. If you have Pester 5.x, it will not be uninstalled, but it will be removed from the current PowerShell session.
+The validation tests for each configuration are written for the Pester module. This is a widely adopted testing tool. In June of 2020, Pester version 5 was released. This version of Pester introduced several breaking changes to how tests are written. The tests in this module are **incompatible** with Pester 5.0 and will need to be re-written. As an interim step, this module will test for Pester v 4.10.1. If you don't have that version it will be installed when you run `Setup-Host`. Or if you've already setup Autolab you can run `Refresh-Host`. If you have Pester 5.x, it will not be uninstalled, but it will be removed from the current PowerShell session.
 
 ### UNATTENDED SETUP
 
@@ -116,9 +116,9 @@ This will remove the virtual machines and DSC configuration files. If you intend
 
 ### WINDOWS UPDATES
 
-When you build an lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use `Update-Lab` to invoke Windows update on all lab members.
+When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use `Update-Lab` to invoke Windows update on all lab members.
 
-This can be a time consuming process, so you have an option to run the updates as a background job. Be sure not to close your PowerShell session before the jobs complete.
+This can be a time-consuming process, so you have an option to run the updates as a background job. Be sure not to close your PowerShell session before the jobs complete.
 
 ```powershell
 PS C:\AutoLab\Configurations\PowerShellLab\> update-lab -AsJob
@@ -161,7 +161,7 @@ If you update, it is recommended that you update the computer running AutoLab by
 Refresh-Host
 ```
 
-This will update Lability if required and copy all new configuration files to your AutoLab\Configurations folder. It will NOT delete any files.
+This will update Lability if required and copy all-new configuration files to your AutoLab\Configurations folder. It will NOT delete any files.
 
 ## TROUBLESHOOTING
 
@@ -171,13 +171,13 @@ The commands and configurations in this module are not foolproof. During testing
 Invoke-Pester VMValidate.test.ps1
 ```
 
-Take note of which virtual machines are generating errors. Verify the virtual machine is running in Hyper-V. On occasion for reasons still undetermined, sometimes a virtual machine will shutdown and not reboot. This often happens with the client nodes of the lab configuration. Verify that all virtual machines are running and manually start those that have stopped using the Hyper-V manager or cmdlets.
+Take note of which virtual machines are generating errors. Verify the virtual machine is running in Hyper-V. On occasion for reasons still undetermined, sometimes a virtual machine will shut down and not reboot. This often happens with the client nodes of the lab configuration. Verify that all virtual machines are running and manually start those that have stopped using the Hyper-V manager or cmdlets.
 
 Sometimes even if the virtual machine is running, manually shutting it down and restarting it can resolve the problem. Remember to wait at least 5 minutes before manually running the validation test again when restarting any virtual machine.
 
-As a last resort, manually break out of any testing loop, wipe the lab and start all-over.
+As a last resort, manually break out of any testing loop, wipe the lab configuration, and start again.
 
-If you *still* are having problems, wipe the lab and try a different configuration. This will help determine if the problem is with the configuration or a larger compatibility problem.
+If you *still* are having problems, wipe the lab and try a different configuration. This will help determine if the problem is with a specific configuration or a larger compatibility problem.
 
 At this point, you can open an issue in this module's GitHub repository. Open an elevated PowerShell prompt and run `Get-PSAutoLabSetting` which will provide useful information. Copy and paste the results into a new issue along with any error messages you are seeing.
 
@@ -189,7 +189,7 @@ Once the files have been copied, use your script editor to modify the files. Don
 
 ## KNOWN ISSUES
 
-Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on. You might especially see this with the xNetworking module and the xIPAddress resource. If you have any version older than 5.7.0.0 you might encounter problems. Run this command to see what you have installed:
+Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on. You might especially see this with the `xNetworking` module and the `xIPAddress` resource. If you have any version older than 5.7.0.0 you might encounter problems. Run this command to see what you have installed:
 
 ```powershell
 PS C:\> Get-DSCResource xIPAddress

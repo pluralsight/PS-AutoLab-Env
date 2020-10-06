@@ -19,7 +19,7 @@ Open-PSAutoLabHelp [<CommonParameters>]
 
 ## DESCRIPTION
 
-This module ships with a PDF that contains documentation files found in the GitHub repository as well copies of all command help. You might find it easier to read the PDF than to use PowerShell.
+This module ships with a PDF that contains documentation files found in the GitHub repository as well all command help. You might find it easier to read the PDF than to use PowerShell.
 
 This command was introduced in version 4.17.0 of the PSAutoLab module.
 

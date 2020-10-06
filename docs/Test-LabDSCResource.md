@@ -19,7 +19,7 @@ Test-LabDSCResource [[-Path] <String>] [<CommonParameters>]
 
 ## DESCRIPTION
 
-This is a troubleshooting command for the PSAutoLab module. It is designed to be be run in a lab configuration folder. It will report on the required Desired State Configuration (DSC) resources and any versions that may already be installed. This can be used to diagnose potential version conflicts. Resource are installed automatically when you build a configuration so you don't need to take any action unless directed.
+This is a troubleshooting command for the PSAutoLab module. It is designed to be  run in a lab configuration folder. It will report on the required Desired State Configuration (DSC) resources and any versions that may already be installed. This can be used to diagnose potential version conflicts. Resources are installed automatically when you build a configuration so you don't need to take any action unless directed.
 
 ## EXAMPLES
 

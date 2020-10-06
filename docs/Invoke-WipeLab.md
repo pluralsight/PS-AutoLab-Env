@@ -21,7 +21,7 @@ Invoke-WipeLab [[-Path] <String>] [-RemoveSwitch] [-Force] [-WhatIf] [-Confirm] 
 
 You can use this command to remove all files and virtual machines related to an Autolab configuration. The command will stop any running virtual machines for you. It is assumed you will be running this command from within a configuration folder.
 
-If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNat).
+If you intend to rebuild the lab or create another configuration, you do not need to delete the virtual switch (LabNet).
 
 Use -Force to suppress all prompts.
 
@@ -35,7 +35,7 @@ You will typically use the Wipe-Lab alias.
 PS C:\AutoLab\Configurations\Windows10> Wipe-Lab
 ```
 
-Follow any onscreen prompts or instructions.
+Follow any on-screen prompts or instructions.
 
 ### Example 2
 
