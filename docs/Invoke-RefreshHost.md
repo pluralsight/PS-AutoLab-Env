@@ -14,7 +14,8 @@ Refresh local host AutoLab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-RefreshHost [[-Destination] <String>] [-SkipPublisherCheck] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-RefreshHost [[-Destination] <String>] [-SkipPublisherCheck] [-WhatIf]
+[-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,8 +30,8 @@ You will typically use the Refresh-Host alias.
 
 ```powershell
 PS C:\> Refresh-Host
-Version 0.18.0 of Lability is already installed
-Updating configuration files from C:\Program Files\WindowsPowerShell\Modules\PSAutoLab\4.0.0\Configurations
+Version 0.19.1 of Lability is already installed
+Updating configuration files from C:\Program Files\WindowsPowerShell\Modules\PSAutoLab\4.19.0\Configurations
 This process will not remove any configurations that have been deleted from the module.
 ```
 

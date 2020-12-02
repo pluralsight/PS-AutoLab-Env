@@ -29,26 +29,29 @@ If you need to report a problem with AutoLab, use this command to get relevant c
 PS C:\> Get-PSAutoLabSetting
 
 AutoLab                     : C:\Autolab
-PSVersion                   : 5.1.19041.1
+PSVersion                   : 5.1.19041.610
 PSEdition                   : Desktop
 OS                          : Microsoft Windows 10 Pro
-FreeSpaceGB                 : 172.49
+FreeSpaceGB                 : 705.95
 MemoryGB                    : 32
-PctFreeMemory               : 44.66
-Processor                   : Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
+PctFreeMemory               : 68.27
+Processor                   : Intel(R) Core(TM) i9-10900T CPU @ 1.90GHz
 IsElevated                  : True
 RemotingEnabled             : True
+NetConnectionProfile        : Private
 HyperV                      : 10.0.19041.1
-PSAutolab                   : {4.10.0, 4.9.0}
-Lability                    : {0.19.1, 0.19.0, 0.18.0}
-Pester                      : {4.10.1, 4.10.0, 4.9.0, 4.4.4...}
-PowerShellGet               : 2.2.3
+PSAutolab                   : {4.18.0, 4.17.0}
+Lability                    : {0.19.1,0.18.0}
+Pester                      : {5.1.0, 4.10.1, 3.4.0}
+PowerShellGet               : 2.2.5
 PSDesiredStateConfiguration : 1.1
 ```
 
-The output will also show previously installed versions of the PSAutoLab and Lability modules. Only the latest version should be loaded. You can remove the older versions if you no longer need them by running a command like `Uninstall-Module -name Lability -requiredversion 0.18.0`. The FreeSpaceGB value is the amount of free space on the drive containing your AutoLab folder.
+The output will also show previously installed versions of the PSAutoLab and Lability modules. Only the latest version of each module will be used. You can remove the older versions if you no longer need them by running a command like `Uninstall-Module -name Lability -requiredversion 0.18.0`. The FreeSpaceGB value is the amount of free space on the drive containing your AutoLab folder.
 
 Copy and paste this information into a GitHub issue along with any relevant error messages.
+
+Note that the command uses a custom formatting file to display key values in color.
 
 ## PARAMETERS
 
@@ -62,7 +65,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Object
+### PSAutoLabSetting
 
 ## NOTES
 
@@ -73,3 +76,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Get-Volume]()
 
 [Get-CimInstance]()
+
+[Get-NetConnectionProfile]()

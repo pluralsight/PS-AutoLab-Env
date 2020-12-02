@@ -14,7 +14,8 @@ Shutdown an Autolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-ShutdownLab [[-Path] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-ShutdownLab [[-Path] <String>] [-WhatIf] [-Confirm]
+[<CommonParameters>]
 ```
 
 ## DESCRIPTION

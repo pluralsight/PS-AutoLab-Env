@@ -1,0 +1,29 @@
+{
+  "Name" : "PSAutoLabManual",
+  "Title": "PSAutoLab Manual",
+  "CodeTheme": "github",
+  "CodeThemePath": "",
+  "Theme": "pdf-theme.yml",
+  "Files": [
+    {
+      "Name": "Intro.md",
+      "Lines": ""
+    },
+    {
+      "Name": "README.md",
+      "Lines": "1..9;13..-1"
+    },
+    {
+      "Name" :  "Detailed-Setup-Instructions.md",
+      "Lines" : ""
+    },
+    {
+      "Name" :"Usage-FAQ.md",
+      "Lines" : ""
+    },
+    {
+      "Name": "ModuleCommands.md",
+      "Lines": ""
+    }
+  ]
+}

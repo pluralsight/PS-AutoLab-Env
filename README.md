@@ -1,6 +1,6 @@
 # PSAutoLab
 
-[![PSGallery Version](https://img.shields.io/powershellgallery/v/PSAutolab.png?style=for-the-badge&logo=powershell&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/PSAutolab/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/PSAutolab.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/PSAutoLab/)
+[![PSGallery Version](https://img.shields.io/powershellgallery/v/PSAutoLab.png?style=for-the-badge&logo=powershell&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/PSAutoLab/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/PSAutoLab.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/PSAutoLab/)
 
 ## Overview
 
@@ -8,7 +8,7 @@ This project serves as a set of "wrapper" commands that utilize the [Lability](h
 
 **While this project is under the Pluralsight banner, it is offered AS-IS as a free tool with no official support from Pluralsight. Pluralsight makes no guarantees or warranties. This project is intended to be used for educational purposes only.**
 
-Beginning with module version 4.17.0, you can run `Open-PSAutoLabHelp` to view a local PDF version of the module's documentation.
+Beginning with module version 4.17.0, you can run [Open-PSAutoLabHelp](docs/Open-PSAutoLabHelp.md) to view a local PDF version of the module's documentation.
 
 ## Requirements
 
@@ -30,9 +30,23 @@ You must have administrator access and be able to update the TrustedHosts settin
 
 **__This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.__**
 
-## Installation
+### Pester Requirement
 
-> You can also look at these [detailed setup instructions](Detailed-Setup-Instructions.md).
+The module uses a standard PowerShell tool called Pester to validate lab configurations. Without getting into technical details, if you are running the out-of-the-box version of Pester on Windows 10, you need to manually update Pester before attempting to install this module. In an elevated Windows PowerShell session run this command:
+
+```powershell
+Get-Module Pester -ListAvailable
+```
+
+If the _only_ result you get is for version `3.4.0`, then you must run:
+
+```powershell
+Install-Module pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
+```
+
+Re-run the `Get-Module` to verify version `4.10.1` is installed. If you have newer versions installed, that will have no effect on this module. Once you have verified Pester version 4.10.1 you can install the PSAutoLab module.
+
+## Installation
 
 This module has been published to the PowerShell Gallery. It is recommended that you have at least version 2.2 of the `PowerShellGet` module which handles module installations.
 
@@ -52,15 +66,17 @@ See the [Changelog](https://github.com/pluralsight/PS-AutoLab-Env/blob/master/ch
 
 **DO NOT run this module on any mission-critical or production system.**
 
+If you encounter issues with a basic installation and setup, you should read and use the [detailed setup instructions](Detailed-Setup-Instructions.md).
+
 You can verify the module with these commands:
 
 ```text
-PS C:\> Import-Module PSAutolab -force
-PS C:\> Get-Module PSAutolab
+PS C:\> Import-Module PSAutoLab -force
+PS C:\> Get-Module PSAutoLab
 
 ModuleType Version    Name           ExportedCommands
 ---------- -------    ----           ----------------
-Script     4.16.0      PSAutolab     {Enable-Internet, Get-LabSnapshot,...}
+Script     4.18.0      PSAutoLab     {Enable-Internet, Get-LabSnapshot,...}
 ```
 
 Your version number may differ.
@@ -118,13 +134,13 @@ Current configurations will use these names for the virtual machine and computer
 
 ### Previous Versions
 
-If you installed previous versions of this module, and struggled, hopefully this version will be an improvement. To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`. You can run a command like:
+If you installed previous versions of this module (v3.x) and struggled, hopefully, this version will be an improvement. To avoid any other complications, it is STRONGLY recommended that you manually remove the old version which is most likely under `C:\Program Files\WindowsPowerShell\Modules\PSAutoLab`. You can run a command like:
 
 ```powershell
-Get-Module PSAutolab -ListAvailable | Select-Object Path
+Get-Module PSAutoLab -ListAvailable | Select-Object Path
 ```
 
-To identify the module location. Use this information to delete the PSAutolab folder.
+To identify the module location. Use this information to delete the PSAutoLab folder.
 
 **The previous version was not installed using PowerShell's module cmdlets so it can't be updated or removed except manually.**
 
@@ -150,7 +166,7 @@ This will install and configure the Lability module and install the Hyper-V feat
 Setup-Host -DestinationPath D:\AutoLab
 ```
 
-You will be prompted to reboot, which you should do especially if setup had to add the Hyper-V feature. To verify your configuration open an elevated PowerShell session and run this command:
+You will be prompted to reboot, which you should do especially if the setup had to add the Hyper-V feature. To verify your configuration open an elevated PowerShell session and run this command:
 
 ```text
 PS C:\> Get-PSAutoLabSetting
@@ -166,8 +182,9 @@ PctFreeMemory               : 44.66
 Processor                   : Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
 IsElevated                  : True
 RemotingEnabled             : True
+NetConnectionProfile        : Private
 HyperV                      : 10.0.19041.1
-PSAutolab                   : {4.10.0, 4.9.0}
+PSAutoLab                   : {4.18.0, 4.17.0}
 Lability                    : {0.19.1, 0.19.0, 0.18.0}
 Pester                      : {4.10.1, 4.10.0, 4.9.0, 4.4.4...}
 PowerShellGet               : 2.2.3
@@ -178,7 +195,7 @@ Some of your values may be different. Please include this information when repor
 
 ### Lab Summary
 
-Once the host setup is complete, you can use the module's `Get-LabSummary` command to better understand what the lab configuration will setup. Run the command in the configuration folder.
+Once the host setup is complete, you can use the module's [Get-LabSummary](docs/Get-LabSummary.md) command to better understand what the lab configuration will setup. Run the command in the configuration folder.
 
 ```text
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Get-LabSummary
@@ -220,7 +237,7 @@ Lab information is stored under the AutoLab Configurations folder, which is `C:\
 
 ### A Note on Pluralsight Labs
 
-*This module started several years ago and there are a number of Pluralsight courses that rely on configurations that may no longer exist. Configurations that were named as `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case. If you are trying to setup a lab for a specific course, and can't find the configuration the instructor calls for, please post an issue indicating the configuration you are looking for and the title of the Pluralsight course. Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration. In some cases, the course may assume a different password. All configurations use `P@ssw0rd` for all passwords.*
+*This module started several years ago and there are several Pluralsight courses that rely on configurations that may no longer exist. Configurations that were named as `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case. If you are trying to setup a lab for a specific course, and can't find the configuration the instructor calls for, please post an issue indicating the configuration you are looking for and the title of the Pluralsight course. Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration. In some cases, the course may assume a different password. All configurations use `P@ssw0rd` for all passwords.*
 
 The first time you set up a lab, Lability will download evaluation versions of required operating systems in ISO format. This may take some time depending on your Internet connection. These downloads only happen when the required ISO is not found locally. When you wipe and rebuild a lab it won't download files a second time.
 
@@ -234,11 +251,11 @@ Please be aware that all configurations were created for an `EN-US` culture and 
 
 Most, if not all, configurations should follow the same manual process. Run each command after the previous one has completed.
 
-* `Setup-Lab`
-* `Run-Lab`
-* `Enable-Internet`
+* [Setup-Lab](docs/Invoke-SetupLab.md)
+* [Run-Lab](docs/Invoke-RunLab.md)
+* [Enable-Internet](docs/Enable-Internet.md)
 
-To verify that all virtual machines are properly configured you can run `Validate-Lab`. This will invoke a set of tests and loop until everything passes. Due to the nature of DSC and the complexity of some configurations, this could take up to 60 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
+To verify that all virtual machines are properly configured you can run [Validate-Lab](docs/Invoke-ValidateLab.md). This will invoke a set of tests and keep looping until everything passes. Due to the nature of DSC and the complexity of some configurations, this could take up to 60 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
 
 ```text
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
@@ -306,7 +323,7 @@ To destroy the lab completely, change to the configuration folder in an elevated
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 ```
 
-This will remove the virtual machines and DSC configuration files. If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch. In fact, that is the default behavior. If you want to remove everything you would need to run a command like this:
+This will remove the virtual machines and DSC configuration files. If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch. This is the default behavior. If you want to remove everything you would need to run a command like this:
 
 ```text
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
@@ -380,7 +397,7 @@ If you make a mistake or want to restore the original configurations, run the `R
 
 ## Windows Updates
 
-When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use `Update-Lab``to invoke Windows update on all lab members. This can be a time-consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
+When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use [Update-Lab](docs/Update-Lab.md) to invoke Windows update on all lab members. This can be a time-consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
 
 ```text
 PS C:\Autolab\Configurations\PowerShellLab\> update-lab -AsJob
@@ -401,7 +418,7 @@ WARNING: SRV3 requires a reboot
 
 Run the update process as a background job. Use the PowerShell job cmdlets to manage.
 
-## Updating PSAutolab
+## Updating PSAutoLab
 
 As this module is updated over time, new configurations may be added, or bugs fixed in existing configurations. There may also be new Lability updates. Use PowerShell to check for new versions:
 
@@ -423,12 +440,12 @@ Refresh-Host
 
 This will update the Lability and Pester modules if required and copy all-new configuration files to your AutoLab\Configurations folder. It will NOT delete any files.
 
-## Removing PSAutolab
+## Removing PSAutoLab
 
 If you want to completely remove the PSAutoLab module, first use `Wipe-Lab` to remove any existing lab configurations including the Hyper-V switch. Run this command to uninstall the module and its dependencies
 
 ```powershell
-Uninstall-Module PSAutolab,Lability
+Uninstall-Module PSAutoLab,Lability
 ```
 
 You may need to manually delete the `C:\Autolab` folder. If you want to remove the NAT configuration"
@@ -450,7 +467,7 @@ You will almost certainly need to reboot to complete the removal process.
 
 **If you are running Pester v5.x you need to be running at least version 4.11.0 of this module.**
 
-The validation tests for each configuration are written for the Pester module. This is a widely adopted testing tool. In June of 2020 version 5 was released. This version of Pester introduced a number of breaking changes to how tests are written. The tests in this module are **incompatible** with Pester 5.0 and will need to be re-written. As an interim step, this module will test for Pester v 4.10.1. If you don't have that version it will be installed when you run `Setup-Host`. Or if you've already setup Autolab you can run `Refresh-Host`. If you have Pester 5.x, it will not be uninstalled, but it will be removed from the current PowerShell session.
+The validation tests for each configuration are written for the Pester module. This is a widely adopted testing tool. In June of 2020 version 5 was released. This version of Pester introduced several breaking changes to how tests are written. The tests in this module are **incompatible** with Pester 5.0 and will need to be re-written. As an interim step, this module will test for Pester v 4.10.1. If you don't have that version it will be installed when you run `Setup-Host`. Or if you've already setup Autolab you can run [Refresh-Host](docs/Invoke-RefreshHost.md). If you have Pester 5.x, it will not be uninstalled, but it will be removed from the current PowerShell session.
 
 ## Troubleshooting
 
@@ -465,7 +482,7 @@ PackageManagement\Install-PackageProvider : No match was found for the specified
 'Provider' tags.
 ```
 
-The first thing to check is to make sure you are using correct TLS settings. You can try running this command in PowerShell:
+The first thing to check is to make sure you are using valid TLS settings. You can try running this command in PowerShell:
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -509,7 +526,7 @@ As a last resort, manually break out of any testing loop, wipe the lab and start
 
 If you *still* are having problems, wipe the lab and try a different configuration. This will help determine if the problem is with the configuration or a larger compatibility problem.
 
-At this point, you can open an issue in this repository. Open an elevated PowerShell prompt and run `Get-PSAutoLabSetting` which will provide useful information. Copy and paste the results into a new issue along with any error messages you are seeing.
+At this point, you can open an issue in this repository. Open an elevated PowerShell prompt and run [Get-PSAutoLabSetting](docs/Get-PSAutoLabSetting.md) which will provide useful information. Copy and paste the results into a new issue along with any error messages you are seeing.
 
 ## Known Issues
 
@@ -539,7 +556,7 @@ Refresh-Host -SkipPublisherCheck
 
 ### Multiple DSC Resources
 
-Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on. You might especially see this with the `xNetworking` module and the `xIPAddress` resource. If you have any version older than 5.7.0.0 you might encounter problems. Run this command to see what you have installed:
+Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required one. You might especially see this with the `xNetworking` module and the `xIPAddress` resource. If you have any version older than 5.7.0.0 you might encounter problems. Run this command to see what you have installed:
 
 ```powershell
 Get-DSCResource xIPAddress
@@ -566,6 +583,6 @@ These are some of the items that are being considered for future updates:
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM.
 * Offer an easy way to customize a lab configuration such as node names and operating systems.
 
-A complete list of enhancements can be found in [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues).
+A complete list of enhancements can be found in the [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues) section of this module's GitHub repository.
 
-Last Updated 2020-08-05 21:27:38Z UTC
+Last Updated 2020-12-02 14:24:31Z

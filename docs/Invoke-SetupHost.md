@@ -14,7 +14,8 @@ Prepare the localhost for PSAutolab.
 ## SYNTAX
 
 ```yaml
-Invoke-SetupHost [[-DestinationPath] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-SetupHost [[-DestinationPath] <String>] [-WhatIf] [-Confirm]
+[<CommonParameters>]
 ```
 
 ## DESCRIPTION

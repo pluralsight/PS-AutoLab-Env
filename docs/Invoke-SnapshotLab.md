@@ -14,7 +14,8 @@ Create virtual machine snapshots of your Autolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-SnapshotLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-SnapshotLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf]
+[-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Format type data generated 12/02/2020 13:45:47 by PROSPERO\Jeff
+
+This file was created using the New-PSFormatXML command that is part
+of the PSScriptTools module.
+https://github.com/jdhitsolutions/PSScriptTools
+-->
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <!--Created 12/02/2020 13:45:47 by PROSPERO\Jeff-->
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>PSAutoLabSetting</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <ListItem>
+                <Label>AutoLab</Label>
+                <PropertyName>AutoLab</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PSVersion</Label>
+                <PropertyName>PSVersion</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PSEdition</Label>
+                <ScriptBlock>
+                  if ($_.PSEdition -ne 'Desktop') {
+                    "$([char]0x1b)[91m$($_.PSEdition)$([char]0x1b)[0m"
+                  }
+                  else {
+                    $_.PSEdition
+                  }
+                    </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>OS</Label>
+                <PropertyName>OS</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>FreeSpaceGB</Label>
+                <ScriptBlock>
+                  if ($_.FreeSpaceGB -ge 100) {
+                      "$([char]0x1b)[92m$($_.FreeSpaceGB)$([char]0x1b)[0m"
+                  }
+                  elseif ($_.FreeSpaceGB -ge 50) {
+                      "$([char]0x1b)[93m$($_.FreeSpaceGB)$([char]0x1b)[0m"
+                  }
+                  else {
+                    "$([char]0x1b)[91m$($_.FreeSpaceGB)$([char]0x1b)[0m"
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>MemoryGB</Label>
+                <ScriptBlock>
+                  if ($_.MemoryGB -ge 16) {
+                      "$([char]0x1b)[92m$($_.MemoryGB)$([char]0x1b)[0m"
+                  }
+                  elseif ($_.MemoryGB -ge 12) {
+                      "$([char]0x1b)[93m$($_.FreeSpaceGB)$([char]0x1b)[0m"
+                  }
+                  else {
+                    "$([char]0x1b)[91m$($_.MemoryGB)$([char]0x1b)[0m"
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>PctFreeMemory</Label>
+                <PropertyName>PctFreeMemory</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Processor</Label>
+                <PropertyName>Processor</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>IsElevated</Label>
+                <ScriptBlock>
+                  if ($_.IsElevated) {
+                    "$([char]0x1b)[92m$($_.IsElevated)$([char]0x1b)[0m"
+                  }
+                  else {
+                  "$([char]0x1b)[91m$($_.IsElevated)$([char]0x1b)[0m"
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>RemotingEnabled</Label>
+                <ScriptBlock>
+                  if ($_.RemotingEnabled) {
+                    "$([char]0x1b)[92m$($_.RemotingEnabled)$([char]0x1b)[0m"
+                  }
+                  else {
+                  "$([char]0x1b)[91m$($_.RemotingEnabled)$([char]0x1b)[0m"
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>NetConnectionProfile</Label>
+                <ScriptBlock>
+                  if ($_.NetConnectionProfile -eq 'Public') {
+                    "$([char]0x1b)[91m$($_.NetConnectionProfile)$([char]0x1b)[0m"
+                  }
+                  else {
+                    "$([char]0x1b)[92m$($_.NetConnectionProfile)$([char]0x1b)[0m"
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>HyperV</Label>
+                <PropertyName>HyperV</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PSAutolab</Label>
+                <PropertyName>PSAutolab</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Lability</Label>
+                <PropertyName>Lability</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Pester</Label>
+                <PropertyName>Pester</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PowerShellGet</Label>
+                <PropertyName>PowerShellGet</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PSDesiredStateConfiguration</Label>
+                <PropertyName>PSDesiredStateConfiguration</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>
