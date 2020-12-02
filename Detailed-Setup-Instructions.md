@@ -2,7 +2,7 @@
 
 Please refer to this document to assist in installing and setting up the `PSAutolab` module on your computer. Run all commands from an **elevated** Windows PowerShell session. In other words, *run Windows PowerShell as administrator*. You will know you are elevated if you see the word `Administrator` in the title bar of the PowerShell window. __Do NOT run this module in PowerShell 7__. It is assumed you are running this on Windows 10 Professional or Enterprise editions.
 
-It is also assumed that you have administrator rights to your computer and can makes changes. If your computer is controlled by Group Policy, you may encounter problems. You should also be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
+It is also assumed that you have administrator rights to your computer and can make changes. If your computer is controlled by Group Policy, you may encounter problems. You should also be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
 
 It is *possible* to run this module with nested virtualization inside a Windows 10 Hyper-V virtual machine but it is **not** recommended. Some networking features may not work properly and overall performance will likely be reduced.
 
@@ -20,7 +20,7 @@ Caption                  MemoryGB
 Microsoft Windows 10 Pro    32
 ```
 
-If the Caption shows anything other than Pro or Enterprise this module may not work. Although it appears that Windows 10 Education might be supported. In fact, if you can't even open a PowerShell prompt, this module won't work on your computer.
+If the Caption shows anything other than Pro or Enterprise this module may not work. Although it appears that Windows 10 Education might be supported. If you can't even open a PowerShell prompt, this module won't work on your computer.
 
 The memory size should be at least 12GB. 16GB or greater is recommended. If the number is less than 12, **STOP**. It is unlikely you have enough installed memory. Depending on the configuration you want to run, it *might* be possible to proceed with less memory. Open an Issue and ask for guidance indicating your memory settings from this command:
 
@@ -74,6 +74,22 @@ You should have close to 100GB of free space on a fixed hard drive such as C or 
 
 The module requires the Hyper-V feature on Windows 10. Please refer to the documentation for your computer hardware to determine if it supports virtualization. You may need to configure settings in your BIOS. You don't need to manually enable the Hyper-V feature now, although you are welcome to if you want to verify it is available.
 
+### Pester
+
+The module uses a standard PowerShell tool called Pester to validate lab configurations. Without getting into technical details, if you are running the out-of-the-box version of Pester on Windows 10, **you need to manually update Pester** before attempting to install this module. In an elevated Windows PowerShell session run this command:
+
+```powershell
+Get-Module Pester -ListAvailable
+```
+
+If the _only_ result you get is for version `3.4.0`, then you must run:
+
+```powershell
+Install-Module pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
+```
+
+Re-run the `Get-Module` to verify version `4.10.1` is installed. If you have newer versions installed, that will have no effect on this module. Once you have verified Pester version 4.10.1 you can install the PSAutolab module.
+
 ## Installation and Configuration
 
 ### Install the Module
@@ -94,7 +110,7 @@ PS C:\> Get-Module PSAutoLab -list
 
 ModuleType Version    Name                       ExportedCommands
 ---------- -------    ----                       ----------------
-Script     4.16.0      PSAutoLab                 {Enable-Internet, Invoke-RefreshLab, Invoke-Run...
+Script     4.19.0      PSAutoLab                 {Enable-Internet, Invoke-RefreshLab, Invoke-Run...
 ```
 
 You may see a newer version number than what is indicated here. The `README` file indicates the current version in the PowerShell Gallery.
@@ -130,8 +146,9 @@ PctFreeMemory               : 59.71
 Processor                   : Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
 IsElevated                  : True
 RemotingEnabled             : True
+NetConnectionProfile        : Private
 HyperV                      : 10.0.18362.1
-PSAutolab                   : 4.16.0
+PSAutolab                   : 4.19.0
 Lability                    : {0.19.1, 0.19.0, 0.18.0}
 Pester                      : {5.0.2, 4.10.1, 4.9.0, 4.8.1...}
 PowerShellGet               : 2.2.4.1
@@ -159,20 +176,7 @@ Or open the file with Notepad.
 
 Another option is to use the `Get-LabSummary` command. This will show you what computers will be created and how they will be created. The Computername will also be the virtual machine name.
 
-```text
-PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Get-LabSummary
-
-
-Computername : S1
-VMName       : S1
-InstallMedia : 2016_x64_Standard_EN_Eval
-Description  : Windows Server 2016 Standard 64bit English Evaluation
-Role         : RDP
-IPAddress    : 192.168.3.75
-MemoryGB     : 4
-Processors   : 1
-Lab          : SingleServer-GUI-2016
-```
+![Get-LabSummary](images/get-labsummary.png)
 
 You can run `Unattend-Lab` for a completely hands-free experience.
 
@@ -198,7 +202,7 @@ If you encounter errors running an unattended setup, you should step through the
 
 Errors that affect setup should happen in one of these steps. If so, open an issue with the configuration name, the command you were working on and the error message. Also include the output from `Get-PSAutolabSetting`.
 
-After about 10 minutes, you can manually test to see if the configuration has finalized.
+After about 10 minutes, you can manually test to see if the configuration has converged.
 
 ```powershell
 Invoke-Pester .\vmvalidate.test.ps1
@@ -232,13 +236,13 @@ NonNodeData = @{
         #EnvironmentPrefix = 'AutoLab-'
 ```
 
-Remove the `#` character before `EnvironmentPrefix`. If you want to change the value from `Autolab-` to something else go ahead. The prefix will be inserted before the computername to create the virtual machine name.
+Remove the `#` character before `EnvironmentPrefix`. If you want to change the value from `Autolab-` to something else go ahead. The prefix will be inserted before the computer name to create the virtual machine name.
 
 This setting should only be used in special situations as it can be confusing. While every effort has been made to ensure compatibility with commands in this module, there is no guarantee of 100% success. Also note that any changes you make to the configuration files could be overwritten in future updates or when you run `Refresh-Host`.
 
 ## Troubleshooting Tips
 
-Occasionally, things can go wrong for no apparent reason. If you ran through the manual steps to setup a lab but the validations tests is still failing, you may need to stop and restart the virtual machine that is causing problems. For example, *sometimes* the SRV2 member in the `PowerShellLab` configuration simply won't pass validation, often because it can't be connected to. The best solution is to shut down the virtual machine in either the Hyper-V Manager or from PowerShell.
+Occasionally, things can go wrong for no apparent reason. If you ran through the manual steps to setup a lab but the validation tests are still failing, you may need to stop and restart the virtual machine that is causing problems. For example, *sometimes* the SRV2 member in the `PowerShellLab` configuration simply won't pass validation, often because it can't be connected to. The best solution is to shut down the virtual machine in either the Hyper-V Manager or from PowerShell.
 
 ```powershell
 Stop-VM srv2 -force
@@ -256,4 +260,4 @@ Wait about 5 minutes and then test again.
 
 If encounter problems getting any of this to work, you are welcome to post an Issue. If you get the module installed, please include the results of `Get-PSAutolabSetting`. If your problem is meeting one of the requirements, we will do our best to help. Although if your computer is locked down or otherwise controlled by corporate policies there may not be much that we can do.
 
-last updated 2020-10-06 15:37:01Z
+Last Updated 2020-12-01 22:15:58Z

@@ -10,7 +10,7 @@ __Note:__ The terms `AutoLab` and `PSAutoLab` are used interchangeably. PSAutoLa
 
 The new module will be installed and updated from the PowerShell Gallery. To avoid conflicts, you should clean up the previous setup before installing the new version. The recommended procedure is to wipe everything and start fresh.
 
-**All existing issues from the previous version have been closed as the previous code base is deprecated.**
+**All existing issues from the previous version have been closed as the previous code-base is deprecated.**
 
 ### Wipe Labs
 
@@ -88,4 +88,4 @@ help about_PSAutoLab
 
 Or refer to the GitHub repository [README](README.md) file.
 
-Last updated 2020-10-06 15:37:01Z
+Last updated 2020-12-01 22:17:55Z

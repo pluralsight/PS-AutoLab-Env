@@ -14,7 +14,8 @@ Create an Autolab configuration unattended.
 ## SYNTAX
 
 ```yaml
-Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-UseLocalTimeZone] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-UseLocalTimeZone] [-WhatIf]
+[-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

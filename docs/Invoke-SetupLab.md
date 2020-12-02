@@ -14,8 +14,8 @@ Set up an Autolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-SetupLab [[-Path] <String>] [-IgnorePendingReboot] [-UseLocalTimeZone] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Invoke-SetupLab [[-Path] <String>] [-IgnorePendingReboot] [-UseLocalTimeZone]
+[-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

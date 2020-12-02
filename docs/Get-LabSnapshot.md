@@ -34,7 +34,7 @@ All VMs in the configuration should belong to the same snapshot.
 
 VMName Name          SnapshotType  CreationTime          ParentSnapshotName
 ------ ----          ------------  ------------          ------------------
-S1     PreInstall    Standard      9/11/2019 12:06:51 PM
+S1     PreInstall    Standard      9/11/2020 12:06:51 PM
 ```
 
 You could restore this snapshot by name using Refresh-Lab.

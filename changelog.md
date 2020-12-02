@@ -1,5 +1,14 @@
 # Change Log for PSAutoLab
 
+## 4.19.0
+
++ Update documentation with a requirement to manually update Pester `install-module pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck` if the *only* installed version of Pester is `3.4.0`.
++ Fixed bug in `Get-LabSummary` if `Lability_Media` setting is missing. (Issue #245)
++ Added `Test-ISO` function to validate ISO images along with a custom formatting file, `isotest.format.ps1xml`.
++ Modified `Get-PSAutolabSetting` to include information on the network connection profile for the `LabNet` network.
++ Added a custom format file for `Get-PSAutoLabsetting`.
++ Help updates.
+
 ## 4.18.0
 
 + Minor documentation clean up.
@@ -100,7 +109,7 @@
 
 ### Delete
 
-+ Removed Archived configurations from the Configurations path. This will not remove them for people who upgrade. The files are still part of this module for reference purposes.
++ Removed archived configurations from the `Configurations` path. This will not remove them for people who upgrade. The files are still part of this module for reference purposes.
 
 ## 4.10.0
 

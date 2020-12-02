@@ -176,7 +176,7 @@ Full error: *Windows could not parse or process the unattend answer file [C:\Win
 
 Make sure that the configuration changes you've made are valid. Specifically, this error is known to be caused by an invalid NodeName. NodeName on Windows must match the rules for a Windows Computer Name, notably a 15 character maximum. See details here: [https://support.microsoft.com/en-us/kb/909264](https://support.microsoft.com/en-us/kb/909264)
 
-## I'm still stuck
+## I'm Still Stuck
 
 For all other questions, comments or problems, please post an [Issue](https://github.com/pluralsight/PS-AutoLab-Env/issues) in this repository.
 

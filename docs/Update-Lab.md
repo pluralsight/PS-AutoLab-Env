@@ -41,8 +41,8 @@ Id     Name       PSJobTypeName   State     HasMoreData     Location   Command
 30     WUUpdate   RemoteJob       Running   True            WIN10      WUUpdate
 
 PS C:\Autolab\Configurations\PowerShellLab> receive-job -id 27 -Keep
-[11/22/2019 12:05:43] Found 5 updates to install on SRV3
-[11/22/2019 12:25:13] Update process complete on SRV3
+[11/22/2020 12:05:43] Found 5 updates to install on SRV3
+[11/22/2020 12:25:13] Update process complete on SRV3
 WARNING: SRV3 requires a reboot
 ```
 

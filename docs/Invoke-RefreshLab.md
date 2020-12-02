@@ -14,7 +14,8 @@ Refresh a PSAutolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-RefreshLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-RefreshLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf]
+[-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

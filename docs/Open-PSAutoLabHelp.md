@@ -31,6 +31,8 @@ This command was introduced in version 4.17.0 of the PSAutoLab module.
 PS C:\> Open-PSAutoLabHelp
 ```
 
+Open the PDF help manual with the associated application.
+
 ## PARAMETERS
 
 ### CommonParameters

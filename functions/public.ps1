@@ -1,12 +1,77 @@
 #region Get-LabSummary
+Function Test-ISOImage {
+    [cmdletbinding()]
+    [outputtype("ISOTest")]
+    Param()
 
+    $progParam = @{
+        Activity         = $myinvocation.MyCommand
+        PercentComplete  = 0
+        CurrentOperation = ""
+    }
+
+    Write-Verbose "Starting $($myinvocation.mycommand)"
+    Try {
+        $LabHost = Lability\Get-LabHostDefault -ErrorAction stop
+        $ISOPath = $LabHost.IsoPath
+
+        $progParam.Add("Status", "Validating ISO image files in $ISOPath")
+    }
+    Catch {
+        Throw $_
+    }
+    Write-Verbose "Testing ISO images under $ISOPath"
+    $files = Get-ChildItem -Path $ISOPath -Filter *.iso
+
+    if ($files.count -gt 0) {
+        #initialize a counter
+        $i = 0
+        foreach ($file in $files) {
+            $i++
+            $progParam.PercentComplete = ($i / $files.count) * 100
+            $progParam.CurrentOperation = $file.name
+            Write-Progress @progParam
+            #construct the checksum file
+            $chkfile = Join-Path -Path $ISOPath -ChildPath "$($file.name).checksum"
+            Write-Verbose "Processing $($file.name)"
+            $hashData = Get-FileHash -Path $file.fullname -Algorithm MD5
+
+            if (Test-Path $chkfile) {
+                $chksum = Get-Content -Path $chkfile
+                if ($chksum -eq $hashdata.hash) {
+                    $Valid = $True
+                }
+            }
+            else {
+                Write-Warning "Missing checksum file $chkfile"
+                $chksum = "unknown"
+                $Valid = $False
+            }
+
+            #write a custom object to the pipeline
+            [pscustomobject]@{
+                PSTypename = "ISOTest"
+                Path       = $hashData.Path
+                Valid      = $Valid
+                Size       = (Get-Item -Path $hashData.path).length
+                Hash       = $hashData.Hash
+                Checksum   = $chksum
+                Algorithm  = $hashData.Algorithm
+            }
+        } #foreach file
+    } #if files
+    else {
+        Write-Warning "Failed to find any ISO files in $ISOPath."
+    }
+    Write-Verbose "Ending $($myinvocation.mycommand)"
+}
 Function Get-LabSummary {
     [cmdletbinding()]
     [Alias("Setup-Lab")]
     Param (
         [Parameter(Position = 0, ValueFromPipeline, HelpMessage = "The PATH to the lab configuration folder. Normally, you should run all commands from within the configuration folder. Do not include the psd1 file name.")]
         [ValidateNotNullorEmpty()]
-        [ValidateScript( {Test-Path $_ })]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
 
@@ -16,10 +81,10 @@ Function Get-LabSummary {
     Process {
         $Path = Convert-Path $path
         Write-Verbose "Searching in $path for VMConfigurationData.psd1"
-        $psd1 = $(Join-Path $Path -childpath Vmconfigurationdata.psd1)
+        $psd1 = $(Join-Path $Path -ChildPath Vmconfigurationdata.psd1)
 
         if (Test-Path $psd1) {
-            $labname = Split-Path $Path -leaf
+            $labname = Split-Path $Path -Leaf
             Write-Verbose "getting summary for $labname"
 
             #could also use the Get-LabMedia command from the Lability module
@@ -64,7 +129,7 @@ Function Get-LabSummary {
 
             #get the optional prefix value
             $EnvPrefix = $import.NonNodeData.Lability.EnvironmentPrefix
-            $nodes.where( {$_.Nodename -ne '*'}).Foreach( {
+            $nodes.where( { $_.Nodename -ne '*' }).Foreach( {
                     if ($_.lability_startupmemory) {
                         $mem = $_.lability_startupmemory
                     }
@@ -80,12 +145,25 @@ Function Get-LabSummary {
                     else {
                         $ProcCount = 1
                     }
+                    #added for issue #245 where lability_media might not be defined
+                    if ($_.lability_media) {
+                        $description = $media[$_.lability_media]
+                    }
+                    else {
+                        #check for default
+                        if ($nodes[0].lability_media) {
+                            $description = $nodes[0].lability_media
+                        }
+                        else {
+                            $description = "unknown"
+                        }
+                    }
                     [pscustomobject]@{
                         PSTypeName   = "PSAutolabVM"
                         Computername = $_.NodeName
                         VMName       = "{0}{1}" -f $envPrefix, $_.NodeName
                         InstallMedia = $_.lability_media
-                        Description  = $media[$_.lability_media]
+                        Description  = $description
                         Role         = $_.Role
                         IPAddress    = $_.IPAddress
                         MemoryGB     = $mem / 1GB
@@ -109,6 +187,7 @@ Function Get-LabSummary {
 #region Get-PSAutoLabSetting
 Function Get-PSAutoLabSetting {
     [cmdletbinding()]
+    [outputType("PSAutoLabSetting")]
     Param()
 
     $psver = $PSVersionTable
@@ -135,23 +214,34 @@ Function Get-PSAutoLabSetting {
         $free = (Get-Volume C).SizeRemaining  #Assume C drive
     }
 
+    #get network category for LabNet
+    $net = Get-NetConnectionprofile -interfacealias *LabNet*
+    if ($net) {
+        $netProfile = $net.NetworkCategory
+    }
+    else {
+        $netProfile = "unknown"
+    }
+
     [pscustomobject]@{
-        AutoLab         = $Autolab
-        PSVersion       = $psver.PSVersion
-        PSEdition       = $psver.PSEdition
-        OS              = $os
-        FreeSpaceGB     = [math]::Round($free / 1GB, 2)
-        MemoryGB        = ($mem * 1kb) / 1GB -as [int]
-        PctFreeMemory   = $pctFree
-        Processor       = (Get-CimInstance -classname Win32_Processor -property Name).Name
-        IsElevated      = (Test-IsAdministrator)
-        RemotingEnabled = $(try {[void](Test-WSMan -erroraction stop); $True} catch { $false})
-        HyperV          = (Get-Item $env:windir\System32\vmms.exe).versioninfo.productversion
-        PSAutolab       = (Get-Module -name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending).version
-        Lability        = (Get-Module -name Lability -ListAvailable | Sort-Object -Property Version -Descending).version
-        Pester          = (Get-Module -name Pester -ListAvailable | Sort-Object -Property Version -Descending).version
-        PowerShellGet   = (Get-Module -name PowerShellGet -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
-        PSDesiredStateConfiguration = (Get-Module -name PSDesiredStateConfiguration -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -first 1).version
+        PSTypeName                  = "PSAutoLabSetting"
+        AutoLab                     = $Autolab
+        PSVersion                   = $psver.PSVersion
+        PSEdition                   = $psver.PSEdition
+        OS                          = $os
+        FreeSpaceGB                 = [math]::Round($free / 1GB, 2)
+        MemoryGB                    = ($mem * 1kb) / 1GB -as [int]
+        PctFreeMemory               = $pctFree
+        Processor                   = (Get-CimInstance -ClassName Win32_Processor -Property Name).Name
+        IsElevated                  = (Test-IsAdministrator)
+        RemotingEnabled             = $(try { [void](Test-WSMan -ErrorAction stop); $True } catch { $false })
+        NetConnectionProfile        = $netProfile
+        HyperV                      = (Get-Item $env:windir\System32\vmms.exe).versioninfo.productversion
+        PSAutolab                   = (Get-Module -Name PSAutolab -ListAvailable | Sort-Object -Property Version -Descending).version
+        Lability                    = (Get-Module -Name Lability -ListAvailable | Sort-Object -Property Version -Descending).version
+        Pester                      = (Get-Module -Name Pester -ListAvailable | Sort-Object -Property Version -Descending).version
+        PowerShellGet               = (Get-Module -Name PowerShellGet -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -First 1).version
+        PSDesiredStateConfiguration = (Get-Module -Name PSDesiredStateConfiguration -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -First 1).version
     }
 }
 
@@ -185,7 +275,7 @@ Function Invoke-RefreshHost {
     Microsoft.PowerShell.Utility\Write-Host "Updating configuration files from $sourcePath" -ForegroundColor Cyan
     if ($pscmdlet.ShouldProcess($Destination, "Copy configurations")) {
         if (Test-Path $Destination) {
-            Copy-Item -Path $SourcePath\* -recurse -Destination $Destination -force
+            Copy-Item -Path $SourcePath\* -Recurse -Destination $Destination -Force
         }
         else {
             Write-Warning "Can't find target path $Destination."
@@ -244,7 +334,7 @@ Function Invoke-SetupHost {
 
     # For remoting commands to VM's - have the host set trustedhosts
     Write-Verbose "Enable PSRemoting"
-    Enable-PSRemoting -force -SkipNetworkProfileCheck
+    Enable-PSRemoting -Force -SkipNetworkProfileCheck
 
     Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Setting TrustedHosts so that remoting commands to VMs work properly"
     $trust = Get-Item -Path WSMan:\localhost\Client\TrustedHosts
@@ -254,7 +344,7 @@ Function Invoke-SetupHost {
     else {
         $add = '<local>' # Jeffs idea - 'DC,S*,Client*,192.168.3.' - need to automate this, not hard code
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Adding $add to TrustedHosts"
-        Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -force
+        Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value $add -Concatenate -Force
     }
 
     # Lability install
@@ -297,7 +387,7 @@ Function Invoke-SetupHost {
     $HostStatus = Lability\Test-LabHostConfiguration
     If (-Not $HostStatus ) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan "Starting to Initialize host and install Hyper-V"
-        if ($pscmdlet.shouldprocess($DirDef.ConfigurationPath,"Lability\Start-LabHostConfiguration")) {
+        if ($pscmdlet.shouldprocess($DirDef.ConfigurationPath, "Lability\Start-LabHostConfiguration")) {
             Lability\Start-LabHostConfiguration -ErrorAction SilentlyContinue
         }
     }
@@ -305,7 +395,7 @@ Function Invoke-SetupHost {
     ###### COPY Configs to host machine
     Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Copying configs to $($DirDef.ConfigurationPath)"
     if ($pscmdlet.ShouldProcess($DirDef.ConfigurationPath, "Copy configurations")) {
-        Copy-Item -Path $SourcePath\* -recurse -Destination $DirDef.ConfigurationPath -force
+        Copy-Item -Path $SourcePath\* -Recurse -Destination $DirDef.ConfigurationPath -Force
     }
 
     if ($pscmdlet.ShouldProcess($env:computername, "Prompt for restart")) {
@@ -353,8 +443,8 @@ Function Invoke-SetupLab {
     Write-Verbose "Starting $($myinvocation.mycommand)"
 
     $Path = Convert-Path $path
-    $labname = Split-Path $Path -leaf
-    $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -childpath *.psd1)
+    $labname = Split-Path $Path -Leaf
+    $LabData = Import-PowerShellDataFile -Path $(Join-Path $Path -ChildPath *.psd1)
     $DSCResources = $LabData.NonNodeData.Lability.DSCResource
     if (-Not $DSCResources) {
         Write-Warning "Failed to find DSC Resource information. Are you in a directory with configuration data .psd1 file?"
@@ -397,9 +487,9 @@ Function Invoke-SetupLab {
             if (-Not $NoMessages) {
                 Microsoft.PowerShell.Utility\Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
             }
-            $nodes = $labdata.allnodes.where( {$_.nodename -ne "*"})
+            $nodes = $labdata.allnodes.where( { $_.nodename -ne "*" })
             foreach ($node in $nodes) {
-               # $tz = $node.Lability_timezone
+                # $tz = $node.Lability_timezone
                 $node.Lability_timeZone = $localtz
             }
         }
@@ -556,13 +646,13 @@ Function Invoke-RunLab {
 "@
     }
 
-    $labname = Split-Path (Get-Location) -leaf
-    $datapath = Join-Path $(Convert-Path $path) -childpath "*.psd1"
+    $labname = Split-Path (Get-Location) -Leaf
+    $datapath = Join-Path $(Convert-Path $path) -ChildPath "*.psd1"
 
     if (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Starting the lab environment from $datapath"
     }
-    $data = Import-PowerShellDataFile -path $datapath
+    $data = Import-PowerShellDataFile -Path $datapath
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Start Lab")) {
 
@@ -638,7 +728,7 @@ Function Enable-Internet {
     $NatNetwork = $Labdata.AllNodes.IPnetwork
     $NatName = $Labdata.AllNodes.IPNatName
 
-    $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
+    $Index = Get-NetAdapter -Name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
 
     if ($pscmdlet.ShouldProcess("Interface index $index", "New-NetIPAddress")) {
         New-NetIPAddress -InterfaceIndex $Index -IPAddress $GatewayIP -PrefixLength $GatewayPrefix -ErrorAction SilentlyContinue
@@ -683,16 +773,16 @@ Function Invoke-ValidateLab {
     Write-Verbose "Starting $($myinvocation.mycommand)"
 
     #remove pester v5
-    Get-Module Pester | Remove-Module -force
+    Get-Module Pester | Remove-Module -Force
     Write-Verbose "Importing Pester module version $PesterVersion"
     #use the module specific version of Pester
-    Import-Module -name Pester -RequiredVersion $PesterVersion -force -Global
+    Import-Module -Name Pester -RequiredVersion $PesterVersion -Force -Global
     $Path = Convert-Path $path
     Write-Verbose "Using path $path"
 
     If (-Not $NoMessages) {
 
-    $msg = @"
+        $msg = @"
     [$(Get-Date)]
     Starting the VM testing process. This could take some time to
     complete depending on the complexity of the configuration. You can press
@@ -724,7 +814,7 @@ Function Invoke-ValidateLab {
     $Complete = $False
 
     #define a resolved path to the test file
-    $testPath = Join-Path -path $path -ChildPath VMValidate.test.ps1
+    $testPath = Join-Path -Path $path -ChildPath VMValidate.test.ps1
     do {
 
         $test = Invoke-Pester -Script $testpath -Show none -PassThru
@@ -778,14 +868,14 @@ Function Invoke-ShutdownLab {
 "@
     }
 
-    $labname = Split-Path $path -leaf
+    $labname = Split-Path $path -Leaf
     if (-Not $noMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Stopping the lab environment'
     }
     # Creates the lab environment without making a Hyper-V Snapshot
     if ($pscmdlet.ShouldProcess($labname, "Stop-Lab")) {
         Try {
-            Stop-Lab -ConfigurationData $path\*.psd1 -erroraction Stop
+            Stop-Lab -ConfigurationData $path\*.psd1 -ErrorAction Stop
         }
         Catch {
             Write-Warning "Failed to stop lab. Are you running this in the correct configuration directory? $($_.exception.message)"
@@ -847,7 +937,7 @@ Function Invoke-SnapshotLab {
 
 "@
     }
-    $labname = Split-Path $Path -leaf
+    $labname = Split-Path $Path -Leaf
     if (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Snapshot the lab environment'
     }
@@ -919,7 +1009,7 @@ Function Invoke-RefreshLab {
 
 "@
     }
-    $labname = Split-Path $path -leaf
+    $labname = Split-Path $path -Leaf
 
     if (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Restore the lab environment from a snapshot'
@@ -937,7 +1027,7 @@ Function Invoke-RefreshLab {
     }
 
     if ($pscmdlet.ShouldProcess($SnapshotName, "Restore-Lab")) {
-        Restore-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName -force
+        Restore-Lab -ConfigurationData $path\*.psd1 -SnapshotName $SnapshotName -Force
     }
 
     if (-Not $NoMessages) {
@@ -1006,7 +1096,7 @@ Function Invoke-WipeLab {
     if ($force) {
         $removeParams.Add("confirm", $False)
     }
-    $labname = Split-Path $path -leaf
+    $labname = Split-Path $path -Leaf
     $LabData = Import-PowerShellDataFile -Path $path\*.psd1
     if (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object "Removing the lab environment for $labname"
@@ -1208,12 +1298,12 @@ Function Get-LabSnapshot {
     $Path = Convert-Path $path
     Write-Verbose "Getting mofs from $(Convert-Path $Path)"
 
-    $VMs = (Get-ChildItem -path $path -filter *.mof -exclude *meta* -recurse).Basename
+    $VMs = (Get-ChildItem -Path $path -Filter *.mof -Exclude *meta* -Recurse).Basename
     if ($VMs) {
 
         Write-Verbose "Getting VMSnapshots for $($VMs -join ',')"
 
-        $snaps = Hyper-V\Get-VMSnapshot -vmname  $VMs
+        $snaps = Hyper-V\Get-VMSnapshot -VMName  $VMs
         if ($snaps) {
             $snaps
             Microsoft.PowerShell.Utility\Write-Host "All VMs in the configuration should belong to the same snapshot if you want to use Refresh-Lab." -foreground green
@@ -1271,18 +1361,18 @@ Function Update-Lab {
             #get defined nodes
             $nodes = ($data.allnodes).where( { $_.nodename -ne '*' })
             foreach ($node in $nodes) {
-                $vmNode = ("{0}{1}" -f $prefix,$node.Nodename)
+                $vmNode = ("{0}{1}" -f $prefix, $node.Nodename)
                 #Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $($node.nodename)"
                 Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $vmNode"
 
                 #verify VM is running
-                $vm = Hyper-V\Get-VM -name $VMNode # $node.Nodename
+                $vm = Hyper-V\Get-VM -Name $VMNode # $node.Nodename
                 if ($vm.state -ne 'running') {
-                 #   Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $($node.nodename)"
+                    #   Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $($node.nodename)"
                     Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Starting VM $vmnnode"
                     $vm | Start-VM
                     Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... Waiting 30 seconds to give VM time to boot"
-                    Start-Sleep -seconds 30
+                    Start-Sleep -Seconds 30
                 }
 
                 $upParams.VMName = $VMNode #$node.nodename
@@ -1318,20 +1408,20 @@ Function Test-LabDSCResource {
     [cmdletbinding()]
     Param(
         [Parameter(Position = 0, HelpMessage = "Specify the folder path of an Autolab configuration or change locations to the folder and run this command.")]
-        [ValidateScript({Test-Path $_})]
+        [ValidateScript( { Test-Path $_ })]
         [string]$Path = "."
     )
     Begin {
         Write-Verbose "[$((Get-Date).TimeofDay) BEGIN  ] Starting $($myinvocation.mycommand)"
         $cPath = Convert-Path -Path $Path
-        $config = Join-Path -path $cpath -ChildPath VMConfigurationData.psd1
+        $config = Join-Path -Path $cpath -ChildPath VMConfigurationData.psd1
         $configName = Split-Path $cPath -Leaf
     } #begin
 
     Process {
         Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] Testing resources in $cpath "
         Try {
-            $data = Import-PowerShellDataFile -path $config -ErrorAction Stop
+            $data = Import-PowerShellDataFile -Path $config -ErrorAction Stop
         }
         Catch {
             Throw $_
@@ -1342,11 +1432,11 @@ Function Test-LabDSCResource {
             $dsc.GetEnumerator() | ForEach-Object {
                 $installed = Get-Module $_.name -ListAvailable
                 [pscustomobject]@{
-                    ModuleName = $_.Name
-                    RequiredVersion = $_.RequiredVersion
-                    Installed = $installed.version -contains $_.requiredVersion
+                    ModuleName        = $_.Name
+                    RequiredVersion   = $_.RequiredVersion
+                    Installed         = $installed.version -contains $_.requiredVersion
                     InstalledVersions = $Installed.version
-                    Configuration = $configName
+                    Configuration     = $configName
                 }
             }
         }
