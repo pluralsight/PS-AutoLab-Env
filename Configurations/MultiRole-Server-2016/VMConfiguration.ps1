@@ -25,7 +25,7 @@ Configuration AutoLab {
     @{ModuleName = "xActiveDirectory"; ModuleVersion = "3.0.0.0"},
     @{ModuleName = "xComputerManagement"; ModuleVersion = "4.1.0.0"},
     @{ModuleName = "xNetworking"; ModuleVersion = "5.7.0.0"},
-    @{ModuleName = "xDhcpServer"; ModuleVersion = "2.0.0.0"},
+    @{ModuleName = "xDhcpServer"; ModuleVersion = "3.0.0"},
     @{ModuleName = 'xWindowsUpdate'; ModuleVersion = '2.8.0.0'},
     @{ModuleName = 'xPendingReboot'; ModuleVersion = '0.4.0.0'},
     @{ModuleName = 'xADCSDeployment'; ModuleVersion = '1.4.0.0'}
@@ -48,7 +48,7 @@ Configuration AutoLab {
 
         registry TLS {
             Ensure = "present"
-            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
             ValueName = 'SchUseStrongCrypto'
             ValueData = '1'
             ValueType = 'DWord'
@@ -243,15 +243,16 @@ Configuration AutoLab {
             )) {
 
             WindowsFeature $feature.Replace('-', '') {
-                Ensure               = 'Present';
-                Name                 = $feature;
-                IncludeAllSubFeature = $False;
+                Ensure               = 'Present'
+                Name                 = $feature
+                IncludeAllSubFeature = $False
                 DependsOn            = '[xADDomain]FirstDC'
             }
         } #End foreach
 
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
-            Ensure    = 'Present';
+            Ensure    = 'Present'
+            IsSingleInstance = 'Yes'
             DependsOn = '[WindowsFeature]DHCP'
         }
 
@@ -267,6 +268,8 @@ Configuration AutoLab {
             DependsOn     = '[WindowsFeature]DHCP'
         }
 
+        <#
+        This has been deprecated in 3.0.0 of the xDHCPServer module
         xDhcpServerOption 'DhcpOption' {
             ScopeID            = $Node.DHCPScopeID
             DnsServerIPAddress = $Node.DHCPDnsServerIPAddress
@@ -274,6 +277,7 @@ Configuration AutoLab {
             AddressFamily      = $Node.DHCPAddressFamily
             DependsOn          = '[xDhcpServerScope]DhcpScope'
         }
+        #>
 
     } #end DHCP Config
     #endregion
@@ -283,7 +287,6 @@ Configuration AutoLab {
 
         foreach ($feature in @(
                 'web-Server'
-
             )) {
             WindowsFeature $feature.Replace('-', '') {
                 Ensure               = 'Present'

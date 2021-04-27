@@ -1,5 +1,13 @@
 # Change Log for PSAutoLab
 
+## 4.20.0
+
++ Updated Lability requirement to 0.20.0 which includes updated media.
++ Updated Windows 10 configurations to use Windows 10 20H2 build.
++ Updated `Get-LabSummary` to use media information from `Lability\Get-Media`.
++ Updated configurations to use version 3.0.0 of the xDHCPServer module for DSC configurations. This deprecated the `xDCHPServerOption` resource.
++ Updated `README.md`.
+
 ## 4.19.0
 
 + Update documentation with a requirement to manually update Pester `install-module pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck` if the *only* installed version of Pester is `3.4.0`.

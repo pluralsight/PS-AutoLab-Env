@@ -1,7 +1,7 @@
 ---
 external help file: PSAutoLab-help.xml
 Module Name: PSAutoLab
-online version:
+online version: https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Test-ISOImage.md
 schema: 2.0.0
 ---
 

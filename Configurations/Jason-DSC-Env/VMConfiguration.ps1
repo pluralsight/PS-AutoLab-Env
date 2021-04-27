@@ -23,7 +23,7 @@ Configuration AutoLab {
     Import-DSCResource -ModuleName 'xActiveDirectory' -ModuleVersion '3.0.0.0'
     Import-DSCResource -ModuleName 'xComputerManagement' -ModuleVersion '4.1.0.0'
     Import-DSCResource -ModuleName 'xNetworking' -ModuleVersion '5.7.0.0'
-    Import-DSCResource -ModuleName 'xDhcpServer' -ModuleVersion '2.0.0.0'
+    Import-DSCResource -ModuleName 'xDhcpServer' -ModuleVersion '3.0.0'
     Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion '2.8.0.0'
     Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' -ModuleVersion '9.1.0'
     Import-DSCResource -ModuleName 'xPendingReboot' -ModuleVersion '0.4.0.0'
@@ -48,7 +48,7 @@ Configuration AutoLab {
 
         registry TLS {
             Ensure = "present"
-            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
             ValueName = 'SchUseStrongCrypto'
             ValueData = '1'
             ValueType = 'DWord'
@@ -247,7 +247,8 @@ Configuration AutoLab {
         } #End foreach
 
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
-            Ensure    = 'Present';
+            Ensure    = 'Present'
+            IsSingleInstance = 'yes'
             DependsOn = '[WindowsFeature]DHCP'
         }
 
@@ -263,6 +264,8 @@ Configuration AutoLab {
             DependsOn     = '[WindowsFeature]DHCP'
         }
 
+        <#
+        Deprecated
         xDhcpServerOption 'DhcpOption' {
             ScopeID            = $Node.DHCPScopeID
             DnsServerIPAddress = $Node.DHCPDnsServerIPAddress
@@ -270,6 +273,7 @@ Configuration AutoLab {
             AddressFamily      = $Node.DHCPAddressFamily
             DependsOn          = '[xDhcpServerScope]DhcpScope'
         }
+        #>
 
     } #end DHCP Config
     #endregion

@@ -27,7 +27,7 @@ This lab builds the following:
     MemoryGB     : 1
 
     Computername : Cli1
-    Description  : Windows 10 64bit Enterprise 1903 English Evaluation
+    Description  : Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
     Role         : {domainJoin, RSAT, RDP}
     IPAddress    : 192.168.3.100
     MemoryGB     : 2
@@ -80,3 +80,12 @@ This lab builds the following:
     You will be prompted for each virtual machine. Or you can force the removal and suppress the prompts:
 
     PS> Wipe-Lab -force
+
+## Troubleshooting
+
+    If you encounter errors like `Invalid MOF definition for node 'DC1': Exception calling "ValidateInstanceText" with "1" argument(s): "Undefined
+    property IsSingleInstance` you might have an older version of a DSCResource module installed.
+
+    Run `Get-Module xdhcpserver -list` and remove anything older than version 3.0.0.
+
+    uninstall-module xdhcpserver -RequiredVersion 2.0.0.0
