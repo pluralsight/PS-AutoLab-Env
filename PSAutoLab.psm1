@@ -13,7 +13,7 @@ $ConfigurationPath = Join-Path -path $PSScriptRoot -ChildPath Configurations
 $PesterVersion = "4.10.1"
 
 #declare the currently supported version of Lability
-$LabilityVersion = "0.19.1"
+$LabilityVersion = "0.20.0"
 
 #configure TLS protocol to avoid problems downloading files from Microsoft
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12

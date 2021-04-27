@@ -70,7 +70,7 @@ If you encounter issues with a basic installation and setup, you should read and
 
 You can verify the module with these commands:
 
-```text
+```dos
 PS C:\> Import-Module PSAutoLab -force
 PS C:\> Get-Module PSAutoLab
 
@@ -85,7 +85,7 @@ Your version number may differ.
 
 This module and its configurations should not conflict with any existing Hyper-V virtual machines or networking. But you should be aware that the module will create a new., internal Hyper-V switch called `LabNet`. This switch will use a NAT configuration called `LabNat`.
 
-```text
+```dos
 PS C:\> Get-NetNat LabNat
 
 
@@ -105,7 +105,7 @@ Active                           : True
 
 The `Instructions.md` file in each configuration folder should provide an indication of what VMs will be created. You can also check the `VMConfigurationData.psd1` file.
 
-```text
+```dos
 PS C:\Autolab\Configurations\MultiRole\> (Import-PowerShellDataFile .\VMConfigurationData.psd1).allnodes.Nodename
 *
 DC1
@@ -168,7 +168,7 @@ Setup-Host -DestinationPath D:\AutoLab
 
 You will be prompted to reboot, which you should do especially if the setup had to add the Hyper-V feature. To verify your configuration open an elevated PowerShell session and run this command:
 
-```text
+```dos
 PS C:\> Get-PSAutoLabSetting
 
 
@@ -197,7 +197,7 @@ Some of your values may be different. Please include this information when repor
 
 Once the host setup is complete, you can use the module's [Get-LabSummary](docs/Get-LabSummary.md) command to better understand what the lab configuration will setup. Run the command in the configuration folder.
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Get-LabSummary
 
 
@@ -213,7 +213,7 @@ SingleServer-GUI-2016     192.168.3.75        4     1 RDP     Windows Server
 
 The module includes a custom format file. You might also run the command like this:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer-GUI-2016> Get-LabSummary |
 Select-Object *
 
@@ -257,7 +257,7 @@ Most, if not all, configurations should follow the same manual process. Run each
 
 To verify that all virtual machines are properly configured you can run [Validate-Lab](docs/Invoke-ValidateLab.md). This will invoke a set of tests and keep looping until everything passes. Due to the nature of DSC and the complexity of some configurations, this could take up to 60 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
@@ -267,13 +267,13 @@ This can be useful for troubleshooting.
 
 As an alternative, you can setup a lab environment with minimal prompting.
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 ```
 
 Assuming you don't need to install a newer version of `nuget`, you can leave the setup alone. It will run all of the manual steps for you. Beginning in version `4.3.0` you also have the option to run the unattend process in a PowerShell background job.
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -asjob
 ```
 
@@ -283,7 +283,7 @@ Use the PowerShell job cmdlets to manage.
 
 To stop the lab VMs, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Shutdown-Lab
 ```
 
@@ -293,7 +293,7 @@ You can also use the Hyper-V manager or cmdlets to manually shut down virtual ma
 
 The setup process will leave the virtual machines running. If you have stopped the lab and need to start it, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Run-Lab
 ```
 
@@ -303,13 +303,13 @@ You can also use the Hyper-V manager or cmdlets to manually start virtual machin
 
 You can snapshot the entire lab very easily. Change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Snapshot-Lab
 ```
 
 To quickly rebuild the labs from the checkpoint, run:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Refresh-Lab
 ```
 
@@ -319,13 +319,13 @@ Or you can use the Hyper-V cmdlets to create and manage VM snapshots.
 
 To destroy the lab completely, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 ```
 
 This will remove the virtual machines and DSC configuration files. If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch. This is the default behavior. If you want to remove everything you would need to run a command like this:
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
 ```
 
@@ -362,31 +362,42 @@ It is possible to customize a lab configuration by editing the `VMConfigurationD
 
 You can edit the `Lability_Media` setting. Change the setting  using one of these ID values.
 
-```text
-Id                                      Description
---                                      -----------
-2019_x64_Standard_EN_Eval               Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience
-2019_x64_Standard_EN_Core_Eval          Windows Server 2019 Standard 64bit English Evaluation
-2019_x64_Datacenter_EN_Eval             Windows Server 2019 Datacenter 64bit English Evaluation with Desktop Experience
-2019_x64_Datacenter_EN_Core_Eval        Windows Server 2019 Datacenter Evaluation in Core mode
-2016_x64_Standard_EN_Eval               Windows Server 2016 Standard 64bit English Evaluation
-2016_x64_Standard_Core_EN_Eval          Windows Server 2016 Standard Core 64bit English Evaluation
-2016_x64_Datacenter_EN_Eval             Windows Server 2016 Datacenter 64bit English Evaluation
-2016_x64_Datacenter_Core_EN_Eval        Windows Server 2016 Datacenter Core 64bit English Evaluation
-2016_x64_Standard_Nano_EN_Eval          Windows Server 2016 Standard Nano 64bit English Evaluation
-2016_x64_Datacenter_Nano_EN_Eval        Windows Server 2016 Datacenter Nano 64bit English Evaluation
-2012R2_x64_Standard_EN_Eval             Windows Server 2012 R2 Standard 64bit English Evaluation
-2012R2_x64_Standard_EN_V5_Eval          Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5
-2012R2_x64_Standard_EN_V5_1_Eval        Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5.1
-2012R2_x64_Standard_Core_EN_Eval        Windows Server 2012 R2 Standard Core 64bit English Evaluation
-2012R2_x64_Standard_Core_EN_V5_Eval     Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5
-2012R2_x64_Standard_Core_EN_V5_1_Eval   Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5.1
-2012R2_x64_Datacenter_EN_Eval           Windows Server 2012 R2 Datacenter 64bit English Evaluation
-2012R2_x64_Datacenter_EN_V5_Eval        Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5
-2012R2_x64_Datacenter_EN_V5_1_Eval      Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5.1
-2012R2_x64_Datacenter_Core_EN_Eval      Windows Server 2012 R2 Datacenter Core 64bit English Evaluation
-2012R2_x64_Datacenter_Core_EN_V5_Eval   Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5
-2012R2_x64_Datacenter_Core_EN_V5_1_Eval Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5.1
+```dos
+
+Id                                      Arch Media Description
+--                                      ---- ----- -----------
+2019_x64_Standard_EN_Eval                x64   ISO Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience
+2019_x64_Standard_EN_Core_Eval           x64   ISO Windows Server 2019 Standard 64bit English Evaluation
+2019_x64_Datacenter_EN_Eval              x64   ISO Windows Server 2019 Datacenter 64bit English Evaluation with Desktop Experience
+2019_x64_Datacenter_EN_Core_Eval         x64   ISO Windows Server 2019 Datacenter Evaluation in Core mode
+2016_x64_Standard_EN_Eval                x64   ISO Windows Server 2016 Standard 64bit English Evaluation
+2016_x64_Standard_Core_EN_Eval           x64   ISO Windows Server 2016 Standard Core 64bit English Evaluation
+2016_x64_Datacenter_EN_Eval              x64   ISO Windows Server 2016 Datacenter 64bit English Evaluation
+2016_x64_Datacenter_Core_EN_Eval         x64   ISO Windows Server 2016 Datacenter Core 64bit English Evaluation
+2016_x64_Standard_Nano_EN_Eval           x64   ISO Windows Server 2016 Standard Nano 64bit English Evaluation
+2016_x64_Datacenter_Nano_EN_Eval         x64   ISO Windows Server 2016 Datacenter Nano 64bit English Evaluation
+2012R2_x64_Standard_EN_Eval              x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation
+2012R2_x64_Standard_EN_V5_Eval           x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5
+2012R2_x64_Standard_EN_V5_1_Eval         x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5.1
+2012R2_x64_Standard_Core_EN_Eval         x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation
+2012R2_x64_Standard_Core_EN_V5_Eval      x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5
+2012R2_x64_Standard_Core_EN_V5_1_Eval    x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5.1
+2012R2_x64_Datacenter_EN_Eval            x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation
+2012R2_x64_Datacenter_EN_V5_Eval         x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5
+2012R2_x64_Datacenter_EN_V5_1_Eval       x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5.1
+2012R2_x64_Datacenter_Core_EN_Eval       x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation
+2012R2_x64_Datacenter_Core_EN_V5_Eval    x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5
+2012R2_x64_Datacenter_Core_EN_V5_1_Eval  x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5.1
+WIN81_x64_Enterprise_EN_Eval             x64   ISO Windows 8.1 64bit Enterprise English Evaluation
+WIN81_x64_Enterprise_EN_V5_Eval          x64   ISO Windows 8.1 64bit Enterprise English Evaluation with WMF 5
+WIN81_x64_Enterprise_EN_V5_1_Eval        x64   ISO Windows 8.1 64bit Enterprise English Evaluation with WMF 5.1
+WIN81_x86_Enterprise_EN_Eval             x86   ISO Windows 8.1 32bit Enterprise English Evaluation
+WIN81_x86_Enterprise_EN_V5_Eval          x86   ISO Windows 8.1 32bit Enterprise English Evaluation with WMF 5
+WIN81_x86_Enterprise_EN_V5_1_Eval        x86   ISO Windows 8.1 32bit Enterprise English Evaluation with WMF 5.1
+WIN10_x64_Enterprise_20H2_EN_Eval        x64   ISO Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
+WIN10_x86_Enterprise_20H2_EN_Eval        x86   ISO Windows 10 32bit Enterprise 2009 English Evaluation
+WIN10_x64_Enterprise_LTSC_EN_Eval        x64   ISO Windows 10 64bit Enterprise LTSC 2019 English Evaluation
+WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise LTSC 2019 English Evaluation
 ```
 
 You can also make changes to values such as minimum memory and processor count. When you run `Unattend-Lab` or `Setup-Lab` you can use the `-UseLocalTimeZone` to set all virtual machines to use your time zone. You could make *minor* changes to the IP address such as changing the address from `192.168.3.50` to `192.168.3.60`. To change the entire subnet will require modifying the virtual switch and should not be attempted unless you are very proficient with PowerShell and Hyper-V.
@@ -399,7 +410,7 @@ If you make a mistake or want to restore the original configurations, run the `R
 
 When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use [Update-Lab](docs/Update-Lab.md) to invoke Windows update on all lab members. This can be a time-consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
 
-```text
+```dos
 PS C:\Autolab\Configurations\PowerShellLab\> update-lab -AsJob
 
 Id   Name        PSJobTypeName   State      HasMoreData   Location    Command
@@ -475,7 +486,7 @@ The validation tests for each configuration are written for the Pester module. T
 
 If you try to install a module or update the nuget provider, you might see warnings like these:
 
-```text
+```dos
 WARNING: Unable to download from URI 'https://go.microsoft.com/fwlink/?LinkID=627338&clcid=0x409' to ''.
 WARNING: Unable to download the list of available providers. Check your internet connection.
 PackageManagement\Install-PackageProvider : No match was found for the specified search criteria for the provider 'NuGet'. The package provider requires 'PackageManagement' and
@@ -514,7 +525,7 @@ Update-Module powershellget,packagemanagement -force
 
 The commands and configurations in this module are not foolproof. During testing a lab configuration will run quickly and without error on one Windows 10 desktop but fail or take much longer on a different Windows 10 desktop. Most setups should be complete in under an hour. If validation is failing, manually run the validation test in the configuration folder.
 
-```text
+```dos
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
@@ -534,7 +545,7 @@ At this point, you can open an issue in this repository. Open an elevated PowerS
 
 Starting with version 4.12.0 of this module, you might see this error when you import the module.
 
-```text
+```dos
 Import-Module : Assertion operator name 'Be' has been added multiple times.
 ```
 
@@ -568,6 +579,15 @@ If you have older versions of the module, uninstall them if you can.
 Uninstall-Module xNetworking -RequiredVersion 3.0.0.0
 ```
 
+Beginning with version 4.20.0, you might see the same type of errors with the xDHCP resource. If you encounter errors like `Invalid MOF definition for node 'DC1': Exception calling "ValidateInstanceText" with "1" argument(s): "Undefined
+property IsSingleInstance` you might have an older version of a DSCResource module installed.
+
+Run `Get-Module xdhcpserver -list` and remove anything older than version 3.0.0.
+
+```powershell
+Uninstall-Module xdhcpserver -RequiredVersion 2.0.0.0
+```
+
 It is recommended that you restart your PowerShell session and try the lab setup again.
 
 ## Acknowledgments
@@ -585,4 +605,4 @@ These are some of the items that are being considered for future updates:
 
 A complete list of enhancements can be found in the [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues) section of this module's GitHub repository.
 
-Last Updated 2020-12-02 14:24:31Z
+Last Updated 2021-04-26 21:19:54Z

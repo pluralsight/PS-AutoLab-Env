@@ -12,7 +12,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
     Import-DSCResource -modulename "xActiveDirectory" -ModuleVersion  "3.0.0.0"
     Import-DSCResource -modulename "xComputerManagement" -ModuleVersion  "4.1.0.0"
     Import-DSCResource -modulename "xNetworking" -ModuleVersion  "5.7.0.0"
-    Import-DSCResource -modulename "xDhcpServer" -ModuleVersion  "2.0.0.0"
+    Import-DSCResource -modulename "xDhcpServer" -ModuleVersion  "3.0.0"
     Import-DSCResource -modulename 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
     Import-DSCResource -modulename 'xPendingReboot' -ModuleVersion  '0.4.0.0'
     Import-DSCResource -modulename 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
@@ -37,7 +37,7 @@ $credential = New-Object -typename Pscredential -ArgumentList Administrator, $se
 
 registry TLS {
     Ensure = "present"
-    Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+    Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
     ValueName = 'SchUseStrongCrypto'
     ValueData = '1'
     ValueType = 'DWord'
@@ -238,7 +238,8 @@ $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
         } #End foreach
 
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
-            Ensure = 'Present';
+            Ensure = 'Present'
+            IsSingleInstance = 'yes'
             DependsOn = '[WindowsFeature]DHCP'
         }
 
@@ -254,6 +255,7 @@ $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
             DependsOn = '[WindowsFeature]DHCP'
         }
 
+        <# Deprecated
         xDhcpServerOption 'DhcpOption' {
             ScopeID = $Node.DHCPScopeID
             DnsServerIPAddress = $Node.DHCPDnsServerIPAddress
@@ -261,6 +263,7 @@ $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
             AddressFamily = $Node.DHCPAddressFamily
             DependsOn = '[xDhcpServerScope]DhcpScope'
         }
+        #>
 
     } #end DHCP Config
  #endregion
