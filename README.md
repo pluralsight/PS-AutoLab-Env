@@ -410,16 +410,16 @@ If you make a mistake or want to restore the original configurations, run the `R
 
 A number of lab configurations that include a Windows 10 client will also install RSAT. In the past, this has meant trying to install *all* RSAT features. This takes a long time and has caused validation issues. Beginning with v4.21.0 of the PSAutlab module, the RSAT configuration and testing will only use a subset of features.
 
-+ Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0
-+ Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0
-+ Rsat.CertificateServices.Tools~~~~0.0.1.0
-+ Rsat.DHCP.Tools~~~~0.0.1.0'
-+ Rsat.Dns.Tools~~~~0.0.1.0'
-+ Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0'
-+ Rsat.FileServices.Tools~~~~0.0.1.0'
-+ Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0'
-+ Rsat.IPAM.Client.Tools~~~~0.0.1.0'
-+ Rsat.ServerManager.Tools~~~~0.0.1.0'
++ ActiveDirectory
++ BitLocker
++ CertificateServices
++ DHCP
++ Dns
++ FailoverCluster
++ FileServices
++ GroupPolicy
++ IPAM.Client
++ ServerManager
 
 If you require any other tool, you will need to use `Add-WindowsCapability` in the Windows 10 client to add it.
 
