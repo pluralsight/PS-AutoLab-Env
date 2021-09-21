@@ -406,6 +406,25 @@ You can also make changes to values such as minimum memory and processor count. 
 
 If you make a mistake or want to restore the original configurations, run the `Refresh-Host` command.
 
+## Windows 10 Remote Server Administration Tools (RSAT)
+
+A number of lab configurations that include a Windows 10 client will also install RSAT. In the past, this has meant trying to install *all* RSAT features. This takes a long time and has caused validation issues. Beginning with v4.21.0 of the PSAutlab module, the RSAT configuration and testing will only use a subset of features.
+
++ Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0
++ Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0
++ Rsat.CertificateServices.Tools~~~~0.0.1.0
++ Rsat.DHCP.Tools~~~~0.0.1.0'
++ Rsat.Dns.Tools~~~~0.0.1.0'
++ Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0'
++ Rsat.FileServices.Tools~~~~0.0.1.0'
++ Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0'
++ Rsat.IPAM.Client.Tools~~~~0.0.1.0'
++ Rsat.ServerManager.Tools~~~~0.0.1.0'
+
+If you require any other tool, you will need to use `Add-WindowsCapability` in the Windows 10 client to add it.
+
+This change has improved setup-performance and module stability.
+
 ## Windows Updates
 
 When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use [Update-Lab](docs/Update-Lab.md) to invoke Windows update on all lab members. This can be a time-consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
@@ -603,6 +622,4 @@ These are some of the items that are being considered for future updates:
 * While Lability currently is for Windows only, it would be nice to deploy a Linux VM.
 * Offer an easy way to customize a lab configuration such as node names and operating systems.
 
-A complete list of enhancements can be found in the [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues) section of this module's GitHub repository.
-
-Last Updated 2021-04-26 21:19:54Z
+A complete list of enhancements (and bugs) can be found in the [Issues](https://github.com/pluralsight/PS-AutoLab-Env/issues) section of this module's GitHub repository. Feel free to make a suggestion.

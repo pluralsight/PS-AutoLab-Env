@@ -44,7 +44,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_ProcessorCount     = 1
             Lability_MinimumMemory      = 1GB
             SecureBoot                  = $false
-            Lability_Media              = '2016_x64_Standard_Core_EN_Eval' 
+            Lability_Media              = '2016_x64_Standard_Core_EN_Eval'
         }
 
         <#    Available Roles for computers
@@ -112,8 +112,8 @@ This example code is provided without copyright and AS IS.  It is free for you t
                 @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0' }
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0' }
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0';Provider = 'PSGallery' }
+                @{ Name = 'ComputerManagementDSC'; RequiredVersion = '8.5.0'; Provider = 'PSGallery' }
             )
             Resource    = @(
                 @{

@@ -23,7 +23,7 @@ Describe DC1 {
 
         #set error action preference to suppress all error messsage
         if ($dc) {
-            Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
+            Invoke-Command { $errorActionPreference = 'silentlyContinue' } -Session $dc
         }
 
         It "[DC1] Should accept domain admin credential" {
@@ -31,7 +31,7 @@ Describe DC1 {
         }
 
         #test for features
-        $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed} -session $dc
+        $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $dc
         $needed = 'AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
         'RSAT-AD-PowerShell'
         foreach ($item in $needed) {
@@ -41,23 +41,23 @@ Describe DC1 {
         }
 
         It "[DC1] Should have an IP address of 192.168.3.10" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $dc
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $dc
             $i.ipv4Address | Should be '192.168.3.10'
         }
 
         It "[DC1] Should have a domain name of $domain" {
-            $r = Invoke-Command { Try {Get-ADDomain -ErrorAction stop} catch {} } -session $dc
+            $r = Invoke-Command { Try { Get-ADDomain -ErrorAction stop } catch {} } -Session $dc
             $r.name | Should Be $domain
         }
 
-        $OUs = Invoke-Command { Try {Get-ADOrganizationalUnit -filter * -ErrorAction stop} Catch {}} -session $dc
+        $OUs = Invoke-Command { Try { Get-ADOrganizationalUnit -Filter * -ErrorAction stop } Catch {} } -Session $dc
         $needed = 'IT', 'Dev', 'Marketing', 'Sales', 'Accounting', 'JEA_Operators'
         foreach ($item in $needed) {
             It "[DC1] Should have organizational unit $item" {
                 $OUs.name -contains $item | Should Be "True"
             }
         }
-        $groups = Invoke-Command { Try {Get-ADGroup -filter * -ErrorAction Stop} Catch {}} -session $DC
+        $groups = Invoke-Command { Try { Get-ADGroup -Filter * -ErrorAction Stop } Catch {} } -Session $DC
         $target = "IT", "Sales", "Marketing", "Accounting", "JEA Operators"
         foreach ($item in $target) {
 
@@ -66,12 +66,12 @@ Describe DC1 {
             }
         }
 
-        $users = Invoke-Command { Try {Get-ADUser -filter * -ErrorAction stop} Catch {}} -session $dc
+        $users = Invoke-Command { Try { Get-ADUser -Filter * -ErrorAction stop } Catch {} } -Session $dc
         It "[DC1] Should have at least 15 user accounts" {
             $users.count | Should BeGreaterThan 15
         }
 
-        $computer = Invoke-Command { Try {Get-ADComputer -filter * -ErrorAction Stop} Catch {}} -session $dc
+        $computer = Invoke-Command { Try { Get-ADComputer -Filter * -ErrorAction Stop } Catch {} } -Session $dc
         It "[DC1] Should have a computer account for Client" {
             $computer.name -contains "cli1" | Should Be "True"
         }
@@ -99,10 +99,10 @@ Describe S1 {
         }
 
         It "[S1] Should have an IP address of 192.168.3.50" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $S1
             $i.ipv4Address | Should be '192.168.3.50'
         }
-        $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $s1
         It "[S1] Should have a DNS server configuration of 192.168.3.10" {
             $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
         }
@@ -115,54 +115,21 @@ Describe S1 {
 
 } #S1
 
-<#
-Describe N1 {
-
-    $VMName = "$($prefix)N1"
-    Try {
-        $N1 = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-        $all += $n1
-
-        It "[N1] Should respond to WSMan requests" {
-            $N1.Computername | Should Be $VMName
-        }
-
-        It "[N1] Should have an IP address of 192.168.3.60" {
-            $r = Invoke-Command { Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4} -session $N1
-            $r.IPv4Address | Should Be '192.168.3.60'
-        }
-
-        It "[N1] Should belong to the Workgroup domain" {
-            $sys = Invoke-Command { Get-CimInstance Win32_computersystem} -session $N1
-            $sys.Domain | Should Be "Workgroup"
-        }
-
-        Context "DSC" {
-            $pkg = Invoke-Command {(Get-WindowsPackage -online -PackageName *Nanoserver* | Where-Object packageState -eq 'installed').packagename} -session $N1
-
-            It "[N1] Should have DSC Nano packages installed" {
-
-                ($pkg -match "NanoServer-DSC").Count | Should Be 2
-            }
-            It "[N1] Should have Guest Nano packages installed" {
-                ($pkg -match "NanoServer-Guest").Count | Should Be 2
-            }
-        } #context
-    }
-    Catch {
-        It "[N1] Should allow a PSSession" {
-            $false | Should Be $True
-        }
-        It "[N1] Will fail with error: $($_.exception.message)" {
-            $true | should be $True
-        }
-    }
-}
-#>
-
 Describe Cli1 {
 
     $VMName = "$($prefix)Cli1"
+    $rsat = @(
+        'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+        'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+        'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+        'Rsat.DHCP.Tools~~~~0.0.1.0',
+        'Rsat.Dns.Tools~~~~0.0.1.0',
+        'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+        'Rsat.FileServices.Tools~~~~0.0.1.0',
+        'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+        'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+        'Rsat.ServerManager.Tools~~~~0.0.1.0'
+    )
     Try {
         $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction stop
         $all += $cl
@@ -171,21 +138,20 @@ Describe Cli1 {
         }
 
         It "[CLI1] Should have an IP address of 192.168.3.100" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $cl
             $i.ipv4Address | Should be '192.168.3.100'
         }
 
-        $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $cl
         It "[CLI1] Should have a DNS server configuration of 192.168.3.10" {
             $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
         }
 
-        It "[CLI1] Should have RSAT installed" {
-            $pkg = Invoke-Command {Get-WindowsCapability -online -name *rsat*} -session $cl
-
+        $pkg = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
+        $rsatstatus = "{0}/{1}" -f ($pkg.where({ $_.state -eq "installed" }).Name).count, $rsat.count
+        It "[CLI1] Should have RSAT installed [$rsatStatus]" {
             # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
-            $pkg | Where-Object { $_.state -ne "installed"} | Should be $Null
-
+            $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
         }
     }
     Catch {

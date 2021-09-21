@@ -18,10 +18,6 @@ https://github.com/jdhitsolutions/PSScriptTools
         <ListEntries>
           <ListEntry>
             <ListItems>
-              <!--
-            By default the entries use property names, but you can replace them with scriptblocks.
-            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
--->
               <ListItem>
                 <Label>AutoLab</Label>
                 <PropertyName>AutoLab</PropertyName>
@@ -106,7 +102,7 @@ https://github.com/jdhitsolutions/PSScriptTools
               <ListItem>
                 <Label>NetConnectionProfile</Label>
                 <ScriptBlock>
-                  if ($_.NetConnectionProfile -eq 'Public') {
+                  if ($_.NetConnectionProfile -match 'Public|unknown') {
                     "$([char]0x1b)[91m$($_.NetConnectionProfile)$([char]0x1b)[0m"
                   }
                   else {

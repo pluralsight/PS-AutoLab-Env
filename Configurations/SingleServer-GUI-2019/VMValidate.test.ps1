@@ -67,9 +67,6 @@ Describe S1 {
         It "[S1] Should not have PowerShell 2 installed" {
             Invoke-Command { (Get-WindowsFeature -name 'PowerShell-V2').Installed} -session $s1 | Should be $False
         }
-        It "[S1] Should pass Test-DSCConfiguration" {
-            Invoke-Command { Test-DscConfiguration  -WarningAction SilentlyContinue} -session $S1 | Should be $True
-        }
     }
     catch {
         It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {

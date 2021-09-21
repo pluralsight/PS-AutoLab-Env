@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Refresh local host AutoLab configuration.
+Refresh the AutoLab configuration on the localhost.
 
 ## SYNTAX
 
@@ -20,7 +20,7 @@ Invoke-RefreshHost [[-Destination] <String>] [-SkipPublisherCheck] [-WhatIf]
 
 ## DESCRIPTION
 
-If you keep the PSAutoLab module for any length of time, you will most likely update from time to time. Part of the update might include fixes or enhancements to current configurations or even entirely new configurations. This command makes it easier to keep your configurations up to date. After updating the PSAutoLab module, run this function which will verify you have the correct version of the Lability module and copy configuration files to your Autolab\ConfigurationPath folder. This will not overwrite any MOF files or delete anything.
+If you keep the PSAutoLab module for any length of time, you will most likely update the module from time to time. Part of the update might include fixes or enhancements to current configurations or even entirely new configurations. This command makes it easier to keep your configurations up-to-date. After updating the PSAutoLab module, run this function in a new PowerShell session which will verify you have the correct version of the Lability module and copy configuration files to your Autolab\ConfigurationPath folder. This will not overwrite any MOF files or delete anything.
 
 You will typically use the Refresh-Host alias.
 

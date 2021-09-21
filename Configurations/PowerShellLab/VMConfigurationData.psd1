@@ -145,23 +145,25 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
         },
 
         @{
-            NodeName           = 'SRV1'
-            IPAddress          = '192.168.3.50'
+            NodeName               = 'SRV1'
+            IPAddress              = '192.168.3.50'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role               = @('DomainJoin')
-            Lability_BootOrder = 20
-            Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media     = '2016_x64_Standard_Core_EN_Eval'
+            Role                   = @('DomainJoin')
+            Lability_BootOrder     = 20
+            Lability_StartupMemory = 1GB
+            Lability_timeZone      = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_Media         = '2016_x64_Standard_Core_EN_Eval'
         },
 
         @{
-            NodeName           = 'SRV2'
-            IPAddress          = '192.168.3.51'
+            NodeName               = 'SRV2'
+            IPAddress              = '192.168.3.51'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role               = @('DomainJoin', 'Web')
-            Lability_BootOrder = 20
-            Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media     = '2016_x64_Standard_Core_EN_Eval'
+            Role                   = @('DomainJoin', 'Web')
+            Lability_StartupMemory = 1GB
+            Lability_BootOrder     = 20
+            Lability_timeZone      = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+            Lability_Media         = '2016_x64_Standard_Core_EN_Eval'
         },
 
         @{
@@ -178,7 +180,8 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             IPAddress               = '192.168.3.100'
             Role                    = @('domainJoin', 'RDP', 'RSAT')
             Lability_ProcessorCount = 2
-            Lability_MinimumMemory  = 2GB
+            Lability_StartupMemory  = 4GB
+            Lability_MinimumMemory  = 4GB
             Lability_Media          = 'WIN10_x64_Enterprise_20H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -202,15 +205,13 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xActiveDirectory'; RequiredVersion = "3.0.0.0"; Provider = 'PSGallery' },
-                @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xDhcpServer'; RequiredVersion = '3.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0' },
-                @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery' },
+                @{ Name = 'ComputerManagementDSC'; RequiredVersion = '8.5.0'; Provider = 'PSGallery' },
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery' },
-                @{ Name = 'xWebAdministration'; RequiredVersion = '3.1.1'; Provider = 'PSGallery'}
+                @{ Name = 'xWebAdministration'; RequiredVersion = '3.1.1'; Provider = 'PSGallery' }
             )
             Resource    = @(
                 @{

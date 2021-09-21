@@ -26,12 +26,16 @@ PS C:\Autolab\Configurations\PowerShellLab> Invoke-Pester .\VMvalidate.test.ps1
 
 You will typically use the Validate-Lab alias.
 
+Note that beginning in v4.21.0, this validation command will keep track of the number of testing loops. After 2 loops it will check for any virtual machine that is failing a test to see if it has stopped. If so, it will be started. After 4 loops and virtual machine that is still failing tests will be restarted. Ideally, Validation should complete in 30 minutes or less. The validation process will abort after 65 minutes.
+
+Run Validate-Lab -Verbose to see details about the number of testing loops and which virtual machines are started or restarted.
+
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\AutoLab\Configurations\Windows10> Validate-Lab
+PS C:\AutoLab\Configurations\Windows10> Validate-Lab -verbose
 ```
 
 You will see errors until all tests have passed. Press Ctrl+C to break out of the test. Configuration merging will continue in the virtual machines.

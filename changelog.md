@@ -1,5 +1,29 @@
 # Change Log for PSAutoLab
 
+## 4.21.0
+
++ Updated `Multirole-Server-2016` configuration to require all necessary DSC resources.
++ Updated`Get-PSAutoLabSetting` to write warnings on potential issues.
++ Updated `psautolabsetting.format.ps1xml` to display `Uknown' NetConnectionProfile setting in red.
++ Updated `Detailed-Setup-Instructions.md`
++ Modified `Test-LabDSCResource` to write a `PSAutolabResource` object.
++ Added format file `psautolabresource.format.ps1xml`.
++ Updated `PowerShellLab` configuration to use 3.2.0 of the `xWebAdministration` module.
++ Updated `PowerShellLab` configuration to use the `ComputerManagementDSC` module in place of `xComputerManagement`. This also deprecates the use of `xPendingReboot`. The `xPendingReboot` resource has been removed from all configurations that are no longer use it.
++ Updated `PowerShellLab` configuration test file to remove `Test-DSCconfiguration` test.
++ Modified `PowerShellLab` configuration to give `WIN10` 4GB of memory.
++ Revised validation test for `PowerShellLab` configuration to better test for RSAT and display what features are still failing.
++ Modified all configurations that were installing RSAT on Windows 10 clients to __only install a subset of features__.  *__This may be considered a breaking change__* but since only a few features are probably ever used, this shouldn't affect too many people. See the RSAT section [README.md](README.md) for more information.
++ Removed `xWindowsUpdate` resource from `PowerShellLab` configuration.
++ Removed `Nano` VM validation tests lab configurations.
++ Updated `Write-Progress` message in `Invoke-ValidateLab` to suggest checking if all VMs are running and to provide testing details.
++ `Invoke-ValidateLab` will automatically check for stopped VMs after 3 passes and automatically start them.
++ `Invoke-ValidateLab` will restart VMs still failing after 5 passes and abort after 65 minutes with a warning message.
++ Added `MultiRole-GUI` lab configuration.
++ Help updates.
++ Updated `README.md`
++ This release contains changes to lab configuration files. If you are updating the module from a previous version, you should run `Refresh-Host` after updating in a new PowerShell session.
+
 ## 4.20.0
 
 + Updated Lability requirement to 0.20.0 which includes updated media.

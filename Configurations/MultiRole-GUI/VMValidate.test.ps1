@@ -13,7 +13,9 @@ $cred = New-Object PSCredential "Company\Administrator", $Secure
 $prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
 
 $all = @()
+
 Describe DC1 {
+
     $VMName = "$($prefix)DC1"
     Try {
         $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
@@ -22,6 +24,17 @@ Describe DC1 {
         #set error action preference to suppress all error messsage
         if ($dc) {
             Invoke-Command { $errorActionPreference = 'silentlyContinue' } -Session $dc
+        }
+
+        $test = Invoke-Command { 
+          Get-CimInstance -ClassName win32_operatingsystem -property caption, csname 
+        } -session $dc
+        It "[DC1] Should be running Windows Server 2019" {
+            $test.caption | Should BeLike '*2019*'
+        }
+
+        It "[DC1] Should be running Server (with desktop)" {
+            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name installationtype} -session $dc | Should Be "Server"
         }
 
         It "[DC1] Should accept domain admin credential" {
@@ -92,6 +105,17 @@ Describe S1 {
     Try {
         $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $s1
+
+        $test = Invoke-Command { 
+          Get-CimInstance -ClassName win32_operatingsystem -property caption, csname 
+        } -session $s1
+        It "[S1] Should be running Windows Server 2019" {
+            $test.caption | Should BeLike '*2019*'
+        }
+
+        It "[S1] Should be running Server (with desktop)" {
+            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name installationtype} -session $s1 | Should Be "Server"
+        }
         It "[S1] Should accept domain admin credential" {
             $s1.Count | Should Be 1
         }
@@ -129,26 +153,27 @@ Describe Cli1 {
         'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
         'Rsat.ServerManager.Tools~~~~0.0.1.0'
     )
+
     Try {
         $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction stop
         $all += $cl
-        It "[CLI1]] Should accept domain admin credential" {
+        It "[CLI1] Should accept domain admin credential" {
             $cl.Count | Should Be 1
         }
 
-        It "[CLI1]] Should have an IP address of 192.168.3.100" {
+        It "[CLI1] Should have an IP address of 192.168.3.100" {
             $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $cl
             $i.ipv4Address | Should be '192.168.3.100'
         }
 
         $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $cl
-        It "[CLI1]] Should have a DNS server configuration of 192.168.3.10" {
+        It "[CLI1] Should have a DNS server configuration of 192.168.3.10" {
             $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
         }
 
         $pkg = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
         $rsatstatus = "{0}/{1}" -f ($pkg.where({ $_.state -eq "installed" }).Name).count, $rsat.count
-        It "[CLI1] Should have RSAT installed [$rsatStatus]" {
+        It "[Win10] Should have RSAT installed [$rsatStatus]" {
             # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
             $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
         }

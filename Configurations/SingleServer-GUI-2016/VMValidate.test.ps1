@@ -66,9 +66,6 @@ Describe S1 {
             Invoke-Command { (Get-WindowsFeature -name 'PowerShell-V2').Installed} -session $s1 | Should be $False
         }
 
-        It "[S1] Should pass Test-DSCConfiguration" {
-            Invoke-Command { Test-DscConfiguration  -WarningAction SilentlyContinue} -session $S1 | Should be $True
-        }
     }
     catch {
         It "[S1] Should allow a PSSession" {

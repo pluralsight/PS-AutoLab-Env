@@ -1,31 +1,34 @@
 # Detailed Setup Instructions
 
-Please refer to this document to assist in installing and setting up the `PSAutolab` module on your computer. Run all commands from an **elevated** Windows PowerShell session. In other words, *run Windows PowerShell as administrator*. You will know you are elevated if you see the word `Administrator` in the title bar of the PowerShell window. __Do NOT run this module in PowerShell 7__. It is assumed you are running this on Windows 10 Professional or Enterprise editions.
+Please refer to this document to assist in installing and setting up the `PSAutolab` module on your computer. Run all commands from an **elevated** Windows PowerShell session. In other words, *run Windows PowerShell as administrator*. You will know you are elevated if you see the word `Administrator` in the title bar of the PowerShell window. __Do NOT run this module in PowerShell 7__. It is assumed you are running this on Windows 10 Professional or Enterprise editions, or the Windows 11 equivalents.
 
-It is also assumed that you have administrator rights to your computer and can make changes. If your computer is controlled by Group Policy, you may encounter problems. You should also be logged in with a local or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
+It is also assumed that you have administrator rights to your computer and can make changes. If your computer is controlled by Group Policy, you may encounter problems. You should also be logged in with a **local** or domain user account. The setup process may not work properly if using an O365 or Microsoft account to logon to Windows.
 
 It is *possible* to run this module with nested virtualization inside a Windows 10 Hyper-V virtual machine but it is **not** recommended. Some networking features may not work properly and overall performance will likely be reduced.
 
 ## Pre-Check
 
-You can run these commands to verify your computer meets the minimum requirements. Run all PowerShell commands in an elevated session.
+You can run these commands to verify your computer meets the minimum requirements. Run all PowerShell commands in an elevated session. If you can't even open a PowerShell prompt, this module definitely won't work on your computer.
 
 ### Operating System and Memory
 
 ```text
-PS C:\> Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object Caption,@{Name="MemoryGB";Expression={$_.TotalVisibleMemorySize/1mb -as [int]}}
+PS C:\> Get-CimInstance -ClassName Win32_OperatingSystem |
+Select-Object -property Caption,
+@{Name="MemoryGB";Expression={$_.TotalVisibleMemorySize/1mb -as [int]}}
 
 Caption                  MemoryGB
 -------                  -----
 Microsoft Windows 10 Pro    32
 ```
 
-If the Caption shows anything other than Pro or Enterprise this module may not work. Although it appears that Windows 10 Education might be supported. If you can't even open a PowerShell prompt, this module won't work on your computer.
+If the Caption shows anything other than Pro or Enterprise this module may not work. Although it appears that Windows 10 Education might be supported.
 
 The memory size should be at least 12GB. 16GB or greater is recommended. If the number is less than 12, **STOP**. It is unlikely you have enough installed memory. Depending on the configuration you want to run, it *might* be possible to proceed with less memory. Open an Issue and ask for guidance indicating your memory settings from this command:
 
 ```text
-PS C:\> Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize
+PS C:\> Get-CimInstance Win32_OperatingSystem |
+Select-Object -property FreePhysicalMemory,TotalVisibleMemorySize
 
 FreePhysicalMemory TotalVisibleMemorySize
 ------------------ ----------------------
@@ -36,7 +39,7 @@ Also indicate what lab configuration you are hoping to run.
 
 ### PowerShell Remoting
 
-The module relies on PowerShell remoting which should be enabled **before** installing and using this module.
+The module relies on Windows PowerShell remoting which should be enabled **before** installing and using this module.
 
 ```text
 PS C:\> test-wsman
@@ -53,7 +56,7 @@ This is what you should see as a result. Any errors mean that PowerShell remotin
 Enable-PSRemoting -force
 ```
 
-If this fails, **STOP**. Do not proceed with this module until this is working and `Test-WSMan` gives you a result. If you are running as Administrator and this command fails it is most likely because the related settings are controlled by a Group Policy or your network is public. Run `Get-NetConnectionProfile` and look at the NetworkCategory. If must be `Private` or `DomainAuthenticated`.
+If this fails, **STOP**. Do not proceed with this module until this is working and `Test-WSMan` gives you a result. If you are running as Administrator and this command fails it is most likely because the related settings are controlled by a Group Policy or your network is public. Run `Get-NetConnectionProfile` and look at the NetworkCategory for the `LabNet` connection. If must be `Private` or `DomainAuthenticated`.
 
 ### Disk Space
 
@@ -113,7 +116,7 @@ ModuleType Version    Name                       ExportedCommands
 Script     4.19.0      PSAutoLab                 {Enable-Internet, Invoke-RefreshLab, Invoke-Run...
 ```
 
-You may see a newer version number than what is indicated here. The `README` file indicates the current version in the PowerShell Gallery.
+You may see a newer version number than what is indicated here. The `README` file in the GitHub repository indicates the current version in the PowerShell Gallery.
 
 ### Setup the Host
 
@@ -129,7 +132,7 @@ This command will create a directory structure for the module and all of its fil
 Setup-Host -DestinationPath D:\Autolab
 ```
 
-If you select a drive other than C:\ it is recommended you use the `Autolab` folder name. The setup process will install additional modules and files. If necessary, it will enable the Hyper-V feature. If Hyper-V is enabled during the setup, please reboot your computer before proceeding.
+If you select a drive other than C:\ it is recommended you still use the `Autolab` folder name. The setup process will install additional modules and files. If necessary, it will enable the Hyper-V feature. If Hyper-V is enabled during the setup, please reboot your computer before proceeding.
 
 To verify your configuration, run `Get-PSAutolabSetting`.
 
@@ -202,13 +205,23 @@ If you encounter errors running an unattended setup, you should step through the
 
 Errors that affect setup should happen in one of these steps. If so, open an issue with the configuration name, the command you were working on and the error message. Also include the output from `Get-PSAutolabSetting`.
 
-After about 10 minutes, you can manually test to see if the configuration has converged.
+After about 10 minutes, you can run the validation command:
+
+```powershell
+Validate-Lab
+```
+
+The `Write-Progress` display will provide feedback on the process.
+
+:bulb: Run `Validate-Lab -Verbose` to get details on the process
+
+Beginning with v4.21.0, the validation command will restart virtual machines that have stopped and restart-virtual machines that appear to be failing. You will see this as warning messages. Validation will abort after 65 minutes if it hasn't completed. At which point you can manually test to see if the configuration has converged.
 
 ```powershell
 Invoke-Pester .\vmvalidate.test.ps1
 ```
 
-You might still see errors or failures, in which case try again in 10-minute intervals until the test completely passes. You might also need to verify that the virtual machine is running using the Hyper-V manager and starting it if it has shutdown.
+Depending on the error, you might simply ignore it or manually attempt to resolve it. Often the best approach is to run `Wipe-Lab -force` and start all over.
 
 ### Help
 
@@ -256,8 +269,50 @@ Start-VM srv2
 
 Wait about 5 minutes and then test again.
 
+Another good test is to try an setup another simple configuration. Run `Wipe-Lab -force` from the configuration folder, then change to one of the simple configurations like `SingleServer` or `Windows10` and see if that installs. This will help determine if the problem is isolated to a specific lab configuration or a larger issue with your environment.
+
+### Manually Apply the Configuration
+
+As a last resort, you can try to manually re-apply a configuration to a virtual machine. If you run `Invoke-Pester .\vmvalidate.test.ps1` you be able to discover what virtual machine is failing. For the sake of demonstration let's say it is a virtual machine called WIN10. To re-apply the configuration, you need to create a remoting session to it.
+
+First, you need the lab password to create a credential object.
+
+```powershell
+$data = Import-PowerShellDataFile .\VMConfigurationData.psd1
+$pass = ConvertTo-SecureString -AsPlainText -String $data.allnodes.labpassword -force
+$cred = new-object PSCredential -ArgumentList administrator, $pass
+```
+
+Note that if the lab has a mix of domain and workgroup machines, you will need to look at the VMConfigurationData file to discover the correct password. Almost always they will be same.
+
+Next, create a CIMSession to the virtual machine.
+
+```powershell
+$cim = New-CimSession -ComputerName win10 -Credential $cred
+```
+
+Now, you can apply the DSC configuration. You need run this from the lab configuration folder.
+
+```powershell
+Start-DscConfiguration -CimSession $cim -Path . -wait -Force -verbose
+```
+
+You will be able to watch the process. Wait a minute or two for any background processing to finish and then test:
+
+```powershell
+Test-DscConfiguration -CimSession $cim -Detailed
+```
+
+If all goes well, you should see something like this:
+
+```text
+PSComputerName  ResourcesInDesiredState        ResourcesNotInDesiredState     InDesiredState
+--------------  -----------------------        --------------------------     --------------
+win10           {[Registry]TLS, [xIPAddress...                                True
+```
+
+If there are resources not in the desired state, wait 10 minutes and test again. If there are still failures, wipe the lab and start all over. At which point, *if you are still having failures*, file an issue and we'll have to determine what is happening.
+
 ## Getting Help
 
 If encounter problems getting any of this to work, you are welcome to post an Issue. If you get the module installed, please include the results of `Get-PSAutolabSetting`. If your problem is meeting one of the requirements, we will do our best to help. Although if your computer is locked down or otherwise controlled by corporate policies there may not be much that we can do.
-
-Last Updated 2020-12-01 22:15:58Z

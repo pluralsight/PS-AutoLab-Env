@@ -26,7 +26,6 @@ Configuration AutoLab {
     Import-DSCResource -ModuleName 'xDhcpServer' -ModuleVersion '3.0.0'
     Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion '2.8.0.0'
     Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' -ModuleVersion '9.1.0'
-    Import-DSCResource -ModuleName 'xPendingReboot' -ModuleVersion '0.4.0.0'
     Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion '1.4.0.0'
 
 
@@ -315,29 +314,72 @@ Configuration AutoLab {
     #endregion
     #region RSAT config
     node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
-         # Adds RSAT which is now a Windows Capability in Windows 10
 
         Script RSAT {
-            TestScript = {
-                $packages = Get-WindowsCapability -online -Name Rsat*
-                if ($packages.state -match "Installed") {
-                    Return $True
-                }
-                else {
-                    Return $False
-                }
-            }
+            # Adds RSAT which is now a Windows Capability in Windows 10
+                   TestScript = {
+                       $rsat = @(
+                           'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                           'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                           'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                           'Rsat.DHCP.Tools~~~~0.0.1.0',
+                           'Rsat.Dns.Tools~~~~0.0.1.0',
+                           'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                           'Rsat.FileServices.Tools~~~~0.0.1.0',
+                           'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                           'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                           'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                       )
+                       $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ }
+                       if ($packages.state -contains "NotPresent") {
+                           Return $False
+                       }
+                       else {
+                           Return $True
+                       }
+                   } #test
 
-            GetScript  =  {
-                $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
-                $installed = $packages.Where({$_.state -eq "Installed"})
-                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
-            }
+                   GetScript  = {
+                       $rsat = @(
+                           'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                           'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                           'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                           'Rsat.DHCP.Tools~~~~0.0.1.0',
+                           'Rsat.Dns.Tools~~~~0.0.1.0',
+                           'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                           'Rsat.FileServices.Tools~~~~0.0.1.0',
+                           'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                           'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                           'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                       )
+                       $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } | Select-Object Displayname, State
+                       $installed = $packages.Where({ $_.state -eq "Installed" })
+                       Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed" }
+                   } #get
 
-            SetScript  = {
-                Get-WindowsCapability -online -Name Rsat* | Where-Object {$_.state -ne "installed"} | Add-WindowsCapability -online
-            }
-        }
+                   SetScript  = {
+                       $rsat = @(
+                           'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                           'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                           'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                           'Rsat.DHCP.Tools~~~~0.0.1.0',
+                           'Rsat.Dns.Tools~~~~0.0.1.0',
+                           'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                           'Rsat.FileServices.Tools~~~~0.0.1.0',
+                           'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                           'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                           'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                       )
+                       foreach ($item in $rsat) {
+                           $pkg = Get-WindowsCapability -Online -Name $item
+                           if ($item.state -ne 'Installed') {
+                               Add-WindowsCapability -Online -Name $item
+                           }
+                       }
+
+                   } #set
+
+               } #rsat script resource
 
     }#end RSAT Config
     #endregion

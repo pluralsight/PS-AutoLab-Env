@@ -23,6 +23,8 @@ This command makes it easy to see what the lab will look like when finished. You
 
 If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the virtual machine name.
 
+Run Test-LabDSCResource from the configuration directory to see what DSC resources will be required and if they are already installed.
+
 ## EXAMPLES
 
 ### Example 1
@@ -85,5 +87,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Test-LabDSCResource](Test-LabDSCResource.md)
 
 [Get-VM]()
