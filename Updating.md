@@ -87,5 +87,3 @@ help about_PSAutoLab
 ```
 
 Or refer to the GitHub repository [README](README.md) file.
-
-Last updated 2020-12-01 22:17:55Z

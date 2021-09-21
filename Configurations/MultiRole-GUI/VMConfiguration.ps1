@@ -310,69 +310,70 @@ $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
 
     Script RSAT {
         # Adds RSAT which is now a Windows Capability in Windows 10
-               TestScript = {
-                   $rsat = @(
-                       'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                       'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                       'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                       'Rsat.DHCP.Tools~~~~0.0.1.0',
-                       'Rsat.Dns.Tools~~~~0.0.1.0',
-                       'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                       'Rsat.FileServices.Tools~~~~0.0.1.0',
-                       'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                       'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                       'Rsat.ServerManager.Tools~~~~0.0.1.0'
-                   )
-                   $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ }
-                   if ($packages.state -contains "NotPresent") {
-                       Return $False
-                   }
-                   else {
-                       Return $True
-                   }
-               } #test
+        TestScript = {
+            $rsat = @(
+                'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                'Rsat.DHCP.Tools~~~~0.0.1.0',
+                'Rsat.Dns.Tools~~~~0.0.1.0',
+                'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                'Rsat.FileServices.Tools~~~~0.0.1.0',
+                'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                'Rsat.ServerManager.Tools~~~~0.0.1.0'
+            )
+            $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ }
+            if ($packages.state -contains "NotPresent") {
+                Return $False
+            }
+            else {
+                Return $True
+            }
+        } #test
 
-               GetScript  = {
-                   $rsat = @(
-                       'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                       'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                       'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                       'Rsat.DHCP.Tools~~~~0.0.1.0',
-                       'Rsat.Dns.Tools~~~~0.0.1.0',
-                       'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                       'Rsat.FileServices.Tools~~~~0.0.1.0',
-                       'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                       'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                       'Rsat.ServerManager.Tools~~~~0.0.1.0'
-                   )
-                   $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } | Select-Object Displayname, State
-                   $installed = $packages.Where({ $_.state -eq "Installed" })
-                   Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed" }
-               } #get
+        GetScript  = {
+            $rsat = @(
+                'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                'Rsat.DHCP.Tools~~~~0.0.1.0',
+                'Rsat.Dns.Tools~~~~0.0.1.0',
+                'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                'Rsat.FileServices.Tools~~~~0.0.1.0',
+                'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                'Rsat.ServerManager.Tools~~~~0.0.1.0'
+            )
+            $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } | Select-Object Displayname, State
+            $installed = $packages.Where({ $_.state -eq "Installed" })
+            Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed" }
+        } #get
 
-               SetScript  = {
-                   $rsat = @(
-                       'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                       'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                       'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                       'Rsat.DHCP.Tools~~~~0.0.1.0',
-                       'Rsat.Dns.Tools~~~~0.0.1.0',
-                       'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                       'Rsat.FileServices.Tools~~~~0.0.1.0',
-                       'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                       'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                       'Rsat.ServerManager.Tools~~~~0.0.1.0'
-                   )
-                   foreach ($item in $rsat) {
-                       $pkg = Get-WindowsCapability -Online -Name $item
-                       if ($item.state -ne 'Installed') {
-                           Add-WindowsCapability -Online -Name $item
-                       }
-                   }
+        SetScript  = {
+            $rsat = @(
+                'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                'Rsat.DHCP.Tools~~~~0.0.1.0',
+                'Rsat.Dns.Tools~~~~0.0.1.0',
+                'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                'Rsat.FileServices.Tools~~~~0.0.1.0',
+                'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                'Rsat.ServerManager.Tools~~~~0.0.1.0'
+            )
+            foreach ($item in $rsat) {
+                $pkg = Get-WindowsCapability -Online -Name $item
+                if ($item.state -ne 'Installed') {
+                    Add-WindowsCapability -Online -Name $item
+                }
+            }
 
-               } #set
+        } #set
 
-           } #rsat script resource
+    } #rsat script resource
+
 
     }#end RSAT Config
 

@@ -215,6 +215,18 @@ Describe PullServer {
 Describe Cli1 {
 
     $VMName = "$($prefix)Cli1"
+    $rsat = @(
+                    'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                    'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                    'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                    'Rsat.DHCP.Tools~~~~0.0.1.0',
+                    'Rsat.Dns.Tools~~~~0.0.1.0',
+                    'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                    'Rsat.FileServices.Tools~~~~0.0.1.0',
+                    'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                    'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                    'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                )
     Try {
         $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl
@@ -229,12 +241,13 @@ Describe Cli1 {
             $i.ipv4Address | Should be '192.168.3.100'
         }
 
-        It "[CLI1] Should have RSAT installed" {
-            $pkg = Invoke-Command {Get-WindowsCapability -online -name *rsat*} -session $cl
-
+        $pkg = Invoke-Command { $using:rsat | foreach-object {Get-WindowsCapability -Online -Name $_}} -Session $cl
+        $rsatstatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
+        It "[CLI1] Should have RSAT installed [$rsatStatus]" {
             # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
-            $pkg | Where-Object { $_.state -ne "installed"} | Should be $Null
+            $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
         }
+
         $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
         It "[CLI1] Should have a DNS server configuration of 192.168.3.10" {
             $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"

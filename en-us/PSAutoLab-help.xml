@@ -249,6 +249,7 @@ S1     PreInstall    Standard      9/11/2020 12:06:51 PM</dev:code>
     <maml:description>
       <maml:para>This command makes it easy to see what the lab will look like when finished. You can see the computer names, what operating system they will be running, and how much memory each will require. Even though dynamic memory will be used in the Hyper-V configuration, for planning purposes you should assume you will need the full amount. This should make it easier to determine if you have enough available memory in your computer. Run the command in the root of the configuration folder.</maml:para>
       <maml:para>If you have modified the configuration data file to use the EnvironmentPrefix setting, that value will be included as part of the virtual machine name.</maml:para>
+      <maml:para>Run Test-LabDSCResource from the configuration directory to see what DSC resources will be required and if they are already installed.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -336,6 +337,10 @@ Select-Object * | Out-GridView</dev:code>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Get-LabSummary.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Test-LabDSCResource</maml:linkText>
+        <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-VM</maml:linkText>
@@ -444,11 +449,11 @@ PSDesiredStateConfiguration : 1.1</dev:code>
       <command:verb>Invoke</command:verb>
       <command:noun>RefreshHost</command:noun>
       <maml:description>
-        <maml:para>Refresh local host AutoLab configuration.</maml:para>
+        <maml:para>Refresh the AutoLab configuration on the localhost.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>If you keep the PSAutoLab module for any length of time, you will most likely update from time to time. Part of the update might include fixes or enhancements to current configurations or even entirely new configurations. This command makes it easier to keep your configurations up to date. After updating the PSAutoLab module, run this function which will verify you have the correct version of the Lability module and copy configuration files to your Autolab\ConfigurationPath folder. This will not overwrite any MOF files or delete anything.</maml:para>
+      <maml:para>If you keep the PSAutoLab module for any length of time, you will most likely update the module from time to time. Part of the update might include fixes or enhancements to current configurations or even entirely new configurations. This command makes it easier to keep your configurations up-to-date. After updating the PSAutoLab module, run this function in a new PowerShell session which will verify you have the correct version of the Lability module and copy configuration files to your Autolab\ConfigurationPath folder. This will not overwrite any MOF files or delete anything.</maml:para>
       <maml:para>You will typically use the Refresh-Host alias.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1717,6 +1722,8 @@ This process will not remove any configurations that have been deleted from the 
       <maml:para>Lab configurations in Autolab use Desired State Configuration. These configurations can take some time to finish and converge. This command will validate that all virtual machines in the configuration are properly configured. It will loop through every 5 minutes running a Pester test suite for the configuration. Once all tests pass, the command will run the test one more time to display the results. You will see errors until all tests have passed. Depending on the configuration, this test could take up to 60 minutes to complete. You can press Ctrl+C at any time to break out of the test. If you prefer, you can also manually run the Pester test.</maml:para>
       <maml:para>PS C:\Autolab\Configurations\PowerShellLab&gt; Invoke-Pester .\VMvalidate.test.ps1</maml:para>
       <maml:para>You will typically use the Validate-Lab alias.</maml:para>
+      <maml:para>Note that beginning in v4.21.0, this validation command will keep track of the number of testing loops. After 2 loops it will check for any virtual machine that is failing a test to see if it has stopped. If so, it will be started. After 4 loops and virtual machine that is still failing tests will be restarted. Ideally, Validation should complete in 30 minutes or less. The validation process will abort after 65 minutes.</maml:para>
+      <maml:para>Run Validate-Lab -Verbose to see details about the number of testing loops and which virtual machines are started or restarted.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1777,7 +1784,7 @@ This process will not remove any configurations that have been deleted from the 
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\AutoLab\Configurations\Windows10&gt; Validate-Lab</dev:code>
+        <dev:code>PS C:\AutoLab\Configurations\Windows10&gt; Validate-Lab -verbose</dev:code>
         <dev:remarks>
           <maml:para>You will see errors until all tests have passed. Press Ctrl+C to break out of the test. Configuration merging will continue in the virtual machines.</maml:para>
         </dev:remarks>
@@ -2170,7 +2177,7 @@ C:\autolab\ISOs\WIN10_x64_ENT_19H2_EN_Eval.iso True  4892766208</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>PSAutoLabResource</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -2185,61 +2192,22 @@ C:\autolab\ISOs\WIN10_x64_ENT_19H2_EN_Eval.iso True  4892766208</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\Auto\Lab\Configurations\MultiRole&gt; Test-LabDSCResource
+        <dev:code>PS C:\autolab\Configurations\MultiRole&gt; Test-LabDSCResource
 
-ModuleName        : xActiveDirectory
-RequiredVersion   : 3.0.0.0
-Installed         : True
-InstalledVersions : {3.0.0.0, 2.16.0.0, 2.14.0.0}
-Configuration     : MultiRole
 
-ModuleName        : xComputerManagement
-RequiredVersion   : 4.1.0.0
-Installed         : True
-InstalledVersions : {4.1.0.0, 2.0.0.0, 1.8.0.0}
-Configuration     : MultiRole
+   Configuration: MultiRole
 
-ModuleName        : xNetworking
-RequiredVersion   : 5.7.0.0
-Installed         : True
-InstalledVersions : 5.7.0.0
-Configuration     : MultiRole
-
-ModuleName        : xDhcpServer
-RequiredVersion   : 2.0.0.0
-Installed         : True
-InstalledVersions : {2.0.0.0, 1.5.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xWindowsUpdate
-RequiredVersion   : 2.8.0.0
-Installed         : True
-InstalledVersions : {2.8.0.0, 2.7.0.0, 2.5.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xPSDesiredStateConfiguration
-RequiredVersion   : 9.1.0
-Installed         : True
-InstalledVersions : {9.1.0, 9.0.0, 8.10.0.0, 8.9.0.0…}
-Configuration     : MultiRole
-
-ModuleName        : xPendingReboot
-RequiredVersion   : 0.4.0.0
-Installed         : True
-InstalledVersions : {0.4.0.0, 0.3.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xADCSDeployment
-RequiredVersion   : 1.4.0.0
-Installed         : True
-InstalledVersions : {1.4.0.0, 1.1.0.0, 1.0.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xDnsServer
-RequiredVersion   : 1.16.0.0
-Installed         : True
-InstalledVersions : {1.16.0.0, 1.15.0.0, 1.14.0.0, 1.7.0.0}
-Configuration     : MultiRole</dev:code>
+ModuleName                   RequiredVersion Installed InstalledVersions
+----------                   --------------- --------- -----------------
+xActiveDirectory             3.0.0.0         True      3.0.0.0
+xComputerManagement          4.1.0.0         True      4.1.0.0
+xNetworking                  5.7.0.0         True      5.7.0.0
+xDhcpServer                  3.0.0           True      3.0.0
+xWindowsUpdate               2.8.0.0         True      2.8.0.0
+xPSDesiredStateConfiguration 9.1.0           True      9.1.0
+xPendingReboot               0.4.0.0         True      0.4.0.0
+xADCSDeployment              1.4.0.0         True      1.4.0.0
+xDnsServer                   1.16.0.0        True      1.16.0.0</dev:code>
         <dev:remarks>
           <maml:para>Run this command from the lab configuration folder.</maml:para>
         </dev:remarks>
@@ -2249,6 +2217,14 @@ Configuration     : MultiRole</dev:code>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Test-LabDSCResource.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-LabSummary</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-DSCResource</maml:linkText>
+        <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

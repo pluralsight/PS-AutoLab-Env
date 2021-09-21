@@ -30,7 +30,7 @@ This lab builds the following:
     Description  : Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
     Role         : {domainJoin, RDP, RSAT}
     IPAddress    : 192.168.3.100
-    MemoryGB     : 2
+    MemoryGB     : 4
 
 You could use this configuration that calls for a simple domain environment.
 

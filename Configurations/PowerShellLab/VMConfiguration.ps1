@@ -16,24 +16,22 @@ Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile -Path $PSScriptroot\*.psd1
     $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
-    $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
+    $credential = New-Object -TypeName Pscredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
     Import-DSCresource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
     Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "9.1.0"
     Import-DSCResource -modulename "xActiveDirectory" -ModuleVersion  "3.0.0.0"
-    Import-DSCResource -modulename "xComputerManagement" -ModuleVersion  "4.1.0.0"
     Import-DSCResource -modulename "xNetworking" -ModuleVersion  "5.7.0.0"
     Import-DSCResource -modulename "xDhcpServer" -ModuleVersion  "3.0.0"
-    Import-DSCResource -modulename 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
-    Import-DSCResource -modulename 'xPendingReboot' -ModuleVersion  '0.4.0.0'
+    Import-DSCResource -modulename 'ComputerManagementDSC' -ModuleVersion  '8.5.0'
     Import-DSCResource -modulename 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
     Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.16.0.0'
     Import-DSCResource -modulename 'xWebAdministration' -ModuleVersion  '3.1.1'
 
     #endregion
     #region All Nodes
-    node $AllNodes.Where( {$true}).NodeName {
+    node $AllNodes.Where( { $true }).NodeName {
         #endregion
         #region LCM configuration
 
@@ -48,8 +46,8 @@ Configuration AutoLab {
         #region TLS Settings in registry
 
         registry TLS {
-            Ensure = "present"
-            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
+            Ensure    = "present"
+            Key       = 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
             ValueName = 'SchUseStrongCrypto'
             ValueData = '1'
             ValueType = 'DWord'
@@ -94,7 +92,6 @@ Configuration AutoLab {
 
         #region Firewall Rules
 
-
         $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
         $FireWallRules = $labdata.Allnodes.FirewallRuleNames
 
@@ -104,17 +101,18 @@ Configuration AutoLab {
                 Enabled = 'True'
             }
         } #End foreach
+        #endregion
 
-    } #end Firewall Rules
-    #endregion
+    }
+    #endregion all nodes
 
     #region Domain Controller config
 
-    node $AllNodes.Where( {$_.Role -eq 'DC'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'DC' }).NodeName {
 
         $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
 
-        xComputer ComputerName {
+        Computer ComputerName {
             Name = $Node.NodeName
         }
 
@@ -255,7 +253,7 @@ Configuration AutoLab {
     #endregion
 
     #region DHCP
-    node $AllNodes.Where( {$_.Role -eq 'DHCP'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'DHCP' }).NodeName {
 
         foreach ($feature in @(
                 'DHCP'
@@ -271,9 +269,9 @@ Configuration AutoLab {
         } #End foreach
 
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
-            Ensure    = 'Present'
+            Ensure           = 'Present'
             IsSingleInstance = 'yes'
-            DependsOn = '[WindowsFeature]DHCP'
+            DependsOn        = '[WindowsFeature]DHCP'
         }
 
         xDhcpServerScope 'DhcpScope' {
@@ -303,11 +301,10 @@ Configuration AutoLab {
     #endregion
 
     #region Web config
-    node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
+    node $AllNodes.Where({ $_.Role -eq 'Web' }).NodeName {
 
         foreach ($feature in @(
                 'web-Server'
-
             )) {
             WindowsFeature $feature.Replace('-', '') {
                 Ensure               = 'Present'
@@ -355,7 +352,7 @@ public class FirstService : WebService
             Force           = $True
         }
         xWebApplication SampleWebService {
-            DependsOn    = "[File]SampleServiceASMX","[WindowsFeature]webServer"
+            DependsOn    = "[File]SampleServiceASMX", "[WindowsFeature]webServer"
             Website      = 'default web site'
             PhysicalPath = 'c:\MyWebServices'
             Name         = 'MyWebServices'
@@ -366,7 +363,7 @@ public class FirstService : WebService
     #endregion
 
     #region DomainJoin config
-    node $AllNodes.Where( {$_.Role -eq 'DomainJoin'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'DomainJoin' }).NodeName {
 
         $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
 
@@ -377,41 +374,89 @@ public class FirstService : WebService
             RetryIntervalSec     = '60'
         }
 
-        xComputer JoinDC {
+        Computer JoinDC {
             Name       = $Node.NodeName
             DomainName = $Node.DomainName
             Credential = $DomainCredential
             DependsOn  = '[xWaitForADDomain]DSCForestWait'
         }
+
+        PendingReboot DomainJoin {
+            Name      = "DomainJoinReboot"
+            DependsOn = "[Computer]JoinDC"
+        }
+
     }#end DomainJoin Config
     #endregion
 
     #region RSAT config
-    node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
-
-        # Adds RSAT which is now a Windows Capability in Windows 10
+    node $AllNodes.Where( { $_.Role -eq 'RSAT' }).NodeName {
 
         Script RSAT {
+            # Adds RSAT which is now a Windows Capability in Windows 10
             TestScript = {
-                $packages = Get-WindowsCapability -online -Name Rsat*
-                if ($packages.state -match "Installed") {
-                    Return $True
-                }
-                else {
+                $rsat = @(
+                    'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                    'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                    'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                    'Rsat.DHCP.Tools~~~~0.0.1.0',
+                    'Rsat.Dns.Tools~~~~0.0.1.0',
+                    'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                    'Rsat.FileServices.Tools~~~~0.0.1.0',
+                    'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                    'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                    'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                )
+                $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ }
+                if ($packages.state -contains "NotPresent") {
                     Return $False
                 }
-            }
+                else {
+                    Return $True
+                }
+            } #test
 
-            GetScript  =  {
-                $packages = Get-WindowsCapability -online -Name Rsat* | Select-Object Displayname, State
-                $installed = $packages.Where({$_.state -eq "Installed"})
-                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed"}
-            }
+            GetScript  = {
+                $rsat = @(
+                    'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                    'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                    'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                    'Rsat.DHCP.Tools~~~~0.0.1.0',
+                    'Rsat.Dns.Tools~~~~0.0.1.0',
+                    'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                    'Rsat.FileServices.Tools~~~~0.0.1.0',
+                    'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                    'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                    'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                )
+                $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } | Select-Object Displayname, State
+                $installed = $packages.Where({ $_.state -eq "Installed" })
+                Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed" }
+            } #get
 
             SetScript  = {
-                Get-WindowsCapability -online -Name Rsat* | Where-Object {$_.state -ne "installed"} | Add-WindowsCapability -online
-            }
-        }
+                $rsat = @(
+                    'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                    'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                    'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                    'Rsat.DHCP.Tools~~~~0.0.1.0',
+                    'Rsat.Dns.Tools~~~~0.0.1.0',
+                    'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                    'Rsat.FileServices.Tools~~~~0.0.1.0',
+                    'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                    'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                    'Rsat.ServerManager.Tools~~~~0.0.1.0'
+                )
+                foreach ($item in $rsat) {
+                    $pkg = Get-WindowsCapability -Online -Name $item
+                    if ($item.state -ne 'Installed') {
+                        Add-WindowsCapability -Online -Name $item
+                    }
+                }
+
+            } #set
+
+        } #rsat script resource
 
         #since RSAT is added to the client go ahead and create a Scripts folder
         File scripts {
@@ -423,7 +468,7 @@ public class FirstService : WebService
     }#end RSAT Config
 
     #region RDP config
-    node $AllNodes.Where( {$_.Role -eq 'RDP'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'RDP' }).NodeName {
         # Adds RDP support and opens Firewall rules
 
         Registry RDP {
@@ -448,7 +493,7 @@ public class FirstService : WebService
     #endregion
     #region ADCS
 
-    node $AllNodes.Where( {$_.Role -eq 'ADCS'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'ADCS' }).NodeName {
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
@@ -496,7 +541,7 @@ public class FirstService : WebService
         script CreatePKIAEGpo {
             Credential = $DomainCredential
             TestScript = {
-                if ((get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName -ErrorAction SilentlyContinue) -eq $Null) {
+                if ((Get-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -ErrorAction SilentlyContinue) -eq $Null) {
                     return $False
                 }
                 else {
@@ -504,11 +549,11 @@ public class FirstService : WebService
                 }
             }
             SetScript  = {
-                new-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName
+                New-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName
             }
             GetScript  = {
-                $GPO = (get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
-                return @{Result = $($GPO.DisplayName)}
+                $GPO = (Get-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName)
+                return @{Result = $($GPO.DisplayName) }
             }
             DependsOn  = '[xWaitForADDomain]WaitForADADCSRole'
         }
@@ -516,7 +561,7 @@ public class FirstService : WebService
         script setAEGPRegSetting1 {
             Credential = $DomainCredential
             TestScript = {
-                if ((Get-GPRegistryValue -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy" -ErrorAction SilentlyContinue).Value -eq 7) {
+                if ((Get-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy" -ErrorAction SilentlyContinue).Value -eq 7) {
                     return $True
                 }
                 else {
@@ -524,11 +569,11 @@ public class FirstService : WebService
                 }
             }
             SetScript  = {
-                Set-GPRegistryValue -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy" -Value 7 -Type DWord
+                Set-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy" -Value 7 -Type DWord
             }
             GetScript  = {
-                $RegVal1 = (Get-GPRegistryValue -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy")
-                return @{Result = "$($RegVal1.FullKeyPath)\$($RegVal1.ValueName)\$($RegVal1.Value)"}
+                $RegVal1 = (Get-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy")
+                return @{Result = "$($RegVal1.FullKeyPath)\$($RegVal1.ValueName)\$($RegVal1.Value)" }
             }
             DependsOn  = '[Script]CreatePKIAEGpo'
         }
@@ -536,7 +581,7 @@ public class FirstService : WebService
         script setAEGPRegSetting2 {
             Credential = $DomainCredential
             TestScript = {
-                if ((Get-GPRegistryValue -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent" -ErrorAction SilentlyContinue).Value -eq 10) {
+                if ((Get-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent" -ErrorAction SilentlyContinue).Value -eq 10) {
                     return $True
                 }
                 else {
@@ -544,11 +589,11 @@ public class FirstService : WebService
                 }
             }
             SetScript  = {
-                Set-GPRegistryValue -Name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent" -value 10 -Type DWord
+                Set-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent" -Value 10 -Type DWord
             }
             GetScript  = {
-                $Regval2 = (Get-GPRegistryValue -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent")
-                return @{Result = "$($RegVal2.FullKeyPath)\$($RegVal2.ValueName)\$($RegVal2.Value)"}
+                $Regval2 = (Get-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationPercent")
+                return @{Result = "$($RegVal2.FullKeyPath)\$($RegVal2.ValueName)\$($RegVal2.Value)" }
             }
             DependsOn  = '[Script]setAEGPRegSetting1'
 
@@ -557,7 +602,7 @@ public class FirstService : WebService
         script setAEGPRegSetting3 {
             Credential = $DomainCredential
             TestScript = {
-                if ((Get-GPRegistryValue -Name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames" -ErrorAction SilentlyContinue).value -match "MY") {
+                if ((Get-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames" -ErrorAction SilentlyContinue).value -match "MY") {
                     return $True
                 }
                 else {
@@ -565,11 +610,11 @@ public class FirstService : WebService
                 }
             }
             SetScript  = {
-                Set-GPRegistryValue -Name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames" -value "MY" -Type String
+                Set-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames" -Value "MY" -Type String
             }
             GetScript  = {
-                $RegVal3 = (Get-GPRegistryValue -Name "PKI AutoEnroll" -domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames")
-                return @{Result = "$($RegVal3.FullKeyPath)\$($RegVal3.ValueName)\$($RegVal3.Value)"}
+                $RegVal3 = (Get-GPRegistryValue -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames")
+                return @{Result = "$($RegVal3.FullKeyPath)\$($RegVal3.ValueName)\$($RegVal3.Value)" }
             }
             DependsOn  = '[Script]setAEGPRegSetting2'
         }
@@ -578,22 +623,22 @@ public class FirstService : WebService
             Credential = $DomainCredential
             TestScript = {
                 try {
-                    $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
-                    $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
-                    if ($GPLinks.Enabled -eq $True) {return $True}
-                    else {return $False}
+                    $GPLink = (Get-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
+                    $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object { $_.GpoID -like "*$GPLink*" }
+                    if ($GPLinks.Enabled -eq $True) { return $True }
+                    else { return $False }
                 }
                 catch {
                     Return $False
                 }
             }
             SetScript  = {
-                New-GPLink -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes
+                New-GPLink -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes
             }
             GetScript  = {
-                $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
-                $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
-                return @{Result = "$($GPLinks.DisplayName) = $($GPLinks.Enabled)"}
+                $GPLink = (Get-GPO -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
+                $GPLinks = (Get-GPInheritance -Domain $Using:Node.DomainName -Target $Using:Node.DomainDN).gpolinks | Where-Object { $_.GpoID -like "*$GPLink*" }
+                return @{Result = "$($GPLinks.DisplayName) = $($GPLinks.Enabled)" }
             }
             DependsOn  = '[Script]setAEGPRegSetting3'
         }
@@ -606,7 +651,7 @@ public class FirstService : WebService
             Credential = $DomainCredential
             TestScript = {
                 try {
-                    $WSTemplate = get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    $WSTemplate = Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                     return $True
                 }
                 catch {
@@ -634,17 +679,17 @@ public class FirstService : WebService
                 }
 
 
-                New-ADObject -name "WebServer2" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -DisplayName WebServer2 -OtherAttributes $WebServerTemplate
+                New-ADObject -Name "WebServer2" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -DisplayName WebServer2 -OtherAttributes $WebServerTemplate
                 $WSOrig = Get-ADObject -Identity "CN=WebServer,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * | Select-Object pkiExpirationPeriod, pkiOverlapPeriod, pkiKeyUsage
-                Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" | Set-ADObject -Add @{'pKIKeyUsage' = $WSOrig.pKIKeyUsage; 'pKIExpirationPeriod' = $WSOrig.pKIExpirationPeriod; 'pkiOverlapPeriod' = $WSOrig.pKIOverlapPeriod}
+                Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" | Set-ADObject -Add @{'pKIKeyUsage' = $WSOrig.pKIKeyUsage; 'pKIExpirationPeriod' = $WSOrig.pKIExpirationPeriod; 'pkiOverlapPeriod' = $WSOrig.pKIOverlapPeriod }
             }
             GetScript  = {
                 try {
-                    $WS2 = get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
-                    return @{Result = $WS2.DistinguishedName}
+                    $WS2 = Get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    return @{Result = $WS2.DistinguishedName }
                 }
                 catch {
-                    return @{Result = $Null}
+                    return @{Result = $Null }
                 }
             }
         }
@@ -656,7 +701,7 @@ public class FirstService : WebService
             Credential = $DomainCredential
             TestScript = {
                 try {
-                    $DSCTemplate = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    $DSCTemplate = Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
                     return $True
                 }
                 catch {
@@ -685,18 +730,18 @@ public class FirstService : WebService
                 }
 
 
-                New-ADObject -name "DSCTemplate" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -DisplayName DSCTemplate -OtherAttributes $DSCTemplateProps
+                New-ADObject -Name "DSCTemplate" -Type pKICertificateTemplate -Path "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -DisplayName DSCTemplate -OtherAttributes $DSCTemplateProps
                 $WSOrig = Get-ADObject -Identity "CN=Workstation,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * | Select-Object pkiExpirationPeriod, pkiOverlapPeriod, pkiKeyUsage
                 [byte[]] $WSOrig.pkiKeyUsage = 48
-                Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" | Set-ADObject -Add @{'pKIKeyUsage' = $WSOrig.pKIKeyUsage; 'pKIExpirationPeriod' = $WSOrig.pKIExpirationPeriod; 'pkiOverlapPeriod' = $WSOrig.pKIOverlapPeriod}
+                Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" | Set-ADObject -Add @{'pKIKeyUsage' = $WSOrig.pKIKeyUsage; 'pKIExpirationPeriod' = $WSOrig.pKIExpirationPeriod; 'pkiOverlapPeriod' = $WSOrig.pKIOverlapPeriod }
             }
             GetScript  = {
                 try {
-                    $dsctmpl = get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
-                    return @{Result = $dsctmpl.DistinguishedName}
+                    $dsctmpl = Get-ADObject -Identity "CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -Properties * -ErrorAction Stop
+                    return @{Result = $dsctmpl.DistinguishedName }
                 }
                 catch {
-                    return @{Result = $Null}
+                    return @{Result = $Null }
                 }
             }
         }
@@ -705,16 +750,16 @@ public class FirstService : WebService
             DependsOn  = '[Script]CreateWebServer2Template'
             Credential = $DomainCredential
             TestScript = {
-                $Template = Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}
-                if ($Template -eq $Null) {return $False}
-                else {return $True}
+                $Template = Get-CATemplate | Where-Object { $_.Name -match "WebServer2" }
+                if ($Template -eq $Null) { return $False }
+                else { return $True }
             }
             SetScript  = {
                 add-CATemplate -name "WebServer2" -force
             }
             GetScript  = {
-                $pubWS2 = Get-CATemplate | Where-Object {$_.Name -match "WebServer2"}
-                return @{Result = $pubws2.Name}
+                $pubWS2 = Get-CATemplate | Where-Object { $_.Name -match "WebServer2" }
+                return @{Result = $pubws2.Name }
             }
         }
 
@@ -722,17 +767,17 @@ public class FirstService : WebService
             DependsOn  = '[Script]CreateDSCTemplate'
             Credential = $DomainCredential
             TestScript = {
-                $Template = Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
-                if ($Template -eq $Null) {return $False}
-                else {return $True}
+                $Template = Get-CATemplate | Where-Object { $_.Name -match "DSCTemplate" }
+                if ($Template -eq $Null) { return $False }
+                else { return $True }
             }
             SetScript  = {
                 add-CATemplate -name "DSCTemplate" -force
-                write-verbose -Message ("Publishing Template DSCTemplate...")
+                Write-Verbose -Message ("Publishing Template DSCTemplate...")
             }
             GetScript  = {
-                $pubDSC = Get-CATemplate | Where-Object {$_.Name -match "DSCTemplate"}
-                return @{Result = $pubDSC.Name}
+                $pubDSC = Get-CATemplate | Where-Object { $_.Name -match "DSCTemplate" }
+                return @{Result = $pubDSC.Name }
             }
         }
 
@@ -753,36 +798,36 @@ public class FirstService : WebService
                 Credential = $DomainCredential
                 TestScript = {
                     Import-Module activedirectory -Verbose:$false
-                    $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
+                    $WebServerCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Web Servers" }
                     if ($WebServerCertACL -eq $Null) {
-                        write-verbose -message ("Web Servers Group does not have permissions on Web Server template...")
+                        Write-Verbose -Message ("Web Servers Group does not have permissions on Web Server template...")
                         Return $False
                     }
                     elseif (($WebServerCertACL.ActiveDirectoryRights -like "*ExtendedRight*") -and ($WebServerCertACL.ObjectType -notcontains $Using:P)) {
-                        write-verbose -message ("Web Servers group has permission, but not the correct permission...")
+                        Write-Verbose -Message ("Web Servers group has permission, but not the correct permission...")
                         Return $False
                     }
                     else {
-                        write-verbose -message ("ACL on Web Server Template is set correctly for this GUID for Web Servers Group...")
+                        Write-Verbose -Message ("ACL on Web Server Template is set correctly for this GUID for Web Servers Group...")
                         Return $True
                     }
                 }
                 SetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $WebServersGroup = get-adgroup -Identity "Web Servers" | Select-Object SID
+                    $WebServersGroup = Get-ADGroup -Identity "Web Servers" | Select-Object SID
                     $EnrollGUID = [GUID]::Parse($Using:P)
-                    $ACL = get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
+                    $ACL = Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
                     $ACL.AddAccessRule((New-Object System.DirectoryServices.ExtendedRightAccessRule $WebServersGroup.SID, 'Allow', $EnrollGUID, 'None'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
-                    set-ACL "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
-                    write-verbose -Message ("Permissions set for Web Servers Group")
+                    Set-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
+                    Write-Verbose -Message ("Permissions set for Web Servers Group")
                 }
                 GetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $WebServerCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Web Servers"}
+                    $WebServerCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Web Servers" }
                     if ($WebServerCertACL -ne $Null) {
-                        return @{Result = $WebServerCertACL}
+                        return @{Result = $WebServerCertACL }
                     }
                     else {
                         Return @{}
@@ -795,36 +840,36 @@ public class FirstService : WebService
                 Credential = $DomainCredential
                 TestScript = {
                     Import-Module activedirectory -Verbose:$false
-                    $DSCCertACL = (get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers*"}
+                    $DSCCertACL = (Get-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Domain Computers*" }
                     if ($DSCCertACL -eq $Null) {
-                        write-verbose -Message ("Domain Computers does not have permissions on DSC template")
+                        Write-Verbose -Message ("Domain Computers does not have permissions on DSC template")
                         Return $False
                     }
                     elseif (($DSCCertACL.ActiveDirectoryRights -like "*ExtendedRight*") -and ($DSCCertACL.ObjectType -notcontains $Using:P)) {
-                        write-verbose -Message ("Domain Computers group has permission, but not the correct permission...")
+                        Write-Verbose -Message ("Domain Computers group has permission, but not the correct permission...")
                         Return $False
                     }
                     else {
-                        write-verbose -Message ("ACL on DSC Template is set correctly for this GUID for Domain Computers...")
+                        Write-Verbose -Message ("ACL on DSC Template is set correctly for this GUID for Domain Computers...")
                         Return $True
                     }
                 }
                 SetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $DomainComputersGroup = get-adgroup -Identity "Domain Computers" | Select-Object SID
+                    $DomainComputersGroup = Get-ADGroup -Identity "Domain Computers" | Select-Object SID
                     $EnrollGUID = [GUID]::Parse($Using:P)
-                    $ACL = get-acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
+                    $ACL = Get-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
                     $ACL.AddAccessRule((New-Object System.DirectoryServices.ExtendedRightAccessRule $DomainComputersGroup.SID, 'Allow', $EnrollGUID, 'None'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'ReadProperty','Allow'))
                     #$ACL.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRule $WebServersGroup.SID,'GenericExecute','Allow'))
-                    set-ACL "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
-                    write-verbose -Message ("Permissions set for Domain Computers...")
+                    Set-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)" -AclObject $ACL
+                    Write-Verbose -Message ("Permissions set for Domain Computers...")
                 }
                 GetScript  = {
                     Import-Module activedirectory -Verbose:$false
-                    $DSCCertACL = (get-acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object {$_.IdentityReference -like "*Domain Computers"}
+                    $DSCCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Domain Computers" }
                     if ($DSCCertACL -ne $Null) {
-                        return @{Result = $DSCCertACL}
+                        return @{Result = $DSCCertACL }
                     }
                     else {
                         Return @{}

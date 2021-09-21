@@ -1,0 +1,70 @@
+<!--
+Format type data generated 09/15/2021 14:53:18 by PROSPERO\Jeff
+
+This file was created using the New-PSFormatXML command that is part
+of the PSScriptTools module.
+
+https://github.com/jdhitsolutions/PSScriptTools
+-->
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <!--Created 09/15/2021 14:53:18 by PROSPERO\Jeff-->
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>PSAutoLabResource</TypeName>
+      </ViewSelectedBy>
+        <GroupBy>
+        <PropertyName>Configuration</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <!--Delete the AutoSize node if you want to use the defined widths.-->
+        <AutoSize />
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ModuleName</Label>
+            <Width>31</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>RequiredVersion</Label>
+            <Width>18</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Installed</Label>
+            <Width>12</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>InstalledVersions</Label>
+            <Width>20</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <TableColumnItem>
+                <PropertyName>ModuleName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>RequiredVersion</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Installed</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>InstalledVersions</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

@@ -67,10 +67,6 @@ Likely, if you receive the error above, you already have a NAT network created. 
 + Which also means coordinating IP ranges across apps so they can fall under a single NAT subnet.
 + The NAT subnet cannot overlap with the external network that the host is attached to. If a host is attached to 192.168.0.0/24, you can't use 192.168.0.0/16 as a NAT network.
 
-Here's a visualization from the above limitations article:
-
-![overlapping prefixes](https://msdnshared.blob.core.windows.net/media/2016/05/Overlapping-Internal-Prefixes.jpg)
-
 Refer to this article for help on creating NAT networks: [https://msdn.microsoft.com/en-us/virtualization/hyperv_on_windows/user_guide/setup_nat_network](https://msdn.microsoft.com/en-us/virtualization/hyperv_on_windows/user_guide/setup_nat_network)
 
 Run this command to list NAT networks, take note of the IP range and subnet
@@ -179,5 +175,3 @@ Make sure that the configuration changes you've made are valid. Specifically, th
 ## I'm Still Stuck
 
 For all other questions, comments or problems, please post an [Issue](https://github.com/pluralsight/PS-AutoLab-Env/issues) in this repository.
-
-Last updated 2020-10-06 15:37:01Z

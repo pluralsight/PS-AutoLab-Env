@@ -156,8 +156,11 @@ Function Get-PSAutoLabSetting {
     [outputType("PSAutoLabSetting")]
     Param()
 
+    Write-Verbose "Starting $($myinvocation.mycommand)"
+
     $psver = $PSVersionTable
     Try {
+        Write-Verbose "Getting operating system details"
         $cimos = Get-CimInstance -class Win32_operatingsystem -Property caption, FreePhysicalMemory, TotalVisibleMemorySize -ErrorAction Stop
         $os = $cimos.caption
         $mem = $cimos.TotalVisibleMemorySize
@@ -169,7 +172,7 @@ Function Get-PSAutoLabSetting {
         $pctFree = 0
     }
 
-    #get Autolab folder if installed and free hard drive space
+    Write-Verbose "Getting Autolab folder if installed and free hard drive space"
     Try {
         $LabHost = Lability\Get-LabHostDefault -ErrorAction stop
         $AutoLab = Split-Path $LabHost.ConfigurationPath
@@ -180,7 +183,7 @@ Function Get-PSAutoLabSetting {
         $free = (Get-Volume C).SizeRemaining  #Assume C drive
     }
 
-    #get network category for LabNet
+    Write-Verbose "Get network category for LabNet"
     $net = Get-NetConnectionprofile -interfacealias *LabNet*
     if ($net) {
         $netProfile = $net.NetworkCategory
@@ -209,6 +212,18 @@ Function Get-PSAutoLabSetting {
         PowerShellGet               = (Get-Module -Name PowerShellGet -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -First 1).version
         PSDesiredStateConfiguration = (Get-Module -Name PSDesiredStateConfiguration -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -First 1).version
     }
+
+    if ($netProfile -eq 'Unknown' -or (-not $netprofile)) {
+        Write-Warning "The network connection profile for LabNet is not set to Private or DomainAuthenticated. Commands that rely on PowerShell remoting may fail."
+    }
+    if ([math]::Round($free / 1GB, 2) -le 50) {
+        Write-Warning "You may not have enough free disk space. 100GB is recommended, although you can get by with less depending on the lab configuration you need to run."
+    }
+    if (($mem * 1kb) / 1GB -as [int] -le 16) {
+        Write-Warning "You may not have enough memory. 16GB or more is recommended"
+    }
+
+    Write-Verbose "Ending $($myinvocation.mycommand)"
 }
 
 #endregion
@@ -730,7 +745,7 @@ Function Invoke-ValidateLab {
         [Parameter(HelpMessage = "The path to the configuration folder. Normally, you should run all commands from within the configuration folder.")]
         [ValidateNotNullorEmpty()]
         [ValidateScript(
-            { Test-Path $_ })]
+            {Test-Path $_ })]
         [string]$Path = ".",
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
         [switch]$NoMessages
@@ -738,6 +753,13 @@ Function Invoke-ValidateLab {
 
     Write-Verbose "Starting $($myinvocation.mycommand)"
 
+    $modVersion = (Get-Module PSAutolab).Version
+    #build a hashtable of computernames and VMNames
+    $sum = Get-LabSummary -path $path
+    $cnHash = @{}
+    foreach ($item in $sum) {
+        $cnHash.Add($item.Computername,$item.VMName)
+    }
     #remove pester v5
     Get-Module Pester | Remove-Module -Force
     Write-Verbose "Importing Pester module version $PesterVersion"
@@ -765,6 +787,9 @@ Function Invoke-ValidateLab {
         Get-Module Pester | Remove-Module -force
         Import-Module -name Pester -RequiredVersion $PesterVersion -force
 
+    You might also use Get-VM to verify all the VMs are running. Use Start-VM
+    to start a stopped virtual machine.
+
     If only one of the VMs appears to be failing, you might try stopping
     and restarting it with the Hyper-V Manager or the cmdlets:
 
@@ -781,8 +806,14 @@ Function Invoke-ValidateLab {
 
     #define a resolved path to the test file
     $testPath = Join-Path -Path $path -ChildPath VMValidate.test.ps1
-    do {
+    $firstTest = Get-Date
 
+    #keep track of the number of passes
+    $i=0
+    Write-Verbose "Running initial validation test"
+    do {
+        $i++
+        Write-Verbose "Validation pass $i"
         $test = Invoke-Pester -Script $testpath -Show none -PassThru
 
         if ($test.Failedcount -eq 0) {
@@ -790,19 +821,86 @@ Function Invoke-ValidateLab {
         }
         else {
             #test every 5 minutes
+            if ($i -ge 2) {
+
+                #get names of VMs with failing tests
+                $failedVMs = $test.TestResult.where({-Not $_.passed}).Describe | Get-Unique | ForEach-Object {$cnHash[$_]}
+
+                if ( ($i -eq 4 -OR $i -eq 7)-AND $failedVMs) {
+                    #restart VMs that are still failing
+                    Get-VM $failedVMs | Where-Object {$_.state -eq 'running'} |
+                    foreach-object {
+                        Write-Warning "Restarting virtual machine $($_.name)"
+                        $_ | Restart-VM -force
+                        #give the VM a chance to change state
+                        Start-Sleep -seconds 10
+                    }
+                } #restart
+
+                #restart any stopped VMs that are failing tests
+                if ($failedVMs) {
+                    Get-VM $failedVMs | Where-Object {$_.state -eq 'Off'} |
+                    foreach-object {
+                        Write-Warning "Starting virtual machine $($_.name)"
+                        $_ | Start-VM
+                    }
+                }
+
+                $prog = @{
+                    Activity = "VM Validation [$($test.passedcount)/$($test.Totalcount) tests passed in $i loop(s)] v$modVersion"
+                    Status = "In a separate PowerShell window, use Get-VM to verify the status of $($FailedVMs -join ',')."
+                    CurrentOperation = "Waiting until next test run"
+                }
+            }
+            else {
+                $prog = @{
+                    Activity = "VM Validation [$($test.passedcount)/$($test.Totalcount) tests passed in $i loop(s)] v$modVersion"
+                    Status = "Waiting 5 minutes for configurations to converge"
+                    CurrentOperation = "Waiting until next test run"
+                }
+            }
             300..1 | ForEach-Object {
-                Write-Progress -Activity "VM Completion Test" -Status "Tests failed" -CurrentOperation "Waiting until next test run" -SecondsRemaining $_
+                Write-Progress @prog -SecondsRemaining $_
                 Start-Sleep -Seconds 1
             }
         }
-    } until ($Complete)
+        #bail out of testing after 65 minutes
+        if ( ((get-date) - $firsttest).totalminutes -ge 65) {
+            $Aborted = $True
+        }
+    } until ($Complete -OR $Aborted)
 
-    #re-run test one more time to show everything that was tested.
-    Invoke-Pester -Script $path\VMValidate.Test.ps1
+    if ($complete) {
+        $lastTest = Get-Date
+        Write-Verbose "Validation completed in $($lasttest - $firsttest)"
 
-    Write-Progress -Activity "VM Completion Test" -Completed
-    if (-Not $NoMessages) {
-        Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
+        #re-run test one more time to show everything that was tested.
+        Write-Verbose "Re-run test to show results"
+        Invoke-Pester -Script $path\VMValidate.Test.ps1
+
+        Write-Progress -Activity "VM Completion Test v.$modVersion" -Completed
+        if (-Not $NoMessages) {
+            Microsoft.PowerShell.Utility\Write-Host "[$(Get-Date)] VM setup and configuration complete. It is recommended that you snapshot the VMs with Snapshot-Lab" -ForegroundColor Green
+        }
+    }
+    else {
+        #aborted
+        $msg = @"
+
+Validation testing aborted. One or more virtual machines are not working properly. It is recommended
+that you run this command:
+
+Invoke-Pester .\vmvalidate.test.ps1
+
+To see what tests are failing. Depending on the error, you may be able to manually resolve it in
+the virtual machine, or feel you can ignore it. Otherwise, use Get-VM to ensure virtual machines
+are running. You can also try rebooting your computer, returning to this folder and re-running
+Unattend-Lab. Or run Wipe-Lab -force and try the setup process again.
+
+"@
+
+    Write-Warning $msg
+
     }
     Write-Verbose "Ending $($myinvocation.mycommand)"
 }
@@ -1170,6 +1268,9 @@ Function Invoke-UnattendLab {
         [cmdletbinding()]
         Param([string]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [string]$VerboseAction)
 
+        #uncomment for testing and development
+        #import-module C:\scripts\psautolab\PSAutoLab.psd1 -force
+
         $VerbosePreference = $VerboseAction
         if ($VerboseAction -eq "Continue") {
             [void]$psboundparameters.Add("Verbose", $True)
@@ -1372,6 +1473,7 @@ Function Update-Lab {
 
 Function Test-LabDSCResource {
     [cmdletbinding()]
+    [outputtype("PSAutolabResource")]
     Param(
         [Parameter(Position = 0, HelpMessage = "Specify the folder path of an Autolab configuration or change locations to the folder and run this command.")]
         [ValidateScript( { Test-Path $_ })]
@@ -1398,6 +1500,7 @@ Function Test-LabDSCResource {
             $dsc.GetEnumerator() | ForEach-Object {
                 $installed = Get-Module $_.name -ListAvailable
                 [pscustomobject]@{
+                    PSTypeName        = 'PSAutoLabResource'
                     ModuleName        = $_.Name
                     RequiredVersion   = $_.RequiredVersion
                     Installed         = $installed.version -contains $_.requiredVersion
@@ -1419,3 +1522,5 @@ Function Test-LabDSCResource {
 } #close Test-LabDSCResource
 
 #endregion
+
+

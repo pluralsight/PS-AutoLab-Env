@@ -26,61 +26,22 @@ This is a troubleshooting command for the PSAutoLab module. It is designed to be
 ### Example 1
 
 ```powershell
-PS C:\Auto\Lab\Configurations\MultiRole> Test-LabDSCResource
+PS C:\autolab\Configurations\MultiRole> Test-LabDSCResource
 
-ModuleName        : xActiveDirectory
-RequiredVersion   : 3.0.0.0
-Installed         : True
-InstalledVersions : {3.0.0.0, 2.16.0.0, 2.14.0.0}
-Configuration     : MultiRole
 
-ModuleName        : xComputerManagement
-RequiredVersion   : 4.1.0.0
-Installed         : True
-InstalledVersions : {4.1.0.0, 2.0.0.0, 1.8.0.0}
-Configuration     : MultiRole
+   Configuration: MultiRole
 
-ModuleName        : xNetworking
-RequiredVersion   : 5.7.0.0
-Installed         : True
-InstalledVersions : 5.7.0.0
-Configuration     : MultiRole
-
-ModuleName        : xDhcpServer
-RequiredVersion   : 2.0.0.0
-Installed         : True
-InstalledVersions : {2.0.0.0, 1.5.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xWindowsUpdate
-RequiredVersion   : 2.8.0.0
-Installed         : True
-InstalledVersions : {2.8.0.0, 2.7.0.0, 2.5.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xPSDesiredStateConfiguration
-RequiredVersion   : 9.1.0
-Installed         : True
-InstalledVersions : {9.1.0, 9.0.0, 8.10.0.0, 8.9.0.0…}
-Configuration     : MultiRole
-
-ModuleName        : xPendingReboot
-RequiredVersion   : 0.4.0.0
-Installed         : True
-InstalledVersions : {0.4.0.0, 0.3.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xADCSDeployment
-RequiredVersion   : 1.4.0.0
-Installed         : True
-InstalledVersions : {1.4.0.0, 1.1.0.0, 1.0.0.0}
-Configuration     : MultiRole
-
-ModuleName        : xDnsServer
-RequiredVersion   : 1.16.0.0
-Installed         : True
-InstalledVersions : {1.16.0.0, 1.15.0.0, 1.14.0.0, 1.7.0.0}
-Configuration     : MultiRole
+ModuleName                   RequiredVersion Installed InstalledVersions
+----------                   --------------- --------- -----------------
+xActiveDirectory             3.0.0.0         True      3.0.0.0
+xComputerManagement          4.1.0.0         True      4.1.0.0
+xNetworking                  5.7.0.0         True      5.7.0.0
+xDhcpServer                  3.0.0           True      3.0.0
+xWindowsUpdate               2.8.0.0         True      2.8.0.0
+xPSDesiredStateConfiguration 9.1.0           True      9.1.0
+xPendingReboot               0.4.0.0         True      0.4.0.0
+xADCSDeployment              1.4.0.0         True      1.4.0.0
+xDnsServer                   1.16.0.0        True      1.16.0.0
 ```
 
 Run this command from the lab configuration folder.
@@ -113,8 +74,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Object
+### PSAutoLabResource
 
 ## NOTES
 
 ## RELATED LINKS
+
+[Get-LabSummary](Get-LabSummary.md)
+
+[Get-DSCResource]()

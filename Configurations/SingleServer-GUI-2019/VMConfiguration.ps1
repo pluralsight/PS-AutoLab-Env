@@ -24,7 +24,7 @@ Configuration AutoLab {
     @{ModuleName = "xComputerManagement"; ModuleVersion = "4.1.0.0"},
     @{ModuleName = "xNetworking"; ModuleVersion = "5.7.0.0"},
     @{ModuleName = 'xWindowsUpdate'; ModuleVersion = '2.8.0.0'},
-    @{ModuleName = 'xPendingReboot'; ModuleVersion = '0.4.0.0'}
+    @{ModuleName = 'ComputerManagementDSC'; ModuleVersion = '8.5.0'}
 
     #endregion
     #region All Nodes
@@ -44,7 +44,7 @@ Configuration AutoLab {
 
         registry TLS {
             Ensure = "present"
-            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
             ValueName = 'SchUseStrongCrypto'
             ValueData = '1'
             ValueType = 'DWord'
@@ -124,7 +124,7 @@ Configuration AutoLab {
             Ensure     = 'Present'
         }
 
-        xPendingReboot Reboot {
+        PendingReboot Reboot {
             Name      = 'AfterRSATInstall'
             DependsOn = '[xHotFix]RSAT'
         }
