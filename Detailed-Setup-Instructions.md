@@ -37,6 +37,16 @@ FreePhysicalMemory TotalVisibleMemorySize
 
 Also indicate what lab configuration you are hoping to run.
 
+### Execution Policy
+
+You need to ensure you can run PowerShell scripts on your computer. Run `Get-ExecutionPolicy` to view your current settings. If it shows `Restricted`, then run this command in an elevated PowerShell session.
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -force
+```
+
+Note, that some organizations may have implemeneted a Group Policy to restrict this setting. If yoiu can't change the policy to something other than `Restricted` you won't be able to use this or any PowerShell module. If the policy is `AllSigned` then you will have to sign the downloaded files with a code signing certificate trusted by your computer. If you are in a corporate environment, you may need to work with your IT department to sort that out.
+
 ### PowerShell Remoting
 
 The module relies on Windows PowerShell remoting which should be enabled **before** installing and using this module.
