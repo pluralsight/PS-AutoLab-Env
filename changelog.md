@@ -1,5 +1,14 @@
 # Change Log for PSAutoLab
 
+## 4.22.0
+
++ Updated Lability to version `0.21.1`.
++ Added a Windows 11 lab.
++ Updated Windows 10 images to use the latest ISO.
++ Updated `Updating.md`.
++ Marked the `Jason-DSC-Eval` lab configuration as archived.
++ Updated `README.md`
+
 ## 4.21.0
 
 + Updated `Multirole-Server-2016` configuration to require all necessary DSC resources.

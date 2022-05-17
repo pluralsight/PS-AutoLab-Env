@@ -6,14 +6,14 @@ param()
 . $PSScriptRoot\functions\private.ps1
 
 #this variable is used for Refresh-Host to copy configurations from the module to Autolab\Configurations
-$ConfigurationPath = Join-Path -path $PSScriptRoot -ChildPath Configurations
+$ConfigurationPath = Join-Path -Path $PSScriptRoot -ChildPath Configurations
 
 #declare the currently supported version of Pester
 #Pester v5 is incompatible with the current validation tests
 $PesterVersion = "4.10.1"
 
 #declare the currently supported version of Lability
-$LabilityVersion = "0.20.0"
+$LabilityVersion = "0.21.1"
 
 #configure TLS protocol to avoid problems downloading files from Microsoft
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -23,7 +23,7 @@ Function Open-PSAutoLabHelp {
     [cmdletbinding()]
     Param()
 
-    $pdf = Join-Path -path $PSScriptRoot -ChildPath PSAutoLabManual.pdf
+    $pdf = Join-Path -Path $PSScriptRoot -ChildPath PSAutoLabManual.pdf
     if (Test-Path -Path $pdf) {
         Try {
             Start-Process -FilePath $pdf -ErrorAction Stop

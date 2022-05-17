@@ -146,7 +146,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
             Role                   = @('DomainJoin', 'Web')
             Lability_BootOrder     = 20
-            lability_startupmemory  = 2GB
+            lability_startupmemory = 2GB
             Lability_timeZone      = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media         = '2019_x64_Standard_EN_Eval'
         }
@@ -157,7 +157,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             Role                    = @('domainJoin', 'RSAT', 'RDP')
             Lability_ProcessorCount = 2
             lability_startupmemory  = 4GB
-            Lability_Media          = 'WIN10_x64_Enterprise_20H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()

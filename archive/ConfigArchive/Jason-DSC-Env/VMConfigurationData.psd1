@@ -182,7 +182,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             Role                    = @('domainJoin', 'RSAT', 'RDP')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory  = 2GB
-            Lability_Media          = 'WIN10_x64_Enterprise_20H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()
