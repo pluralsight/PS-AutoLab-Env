@@ -19,6 +19,13 @@ Update-Module Lability
 Update-Module PSAutolab
 ```
 
+In certain situations, the Lability module may encounter a security validation bug between versions. You can try this sequence of commands.
+
+```powershell
+Install-Module Lability -SkipPublisherCheck -force
+Update-Module PSAutolab
+```
+
 If you *still* have issues, the best course of action is to uninstall the modules and re-install.
 
 ```powershell
