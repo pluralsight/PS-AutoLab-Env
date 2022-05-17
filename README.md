@@ -12,9 +12,9 @@ Beginning with module version 4.17.0, you can run [Open-PSAutoLabHelp](docs/Open
 
 ## Requirements
 
-This module is designed and intended to be run on a __Windows 10__ client that supports virtualization. Windows 10 Pro or Enterprise should be sufficient. It is assumed you will be installing this on a Windows 10 desktop running Windows PowerShell 5.1. This module will **not** work and is unsupported on Windows 10 Home or any Student edition. Although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server (2016 or 2019) platforms, but this capability has not been fully tested nor is it supported.
+This module is designed and intended to be run on a **Windows 10/11** client that supports virtualization. Windows 10 Pro or Enterprise and later should be sufficient. It is assumed you will be installing this on a Windows 10/11 desktop running Windows PowerShell 5.1. This module will **not** work and is unsupported on any Home or Student edition, although there are reports of the module working on Windows 10 Education. The module _might_ run on Windows Server (2016 or 2019) platforms, but this capability has not been fully tested nor is it supported.
 
-Using this in a nested virtual environment *may* work, but don't be surprised if there are problems, especially related to networking and NAT.
+Using this in a nested virtual environment _may_ work, but don't be surprised if there are problems, especially related to networking and NAT.
 
 The host computer, where you are installing, must meet the following requirements:
 
@@ -28,7 +28,7 @@ The host computer, where you are installing, must meet the following requirement
 
 You must have administrator access and be able to update the TrustedHosts setting for PowerShell remoting. If you are in a corporate environment, these settings may be locked down or restricted. If this applies to you, this module may not work properly, if at all.
 
-**__This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.__**
+**This module and configurations have NOT been tested running from PowerShell Core or PowerShell 7 and is not supported at this time.**
 
 ### Pester Requirement
 
@@ -70,7 +70,7 @@ If you encounter issues with a basic installation and setup, you should read and
 
 You can verify the module with these commands:
 
-```dos
+```powershell
 PS C:\> Import-Module PSAutoLab -force
 PS C:\> Get-Module PSAutoLab
 
@@ -85,7 +85,7 @@ Your version number may differ.
 
 This module and its configurations should not conflict with any existing Hyper-V virtual machines or networking. But you should be aware that the module will create a new., internal Hyper-V switch called `LabNet`. This switch will use a NAT configuration called `LabNat`.
 
-```dos
+```powershell
 PS C:\> Get-NetNat LabNat
 
 
@@ -105,7 +105,7 @@ Active                           : True
 
 The `Instructions.md` file in each configuration folder should provide an indication of what VMs will be created. You can also check the `VMConfigurationData.psd1` file.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\MultiRole\> (Import-PowerShellDataFile .\VMConfigurationData.psd1).allnodes.Nodename
 *
 DC1
@@ -126,11 +126,12 @@ Current configurations will use these names for the virtual machine and computer
 * SRV2
 * SRV3
 * WIN10
+* WIN11
 * Win10Ent
 * S12R2
 * S12R2GUI
 
-*Nano Server images have been removed from configurations. These configurations were using the now deprecated version of Nano. Microsoft has changed direction with regards to Nano Server and none of the existing configurations use this new version.*
+_Nano Server images have been removed from configurations. These configurations were using the now deprecated version of Nano. Microsoft has changed direction with regards to Nano Server and none of the existing configurations use this new version._
 
 ### Previous Versions
 
@@ -146,7 +147,7 @@ To identify the module location. Use this information to delete the PSAutoLab fo
 
 ### Note for VMware Users
 
-This project is designed to work with Hyper-V. If you are going to build a Host VM of Server 2016 or Windows 10, In the general settings for your VM, you must change the OS type to `Hyper-V(Unsupported)` or the Host Hyper-V will not work! This module and its configurations have __not__ been tested for compatibility with VMware.
+This project is designed to work with Hyper-V. If you are going to build a Host VM of Server 2016 or Windows 10, In the general settings for your VM, you must change the OS type to `Hyper-V(Unsupported)` or the Host Hyper-V will not work! This module and its configurations have **not** been tested for compatibility with VMware.
 
 ## Aliases and Language
 
@@ -168,7 +169,7 @@ Setup-Host -DestinationPath D:\AutoLab
 
 You will be prompted to reboot, which you should do especially if the setup had to add the Hyper-V feature. To verify your configuration open an elevated PowerShell session and run this command:
 
-```dos
+```powershell
 PS C:\> Get-PSAutoLabSetting
 
 
@@ -197,7 +198,7 @@ Some of your values may be different. Please include this information when repor
 
 Once the host setup is complete, you can use the module's [Get-LabSummary](docs/Get-LabSummary.md) command to better understand what the lab configuration will setup. Run the command in the configuration folder.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Get-LabSummary
 
 
@@ -213,7 +214,7 @@ SingleServer-GUI-2016     192.168.3.75        4     1 RDP     Windows Server
 
 The module includes a custom format file. You might also run the command like this:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer-GUI-2016> Get-LabSummary |
 Select-Object *
 
@@ -237,13 +238,13 @@ Lab information is stored under the AutoLab Configurations folder, which is `C:\
 
 ### A Note on Pluralsight Labs
 
-*This module started several years ago and there are several Pluralsight courses that rely on configurations that may no longer exist. Configurations that were named as `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case. If you are trying to setup a lab for a specific course, and can't find the configuration the instructor calls for, please post an issue indicating the configuration you are looking for and the title of the Pluralsight course. Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration. In some cases, the course may assume a different password. All configurations use `P@ssw0rd` for all passwords.*
+_This module started several years ago and there are several Pluralsight courses that rely on configurations that may no longer exist. Configurations that were named as `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case. If you are trying to setup a lab for a specific course, and can't find the configuration the instructor calls for, please post an issue indicating the configuration you are looking for and the title of the Pluralsight course. Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration. In some cases, the course may assume a different password. All configurations use `P@ssw0rd` for all passwords._
 
 The first time you set up a lab, Lability will download evaluation versions of required operating systems in ISO format. This may take some time depending on your Internet connection. These downloads only happen when the required ISO is not found locally. When you wipe and rebuild a lab it won't download files a second time.
 
 Once the lab is created, you can use the PSAutoLab commands for managing it. If you have additional PowerShell experience, you can manage individual virtual machines using the Hyper-V manager or cmdlets.
 
-*It is assumed that you will only have one lab configuration created at a time.*
+_It is assumed that you will only have one lab configuration created at a time._
 
 Please be aware that all configurations were created for an `EN-US` culture and keyboard.
 
@@ -257,7 +258,7 @@ Most, if not all, configurations should follow the same manual process. Run each
 
 To verify that all virtual machines are properly configured you can run [Validate-Lab](docs/Invoke-ValidateLab.md). This will invoke a set of tests and keep looping until everything passes. Due to the nature of DSC and the complexity of some configurations, this could take up to 60 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
@@ -267,13 +268,13 @@ This can be useful for troubleshooting.
 
 As an alternative, you can setup a lab environment with minimal prompting.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 ```
 
 Assuming you don't need to install a newer version of `nuget`, you can leave the setup alone. It will run all of the manual steps for you. Beginning in version `4.3.0` you also have the option to run the unattend process in a PowerShell background job.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -asjob
 ```
 
@@ -283,7 +284,7 @@ Use the PowerShell job cmdlets to manage.
 
 To stop the lab VMs, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Shutdown-Lab
 ```
 
@@ -293,7 +294,7 @@ You can also use the Hyper-V manager or cmdlets to manually shut down virtual ma
 
 The setup process will leave the virtual machines running. If you have stopped the lab and need to start it, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Run-Lab
 ```
 
@@ -303,13 +304,13 @@ You can also use the Hyper-V manager or cmdlets to manually start virtual machin
 
 You can snapshot the entire lab very easily. Change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Snapshot-Lab
 ```
 
 To quickly rebuild the labs from the checkpoint, run:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Refresh-Lab
 ```
 
@@ -319,13 +320,13 @@ Or you can use the Hyper-V cmdlets to create and manage VM snapshots.
 
 To destroy the lab completely, change to the configuration folder in an elevated Windows PowerShell session and run:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 ```
 
 This will remove the virtual machines and DSC configuration files. If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch. This is the default behavior. If you want to remove everything you would need to run a command like this:
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
 ```
 
@@ -360,15 +361,15 @@ It is possible to customize a lab configuration by editing the `VMConfigurationD
 },
 ```
 
-You can edit the `Lability_Media` setting. Change the setting  using one of these ID values.
+You can edit the `Lability_Media` setting. Change the setting  using one of these ID values from running `Get-LabMedia`.
 
-```dos
+```powershell
 
 Id                                      Arch Media Description
 --                                      ---- ----- -----------
-2019_x64_Standard_EN_Eval                x64   ISO Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience
+2019_x64_Standard_EN_Eval                x64   ISO Windows Server 2019 Standard 64bit English Evaluation with Deskto...
 2019_x64_Standard_EN_Core_Eval           x64   ISO Windows Server 2019 Standard 64bit English Evaluation
-2019_x64_Datacenter_EN_Eval              x64   ISO Windows Server 2019 Datacenter 64bit English Evaluation with Desktop Experience
+2019_x64_Datacenter_EN_Eval              x64   ISO Windows Server 2019 Datacenter 64bit English Evaluation with Desk...
 2019_x64_Datacenter_EN_Core_Eval         x64   ISO Windows Server 2019 Datacenter Evaluation in Core mode
 2016_x64_Standard_EN_Eval                x64   ISO Windows Server 2016 Standard 64bit English Evaluation
 2016_x64_Standard_Core_EN_Eval           x64   ISO Windows Server 2016 Standard Core 64bit English Evaluation
@@ -378,29 +379,30 @@ Id                                      Arch Media Description
 2016_x64_Datacenter_Nano_EN_Eval         x64   ISO Windows Server 2016 Datacenter Nano 64bit English Evaluation
 2012R2_x64_Standard_EN_Eval              x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation
 2012R2_x64_Standard_EN_V5_Eval           x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5
-2012R2_x64_Standard_EN_V5_1_Eval         x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5.1
+2012R2_x64_Standard_EN_V5_1_Eval         x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF...
 2012R2_x64_Standard_Core_EN_Eval         x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation
-2012R2_x64_Standard_Core_EN_V5_Eval      x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5
-2012R2_x64_Standard_Core_EN_V5_1_Eval    x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5.1
+2012R2_x64_Standard_Core_EN_V5_Eval      x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation wit...
+2012R2_x64_Standard_Core_EN_V5_1_Eval    x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation wit...
 2012R2_x64_Datacenter_EN_Eval            x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation
-2012R2_x64_Datacenter_EN_V5_Eval         x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5
-2012R2_x64_Datacenter_EN_V5_1_Eval       x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5.1
+2012R2_x64_Datacenter_EN_V5_Eval         x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with W...
+2012R2_x64_Datacenter_EN_V5_1_Eval       x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with W...
 2012R2_x64_Datacenter_Core_EN_Eval       x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation
-2012R2_x64_Datacenter_Core_EN_V5_Eval    x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5
-2012R2_x64_Datacenter_Core_EN_V5_1_Eval  x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5.1
+2012R2_x64_Datacenter_Core_EN_V5_Eval    x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation w...
+2012R2_x64_Datacenter_Core_EN_V5_1_Eval  x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation w...
 WIN81_x64_Enterprise_EN_Eval             x64   ISO Windows 8.1 64bit Enterprise English Evaluation
 WIN81_x64_Enterprise_EN_V5_Eval          x64   ISO Windows 8.1 64bit Enterprise English Evaluation with WMF 5
 WIN81_x64_Enterprise_EN_V5_1_Eval        x64   ISO Windows 8.1 64bit Enterprise English Evaluation with WMF 5.1
 WIN81_x86_Enterprise_EN_Eval             x86   ISO Windows 8.1 32bit Enterprise English Evaluation
 WIN81_x86_Enterprise_EN_V5_Eval          x86   ISO Windows 8.1 32bit Enterprise English Evaluation with WMF 5
 WIN81_x86_Enterprise_EN_V5_1_Eval        x86   ISO Windows 8.1 32bit Enterprise English Evaluation with WMF 5.1
-WIN10_x64_Enterprise_20H2_EN_Eval        x64   ISO Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
-WIN10_x86_Enterprise_20H2_EN_Eval        x86   ISO Windows 10 32bit Enterprise 2009 English Evaluation
-WIN10_x64_Enterprise_LTSC_EN_Eval        x64   ISO Windows 10 64bit Enterprise LTSC 2019 English Evaluation
-WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise LTSC 2019 English Evaluation
+WIN10_x64_Enterprise_21H2_EN_Eval        x64   ISO Windows 10 64bit Enterprise 2109/21H2 English Evaluation
+WIN10_x86_Enterprise_21H2_EN_Eval        x86   ISO Windows 10 32bit Enterprise 2109/21H2 English Evaluation
+WIN10_x64_Enterprise_LTSC_2021_EN_Eval   x64   ISO Windows 10 64bit Enterprise LTSC 2021 English Evaluation
+WIN10_x86_Enterprise_LTSC_2021_EN_Eval   x86   ISO Windows 10 32bit Enterprise LTSC 2021 English Evaluation
+WIN11_x64_Enterprise_21H2_EN_Eval        x64   ISO Windows 11 64bit Enterprise 21H2 English Evaluation
 ```
 
-You can also make changes to values such as minimum memory and processor count. When you run `Unattend-Lab` or `Setup-Lab` you can use the `-UseLocalTimeZone` to set all virtual machines to use your time zone. You could make *minor* changes to the IP address such as changing the address from `192.168.3.50` to `192.168.3.60`. To change the entire subnet will require modifying the virtual switch and should not be attempted unless you are very proficient with PowerShell and Hyper-V.
+You can also make changes to values such as minimum memory and processor count. When you run `Unattend-Lab` or `Setup-Lab` you can use the `-UseLocalTimeZone` to set all virtual machines to use your time zone. You could make _minor_ changes to the IP address such as changing the address from `192.168.3.50` to `192.168.3.60`. To change the entire subnet will require modifying the virtual switch and should not be attempted unless you are very proficient with PowerShell and Hyper-V.
 
 **Note that if you make changes, the validation test may fail unless you modify it. But you can always try to run the lab without validating it.**
 
@@ -408,20 +410,20 @@ If you make a mistake or want to restore the original configurations, run the `R
 
 ## Windows 10 Remote Server Administration Tools (RSAT)
 
-A number of lab configurations that include a Windows 10 client will also install RSAT. In the past, this has meant trying to install *all* RSAT features. This takes a long time and has caused validation issues. Beginning with v4.21.0 of the PSAutlab module, the RSAT configuration and testing will only use a subset of features.
+A number of lab configurations that include a Windows 10 client will also install RSAT. In the past, this has meant trying to install _all_ RSAT features. This takes a long time and has caused validation issues. Beginning with v4.21.0 of the PSAutlab module, the RSAT configuration and testing will only use a subset of features.
 
-+ ActiveDirectory
-+ BitLocker
-+ CertificateServices
-+ DHCP
-+ Dns
-+ FailoverCluster
-+ FileServices
-+ GroupPolicy
-+ IPAM.Client
-+ ServerManager
+* ActiveDirectory
+* BitLocker
++*CertificateServices
+* DHCP
+* Dns
+* FailoverCluster
+* FileServices
+* GroupPolicy
+* IPAM.Client
+* ServerManager
 
-If you require any other tool, you will need to use `Add-WindowsCapability` in the Windows 10 client to add it.
+If you require any other tool, you will need to use `Add-WindowsCapability` in the Windows 10/11 client to add it.
 
 This change has improved setup-performance and module stability.
 
@@ -429,7 +431,7 @@ This change has improved setup-performance and module stability.
 
 When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use [Update-Lab](docs/Update-Lab.md) to invoke Windows update on all lab members. This can be a time-consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\PowerShellLab\> update-lab -AsJob
 
 Id   Name        PSJobTypeName   State      HasMoreData   Location    Command
@@ -505,7 +507,7 @@ The validation tests for each configuration are written for the Pester module. T
 
 If you try to install a module or update the nuget provider, you might see warnings like these:
 
-```dos
+```powershell
 WARNING: Unable to download from URI 'https://go.microsoft.com/fwlink/?LinkID=627338&clcid=0x409' to ''.
 WARNING: Unable to download the list of available providers. Check your internet connection.
 PackageManagement\Install-PackageProvider : No match was found for the specified search criteria for the provider 'NuGet'. The package provider requires 'PackageManagement' and
@@ -544,7 +546,7 @@ Update-Module powershellget,packagemanagement -force
 
 The commands and configurations in this module are not foolproof. During testing a lab configuration will run quickly and without error on one Windows 10 desktop but fail or take much longer on a different Windows 10 desktop. Most setups should be complete in under an hour. If validation is failing, manually run the validation test in the configuration folder.
 
-```dos
+```powershell
 PS C:\Autolab\Configurations\SingleServer\> Invoke-Pester VMValidate.test.ps1
 ```
 
@@ -554,17 +556,17 @@ Sometimes even if the virtual machine is running, manually shutting it down and 
 
 As a last resort, manually break out of any testing loop, wipe the lab and start all-over.
 
-If you *still* are having problems, wipe the lab and try a different configuration. This will help determine if the problem is with the configuration or a larger compatibility problem.
+If you _still_ are having problems, wipe the lab and try a different configuration. This will help determine if the problem is with the configuration or a larger compatibility problem.
 
 At this point, you can open an issue in this repository. Open an elevated PowerShell prompt and run [Get-PSAutoLabSetting](docs/Get-PSAutoLabSetting.md) which will provide useful information. Copy and paste the results into a new issue along with any error messages you are seeing.
 
 ## Known Issues
 
-### *I get an error when importing the module*
+### _I get an error when importing the module_
 
 Starting with version 4.12.0 of this module, you might see this error when you import the module.
 
-```dos
+```powershell
 Import-Module : Assertion operator name 'Be' has been added multiple times.
 ```
 
@@ -576,7 +578,7 @@ Get-Module Pester | Remove-Module
 
 Then import this module again.
 
-### *I get an error trying to update Lability*
+### _I get an error trying to update Lability_
 
 If you try to run `Refresh-Host` you might see an error about a certificate mismatch. Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates. If you encounter this problem, run
 

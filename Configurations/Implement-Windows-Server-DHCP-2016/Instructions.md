@@ -15,13 +15,13 @@ This lab is specifically designed for the Implementing Windows Server 2016 DHCP 
     MemoryGB     : 1
 
     Computername : Cli1
-    Description  : Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
+    Description  : Windows 10 64bit Enterprise 2109/21H2 English Evaluation
     Role         : {domainJoin, RSAT, RDP}
     IPAddress    : 192.168.3.100
     MemoryGB     : 2
 
     Computername : Cli2
-    Description  : Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
+    Description  : Windows 10 64bit Enterprise 2109/21H2 English Evaluation
     Role         : {domainJoin, RDP}
     IPAddress    : 192.168.3.101
     MemoryGB     : 2

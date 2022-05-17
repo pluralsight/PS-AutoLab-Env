@@ -1,89 +1,63 @@
-# Updating From PSAutoLab v3.x
+# Updating the PSAutolab Module
 
-At this point in time, this information should be irrelevant but will be retained just in case.
-
-If you were running older versions of PSAutoLab, most likely v3.x, you might have encountered problems. It is hoped that the updates to 4.x will resolve most if not all of those problems. The plan going forward is to pay closer attention to issues and update the module as needed. This will be easier now that the module is deployed through the PowerShell Gallery.
+This module and its dependencies will be installed and updated from the PowerShell Gallery. It is strongly recommended that you __do not__ upgrade  the module if you have configured labs and virtual machines. If AutoLab is in use now, you can wait until you are finished with the lab configuration. Otherwise, use the `Wipe-Lab` command in any configuration folder that has MOF files with virtual machines.
 
 __Note:__ The terms `AutoLab` and `PSAutoLab` are used interchangeably. PSAutoLab is technically the PowerShell module that manages your AutoLab configuration.
 
-## Before You Upgrade
-
-The new module will be installed and updated from the PowerShell Gallery. To avoid conflicts, you should clean up the previous setup before installing the new version. The recommended procedure is to wipe everything and start fresh.
-
-**All existing issues from the previous version have been closed as the previous code-base is deprecated.**
-
-### Wipe Labs
-
-If AutoLab is is in use now, you can wait until you are finished with the lab configuration. Otherwise, use the `Wipe-Lab` command in any configuration folder that has MOF files with virtual machines. On the last configuration you wipe, you can answer yes to remove the LabNet switch.
-
-### Remove LabNet
-
-If you didn't remove the NAT switch, you should manually remove it.
+You should be able to run
 
 ```powershell
-Remove-VMSwitch LabNet
+Update-Module PSAutolab
 ```
 
-You might also run `Get-VMSwitch` to discover the actual name if it varies from this documentation.
+## Updating Troubleshooting
 
-To be on the safe side, you should remove the NAT network configuration if it still exists. If this command gives you a result:
+However, there is the potential for issues with required Lability module. You can always try this:
 
 ```powershell
-Get-NetNat LabNat
+Update-Module Lability
+Update-Module PSAutolab
 ```
 
-Then you can run:
+If you *still* have issues, the best course of action is to uninstall the modules and re-install.
 
 ```powershell
-Remove-NetNat LabNat
+get-module psautolab -ListAvailable | uninstall-module
+get-module lability -ListAvailable | uninstall-module
 ```
 
-### Remove Module
-
-The previous version was manually copied to your module folder, `C:\Program Files\WindowsPowerShell\Modules`. You can always find the install location with a command like this:
+You might need to repeat this process until this command shows no modules.
 
 ```powershell
-Get-Module PSAutoLab -ListAvailable | Select-Object Path
+get-module lability,PSAutoLab -ListAvailable
 ```
 
-### Delete AutoLab Folder
-
-Delete your AutoLab folder and all sub-folders which should be `C:\AutoLab` if you accepted the defaults during installation. This will delete all of the ISO files which means you'll need to re-download them when you build a new configuration. But that is OK because the current version of the module contains the correct links to all the relevant evaluation ISO files.
-
-## Update and Reboot
-
-It is not necessary to remove Hyper-V. But it is recommended that you install all pending Windows updates and reboot your computer.
-
-## Verify
-
-After reboot, open an elevated Windows PowerShell prompt. Type this command to verify you have removed the previous module:
+With a clean slate run:
 
 ```powershell
-Get-Module PSAutoLab -listavailable
+Install-Module PSAutolab -SkipPublisherCheck -Force
 ```
 
-## Install
+You __do not__ need to run `Setup-Host`. But you should run `Refresh-Host` to copy updated lab configurations to your Autolab setup.
 
-Assuming you are clean, you can now install the new version.
+## Disk Image Update
+
+If you have been using PSAutolab for awhile, are updating it and plan to continue using it, you might want to refresh the virtual disk images. An update to the PSAutolab module might also include a reference to a new version of the Lability module. This module is responsible for downloading the latest ISO images and creating the master virtual hard disks.
+
+You should only refresh disk images if __you have no configured virtual machines__.
 
 ```powershell
-Install-Module PSAutoLab -repository PSGallery
+Get-childitem C:\autolab\VMVirtualHardDisks
 ```
 
-Next, setup your local host:
+If this directory is empty, then you can proceed.
 
 ```powershell
-Setup-Host
+Get-ChildItem D:\Autolab\MasterVirtualHardDisks\ | Remove-Item
 ```
 
-If Hyper-V had to be installed, then you should definitely reboot.
+The next time you build a lab, the master disk image will be recreated.
 
-## Setup a Configuration
+## ISO Management
 
-From this point, you should be set with the new version. Read the about help topic to learn more.
-
-```powershell
-help about_PSAutoLab
-```
-
-Or refer to the GitHub repository [README](README.md) file.
+Likewise, you might want to refresh the ISO images found in `C:\Autolab\ISOs`. You can delete any or all ISO images. The latest version of a required ISO will be downloaded the next time you build a lab.
