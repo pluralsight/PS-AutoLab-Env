@@ -41,7 +41,7 @@ Get-Module Pester -ListAvailable
 If the _only_ result you get is for version `3.4.0`, then you must run:
 
 ```powershell
-Install-Module pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
+Install-Module Oester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
 ```
 
 Re-run the `Get-Module` to verify version `4.10.1` is installed. If you have newer versions installed, that will have no effect on this module. Once you have verified Pester version 4.10.1 you can install the PSAutoLab module.
