@@ -3,7 +3,7 @@
 This lab builds the following:
 
     Computername : Win10Ent
-    Description  : Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
+    Description  : Windows 10 64bit Enterprise 2109/21H2 English Evaluation
     Role         : {RSAT, RDP}
     IPAddress    : 192.168.3.101
     MemoryGB     : 2

@@ -14,22 +14,22 @@ This example code is provided without copyright and AS IS.  It is free for you t
 @{
     AllNodes    = @(
         @{
-            NodeName                    = '*'
+            NodeName                        = '*'
 
             # Lab Password - assigned to Administrator and Users
-            LabPassword                 = 'P@ssw0rd'
+            LabPassword                     = 'P@ssw0rd'
 
             # Common networking
-            InterfaceAlias              = 'Ethernet'
-            DefaultGateway              = '192.168.3.1'
-            SubnetMask                  = 24
-            AddressFamily               = 'IPv4'
-            IPNetwork                   = '192.168.3.0/24'
-            IPNatName                   = 'LabNat'
-            DnsServerAddress            = '192.168.3.10'
+            InterfaceAlias                  = 'Ethernet'
+            DefaultGateway                  = '192.168.3.1'
+            SubnetMask                      = 24
+            AddressFamily                   = 'IPv4'
+            IPNetwork                       = '192.168.3.0/24'
+            IPNatName                       = 'LabNat'
+            DnsServerAddress                = '192.168.3.10'
 
             # Firewall settings to enable
-            FirewallRuleNames           = @(
+            FirewallRuleNames               = @(
                 'FPS-ICMP4-ERQ-In',
                 'FPS-ICMP6-ERQ-In',
                 'FPS-SMB-In-TCP',
@@ -40,83 +40,48 @@ This example code is provided without copyright and AS IS.  It is free for you t
             )
 
             # Domain and Domain Controller information
-            DomainName                  = "Company.Pri"
-            DomainDN                    = "DC=Company,DC=Pri"
-            DCDatabasePath              = "C:\NTDS"
-            DCLogPath                   = "C:\NTDS"
-            SysvolPath                  = "C:\Sysvol"
-            PSDscAllowPlainTextPassword = $true
-            PSDscAllowDomainUser        = $true
+            DomainName                      = "Company.Pri"
+            DomainDN                        = "DC=Company,DC=Pri"
+            DCDatabasePath                  = "C:\NTDS"
+            DCLogPath                       = "C:\NTDS"
+            SysvolPath                      = "C:\Sysvol"
+            PSDscAllowPlainTextPassword     = $true
+            PSDscAllowDomainUser            = $true
 
             # DHCP Server Data
-            DHCPName                    = 'LabNet'
-            DHCPIPStartRange            = '192.168.3.200'
-            DHCPIPEndRange              = '192.168.3.250'
-            DHCPSubnetMask              = '255.255.255.0'
-            DHCPState                   = 'Active'
-            DHCPAddressFamily           = 'IPv4'
-            DHCPLeaseDuration           = '00:08:00'
-            DHCPScopeID                 = '192.168.3.0'
-            DHCPDnsServerIPAddress      = '192.168.3.10'
-            DHCPRouter                  = '192.168.3.1'
+            DHCPName                        = 'LabNet'
+            DHCPIPStartRange                = '192.168.3.200'
+            DHCPIPEndRange                  = '192.168.3.250'
+            DHCPSubnetMask                  = '255.255.255.0'
+            DHCPState                       = 'Active'
+            DHCPAddressFamily               = 'IPv4'
+            DHCPLeaseDuration               = '00:08:00'
+            DHCPScopeID                     = '192.168.3.0'
+            DHCPDnsServerIPAddress          = '192.168.3.10'
+            DHCPRouter                      = '192.168.3.1'
 
             # ADCS Certificate Services information
-            CACN                        = 'Company.Pri'
-            CADNSuffix                  = "C=US,L=Phoenix,S=Arizona,O=Company"
-            CADatabasePath              = "C:\windows\system32\CertLog"
-            CALogPath                   = "C:\CA_Logs"
-            ADCSCAType                  = 'EnterpriseRootCA'
-            ADCSCryptoProviderName      = 'RSA#Microsoft Software Key Storage Provider'
-            ADCSHashAlgorithmName       = 'SHA256'
-            ADCSKeyLength               = 2048
-            ADCSValidityPeriod          = 'Years'
-            ADCSValidityPeriodUnits     = 2
+            CACN                            = 'Company.Pri'
+            CADNSuffix                      = "C=US,L=Phoenix,S=Arizona,O=Company"
+            CADatabasePath                  = "C:\windows\system32\CertLog"
+            CALogPath                       = "C:\CA_Logs"
+            ADCSCAType                      = 'EnterpriseRootCA'
+            ADCSCryptoProviderName          = 'RSA#Microsoft Software Key Storage Provider'
+            ADCSHashAlgorithmName           = 'SHA256'
+            ADCSKeyLength                   = 2048
+            ADCSValidityPeriod              = 'Years'
+            ADCSValidityPeriodUnits         = 2
 
             # Lability default node settings
-            Lability_SwitchName         = 'LabNet'
-            Lability_ProcessorCount     = 1
-            Lability_MinimumMemory      = 1GB
-            Lability_MaximumMemory      = 3GB
-            SecureBoot                  = $false
-            Lability_Media              = '2016_x64_Standard_Core_EN_Eval'
-            <#
+            Lability_SwitchName             = 'LabNet'
+            Lability_ProcessorCount         = 1
+            Lability_MinimumMemory          = 1GB
+            Lability_MaximumMemory          = 16GB
+            SecureBoot                      = $false
+            Lability_RegisteredOwner        = "Administrator"
+            Lability_RegisteredOrganization = "Company.pri"
+            Lability_Media                  = '2016_x64_Standard_Core_EN_Eval'
 
-
-Id                                      Arch Media Description
---                                      ---- ----- -----------
-2019_x64_Standard_EN_Eval                x64   ISO Windows Server 2019 Standard 64bit English Evaluation with Desktop Experience
-2019_x64_Standard_EN_Core_Eval           x64   ISO Windows Server 2019 Standard 64bit English Evaluation
-2019_x64_Datacenter_EN_Eval              x64   ISO Windows Server 2019 Datacenter 64bit English Evaluation with Desktop Experience
-2019_x64_Datacenter_EN_Core_Eval         x64   ISO Windows Server 2019 Datacenter Evaluation in Core mode
-2016_x64_Standard_EN_Eval                x64   ISO Windows Server 2016 Standard 64bit English Evaluation
-2016_x64_Standard_Core_EN_Eval           x64   ISO Windows Server 2016 Standard Core 64bit English Evaluation
-2016_x64_Datacenter_EN_Eval              x64   ISO Windows Server 2016 Datacenter 64bit English Evaluation
-2016_x64_Datacenter_Core_EN_Eval         x64   ISO Windows Server 2016 Datacenter Core 64bit English Evaluation
-2016_x64_Standard_Nano_EN_Eval           x64   ISO Windows Server 2016 Standard Nano 64bit English Evaluation
-2016_x64_Datacenter_Nano_EN_Eval         x64   ISO Windows Server 2016 Datacenter Nano 64bit English Evaluation
-2012R2_x64_Standard_EN_Eval              x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation
-2012R2_x64_Standard_EN_V5_Eval           x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5
-2012R2_x64_Standard_EN_V5_1_Eval         x64   ISO Windows Server 2012 R2 Standard 64bit English Evaluation with WMF 5.1
-2012R2_x64_Standard_Core_EN_Eval         x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation
-2012R2_x64_Standard_Core_EN_V5_Eval      x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5
-2012R2_x64_Standard_Core_EN_V5_1_Eval    x64   ISO Windows Server 2012 R2 Standard Core 64bit English Evaluation with WMF 5.1
-2012R2_x64_Datacenter_EN_Eval            x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation
-2012R2_x64_Datacenter_EN_V5_Eval         x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5
-2012R2_x64_Datacenter_EN_V5_1_Eval       x64   ISO Windows Server 2012 R2 Datacenter 64bit English Evaluation with WMF 5.1
-2012R2_x64_Datacenter_Core_EN_Eval       x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation
-2012R2_x64_Datacenter_Core_EN_V5_Eval    x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5
-2012R2_x64_Datacenter_Core_EN_V5_1_Eval  x64   ISO Windows Server 2012 R2 Datacenter Core 64bit English Evaluation with WMF 5.1
-WIN81_x64_Enterprise_EN_Eval             x64   ISO Windows 8.1 64bit Enterprise English Evaluation
-WIN81_x64_Enterprise_EN_V5_Eval          x64   ISO Windows 8.1 64bit Enterprise English Evaluation with WMF 5
-WIN81_x64_Enterprise_EN_V5_1_Eval        x64   ISO Windows 8.1 64bit Enterprise English Evaluation with WMF 5.1
-WIN81_x86_Enterprise_EN_Eval             x86   ISO Windows 8.1 32bit Enterprise English Evaluation
-WIN81_x86_Enterprise_EN_V5_Eval          x86   ISO Windows 8.1 32bit Enterprise English Evaluation with WMF 5
-WIN81_x86_Enterprise_EN_V5_1_Eval        x86   ISO Windows 8.1 32bit Enterprise English Evaluation with WMF 5.1
-WIN10_x64_Enterprise_20H2_EN_Eval        x64   ISO Windows 10 64bit Enterprise 2009 English Evaluation (20H2)
-WIN10_x86_Enterprise_20H2_EN_Eval        x86   ISO Windows 10 32bit Enterprise 2009 English Evaluation
-WIN10_x64_Enterprise_LTSC_EN_Eval        x64   ISO Windows 10 64bit Enterprise LTSC 2019 English Evaluation
-WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise LTSC 2019 English Evaluation
-            #>
         },
 
         <#    Available Roles for computers
@@ -136,7 +101,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             Lability_BootDelay      = 60 # Number of seconds to delay before others
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media          = '2016_x64_Standard_Core_EN_Eval'
-            Lability_MinimumMemory  = 2GB
+            Lability_StartupMemory  = 2GB
             Lability_ProcessorCount = 2
             CustomBootStrap         = @'
                     # This must be set to handle larger .mof files
@@ -171,6 +136,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             IPAddress               = '192.168.3.60'
             Lability_BootOrder      = 20
             Lability_Media          = '2019_x64_Standard_EN_Core_Eval'
+            Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_ProcessorCount = 1
             Lability_StartupMemory  = 1GB
         },
@@ -182,7 +148,7 @@ WIN10_x86_Enterprise_LTSC_EN_Eval        x86   ISO Windows 10 32bit Enterprise L
             Lability_ProcessorCount = 2
             Lability_StartupMemory  = 4GB
             Lability_MinimumMemory  = 4GB
-            Lability_Media          = 'WIN10_x64_Enterprise_20H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()

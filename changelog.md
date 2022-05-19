@@ -1,5 +1,11 @@
 # Change Log for PSAutoLab
 
+## 4.22.1
+
++ Updated `Windows10` and `PowerShellLab` configurations to use Windows 10 64bit Enterprise 2109/21H2 English Evaluation. They were missed in the previous update.
++ Fixed memory settings in `PowerShellLab` configuration for Win10 virtual machine.
++ Revised code formatting in the help PDF.
+
 ## 4.22.0
 
 + Updated Lability to version `0.21.1`.
