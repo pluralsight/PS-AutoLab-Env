@@ -10,7 +10,7 @@ Goal - Create a Domain Controller, Populute with OU's Groups and Users.
        One Server joined to the new domain
        One Windows 10 CLient joined to the new domain
 
-       
+
 
 Disclaimer
 

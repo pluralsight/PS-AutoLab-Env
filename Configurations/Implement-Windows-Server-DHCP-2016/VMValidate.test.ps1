@@ -5,12 +5,12 @@
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator", $Secure
 
 #The prefix only changes the name of the VM not the guest computername
-$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+$prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
 
 $all = @()
 
@@ -21,7 +21,7 @@ Describe DC1 {
         $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $dc
 
-        #set error action preference to suppress all error messsages
+        #set error action preference to suppress all error messages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
 
         It "[DC1] Should accept domain admin credential" {
@@ -39,7 +39,7 @@ Describe DC1 {
         }
 
         It "[DC1] Should have an IP address of 192.168.3.10" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $dc
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $dc
             $i.ipv4Address | Should be '192.168.3.10'
         }
 
@@ -136,7 +136,7 @@ Describe S1 {
         $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $s1
 
-        #set error action preference to suppress all error messsages
+        #set error action preference to suppress all error messages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $s1
 
         It "[S1] Should accept domain admin credential" {
@@ -144,7 +144,7 @@ Describe S1 {
         }
 
         It "[S1] Should have an IP address of 192.168.3.50" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $S1
             $i.ipv4Address | Should be '192.168.3.50'
         }
         $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
@@ -179,7 +179,7 @@ Describe Cli1 {
         $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl
 
-        #set error action preference to suppress all error messsages
+        #set error action preference to suppress all error messages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $cl
 
         It "[CLI1]] Should accept domain admin credential" {
@@ -187,14 +187,14 @@ Describe Cli1 {
         }
 
         It "[CLI1]] Should have an IP address of 192.168.3.100" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -session $cl
             $i.ipv4Address | Should be '192.168.3.100'
         }
 
         $pkg = Invoke-Command { $using:rsat | foreach-object {Get-WindowsCapability -Online -Name $_}} -Session $cl
-        $rsatstatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
-        It "[Cli1] Should have RSAT installed [$rsatStatus]" {
-            # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
+        $RSATStatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
+        It "[Cli1] Should have RSAT installed [$RSATStatus]" {
+            # write-host ($pkg | Select-object Name,DisplayName,State | format-list | Out-String) -ForegroundColor cyan
             $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
         }
 
@@ -219,14 +219,14 @@ Describe Cli2 {
         $cl2 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
         $all += $cl2
 
-        #set error action preference to suppress all error messsages
+        #set error action preference to suppress all error messages
         Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $cl2
         It "[CLI2] Should accept domain admin credential" {
             $cl2.Count | Should Be 1
         }
 
         It "[CLI2] Should have an IP address of 192.168.3.101" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl2
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -session $cl2
             $i.ipv4Address | Should be '192.168.3.101'
         }
 

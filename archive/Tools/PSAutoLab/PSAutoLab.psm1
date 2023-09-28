@@ -209,7 +209,7 @@ Function Invoke-SetupLab {
     Write-Host -ForegroundColor Cyan -Object 'Building the lab environment'
     # Creates the lab environment without making a Hyper-V Snapshot
 
-    $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+    $Password = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
     $startParams = @{
         ConfigurationData = ".\*.psd1"
         Path              = ".\"
@@ -333,11 +333,11 @@ Function Enable-Internet {
 
 
     $LabData = Import-PowerShellDataFile -Path .\*.psd1
-    $LabSwitchName = $labdata.NonNodeData.Lability.Network.name
-    $GatewayIP = $Labdata.AllNodes.DefaultGateway
-    $GatewayPrefix = $Labdata.AllNodes.SubnetMask
-    $NatNetwork = $Labdata.AllNodes.IPnetwork
-    $NatName = $Labdata.AllNodes.IPNatName
+    $LabSwitchName = $LabData.NonNodeData.Lability.Network.name
+    $GatewayIP = $LabData.AllNodes.DefaultGateway
+    $GatewayPrefix = $LabData.AllNodes.SubnetMask
+    $NatNetwork = $LabData.AllNodes.IPnetwork
+    $NatName = $LabData.AllNodes.IPNatName
 
 
     $Index = Get-NetAdapter -name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
@@ -543,7 +543,7 @@ Function Invoke-WipeLab {
     Remove-Item -Path .\*.mof
     # Delete NAT
     $LabData = Import-PowerShellDataFile -Path .\*.psd1
-    $NatName = $Labdata.AllNodes.IPNatName
+    $NatName = $LabData.AllNodes.IPNatName
     Remove-NetNat -Name $NatName
     # Delete vM's
     Remove-LabConfiguration -ConfigurationData .\*.psd1 -RemoveSwitch

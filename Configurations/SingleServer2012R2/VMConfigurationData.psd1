@@ -111,7 +111,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
     )
     NonNodeData = @{
         Lability = @{
-            
+
             # You can uncomment this line to add a prefix to the virtual machine name.
             # It will not change the guest computername
             # See https://github.com/pluralsight/PS-AutoLab-Env/blob/master/Detailed-Setup-Instructions.md

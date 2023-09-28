@@ -15,7 +15,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
 Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-    $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+    $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
 #region DSC Resources
@@ -101,7 +101,7 @@ Configuration AutoLab {
         #region Firewall Rules
 
         $LabData = Import-PowerShellDataFile .\*.psd1
-        $FireWallRules = $labdata.Allnodes.FirewallRuleNames
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
             xFirewall $Rule {

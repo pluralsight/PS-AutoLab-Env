@@ -10,21 +10,21 @@ Goal - Create a Domain Controller, Populute with OU's Groups and Users.
        One Server joined to the new domain
        One Windows 10 CLient joined to the new domain
 
-       
+
 
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the 
+Note: These demos should not be run as a script. These are the commands that I use in the
 demonstrations and would need to be modified for your environment.
 
-#> 
+#>
 
 Configuration AutoLab {
 
     param (
-        [Parameter()] 
-        [ValidateNotNull()] 
+        [Parameter()]
+        [ValidateNotNull()]
         [PSCredential] $Credential = (Get-Credential -Credential Administrator)
     )
 
@@ -40,7 +40,7 @@ Configuration AutoLab {
 
     node $AllNodes.Where({$true}).NodeName {
 #region LCM configuration
-       
+
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
@@ -48,8 +48,8 @@ Configuration AutoLab {
         }
 
 #endregion
-  
-#region IPaddress settings 
+
+#region IPaddress settings
 
     $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
 
@@ -61,7 +61,7 @@ Configuration AutoLab {
             AddressFamily  = $node.AddressFamily
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {     
+        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
             xDefaultGatewayAddress 'PrimaryDefaultGateway' {
                 InterfaceAlias = $node.InterfaceAlias
                 Address = $node.DefaultGateway
@@ -69,7 +69,7 @@ Configuration AutoLab {
             }
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {                    
+        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
             xDnsServerAddress 'PrimaryDNSClient' {
                 Address        = $node.DnsServerAddress
                 InterfaceAlias = $node.InterfaceAlias
@@ -84,11 +84,11 @@ Configuration AutoLab {
             }
         }
     } #End IF
-            
+
 #endregion
 
 #region Firewall Rules
-        
+
         xFirewall 'FPS-ICMP4-ERQ-In' {
             Name = 'FPS-ICMP4-ERQ-In'
             DisplayName = 'File and Printer Sharing (Echo Request - ICMPv4-In)'
@@ -125,18 +125,18 @@ Configuration AutoLab {
 #region Domain Controller config
 
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
-         
-        xComputer ComputerName { 
-            Name = $Node.NodeName 
-        }            
+
+        xComputer ComputerName {
+            Name = $Node.NodeName
+        }
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
                 'DNS',
-                'RSAT-DNS-Server'                           
+                'RSAT-DNS-Server'
                 'AD-Domain-Services'
                 'GPMC',
-                'RSAT-AD-Tools' 
+                'RSAT-AD-Tools'
                 'RSAT-AD-PowerShell'
                 'RSAT-AD-AdminCenter'
                 'RSAT-ADDS-Tools'
@@ -155,10 +155,10 @@ Configuration AutoLab {
                 SafemodeAdministratorPassword = $Credential
                 DatabasePath = $Node.DCDatabasePath
                 LogPath = $Node.DCLogPath
-                SysvolPath = $Node.SysvolPath 
+                SysvolPath = $Node.SysvolPath
                 DependsOn = '[WindowsFeature]ADDomainServices'
-            }  
-        
+            }
+
         #Add OU, Groups, and Users
 
             xWaitForADDomain WaitForADDCRole {
@@ -460,11 +460,11 @@ Configuration AutoLab {
                 PasswordNeverExpires = $true
                 DependsOn = '[xADOrganizationalUnit]JEA_Operators'
             }
-            
+
             #prestage Web Server Computer objects
 
         [string[]]$WebServers = $Null
-        
+
         foreach ($N in $AllNodes) {
             if ($N.Role -eq "Web") {
 
@@ -533,7 +533,7 @@ Configuration AutoLab {
             }
 
         If ($WebServers -ne $Null) {
-            
+
             xADGroup WebServerGroup {
                 GroupName = 'Web Servers'
                 GroupScope = 'Global'
@@ -545,10 +545,10 @@ Configuration AutoLab {
                 Ensure = 'Present'
                 }
             }
-       
+
     } #end nodes DC
 
-#endregion 
+#endregion
 
 #region DHCP
     node $AllNodes.Where({$_.Role -eq 'DHCP'}).NodeName {
@@ -565,20 +565,20 @@ Configuration AutoLab {
                 DependsOn = '[xADDomain]FirstDC'
             }
         } #End foreach
-        
+
          xWaitForADDomain WaitForADDHCPRole {
                 DomainName = $Node.DomainName
                 RetryIntervalSec = '30'
                 RetryCount = '10'
                 DomainUserCredential = $DomainCredential
                 DependsOn = '[xADDomain]FirstDC'
-                }  
-        
+                }
+
         xDhcpServerAuthorization 'DhcpServerAuthorization' {
             Ensure = 'Present';
             DependsOn = '[WindowsFeature]DHCP','[xWaitForADDomain]WaitForADDHCPRole'
         }
-        
+
         xDhcpServerScope 'DhcpScope' {
             Name = $Node.DHCPName;
             IPStartRange = $Node.DHCPIPStartRange
@@ -596,8 +596,8 @@ Configuration AutoLab {
             Router = $node.DHCPRouter
             AddressFamily = $Node.DHCPAddressFamily
             DependsOn = '[xDhcpServerScope]DhcpScope'
-        }  
- 
+        }
+
     }
  #end DHCP Config
  #endregion
@@ -606,7 +606,7 @@ Configuration AutoLab {
 #region ADCS
 
     node $AllNodes.Where({$_.Role -eq 'ADCS'}).NodeName {
- 
+
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
                 'ADCS-Cert-Authority',
@@ -623,16 +623,16 @@ Configuration AutoLab {
                 IncludeAllSubFeature = $False;
                 DependsOn = '[xADDomain]FirstDC'
             }
-        } #End foreach  
-    
+        } #End foreach
+
          xWaitForADDomain WaitForADADCSRole {
                 DomainName = $Node.DomainName
                 RetryIntervalSec = '30'
                 RetryCount = '10'
                 DomainUserCredential = $DomainCredential
                 DependsOn = '[WindowsFeature]ADCSCertAuthority'
-                }  
-            
+                }
+
         xAdcsCertificationAuthority ADCSConfig
         {
             CAType = $Node.ADCSCAType
@@ -646,7 +646,7 @@ Configuration AutoLab {
             LogDirectory = $Node.CALogPath
             ValidityPeriod = $node.ADCSValidityPeriod
             ValidityPeriodUnits = $Node.ADCSValidityPeriodUnits
-            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'    
+            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'
         }
 
     #Add GPO for PKI AutoEnroll
@@ -656,7 +656,7 @@ Configuration AutoLab {
             TestScript = {
                             if ((get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName -ErrorAction SilentlyContinue) -eq $Null) {
                                 return $False
-                            } 
+                            }
                             else {
                                 return $True}
                         }
@@ -667,9 +667,9 @@ Configuration AutoLab {
                             $GPO= (get-gpo -name "PKI AutoEnroll" -domain $Using:Node.DomainName)
                             return @{Result = $($GPO.DisplayName)}
                         }
-            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'   
+            DependsOn = '[xWaitForADDomain]WaitForADADCSRole'
             }
-       
+
         script setAEGPRegSetting1
         {
             Credential = $DomainCredential
@@ -691,7 +691,7 @@ Configuration AutoLab {
             DependsOn = '[Script]CreatePKIAEGpo'
         }
 
-        script setAEGPRegSetting2 
+        script setAEGPRegSetting2
         {
             Credential = $DomainCredential
             TestScript = {
@@ -712,7 +712,7 @@ Configuration AutoLab {
             DependsOn = '[Script]setAEGPRegSetting1'
 
         }
-                               
+
         script setAEGPRegSetting3
         {
             Credential = $DomainCredential
@@ -733,7 +733,7 @@ Configuration AutoLab {
                         }
             DependsOn = '[Script]setAEGPRegSetting2'
         }
-         
+
         Script SetAEGPLink
         {
             Credential = $DomainCredential
@@ -749,7 +749,7 @@ Configuration AutoLab {
                                 }
                          }
             SetScript = {
-                            New-GPLink -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes 
+                            New-GPLink -name "PKI AutoEnroll" -domain $Using:Node.DomainName -Target $Using:Node.DomainDN -LinkEnabled Yes
                         }
             GetScript = {
                            $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Using:Node.DomainName).ID
@@ -757,8 +757,8 @@ Configuration AutoLab {
                            return @{Result = "$($GPLinks.DisplayName) = $($GPLinks.Enabled)"}
                         }
             DependsOn = '[Script]setAEGPRegSetting3'
-        }  
-        
+        }
+
 #region Create and publish templates
 
 #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
@@ -809,7 +809,7 @@ Configuration AutoLab {
                                     }
                             }
         }
-    
+
 
  #Note:  The Test section is pure laziness.  Future enhancement:  test for more than just existence.
         script CreateDSCTemplate
@@ -861,9 +861,9 @@ Configuration AutoLab {
                                     }
                             }
         }
-                  
-        script PublishWebServerTemplate2 
-        {       
+
+        script PublishWebServerTemplate2
+        {
            DependsOn = '[Script]CreateWebServer2Template'
            Credential = $Credential
            TestScript = {
@@ -879,9 +879,9 @@ Configuration AutoLab {
                             return @{Result=$pubws2.Name}
                         }
          }
-          
-          script PublishDSCTemplate 
-        {       
+
+          script PublishDSCTemplate
+        {
            DependsOn = '[Script]CreateDSCTemplate'
            Credential = $Credential
            TestScript = {
@@ -898,8 +898,8 @@ Configuration AutoLab {
                             return @{Result=$pubDSC.Name}
                         }
          }
-        
-                                                   
+
+
 #endregion - Create and publish templates
 
 #region template permissions
@@ -952,7 +952,7 @@ Configuration AutoLab {
                             }
                         }
                  }
-                      
+
                 script "Perms_DSCCert_$($P)"
                 {
                     DependsOn = '[Script]CreateWebServer2Template'
@@ -995,9 +995,9 @@ Configuration AutoLab {
                             }
                         }
                  }
-      }   
-                        
- 
+      }
+
+
     } #end ADCS Config
 
 #endregion
@@ -1005,10 +1005,10 @@ Configuration AutoLab {
 
 #region Web config
    node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
-        
+
         foreach ($feature in @(
                 'web-Server'
- 
+
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present'
@@ -1016,7 +1016,7 @@ Configuration AutoLab {
                 IncludeAllSubFeature = $False
             }
         }
-        
+
     }#end Web Config
 
 
@@ -1024,7 +1024,7 @@ Configuration AutoLab {
    node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
 
     $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
- 
+
         xWaitForADDomain DscForestWait {
             DomainName = $Node.DomainName
             DomainUserCredential = $DomainCredential

@@ -6,7 +6,7 @@
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
 $LabData = Import-PowerShellDataFile -Path .\*.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
+$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
@@ -18,12 +18,12 @@ It "[S1] Should accept admin credential" {
 }
 
 It "[S1] Should have an IP address of 192.168.3.50" {
-    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $S1
     $i.ipv4Address | should be '192.168.3.50'
 }
 $dns = icm {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
-It "[S1] Should have a DNS server configuration of 4.2.2.2" {                        
-  $dns.ServerAddresses -contains '4.2.2.2' | Should Be "True"           
+It "[S1] Should have a DNS server configuration of 4.2.2.2" {
+  $dns.ServerAddresses -contains '4.2.2.2' | Should Be "True"
 }
 
 

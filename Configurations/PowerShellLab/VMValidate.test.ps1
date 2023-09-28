@@ -3,15 +3,15 @@
 #test if VM setup is complete
 
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
-$Domain = $labdata.allnodes.domainname
+$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+$Domain = $LabData.AllNodes.domainname
 $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 $wgcred = New-Object PSCredential "administrator", $secure
 
 #The prefix only changes the name of the VM not the guest computername
-$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+$prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
 
-#set error action preference to suppress all error messsages which would be normal while configurations are converging
+#set error action preference to suppress all error messages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
     $ProgressPreference = "SilentlyContinue"
@@ -338,9 +338,9 @@ Describe Win10 {
         }
 
         $pkg = Invoke-Command { $using:rsat | foreach-object {Get-WindowsCapability -Online -Name $_}} -Session $cl
-        $rsatstatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
-        It "[Win10] Should have RSAT installed [$rsatStatus]" {
-            # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
+        $RSATStatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
+        It "[Win10] Should have RSAT installed [$RSATStatus]" {
+            # write-host ($pkg | Select-object Name,DisplayName,State | format-list | Out-String) -ForegroundColor cyan
             $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
         }
 

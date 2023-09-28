@@ -10,21 +10,21 @@ Goal - Create a Domain Controller, Populute with OU's Groups and Users.
        One Server joined to the new domain
        One Windows 10 CLient joined to the new domain
 
-       
+
 
 Disclaimer
 
 This example code is provided without copyright and AS IS.  It is free for you to use and modify.
-Note: These demos should not be run as a script. These are the commands that I use in the 
+Note: These demos should not be run as a script. These are the commands that I use in the
 demonstrations and would need to be modified for your environment.
 
-#> 
+#>
 
 Configuration AutoLab {
 
     param (
-        [Parameter()] 
-        [ValidateNotNull()] 
+        [Parameter()]
+        [ValidateNotNull()]
         [PSCredential] $Credential = (Get-Credential -Credential Administrator)
     )
 
@@ -38,7 +38,7 @@ Configuration AutoLab {
 
     node $AllNodes.Where({$true}).NodeName {
 #region LCM configuration
-       
+
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
@@ -46,10 +46,10 @@ Configuration AutoLab {
         }
 
 #endregion
-  
-#region IPaddress settings 
 
- 
+#region IPaddress settings
+
+
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
@@ -58,7 +58,7 @@ Configuration AutoLab {
             AddressFamily  = $node.AddressFamily
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {     
+        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
             xDefaultGatewayAddress 'PrimaryDefaultGateway' {
                 InterfaceAlias = $node.InterfaceAlias
                 Address = $node.DefaultGateway
@@ -66,7 +66,7 @@ Configuration AutoLab {
             }
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {                    
+        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
             xDnsServerAddress 'PrimaryDNSClient' {
                 Address        = $node.DnsServerAddress
                 InterfaceAlias = $node.InterfaceAlias
@@ -81,11 +81,11 @@ Configuration AutoLab {
             }
         }
     } #End IF
-            
+
 #endregion
 
 #region Firewall Rules
-        
+
         xFirewall 'FPS-ICMP4-ERQ-In' {
             Name = 'FPS-ICMP4-ERQ-In'
             DisplayName = 'File and Printer Sharing (Echo Request - ICMPv4-In)'
@@ -124,14 +124,14 @@ Configuration AutoLab {
     node $AllNodes.Where({$_.Role -eq 'DC'}).NodeName {
 
         $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
-         
-        xComputer ComputerName { 
-            Name = $Node.NodeName 
-        }            
+
+        xComputer ComputerName {
+            Name = $Node.NodeName
+        }
 
         ## Hack to fix DependsOn with hypens "bug" :(
         foreach ($feature in @(
-                'DNS',                  
+                'DNS',
                 'AD-Domain-Services'
 
             )) {
@@ -148,10 +148,10 @@ Configuration AutoLab {
                 SafemodeAdministratorPassword = $Credential
                 DatabasePath = $Node.DCDatabasePath
                 LogPath = $Node.DCLogPath
-                SysvolPath = $Node.SysvolPath 
+                SysvolPath = $Node.SysvolPath
                 DependsOn = '[WindowsFeature]ADDomainServices'
-            }  
-        
+            }
+
         #Add OU, Groups, and Users
 
 
@@ -427,7 +427,7 @@ Configuration AutoLab {
                 PasswordNeverExpires = $true
                 DependsOn = '[xADDomain]FirstDC'
             }
- 
+
             #Groups
             xADGroup ITG1 {
                 GroupName = 'IT'
@@ -473,17 +473,17 @@ Configuration AutoLab {
                 Members = 'JimJ', 'JillJ'
                 DependsOn = '[xADDomain]FirstDC'
             }
-       
+
     } #end nodes DC
 
-#endregion 
+#endregion
 
 #region Web config
    node $AllNodes.Where({$_.Role -eq 'Web'}).NodeName {
-        
+
         foreach ($feature in @(
                 'web-Server'
- 
+
             )) {
             WindowsFeature $feature.Replace('-','') {
                 Ensure = 'Present'
@@ -491,7 +491,7 @@ Configuration AutoLab {
                 IncludeAllSubFeature = $False
             }
         }
-        
+
     }#end Web Config
 
 
@@ -499,7 +499,7 @@ Configuration AutoLab {
    node $AllNodes.Where({$_.Role -eq 'DomainJoin'}).NodeName {
 
     $DomainCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("$($node.DomainName)\$($Credential.UserName)", $Credential.Password)
- 
+
         xWaitForADDomain DscForestWait {
             DomainName = $Node.DomainName
             DomainUserCredential = $DomainCredential

@@ -16,7 +16,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
 Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile -Path $PSScriptroot\*.psd1
-    $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+    $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
@@ -94,7 +94,7 @@ Configuration AutoLab {
         #region Firewall Rules
 
         $LabData = Import-PowerShellDataFile .\*.psd1
-        $FireWallRules = $labdata.Allnodes.FirewallRuleNames
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
             xFirewall $Rule {
@@ -172,7 +172,7 @@ Configuration AutoLab {
                 Username                      = $user.samaccountname
                 GivenName                     = $user.givenname
                 Surname                       = $user.Surname
-                DisplayName                   = $user.Displayname
+                DisplayName                   = $user.DisplayName
                 Description                   = $user.description
                 Department                    = $User.department
                 Enabled                       = $true
@@ -358,7 +358,7 @@ Configuration AutoLab {
                            'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
                            'Rsat.ServerManager.Tools~~~~0.0.1.0'
                        )
-                       $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } | Select-Object Displayname, State
+                       $packages = $rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } | Select-Object DisplayName, State
                        $installed = $packages.Where({ $_.state -eq "Installed" })
                        Return @{Result = "$($installed.count)/$($packages.count) RSAT features installed" }
                    } #get

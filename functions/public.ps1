@@ -91,7 +91,7 @@ Function Get-LabSummary {
 
             Write-Verbose "Getting node data from $psd1"
             $import = Import-PowerShellDataFile -Path $psd1
-            $Nodes = $import.allNodes
+            $Nodes = $import.AllNodes
 
             #get the optional prefix value
             $EnvPrefix = $import.NonNodeData.Lability.EnvironmentPrefix
@@ -184,7 +184,7 @@ Function Get-PSAutoLabSetting {
     }
 
     Write-Verbose "Get network category for LabNet"
-    $net = Get-NetConnectionprofile -interfacealias *LabNet*
+    $net = Get-NetConnectionprofile -InterfaceAlias *LabNet*
     if ($net) {
         $netProfile = $net.NetworkCategory
     }
@@ -464,11 +464,11 @@ Function Invoke-SetupLab {
         # $localtz = [System.TimeZone]::CurrentTimeZone.StandardName
         $localtz = (Get-TimeZone).ID
         Write-Verbose "Using local time zone $localtz"
-        if ($LabData.allnodes.count -gt 1) {
+        if ($LabData.AllNodes.count -gt 1) {
             if (-Not $NoMessages) {
                 Microsoft.PowerShell.Utility\Write-Host "Overriding configured time zones to use $localtz" -ForegroundColor yellow
             }
-            $nodes = $labdata.allnodes.where( { $_.nodename -ne "*" })
+            $nodes = $LabData.AllNodes.where( { $_.nodename -ne "*" })
             foreach ($node in $nodes) {
                 # $tz = $node.Lability_timezone
                 $node.Lability_timeZone = $localtz
@@ -476,13 +476,13 @@ Function Invoke-SetupLab {
         }
         else {
             if (-Not $NoMessages) {
-                Microsoft.PowerShell.Utility\Write-Host "Updating Allnodes to $localtz" -ForegroundColor Yellow
+                Microsoft.PowerShell.Utility\Write-Host "Updating AllNodes to $localtz" -ForegroundColor Yellow
             }
             $LabData.AllNodes.Lability_TimeZone = $localtz
         }
     } #use local timezone
 
-    $LabData.allnodes | Out-String | Write-Verbose
+    $LabData.AllNodes | Out-String | Write-Verbose
 
     Write-Verbose "Install DSC Resource modules specified in the .PSD1"
 
@@ -535,7 +535,7 @@ Function Invoke-SetupLab {
     }
 
     # Creates the lab environment without making a Hyper-V Snapshot
-    $Password = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+    $Password = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
     $startParams = @{
         ConfigurationData   = $LabData
         #Import-PowerShellDataFile -path (Join-Path -path $path -childpath "VMConfigurationdata.psd1")
@@ -703,11 +703,11 @@ Function Enable-Internet {
     }
 
     $LabData = Import-PowerShellDataFile -Path $path\*.psd1
-    $LabSwitchName = $labdata.NonNodeData.Lability.Network.name
-    $GatewayIP = $Labdata.AllNodes.DefaultGateway
-    $GatewayPrefix = $Labdata.AllNodes.SubnetMask
-    $NatNetwork = $Labdata.AllNodes.IPnetwork
-    $NatName = $Labdata.AllNodes.IPNatName
+    $LabSwitchName = $LabData.NonNodeData.Lability.Network.name
+    $GatewayIP = $LabData.AllNodes.DefaultGateway
+    $GatewayPrefix = $LabData.AllNodes.SubnetMask
+    $NatNetwork = $LabData.AllNodes.IPnetwork
+    $NatName = $LabData.AllNodes.IPNatName
 
     $Index = Get-NetAdapter -Name "vethernet ($LabSwitchName)" | Select-Object -ExpandProperty InterfaceIndex
 
@@ -1191,7 +1191,7 @@ Function Invoke-WipeLab {
         Write-Verbose "Removing the Hyper-V switch"
         $removeParams.Add("RemoveSwitch", $True)
         # Delete NAT
-        $NatName = $Labdata.AllNodes.IPNatName
+        $NatName = $LabData.AllNodes.IPNatName
         if ($pscmdlet.ShouldProcess("LabNat", "Remove NetNat")) {
             Write-Verbose "Remoting NetNat"
             Remove-NetNat -Name $NatName
@@ -1206,7 +1206,7 @@ Function Invoke-WipeLab {
     #only delete the VHD files associated with the configuration as you might have more than one configuration
     #running
     Write-Verbose "Removing VHD files"
-    $nodes = ($labdata.allnodes.nodename).where( { $_ -ne '*' })
+    $nodes = ($LabData.AllNodes.nodename).where( { $_ -ne '*' })
     Get-ChildItem (Lability\Get-LabHostDefault).differencingVHDPath | Where-Object { $nodes -contains $_.basename } | Remove-Item
     #Remove-Item -Path "$((Get-LabHostDefault).DifferencingVHdPath)\*" -Force
 
@@ -1420,13 +1420,13 @@ Function Update-Lab {
     Process {
         Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] Updating Lab"
         if ($data) {
-            $pass = ConvertTo-SecureString -String $data.AllNodes.labpassword -AsPlainText -Force
+            $pass = ConvertTo-SecureString -String $data.AllNodes.LabPassword -AsPlainText -Force
             $domain = $data.AllNodes.domainName
             $domcred = New-Object PSCredential -ArgumentList "$($domain)\administrator", $pass
             $wgcred = New-Object PSCredential -ArgumentList "administrator", $pass
 
             #get defined nodes
-            $nodes = ($data.allnodes).where( { $_.nodename -ne '*' })
+            $nodes = ($data.AllNodes).where( { $_.nodename -ne '*' })
             foreach ($node in $nodes) {
                 $vmNode = ("{0}{1}" -f $prefix, $node.Nodename)
                 #Write-Verbose "[$((Get-Date).TimeofDay) PROCESS] ... $($node.nodename)"

@@ -6,42 +6,42 @@
 
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
 if (-Not $LabData) {
-    Write-Warning "Failed to get lab data."
+    Write-Warning 'Failed to get lab data.'
     #bail out
     Return
 }
 
-$Secure = ConvertTo-SecureString -String $labdata.allnodes.labpassword -AsPlainText -Force
-$cred = New-Object -TypeName Pscredential -ArgumentList Administrator, $secure
-$Computername = $labdata.allnodes[1].nodename
-$IP = $labdata.allnodes[1].IPAddress
-$DNSAddress = $LabData.allnodes[0].DnsServerAddress
+$Secure = ConvertTo-SecureString -String $LabData.AllNodes.LabPassword -AsPlainText -Force
+$cred = New-Object -TypeName PSCredential -ArgumentList Administrator, $secure
+$Computername = $LabData.AllNodes[1].NodeName
+$IP = $LabData.AllNodes[1].IPAddress
+$DNSAddress = $LabData.AllNodes[0].DnsServerAddress
 
 #The prefix only changes the name of the VM not the guest computername
-$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+$prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
 $VMName = "$($prefix)$Computername"
 
-#set error action preference to suppress all error messsages which would be normal while configurations are converging
+#set error action preference to suppress all error messages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
-    $ProgressPreference = "SilentlyContinue"
+    $ProgressPreference = 'SilentlyContinue'
     $errorActionPreference = 'silentlyContinue'
 }
 
 Describe $Computername {
 
     $rsat = @(
-                    'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                    'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                    'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                    'Rsat.DHCP.Tools~~~~0.0.1.0',
-                    'Rsat.Dns.Tools~~~~0.0.1.0',
-                    'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                    'Rsat.FileServices.Tools~~~~0.0.1.0',
-                    'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                    'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                    'Rsat.ServerManager.Tools~~~~0.0.1.0'
-                )
+        'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+        'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+        'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+        'Rsat.DHCP.Tools~~~~0.0.1.0',
+        'Rsat.Dns.Tools~~~~0.0.1.0',
+        'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+        'Rsat.FileServices.Tools~~~~0.0.1.0',
+        'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+        'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+        'Rsat.ServerManager.Tools~~~~0.0.1.0'
+    )
 
     Try {
         $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
@@ -49,7 +49,7 @@ Describe $Computername {
 
         It "[$Computername] Should be running Windows 10" {
             $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -Property version, caption } -Session $cl
-            $test.caption | Should BeLike "*Windows 10*"
+            $test.caption | Should BeLike '*Windows 10*'
         }
         It "[$Computername] Should have an IP address of $IP" {
             $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $cl
@@ -58,17 +58,17 @@ Describe $Computername {
 
         $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $cl
         It "[$Computername] Should have a DNS server configuration of $DNSAddress" {
-            $dns.ServerAddresses -contains $DNSAddress | Should Be "True"
+            $dns.ServerAddresses -contains $DNSAddress | Should Be 'True'
         }
 
         It "[$Computername] Should belong to the LAB Workgroup" {
             $wg = Invoke-Command { (Get-CimInstance -ClassName win32_computersystem) } -Session $cl
-            $wg.Workgroup | Should Be "Lab"
+            $wg.Workgroup | Should Be 'Lab'
         }
 
         It "[$Computername] Should have a local admin account for $env:username" {
             $local = Invoke-Command { Get-CimInstance -ClassName win32_useraccount -Filter "Name='$using:env:username'" } -Session $cl
-            $local.Accounttype | Should be 512
+            $local.AccountType | Should be 512
             $local.Name | Should Be $env:username
             # Write-Host ($local | Out-string) -ForegroundColor cyan
         }
@@ -81,11 +81,11 @@ Describe $Computername {
             # Write-Host ($admins | Out-string) -ForegroundColor cyan
         }
 
-        $pkg = Invoke-Command { $using:rsat | foreach-object {Get-WindowsCapability -Online -Name $_}} -Session $cl
-        $rsatstatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
-        It "[Win10] Should have RSAT installed [$rsatStatus]" {
-            # write-host ($pkg | Select-object Name,Displayname,State | format-list | Out-String) -ForegroundColor cyan
-            $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
+        $pkg = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
+        $RSATStatus = '{0}/{1}' -f ($pkg.where({ $_.state -eq 'installed' }).Name).count, $rsat.count
+        It "[Win10] Should have RSAT installed [$RSATStatus]" {
+            # write-host ($pkg | Select-object Name,DisplayName,State | format-list | Out-String) -ForegroundColor cyan
+            $pkg | Where-Object { $_.state -ne 'installed' } | Should be $Null
         }
     }
     Catch {

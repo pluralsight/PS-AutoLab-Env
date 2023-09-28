@@ -1,8 +1,8 @@
 Configuration AutoLab {
 
     param (
-        [Parameter()] 
-        [ValidateNotNull()] 
+        [Parameter()]
+        [ValidateNotNull()]
         [PSCredential] $Credential = (Get-Credential -Credential 'Administrator')
     )
 
@@ -14,7 +14,7 @@ Configuration AutoLab {
 
     node $AllNodes.Where({$true}).NodeName {
 #region LCM configuration
-        
+
         LocalConfigurationManager {
             RebootNodeIfNeeded   = $true
             AllowModuleOverwrite = $true
@@ -22,10 +22,10 @@ Configuration AutoLab {
         }
 
 #endregion
-  
-#region IPaddress settings 
 
- 
+#region IPaddress settings
+
+
     If (-not [System.String]::IsNullOrEmpty($node.IPAddress)) {
         xIPAddress 'PrimaryIPAddress' {
             IPAddress      = $node.IPAddress
@@ -34,7 +34,7 @@ Configuration AutoLab {
             AddressFamily  = $node.AddressFamily
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {     
+        If (-not [System.String]::IsNullOrEmpty($node.DefaultGateway)) {
             xDefaultGatewayAddress 'PrimaryDefaultGateway' {
                 InterfaceAlias = $node.InterfaceAlias
                 Address = $node.DefaultGateway
@@ -42,7 +42,7 @@ Configuration AutoLab {
             }
         }
 
-        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {                    
+        If (-not [System.String]::IsNullOrEmpty($node.DnsServerAddress)) {
             xDnsServerAddress 'PrimaryDNSClient' {
                 Address        = $node.DnsServerAddress
                 InterfaceAlias = $node.InterfaceAlias
@@ -57,11 +57,11 @@ Configuration AutoLab {
             }
         }
     } #End IF
-            
+
 #endregion
 
 #region Firewall Rules
-        
+
         xFirewall 'FPS-ICMP4-ERQ-In' {
             Name = 'FPS-ICMP4-ERQ-In'
             DisplayName = 'File and Printer Sharing (Echo Request - ICMPv4-In)'
@@ -92,17 +92,17 @@ Configuration AutoLab {
             Profile = 'Any'
         }
 #endregion
-                  
+
     } #end nodes ALL
 
 
 #region Server config
    node $AllNodes.Where({$_.Role -in 'Server'}).NodeName {
 
-        xComputer ComputerName { 
-            Name = $Node.NodeName 
-        } 
-        
+        xComputer ComputerName {
+            Name = $Node.NodeName
+        }
+
         foreach ($feature in @(
                 'web-Server'
                 #'GPMC',
@@ -116,7 +116,7 @@ Configuration AutoLab {
                 IncludeAllSubFeature = $False
             }
         }
-        
+
     }#end Server Config
 #endregion
 

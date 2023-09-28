@@ -289,7 +289,7 @@ First, you need the lab password to create a credential object.
 
 ```powershell
 $data = Import-PowerShellDataFile .\VMConfigurationData.psd1
-$pass = ConvertTo-SecureString -AsPlainText -String $data.allnodes.labpassword -force
+$pass = ConvertTo-SecureString -AsPlainText -String $data.AllNodes.LabPassword -force
 $cred = new-object PSCredential -ArgumentList administrator, $pass
 ```
 

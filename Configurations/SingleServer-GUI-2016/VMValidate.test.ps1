@@ -3,15 +3,15 @@
 #test if VM setup is complete
 
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
 $Domain = "S1"
 $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
 #The prefix only changes the name of the VM not the guest computername
-$prefix = $Labdata.NonNodeData.Lability.EnvironmentPrefix
+$prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
 $VMName = "$($prefix)S1"
 
-#set error action preference to suppress all error messsages which would be normal while configurations are converging
+#set error action preference to suppress all error messages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
     $ProgressPreference = "SilentlyContinue"
@@ -43,7 +43,7 @@ Describe S1 {
         }
 
         It "[S1] Should have an IP address of 192.168.3.75" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $S1
             $i.ipv4Address | Should be '192.168.3.75'
         }
 

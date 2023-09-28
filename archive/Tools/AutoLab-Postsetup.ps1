@@ -123,9 +123,9 @@ $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
 #split the collection so that $nodes are the invidual nodes and
-#$allnodes is the * setting that will apply to all computers
+#$AllNodes is the * setting that will apply to all computers
 
-$nodes,$allnodes =  $all.where({$_.computername -ne '*'}, "split")
+$nodes,$AllNodes =  $all.where({$_.computername -ne '*'}, "split")
 
 Foreach ($node in $nodes) {
   Write-Host "Running post-installation tasks for $($node.computername)" -ForegroundColor Yellow
@@ -144,7 +144,7 @@ Foreach ($node in $nodes) {
     Write-Host "   Copying $($set.source) to $($set.destination)" -ForegroundColor Cyan
     Copy-item -Path $set.source -Destination $set.Destination -Container -Recurse -ToSession $sess -Force
   }
-  foreach ($set in $allnodes.filecopy) {
+  foreach ($set in $AllNodes.filecopy) {
     Write-Host "   Copying $($set.source) to $($set.destination)" -ForegroundColor Cyan
     Copy-item -Path $set.source -Destination $set.Destination -Container -Recurse -ToSession $sess -Force
 
@@ -157,7 +157,7 @@ Foreach ($node in $nodes) {
     Invoke-Command { Start-Process -FilePath $using:app.path -ArgumentList $using:app.arguments} -session $sess
   }
 
-  foreach ($app in $allnodes.Install) {
+  foreach ($app in $AllNodes.Install) {
     $cmd = ("{0} {1}" -f $app.path,$app.arguments).Trim()
     Write-Host "   Invoking $cmd" -ForegroundColor Cyan
     Invoke-Command { Start-Process -FilePath $using:app.path -ArgumentList $using:app.arguments} -session $sess
@@ -169,7 +169,7 @@ Foreach ($node in $nodes) {
     Invoke-Command -ScriptBlock $sb -session $sess -HideComputerName
   }
 
-  foreach ($sb in $allnodes.psCommands) {
+  foreach ($sb in $AllNodes.psCommands) {
     Write-host "   $sb" -ForegroundColor Cyan
     Invoke-Command -ScriptBlock $sb -session $sess -HideComputerName
   }

@@ -6,7 +6,7 @@
 #The password will be passed by the control script WaitforVM.ps1
 #You can manually set it while developing this Pester test
 $LabData = Import-PowerShellDataFile -Path .\*.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force 
+$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
 $Domain = "company"
 $cred = New-Object PSCredential "Company\Administrator",$Secure
 
@@ -35,7 +35,7 @@ foreach ($item in $needed) {
 }
 
 It "[DC1] Should have an IP address of 192.168.3.10" {
-    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $dc
+    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $dc
     $i.ipv4Address | should be '192.168.3.10'
 }
 
@@ -69,11 +69,11 @@ It "[DC1] Should have at least 15 user accounts" {
 $computer = Invoke-Command { Get-ADComputer -filter * -ErrorAction SilentlyContinue} -session $dc
 It "[DC1] Should have a computer account for Client" {
     $computer.name -contains "cli1" | Should Be "True"
-} 
+}
 
 It "[DC1] Should have a computer account for S1" {
     $computer.name -contains "S1" | Should Be "True"
-} 
+}
 
 
 } #DC
@@ -85,12 +85,12 @@ It "[S1] Should accept domain admin credential" {
 }
 
 It "[S1] Should have an IP address of 192.168.3.50" {
-    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -Session $S1
+    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $S1
     $i.ipv4Address | should be '192.168.3.50'
 }
 $dns = icm {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
-It "[S1] Should have a DNS server configuration of 192.168.3.10" {                        
-  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
+It "[S1] Should have a DNS server configuration of 192.168.3.10" {
+  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
 }
 
 
@@ -99,7 +99,7 @@ It "[S1] Should have a DNS server configuration of 192.168.3.10" {
 
 Describe NanoServer {
 
-It "[Nano] Should respond to WSMan requests" { 
+It "[Nano] Should respond to WSMan requests" {
   $script:sess = New-PSSession -VMName N1 -Credential $Cred -ErrorAction Stop
   $script:sess.Computername | Should Be 'N1'
 }
@@ -131,13 +131,13 @@ It "[CLI] Should accept domain admin credential" {
 }
 
 It "[CLI] Should have an IP address of 192.168.3.100" {
-    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -interfacealias 'Ethernet' -AddressFamily IPv4} -session $cl
+    $i = Invoke-command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -session $cl
     $i.ipv4Address | should be '192.168.3.100'
 }
 
 $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
-It "[CLI] Should have a DNS server configuration of 192.168.3.10" {                        
-  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"           
+It "[CLI] Should have a DNS server configuration of 192.168.3.10" {
+  $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
 }
 
 } #client

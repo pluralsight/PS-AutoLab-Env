@@ -3,11 +3,11 @@
 #test if VM setup is complete
 
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-$Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
 $computername = "S12R2"
 $wgcred = New-Object PSCredential  "$computername\administrator", $secure
 
-#set error action preference to suppress all error messsages which would be normal while configurations are converging
+#set error action preference to suppress all error messages which would be normal while configurations are converging
 #turn off progress bars
 $prep = {
     $ProgressPreference = "SilentlyContinue"

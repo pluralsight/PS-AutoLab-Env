@@ -2,7 +2,7 @@
 Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-    $Secure = ConvertTo-SecureString -String "$($labdata.allnodes.labpassword)" -AsPlainText -Force
+    $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
     $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
@@ -29,7 +29,7 @@ Configuration AutoLab {
 
         registry TLS {
             Ensure = "present"
-            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' 
+            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
             ValueName = 'SchUseStrongCrypto'
             ValueData = '1'
             ValueType = 'DWord'
@@ -84,7 +84,7 @@ Configuration AutoLab {
         #region Firewall Rules
 
         $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
-        $FireWallRules = $labdata.Allnodes.FirewallRuleNames
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {
             xFirewall $Rule {
