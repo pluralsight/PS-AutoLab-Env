@@ -15,12 +15,12 @@ This example code is provided without copyright and AS IS.  It is free for you t
 
 Configuration AutoLab {
 
-    $LabData = Import-PowerShellDataFile -Path $PSScriptroot\*.psd1
+    $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-    $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
+    $credential = New-Object -typename PSCredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
-    Import-DSCresource -moduleName @{ModuleName = "PSDesiredStateConfiguration";ModuleVersion="1.1"},
+    Import-DSCresource -ModuleName @{ModuleName = "PSDesiredStateConfiguration";ModuleVersion="1.1"},
     @{ModuleName = 'xPSDesiredStateConfiguration'; ModuleVersion = '9.1.0'},
     @{ModuleName = 'xActiveDirectory'; ModuleVersion = '3.0.0.0'},
     @{ModuleName = 'xComputerManagement'; ModuleVersion = '4.1.0.0'},

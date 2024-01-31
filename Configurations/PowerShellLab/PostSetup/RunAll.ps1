@@ -129,8 +129,8 @@ Write-Host "[$(Get-Date -format T)] Stopping DOM1"
 Stop-VM DOM1 -AsJob | Wait-Job | Out-Null
 
 Write-Host "[$(Get-Date -format T)] Restarting all virtual machines"
-Start-VM SRV3,DOM1 -asjob | Wait-Job | Out-Null
-Start-VM SRV1,SRV2,Win10 -asjob | Out-Null
+Start-VM SRV3,DOM1 -AsJob | Wait-Job | Out-Null
+Start-VM SRV1,SRV2,Win10 -AsJob | Out-Null
 
 #clean up
 $all | Remove-PSSession

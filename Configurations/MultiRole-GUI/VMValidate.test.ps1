@@ -27,14 +27,14 @@ Describe DC1 {
         }
 
         $test = Invoke-Command {
-          Get-CimInstance -ClassName win32_operatingsystem -property caption, csname
+          Get-CimInstance -ClassName win32_OperatingSystem -property caption, csname
         } -session $dc
         It "[DC1] Should be running Windows Server 2019" {
             $test.caption | Should BeLike '*2019*'
         }
 
         It "[DC1] Should be running Server (with desktop)" {
-            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name installationtype} -session $dc | Should Be "Server"
+            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name InstallationType} -session $dc | Should Be "Server"
         }
 
         It "[DC1] Should accept domain admin credential" {
@@ -107,14 +107,14 @@ Describe S1 {
         $all += $s1
 
         $test = Invoke-Command {
-          Get-CimInstance -ClassName win32_operatingsystem -property caption, csname
+          Get-CimInstance -ClassName win32_OperatingSystem -property caption, csname
         } -session $s1
         It "[S1] Should be running Windows Server 2019" {
             $test.caption | Should BeLike '*2019*'
         }
 
         It "[S1] Should be running Server (with desktop)" {
-            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name installationtype} -session $s1 | Should Be "Server"
+            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name InstallationType} -session $s1 | Should Be "Server"
         }
         It "[S1] Should accept domain admin credential" {
             $s1.Count | Should Be 1

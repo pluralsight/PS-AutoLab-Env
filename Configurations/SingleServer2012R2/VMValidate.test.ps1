@@ -26,7 +26,7 @@ Describe $Computername {
             $S1.Computername | Should Be $Computername
         }
 
-        $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -property caption, csname } -session $s1
+        $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -property caption, csname } -session $s1
         It "[$Computername] Should be running Windows Server 2012 R2" {
             $test.caption | Should BeLike '*2012 R2*'
         }
@@ -34,7 +34,7 @@ Describe $Computername {
             $test.CSName | Should Be $computername
         }
         It "[$Computername] Should be running Server Core" {
-            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name installationtype} -session $s1 | Should Be "Server Core"
+            Invoke-Command {Get-ItemPropertyValue -path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -name InstallationType} -session $s1 | Should Be "Server Core"
         }
         It "[$Computername] Should have an IP address of 192.168.3.12" {
             $r = Invoke-Command { Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4} -session $S1

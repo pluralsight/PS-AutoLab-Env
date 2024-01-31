@@ -4,18 +4,18 @@ Configuration AutoLab {
 
 $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
 $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
+$credential = New-Object -typename PSCredential -ArgumentList Administrator, $secure
 
 #region DSC Resources
     Import-DSCresource -ModuleName "PSDesiredStateConfiguration" -ModuleVersion "1.1"
-    Import-DSCResource -modulename "xPSDesiredStateConfiguration" -ModuleVersion  "9.1.0"
-    Import-DSCResource -modulename "xActiveDirectory" -ModuleVersion  "3.0.0.0"
-    Import-DSCResource -modulename "xComputerManagement" -ModuleVersion  "4.1.0.0"
-    Import-DSCResource -modulename "xNetworking" -ModuleVersion  "5.7.0.0"
-    Import-DSCResource -modulename "xDhcpServer" -ModuleVersion  "3.0.0"
-    Import-DSCResource -modulename 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
-    Import-DSCResource -modulename 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
-    Import-DSCResource -modulename 'xDnsServer' -ModuleVersion  '1.16.0.0'
+    Import-DSCResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion  "9.1.0"
+    Import-DSCResource -ModuleName "xActiveDirectory" -ModuleVersion  "3.0.0.0"
+    Import-DSCResource -ModuleName "xComputerManagement" -ModuleVersion  "4.1.0.0"
+    Import-DSCResource -ModuleName "xNetworking" -ModuleVersion  "5.7.0.0"
+    Import-DSCResource -ModuleName "xDhcpServer" -ModuleVersion  "3.0.0"
+    Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
+    Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
+    Import-DSCResource -ModuleName 'xDnsServer' -ModuleVersion  '1.16.0.0'
 
 
 #endregion
@@ -81,7 +81,7 @@ registry TLS {
 
 #region Firewall Rules
 
-$LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
+$LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $FireWallRules = $LabData.AllNodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {

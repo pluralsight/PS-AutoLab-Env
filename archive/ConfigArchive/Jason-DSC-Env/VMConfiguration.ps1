@@ -16,7 +16,7 @@ Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile $PSScriptRoot\VMConfigurationData.psd1
     $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-    $credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
+    $credential = New-Object -typename PSCredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
     Import-DSCResource -ModuleName 'PSDesiredStateConfiguration' -ModuleVersion '1.1'
@@ -92,7 +92,7 @@ Configuration AutoLab {
     #region Firewall Rules
 
 
-        $LabData = Import-PowerShellDataFile -Path $psscriptroot\*.psd1
+        $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
         $FireWallRules = $LabData.AllNodes.FirewallRuleNames
 
         foreach ($Rule in $FireWallRules) {

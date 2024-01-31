@@ -151,7 +151,7 @@ Describe DOM1 {
         }
 
         It "[DOM1] Should be running Windows Server 2016" {
-            $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -Property caption } -Session $dc
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption } -Session $dc
             $test.caption | Should BeLike '*2016*'
         }
 
@@ -190,7 +190,7 @@ Describe SRV1 {
         }
 
         It "[SRV1] Should be running Windows Server 2016" {
-            $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -Property caption } -Session $srv1
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption } -Session $srv1
             $test.caption | Should BeLike '*2016*'
         }
 
@@ -243,7 +243,7 @@ Describe SRV2 {
         }
 
         It "[SRV2] Should be running Windows Server 2016" {
-            $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -Property caption } -Session $srv2
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption } -Session $srv2
             $test.caption | Should BeLike '*2016*'
         }
 
@@ -281,7 +281,7 @@ Describe SRV3 {
         }
 
         It "[SRV3] Should be running Windows Server 2019" {
-            $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -Property caption } -Session $srv3
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption } -Session $srv3
             $test.caption | Should BeLike '*2019*'
         }
 
@@ -323,7 +323,7 @@ Describe Win10 {
         }
 
         It "[WIN10] Should be running Windows 10 Enterprise" {
-            $test = Invoke-Command { Get-CimInstance -ClassName win32_operatingsystem -Property version, caption } -Session $cl
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property version, caption } -Session $cl
             $test.caption | Should BeLike "*Enterprise*"
         }
 

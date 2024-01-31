@@ -39,7 +39,7 @@ demonstrations and would need to be modified for your environment.
             Lability_ProcessorCount     = 1
             Lability_MinimumMemory      = 1GB
             SecureBoot                  = $false
-            Lability_Media              = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media              = 'WIN10_x64_Enterprise_22H2_EN_Eval'
 
         }
 
@@ -59,7 +59,7 @@ demonstrations and would need to be modified for your environment.
             Role                    = @('RSAT', 'RDP')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory  = 2GB
-            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_22H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()
@@ -87,9 +87,7 @@ demonstrations and would need to be modified for your environment.
                 @{ Name = 'xPendingReboot'; RequiredVersion = '0.4.0.0'; Provider = 'PSGallery' }
             )
             Resource    = @(
-                @{
-
-                }
+                @{ }
             )
         }
     }

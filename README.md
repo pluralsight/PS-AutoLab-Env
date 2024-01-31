@@ -106,7 +106,7 @@ Active                           : True
 The `Instructions.md` file in each configuration folder should provide an indication of what VMs will be created. You can also check the `VMConfigurationData.psd1` file.
 
 ```powershell
-PS C:\Autolab\Configurations\MultiRole\> (Import-PowerShellDataFile .\VMConfigurationData.psd1).AllNodes.Nodename
+PS C:\Autolab\Configurations\MultiRole\> (Import-PowerShellDataFile .\VMConfigurationData.psd1).AllNodes.NodeName
 *
 DC1
 S1
@@ -275,7 +275,7 @@ PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 Assuming you don't need to install a newer version of `nuget`, you can leave the setup alone. It will run all of the manual steps for you. Beginning in version `4.3.0` you also have the option to run the unattend process in a PowerShell background job.
 
 ```powershell
-PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -asjob
+PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -AsJob
 ```
 
 Use the PowerShell job cmdlets to manage.

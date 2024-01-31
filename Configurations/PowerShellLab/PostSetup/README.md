@@ -13,7 +13,7 @@ vmconnect localhost Win10
 Use this script to download the SysInternals suite from Microsoft. All of the files will be stored in a new folder, `C:\Sysinternals`. It is assumed you will only need to run this for the client virtual machine.
 
 ```powerShell
-.\Install-SysInternals -vmname win10 -credential company\administrator
+.\Install-SysInternals -VMName win10 -credential company\administrator
 ```
 
 If you already have an existing PSSession to the virtual machine you can use that instead:
@@ -37,7 +37,7 @@ If you already have an existing PSSession to the virtual machine you can use tha
 This script will download and install the current version of Visual Studio Code. The file will be saved to the root of C:\. It is assumed you will run this for the client virtual machine.
 
 ```powershell
-.\Install-VSCode -vmname win10 -credential company\aprils
+.\Install-VSCode -VMName win10 -credential company\aprils
 ```
 
 If you already have an existing PSSession to the virtual machine you can use that of the VMName and credential.

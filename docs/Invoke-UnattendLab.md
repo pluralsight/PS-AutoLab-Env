@@ -46,7 +46,7 @@ Follow any on-screen instructions or prompts.
 ### Example 2
 
 ```powershell
-PS C:\Autolab\Configurations\MultiRole> Unattend-Lab -asJob
+PS C:\Autolab\Configurations\MultiRole> Unattend-Lab -AsJob
 ```
 
 Run the setup unattended in a background job.

@@ -7,24 +7,29 @@ Function _PesterCheck {
     [CmdletBinding(SupportsShouldProcess)]
     Param()
 
-    $currentPester = Get-Module -fullyqualifiedname @{ModuleName = "Pester"; ModuleVersion = "$pesterVersion"} -ListAvailable
+    #1/31/2024 Revised to check for the latest version of Pester
+    $currentPester = Get-Module Pester -ListAvailable | Where-Object  version -ge $PesterVersion
+    #Get-Module -FullyQualifiedName @{ModuleName = "Pester"; ModuleVersion = "$pesterVersion"} -ListAvailable
     if (-not $CurrentPester) {
-        Update-Module -Name Pester -RequiredVersion $PesterVersion -Force -skipPublishercheck
+        #Update-Module -Name Pester -RequiredVersion $PesterVersion -Force -SkipPublisherCheck
+        #Install the latest version of Pester
+        Update-Module -Name Pester -Force -SkipPublisherCheck
     }
     else {
-        Write-Host "Pester version $PesterVersion verified" -ForegroundColor green
+        Write-Host "Pester verified" -ForegroundColor green
     }
 
-    Import-Module -name Pester -RequiredVersion $PesterVersion -Force -Global
+    #Import-Module -name Pester -RequiredVersion $PesterVersion -Force -Global
+    Import-Module -name Pester -Force -Global
 }
 
 Function _LabilityCheck {
-    [cmdletbinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess)]
     Param(
         [Parameter(Position = 0, Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$RequiredVersion,
-        [switch]$SkipPublisherCheck
+        [String]$RequiredVersion,
+        [Switch]$SkipPublisherCheck
     )
 
     $LabilityMod = Get-Module -Name Lability -ListAvailable | Sort-Object Version -Descending
@@ -36,7 +41,7 @@ Function _LabilityCheck {
     $PSBoundParameters | Out-String | Write-Verbose
     if (-Not $LabilityMod) {
         Write-Host -ForegroundColor Cyan "Installing Lability module version $requiredVersion"
-        Install-Module @PSBoundparameters #-Name Lability -RequiredVersion $requiredVersion -Force
+        Install-Module @PSBoundParameters #-Name Lability -RequiredVersion $requiredVersion -Force
     }
     elseif ($LabilityMod[0].Version.ToString() -eq $requiredVersion) {
         Write-Host "Version $requiredVersion of Lability is already installed" -ForegroundColor Cyan
@@ -63,7 +68,7 @@ Function _LabilityCheck {
 } #end function
 
 Function Invoke-WUUpdate {
-    [cmdletbinding(DefaultParameterSetName = "computer")]
+    [CmdletBinding(DefaultParameterSetName = "computer")]
 
     Param(
         [Parameter(Position = 0, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "computer")]
@@ -71,19 +76,19 @@ Function Invoke-WUUpdate {
         [string[]]$Computername,
         [Parameter(Position = 0, ParameterSetName = "VM")]
         [string[]]$VMName,
-        [ValidateNotNullorEmpty()]
-        [pscredential]$Credential,
-        [switch]$AsJob
+        [ValidateNotNullOrEmpty()]
+        [PSCredential]$Credential,
+        [Switch]$AsJob
     )
 
     Begin {
-        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.MyCommand)"
 
         $all = @()
 
         #this is a nested function to deploy remotely
         Function WUUpdate {
-            [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName = "Computer")]
+            [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = "Computer")]
             Param(
                 [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = "Computer")]
                 [ValidateNotNullOrEmpty()]
@@ -91,7 +96,7 @@ Function Invoke-WUUpdate {
 
             )
             Begin {
-                Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+                Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.MyCommand)"
                 $ns = "ROOT/Microsoft/Windows/WindowsUpdate"
             } #begin
 
@@ -103,13 +108,13 @@ Function Invoke-WUUpdate {
                     $class = 'MSFT_WUOperations'
                     $scanArgs = @{SearchCriteria = "IsInstalled=0" }
 
-                    #always scan even if the function is run with -whatif
+                    #always scan even if the function is run with -WhatIf
                     Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cyan
                     $scan = Invoke-CimMethod -Namespace $ns -ClassName $class -MethodName 'ScanForUpdates' -Arguments $scanArgs -WhatIf:$false -ErrorAction Stop
 
                     Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
                     if ($scan.Updates.count -gt 0) {
-                        if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Install Updates" )) {
+                        if ($PSCmdlet.ShouldProcess("$($scan.updates.count) updates", "Install Updates" )) {
                             [void](Invoke-CimMethod -Namespace $ns -ClassName MSFT_WUOperations -MethodName InstallUpdates -Arguments @{Updates = $scan.updates })
                         }
                     }
@@ -119,14 +124,14 @@ Function Invoke-WUUpdate {
                     #Write-Host "Failed to find MSFT_WUOperations on $env:computername" -ForegroundColor yellow
                     $class = 'MSFT_WUOperationsSession'
                     $scanArgs = @{OnlineScan = $True; SearchCriteria = "IsInstalled=0" }
-                    $ci = New-CimInstance -Namespace $ns -ClassName $class -Whatif:$False
+                    $ci = New-CimInstance -Namespace $ns -ClassName $class -WhatIf:$False
 
                     Write-Host "[$(Get-Date)] Scanning for updates to install on $($env:computername)" -ForegroundColor Cyan
-                    $scan = $ci | Invoke-CimMethod -MethodName 'ScanForUpdates' -Arguments $scanArgs -whatif:$False
+                    $scan = $ci | Invoke-CimMethod -MethodName 'ScanForUpdates' -Arguments $scanArgs -WhatIf:$False
 
                     Write-Host "[$(Get-Date)] Found $($scan.updates.count) updates to install on $($env:computername)" -ForegroundColor Cyan
                     if ($scan.Updates.count -gt 0) {
-                        if ($pscmdlet.ShouldProcess("$($scan.updates.count) updates", "Apply Updates" )) {
+                        if ($PSCmdlet.ShouldProcess("$($scan.updates.count) updates", "Apply Updates" )) {
                             [void]($ci | Invoke-CimMethod -MethodName applyApplicableUpdates )
                         }
                     }
@@ -150,7 +155,7 @@ Function Invoke-WUUpdate {
             } #process
 
             End {
-                Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+                Write-Verbose "[END    ] Ending: $($MyInvocation.MyCommand)"
             } #end
         } #end nested function
 
@@ -176,11 +181,11 @@ Function Invoke-WUUpdate {
             [void]$PSBoundParameters.remove("AsJob")
         }
 
-        #write-Verbose ($PSBoundParameters | Out-String)
+        #Write-Verbose ($PSBoundParameters | Out-String)
 
         Try {
             Write-Verbose "[PROCESS] Creating PSSessions"
-            $sess = New-PSSession @psboundParameters -ErrorAction stop
+            $sess = New-PSSession @PSBoundParameters -ErrorAction stop
             Write-Verbose "[PROCESS] Copy the function to the remote computer"
             [void](Invoke-Command -ScriptBlock { New-Item -Path Function:WUUpdate -Value $using:fun -force } -Session $sess)
 
@@ -202,7 +207,7 @@ Function Invoke-WUUpdate {
 
     } #process
     End {
-        Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+        Write-Verbose "[END    ] Ending: $($MyInvocation.MyCommand)"
     } #end
 
 }

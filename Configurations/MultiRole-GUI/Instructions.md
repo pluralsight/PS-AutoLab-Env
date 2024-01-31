@@ -62,7 +62,7 @@ The lab builds the following:
 
     Because this may take some time to run, you can also run it as a background job.
 
-    PS> Update-Lab -asjob
+    PS> Update-Lab -AsJob
 
 ## To remove a lab
 

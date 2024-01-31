@@ -81,7 +81,7 @@ PS> Update-Lab
 Because this may take some time to run, you can also run it as a background job.
 
 ```powershell
-PS> Update-Lab -asjob
+PS> Update-Lab -AsJob
 ```
 
 ## To remove a lab

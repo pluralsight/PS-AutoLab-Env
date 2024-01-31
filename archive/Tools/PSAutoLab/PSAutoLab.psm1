@@ -234,7 +234,7 @@ Function Invoke-SetupLab {
         When complete, run:
         Run-Lab
 
-        Run the following to validatae when configurations have converged:
+        Run the following to validate when configurations have converged:
         Validate-Lab
 
         To enable Internet access for the VM's, run:
@@ -287,7 +287,7 @@ Function Invoke-RunLab {
 
         Next Steps:
 
-        Run the following to validatae when configurations have converged:
+        Run the following to validate when configurations have converged:
         Validate-Lab
 
         To enable Internet access for the VM's, run:

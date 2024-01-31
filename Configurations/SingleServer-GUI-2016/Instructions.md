@@ -8,7 +8,7 @@ This lab builds the following:
     IPAddress    : 192.168.3.75
     MemoryGB     : 4
 
-Use this for the `Implementing Active Directory Certificate Services in Windows Server 2016`
+Use this for the `Implementing Active Directory Certificate Services in Windows Server 2016` course from Pluralsight
 
 ## To get started
 
@@ -50,7 +50,7 @@ Use this for the `Implementing Active Directory Certificate Services in Windows 
 
     Because this may take some time to run, you can also run it as a background job.
 
-    PS> Update-Lab -asjob
+    PS> Update-Lab -AsJob
 
 ## To remove a lab
 

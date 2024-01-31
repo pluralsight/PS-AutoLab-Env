@@ -55,7 +55,7 @@ if ($l) {
 
 #endregion
 
-[version]$thisVersion = (Test-ModuleManifest -path $psscriptroot\psautolab.psd1).version
+[version]$thisVersion = (Test-ModuleManifest -path $PSScriptRoot\psautolab.psd1).version
 [void]($job | Wait-Job)
 [version]$onlineVersion = ($job | Receive-Job).version
 

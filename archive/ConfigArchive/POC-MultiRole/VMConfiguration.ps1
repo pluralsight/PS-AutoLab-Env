@@ -20,7 +20,7 @@ Configuration AutoLab {
 
 $LabData = Import-PowerShellDataFile -Path .\*.psd1
 $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-$credential = New-Object -typename Pscredential -ArgumentList Administrator, $secure
+$credential = New-Object -typename PSCredential -ArgumentList Administrator, $secure
 
 #region DSC Resources
     Import-DSCresource -ModuleName PSDesiredStateConfiguration,

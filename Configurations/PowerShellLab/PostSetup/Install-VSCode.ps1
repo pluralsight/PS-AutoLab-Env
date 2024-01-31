@@ -9,7 +9,7 @@ Param(
     [string]$VMName,
     [Parameter(Mandatory, ParameterSetName = 'VM')]
     #Specify the user credential
-    [pscredential]$Credential,
+    [PSCredential]$Credential,
     [Parameter(Mandatory, ParameterSetName = "session")]
     #specify an existing PSSession object
     [System.Management.Automation.Runspaces.PSSession]$Session

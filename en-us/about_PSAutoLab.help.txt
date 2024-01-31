@@ -226,7 +226,7 @@ CUSTOMIZING CONFIGURATIONS
     folder under AutoLab\Configurations.Technically, you can put the
     configuration folder anywhere but it is easier if all of your configurations
     are in one location.
-    
+
     Once the files have been copied, use your script editor to modify the files.
     Don't forget to update the Pester test. Keep the same file names.
 

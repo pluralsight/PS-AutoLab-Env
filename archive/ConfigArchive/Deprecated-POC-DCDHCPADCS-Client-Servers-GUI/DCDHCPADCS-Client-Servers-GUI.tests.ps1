@@ -8,9 +8,9 @@ $DomainDN = "DC=company,DC=pri"
 
 Describe "Test DC server for installation completeness" {
     Context "Windows Features for ADDS Installed" {
-        
+
         It "Should have DNS installed" {
-            $Result = (get-windowsFeature -name DNS -ComputerName $server).InstallState 
+            $Result = (get-windowsFeature -name DNS -ComputerName $server).InstallState
             $Result | should be 'Installed'
             }
 
@@ -38,19 +38,19 @@ Describe "Test DC server for installation completeness" {
             $Result = (get-windowsFeature -name RSAT-AD-Powershell -ComputerName $server).InstallState
             $Result | should be 'Installed'
             }
-    
+
         It "Should have RSAT AD AdminCenter installed" {
             $Result = (get-windowsFeature -name RSAT-AD-AdminCenter -ComputerName $server).InstallState
             $Result | should be 'Installed'
             }
-        
+
         It "Should have RSAT ADDS Tools installed" {
             $Result = (get-windowsFeature -name RSAT-ADDS-Tools -ComputerName $server).InstallState
             $Result | should be 'Installed'
             }
 
         } # Context WindowsFeatures
-    
+
     Context "Active Directory object existence" {
 
         It "Created AD OU named IT" {
@@ -60,7 +60,7 @@ Describe "Test DC server for installation completeness" {
         It "Created AD OU named Dev" {
             {Get-ADOrganizationalUnit -Identity "OU=Dev,DC=Company,DC=pri"} | should not Throw
             }
-    
+
         It "Created AD OU named Marketing" {
             {Get-ADOrganizationalUnit -Identity "OU=Marketing,DC=Company,DC=pri"} | should not Throw
             }
@@ -68,7 +68,7 @@ Describe "Test DC server for installation completeness" {
         It "Created AD OU named Sales" {
             {Get-ADOrganizationalUnit -Identity "OU=Sales,DC=Company,DC=pri"} | should not Throw
             }
-    
+
         It "Created AD OU named Accounting" {
             {Get-ADOrganizationalUnit -Identity "OU=Accounting,DC=Company,DC=pri"} | should not Throw
             }
@@ -112,7 +112,7 @@ Describe "Test DC server for installation completeness" {
         It "Created AD User SonyaS" {
             {Get-ADUser -Identity SonyaS} | should not Throw
             }
-        
+
         It "Created AD User SamanthaS" {
             {Get-ADUser -Identity SamanthaS} | should not Throw
             }
@@ -132,7 +132,7 @@ Describe "Test DC server for installation completeness" {
         It "Created AD User JimJ" {
             {Get-ADUser -Identity JimJ} | should not Throw
             }
-    
+
         It "Created AD User JillJ" {
             {Get-ADUser -Identity JillJ} | should not Throw
             }
@@ -144,7 +144,7 @@ Describe "Test DC server for installation completeness" {
         It "Created AD Computer Client" {
             {Get-ADComputer -Identity Client} | should not Throw
             }
-    
+
         It "Created AD Group IT" {
             {Get-ADGroup -Identity IT} | should not Throw
             }
@@ -191,20 +191,20 @@ Describe "Test DC server for installation completeness" {
             }
 
         It "Should have DHCP Management Tools Installed" {
-            $Result = (get-windowsFeature -name RSAT-DHCP -computerName $Server).InstallState 
+            $Result = (get-windowsFeature -name RSAT-DHCP -computerName $Server).InstallState
             $Result | should be 'Installed'
             }
     }
 
     Context "DHCP Settings" {
-    
+
     It "Should have DHCP authorized in AD" {
         {get-DHCPServerInDC} | should not Throw
         {get-DHCPServerInDC} | should not be NullOrEmpty
         }
-       
+
     It "Should have a DHCP Scope" {
-        {get-DHCPServerv4Scope -ComputerName $Server} | should not Throw 
+        {get-DHCPServerv4Scope -ComputerName $Server} | should not Throw
         }
 
     It "Should have a Router Value" {
@@ -218,7 +218,7 @@ Describe "Test DC server for installation completeness" {
     }
 
     Context "Windows Features for ADCS Installed" {
-        
+
         It "Should have ADCS Installed" {
             $Result = (get-WindowsFeature -Name ADCS-Cert-Authority -ComputerName $server).InstallState
             $Result | should be 'Installed'
@@ -230,7 +230,7 @@ Describe "Test DC server for installation completeness" {
             }
 
         It "Should have Certificate Enrollment Web Service binaries installed" {
-            $Result = (get-WindowsFeature -Name ADCS-Enroll-Web-Svc -ComputerName $server).InstallState 
+            $Result = (get-WindowsFeature -Name ADCS-Enroll-Web-Svc -ComputerName $server).InstallState
             $Result | should be "Installed"
             }
 
@@ -247,23 +247,23 @@ Describe "Test DC server for installation completeness" {
         It "Should have the RSAT-ADCS-Mgmt Installed" {
             $Result = (get-WindowsFeature -Name RSAT-ADCS-Mgmt -ComputerName $server).InstallState
             $Result | should be "Installed"
-            }   
+            }
 
-        }  
-        
+        }
+
     Context "ADCS Configuration" {
-        
+
         It "Should have one Certification Authority in Active Directory" {
             $Result = get-adobject -filter * -SearchBase "CN=Certification Authorities,CN=Public Key Services,CN=Services,CN=Configuration,DC=Company,DC=Pri" -SearchScope OneLevel
             ($Result.DistinguishedName).count | should BeExactly 1
             }
-    }        
-    
+    }
+
     Context "GPO for Autoenrollment" {
-        
+
         It "Should have a GPO named PKI AutoEnroll" {
             {get-GPO -name "PKI AutoEnroll"} | should not Throw
-            } 
+            }
 
         It "Should have an autoenrollment registry value set to 7" {
             $Result = (Get-GPRegistryValue -name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "AEPolicy").Value
@@ -279,7 +279,7 @@ Describe "Test DC server for installation completeness" {
             $Result = (Get-GPRegistryValue -Name "PKI AutoEnroll" -Key "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\AutoEnrollment" -ValueName "OfflineExpirationStoreNames").Value
             $Result | Should Be "My"
             }
-   
+
         It "Should have the PKI Autoenrollment GPO linked to the root" {
             $GPLink = (get-gpo -Name "PKI AutoEnroll" -Domain $Domain).ID
             $GPLinks = (Get-GPInheritance -Domain $Domain -Target $DomainDN).gpolinks | Where-Object {$_.GpoID -like "*$GPLink*"}
@@ -293,7 +293,7 @@ Describe "Test DC server for installation completeness" {
             }
     }
     Context "Certificate Templates" {
-        
+
         It "Should have a template available in AD named WebServer2" {
             {get-ADObject -Identity "CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=company,DC=pri"} | should not Throw
             }
@@ -312,5 +312,5 @@ Describe "Test DC server for installation completeness" {
             $tmpl | should not BeNullOrEmpty
             }
     }
-               
+
 }

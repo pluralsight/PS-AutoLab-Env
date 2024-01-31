@@ -1692,7 +1692,7 @@ This process will not remove any configurations that have been deleted from the 
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\Autolab\Configurations\MultiRole&gt; Unattend-Lab -asJob</dev:code>
+        <dev:code>PS C:\Autolab\Configurations\MultiRole&gt; Unattend-Lab -AsJob</dev:code>
         <dev:remarks>
           <maml:para>Run the setup unattended in a background job.</maml:para>
         </dev:remarks>

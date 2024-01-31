@@ -3,7 +3,7 @@
 This lab builds the following:
 
     Computername : Win10Ent
-    Description  : Windows 10 64bit Enterprise 2109/21H2 English Evaluation
+    Description  : Windows 10 64-bit Enterprise 2209/22H2 English Evaluation
     Role         : {RSAT, RDP}
     IPAddress    : 192.168.3.101
     MemoryGB     : 2
@@ -50,7 +50,7 @@ It will also create a local user account with a password of `P@ssw0rd` using sam
 
     Because this may take some time to run, you can also run it as a background job.
 
-    PS> Update-Lab -asjob
+    PS> Update-Lab -AsJob
 
 ## To remove a lab
 
