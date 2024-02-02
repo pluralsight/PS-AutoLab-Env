@@ -4,25 +4,25 @@ This lab builds the following:
 
     Computername : DOM1
     Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-    Role         : {DC, DHCP, ADCS}
+    Role         : {DC, DHCP, ADCS,RDP}
     IPAddress    : 192.168.3.10
     MemoryGB     : 2
 
     Computername : SRV1
     Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-    Role         : {DomainJoin}
+    Role         : {DomainJoin,RDP
     IPAddress    : 192.168.3.50
     MemoryGB     : 1
 
     Computername : SRV2
     Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-    Role         : {DomainJoin, Web}
+    Role         : {DomainJoin, Web,RDP}
     IPAddress    : 192.168.3.51
     MemoryGB     : 1
 
     Computername : SRV3
     Description  : Windows Server 2019 Standard 64bit English Evaluation
-    Role         :
+    Role         : {RDP}
     IPAddress    : 192.168.3.60
     MemoryGB     : 1
 

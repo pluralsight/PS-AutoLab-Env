@@ -96,11 +96,11 @@ This example code is provided without copyright and AS IS.  It is free for you t
         @{
             NodeName                = 'DOM1'
             IPAddress               = '192.168.3.10'
-            Role                    = @('DC', 'DHCP', 'ADCS')
+            Role                    = @('DC', 'DHCP', 'ADCS','RDP')
             Lability_BootOrder      = 10
             Lability_BootDelay      = 60 # Number of seconds to delay before others
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media          = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media          = '2019_x64_Standard_EN_Core_Eval'
             Lability_StartupMemory  = 2GB
             Lability_ProcessorCount = 2
             CustomBootStrap         = @'
@@ -113,29 +113,30 @@ This example code is provided without copyright and AS IS.  It is free for you t
             NodeName               = 'SRV1'
             IPAddress              = '192.168.3.50'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role                   = @('DomainJoin')
+            Role                   = @('DomainJoin','RDP')
             Lability_BootOrder     = 20
             Lability_StartupMemory = 1GB
             Lability_timeZone      = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media         = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media         = '2019_x64_Standard_EN_Core_Eval'
         },
 
         @{
             NodeName               = 'SRV2'
             IPAddress              = '192.168.3.51'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role                   = @('DomainJoin', 'Web')
+            Role                   = @('DomainJoin', 'Web','RDP')
             Lability_StartupMemory = 1GB
             Lability_BootOrder     = 20
             Lability_timeZone      = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Media         = '2016_x64_Standard_Core_EN_Eval'
+            Lability_Media         = '2019_x64_Standard_EN_Core_Eval'
         },
 
         @{
             NodeName                = 'SRV3'
             IPAddress               = '192.168.3.60'
+            Role                   = @('RDP')
             Lability_BootOrder      = 20
-            Lability_Media          = '2019_x64_Standard_EN_Core_Eval'
+            Lability_Media          = '2022_x64_Standard_EN_Core_Eval'
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_ProcessorCount = 1
             Lability_StartupMemory  = 1GB
@@ -148,7 +149,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_ProcessorCount = 2
             Lability_StartupMemory  = 4GB
             Lability_MinimumMemory  = 4GB
-            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_22H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()
@@ -172,12 +173,12 @@ This example code is provided without copyright and AS IS.  It is free for you t
                 ## Download published version from the PowerShell Gallery or Github
                 @{ Name = 'xActiveDirectory'; RequiredVersion = "3.0.0.0"; Provider = 'PSGallery' },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xDhcpServer'; RequiredVersion = '3.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xDhcpServer'; RequiredVersion = '3.1.1'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery' },
-                @{ Name = 'ComputerManagementDSC'; RequiredVersion = '8.5.0'; Provider = 'PSGallery' },
+                @{ Name = 'ComputerManagementDSC'; RequiredVersion = '9.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery' },
-                @{ Name = 'xWebAdministration'; RequiredVersion = '3.1.1'; Provider = 'PSGallery' }
+                @{ Name = 'xDnsServer'; RequiredVersion = "2.0.0"; Provider = 'PSGallery' },
+                @{ Name = 'xWebAdministration'; RequiredVersion = '3.3.0'; Provider = 'PSGallery' }
             )
             Resource    = @(
                 @{

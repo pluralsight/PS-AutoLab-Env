@@ -37,16 +37,17 @@ Describe $Node {
                 $errorActionPreference = 'SilentlyContinue'
             }
 
-            $S1 = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-            Invoke-Command $prep -Session $S1
+            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+            Invoke-Command $prep -Session $VMSess
 
-            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $S1
-            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $S1
-            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $S1
-            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $S1
-            $installType = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -Name InstallationType } -Session $S1
-            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $S1
-            $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $S1
+            $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+            $installType = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -Name InstallationType } -Session $VMSess
+            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+            $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $VMSess
+            $rdpTest= Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections} -Session $VMSess
         }
         catch {
         <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
@@ -55,16 +56,16 @@ Describe $Node {
         }
     }
     AfterAll {
-        if ($S1) {
-            $S1 | Remove-PSSession
+        if ($VMSess) {
+            $VMSess | Remove-PSSession
         }
     }
     It "[$Node] Should accept administrator credential"{
-        $S1.State | Should -Be 'Opened'
+        $VMSess.State | Should -Be 'Opened'
     }
 
     It "[$Node] Should respond to WSMan requests" {
-        $S1.Computername | Should -Be $VMName
+        $VMSess.Computername | Should -Be $VMName
     }
 
     It "[$Node] Should Belong to a Workgroup" {
@@ -91,7 +92,9 @@ Describe $Node {
     It "[$Node] Should Be able to resolve an Internet address" {
         $resolve.name | Should -Be 'www.pluralsight.com'
     }
-
+    It "[$Node] Should have RDP for admin access enabled" {
+        $rdpTest | Should -Be 0
+    }
     It "[$Node] Should not have PowerShell 2 installed" {
         $PS2Test | Should -Be $False
     }

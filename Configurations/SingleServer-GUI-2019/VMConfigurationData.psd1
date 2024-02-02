@@ -41,7 +41,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_ProcessorCount     = 2
             Lability_MinimumMemory      = 2GB
             SecureBoot                  = $false
-            Lability_Media              = '2019_x64_Standard_EN_Eval' # Can be Core,Win10,2012R2,nano
+            Lability_Media              = '2019_x64_Standard_EN_Eval'
 
         }
 

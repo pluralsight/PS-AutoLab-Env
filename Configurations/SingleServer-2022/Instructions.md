@@ -3,8 +3,8 @@
 This lab builds the following:
 
     Computername : SERVER1
-    Description  : indows Server 2022 Standard 64bit English Evaluation
-    Role         :
+    Description  : Windows Server 2022 Standard 64bit English Evaluation
+    Role         : RDP
     IPAddress    : 192.168.3.22
     MemoryGB     : 2
 

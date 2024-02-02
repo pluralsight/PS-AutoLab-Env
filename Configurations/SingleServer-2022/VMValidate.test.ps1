@@ -3,10 +3,9 @@
 #test if VM setup is complete
 #revised for Pester 5.x
 
-#test if VM setup is complete
 BeforeDiscovery {
     #Write-Host "Pester Test development v2.0.0" -ForegroundColor Yellow
-    $Node = "S1"
+    $Node = "SERVER1"
     $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $Computername = $LabData.AllNodes[1].NodeName
     $Domain = $Computername
@@ -48,9 +47,11 @@ Describe $Node {
             $installType = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -Name InstallationType } -Session $VMSess
             $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
             $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $VMSess
+            $rdpTest= Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections} -Session $VMSess
         }
         catch {
-        <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
+            <#
+                It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
                 $false | Should -Be $True
             } #>
         }
@@ -87,6 +88,10 @@ Describe $Node {
 
     It "[$Node] Should have a DNS server configuration of <Address>" -ForEach $DNSTest {
         $dns.ServerAddresses -contains $Address | Should -Be 'True'
+    }
+
+    It "[$Node] Should have RDP for admin access enabled" {
+        $rdpTest | Should -Be 0
     }
 
     It "[$Node] Should Be able to resolve an Internet address" {

@@ -16,19 +16,19 @@ Configuration AutoLab {
 
     $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
     $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-    $credential = New-Object -typename PSCredential -ArgumentList Administrator, $secure
+    $credential = New-Object -TypeName PSCredential -ArgumentList Administrator, $secure
 
     #region DSC Resources
-    Import-DSCresource -ModuleName @{ModuleName = "PSDesiredStateConfiguration";ModuleVersion="1.1"},
-    @{ModuleName = "xPSDesiredStateConfiguration"; ModuleVersion = "9.1.0"},
-    @{ModuleName = "xComputerManagement"; ModuleVersion = "4.1.0.0"},
-    @{ModuleName = "xNetworking"; ModuleVersion = "5.7.0.0"},
-    @{ModuleName = 'xWindowsUpdate'; ModuleVersion = '2.8.0.0'},
-    @{ModuleName = 'ComputerManagementDSC'; ModuleVersion = '8.5.0'}
+    Import-DSCResource -ModuleName @{ModuleName = 'PSDesiredStateConfiguration'; ModuleVersion = '1.1' }
+    Import-DSCResource -ModuleName @{ModuleName = 'xPSDesiredStateConfiguration'; ModuleVersion = '9.1.0' }
+    Import-DSCResource -ModuleName @{ModuleName = 'xComputerManagement'; ModuleVersion = '4.1.0.0' }
+    Import-DSCResource -ModuleName @{ModuleName = 'xNetworking'; ModuleVersion = '5.7.0.0' }
+    Import-DSCResource -ModuleName @{ModuleName = 'xWindowsUpdate'; ModuleVersion = '2.8.0.0' }
+    Import-DSCResource -ModuleName @{ModuleName = 'ComputerManagementDSC'; ModuleVersion = '9.0.0' }
 
     #endregion
     #region All Nodes
-    node $AllNodes.Where({$true}).NodeName {
+    node $AllNodes.Where({ $true }).NodeName {
         #endregion
         #region LCM configuration
 
@@ -43,8 +43,8 @@ Configuration AutoLab {
         #region TLS Settings in registry
 
         registry TLS {
-            Ensure = "present"
-            Key =  'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
+            Ensure    = 'present'
+            Key       = 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319'
             ValueName = 'SchUseStrongCrypto'
             ValueData = '1'
             ValueType = 'DWord'
@@ -55,7 +55,7 @@ Configuration AutoLab {
         #region Remove PowerShell v2
 
         WindowsFeature PS2 {
-            Name = 'PowerShell-V2'
+            Name   = 'PowerShell-V2'
             Ensure = 'Absent'
         }
 
@@ -111,16 +111,15 @@ Configuration AutoLab {
     } #end Firewall Rules
     #endregion
 
-
     #region RSAT config
-    node $AllNodes.Where( {$_.Role -eq 'RSAT'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'RSAT' }).NodeName {
         # Adds RSAT
 
         xHotfix RSAT {
             Id         = 'KB2693643'
             Path       = 'c:\Resources\WindowsTH-RSAT_WS2016-x64.msu'
             Credential = $DomainCredential
-            DependsOn  = '[xcomputer]JoinDC'
+            DependsOn  = '[xComputer]JoinDC'
             Ensure     = 'Present'
         }
 
@@ -133,11 +132,11 @@ Configuration AutoLab {
     }#end RSAT Config
 
     #region RDP config
-    node $AllNodes.Where( {$_.Role -eq 'RDP'}).NodeName {
+    node $AllNodes.Where( { $_.Role -eq 'RDP' }).NodeName {
         # Adds RDP support and opens Firewall rules
 
         Registry RDP {
-            Key       = 'HKLM:\System\ControlSet001\Control\Terminal Server'
+            Key       = 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
             ValueName = 'fDenyTSConnections'
             ValueType = 'Dword'
             ValueData = '0'

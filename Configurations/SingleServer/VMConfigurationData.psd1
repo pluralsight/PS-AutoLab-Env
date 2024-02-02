@@ -65,6 +65,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
         @{
             NodeName                = 'S1'
             IPAddress               = '192.168.3.19'
+            Role                   = @('RDP')
             Lability_BootOrder      = 20
             Lability_Media          = '2019_x64_Standard_EN_Core_Eval'
             Lability_ProcessorCount = 1

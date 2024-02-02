@@ -21,7 +21,7 @@ Function Invoke-UnattendLab {
         Param([String]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [String]$VerboseAction)
 
         #uncomment for testing and development
-        #import-module C:\scripts\psautolab\PSAutoLab.psd1 -force
+        #Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
 
         $VerbosePreference = $VerboseAction
         if ($VerboseAction -eq "Continue") {
@@ -91,7 +91,7 @@ Function Invoke-UnattendLab {
         Scriptblock  = $sb
     }
 
-    if ($asjob) {
+    if ($AsJob) {
         $icmParams.Add("AsJob", $True)
     }
     Write-Verbose "Invoking command with these parameters"

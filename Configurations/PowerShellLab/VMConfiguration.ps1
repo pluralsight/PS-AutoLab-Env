@@ -23,11 +23,11 @@ Configuration AutoLab {
     Import-DSCResource -ModuleName "xPSDesiredStateConfiguration" -ModuleVersion  "9.1.0"
     Import-DSCResource -ModuleName "xActiveDirectory" -ModuleVersion  "3.0.0.0"
     Import-DSCResource -ModuleName "xNetworking" -ModuleVersion  "5.7.0.0"
-    Import-DSCResource -ModuleName "xDhcpServer" -ModuleVersion  "3.0.0"
-    Import-DSCResource -ModuleName 'ComputerManagementDSC' -ModuleVersion  '8.5.0'
+    Import-DSCResource -ModuleName "xDhcpServer" -ModuleVersion  "3.1.1"
+    Import-DSCResource -ModuleName 'ComputerManagementDSC' -ModuleVersion  '9.0.0'
     Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
-    Import-DSCResource -ModuleName 'xDnsServer' -ModuleVersion  '1.16.0.0'
-    Import-DSCResource -ModuleName 'xWebAdministration' -ModuleVersion  '3.1.1'
+    Import-DSCResource -ModuleName 'xDnsServer' -ModuleVersion  '2.0.0'
+    Import-DSCResource -ModuleName 'xWebAdministration' -ModuleVersion  '3.3.0'
 
     #endregion
     #region All Nodes
@@ -195,7 +195,7 @@ Configuration AutoLab {
             }
         }
 
-        #prestage Web Server Computer objects
+        #pre-stage Web Server Computer objects
 
         [string[]]$WebServers = $Null
 
@@ -243,7 +243,7 @@ Configuration AutoLab {
         xDNSServerPrimaryZone Reverse {
             Name          = "3.168.192.in-addr.arpa"
             Ensure        = "present"
-            DynamicUpdate = "NonsecureAndSecure"
+            DynamicUpdate = "NonSecureAndSecure"
             DependsOn     = '[xADDomain]FirstDC'
 
         }
@@ -286,38 +286,17 @@ Configuration AutoLab {
             DependsOn     = '[WindowsFeature]DHCP'
         }
 
-        <#
-        Deprecated
-        xDhcpServerOption 'DhcpOption' {
-            ScopeID            = $Node.DHCPScopeID
-            DnsServerIPAddress = $Node.DHCPDnsServerIPAddress
-            Router             = $node.DHCPRouter
-            AddressFamily      = $Node.DHCPAddressFamily
-            DependsOn          = '[xDhcpServerScope]DhcpScope'
-        }
-        #>
-
     } #end DHCP Config
     #endregion
 
     #region Web config
     node $AllNodes.Where({ $_.Role -eq 'Web' }).NodeName {
 
-        foreach ($feature in @(
-                'web-Server'
-            )) {
-            WindowsFeature $feature.Replace('-', '') {
+        WindowsFeature WebServer {
                 Ensure               = 'Present'
-                Name                 = $feature
+                Name                 = 'Web-Server'
                 IncludeAllSubFeature = $True
             }
-        }
-
-        File SampleService {
-            Ensure          = 'Present'
-            Type            = 'Directory'
-            DestinationPath = 'C:\MyWebServices'
-        }
 
         $asmx = @"
 <%@ WebService language = "C#" class = "FirstService" %>
@@ -329,30 +308,36 @@ using System.Xml.Serialization;
 [WebService(Namespace="http://localhost/MyWebServices/")]
 public class FirstService : WebService
 {
-   [WebMethod]
-   public int Add(int a, int b)
-   {
-    return a + b;
-   }
+    [WebMethod]
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
 
-   [WebMethod]
-   public String SayHello()
-   {
-    return "Hello World. It is a wonderful day for learning PowerShell.";
-   }
+    [WebMethod]
+    public String SayHello()
+    {
+        return "Hello World. It is a wonderful day for learning PowerShell.";
+    }
 
 }
 "@
+
+        File SampleService {
+            Ensure          = 'Present'
+            Type            = 'Directory'
+            DestinationPath = 'C:\MyWebServices'
+        }
         File SampleServiceASMX {
+            DependsOn       = "[File]SampleService"
             Ensure          = 'Present'
             Type            = 'File'
-            DependsOn       = "[File]SampleService"
             DestinationPath = "c:\MyWebServices\firstservice.asmx"
             Contents        = $asmx
             Force           = $True
         }
         xWebApplication SampleWebService {
-            DependsOn    = "[File]SampleServiceASMX", "[WindowsFeature]webServer"
+            DependsOn    = "[File]SampleServiceASMX", "[WindowsFeature]WebServer"
             Website      = 'default web site'
             PhysicalPath = 'c:\MyWebServices'
             Name         = 'MyWebServices'
@@ -472,7 +457,7 @@ public class FirstService : WebService
         # Adds RDP support and opens Firewall rules
 
         Registry RDP {
-            Key       = 'HKLM:\System\ControlSet001\Control\Terminal Server'
+            Key       = 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
             ValueName = 'fDenyTSConnections'
             ValueType = 'Dword'
             ValueData = '0'
@@ -797,7 +782,7 @@ public class FirstService : WebService
                 DependsOn  = '[Script]CreateWebServer2Template'
                 Credential = $DomainCredential
                 TestScript = {
-                    Import-Module activedirectory -Verbose:$false
+                    Import-Module ActiveDirectory -Verbose:$false
                     $WebServerCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Web Servers" }
                     if ($WebServerCertACL -eq $Null) {
                         Write-Verbose -Message ("Web Servers Group does not have permissions on Web Server template...")
@@ -813,7 +798,7 @@ public class FirstService : WebService
                     }
                 }
                 SetScript  = {
-                    Import-Module activedirectory -Verbose:$false
+                    Import-Module ActiveDirectory -Verbose:$false
                     $WebServersGroup = Get-ADGroup -Identity "Web Servers" | Select-Object SID
                     $EnrollGUID = [GUID]::Parse($Using:P)
                     $ACL = Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
@@ -824,7 +809,7 @@ public class FirstService : WebService
                     Write-Verbose -Message ("Permissions set for Web Servers Group")
                 }
                 GetScript  = {
-                    Import-Module activedirectory -Verbose:$false
+                    Import-Module ActiveDirectory -Verbose:$false
                     $WebServerCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Web Servers" }
                     if ($WebServerCertACL -ne $Null) {
                         return @{Result = $WebServerCertACL }
@@ -839,7 +824,7 @@ public class FirstService : WebService
                 DependsOn  = '[Script]CreateWebServer2Template'
                 Credential = $DomainCredential
                 TestScript = {
-                    Import-Module activedirectory -Verbose:$false
+                    Import-Module ActiveDirectory -Verbose:$false
                     $DSCCertACL = (Get-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Domain Computers*" }
                     if ($DSCCertACL -eq $Null) {
                         Write-Verbose -Message ("Domain Computers does not have permissions on DSC template")
@@ -855,7 +840,7 @@ public class FirstService : WebService
                     }
                 }
                 SetScript  = {
-                    Import-Module activedirectory -Verbose:$false
+                    Import-Module ActiveDirectory -Verbose:$false
                     $DomainComputersGroup = Get-ADGroup -Identity "Domain Computers" | Select-Object SID
                     $EnrollGUID = [GUID]::Parse($Using:P)
                     $ACL = Get-Acl "AD:CN=DSCTemplate,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)"
@@ -866,7 +851,7 @@ public class FirstService : WebService
                     Write-Verbose -Message ("Permissions set for Domain Computers...")
                 }
                 GetScript  = {
-                    Import-Module activedirectory -Verbose:$false
+                    Import-Module ActiveDirectory -Verbose:$false
                     $DSCCertACL = (Get-Acl "AD:CN=WebServer2,CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,$($Using:Node.DomainDN)").Access | Where-Object { $_.IdentityReference -like "*Domain Computers" }
                     if ($DSCCertACL -ne $Null) {
                         return @{Result = $DSCCertACL }

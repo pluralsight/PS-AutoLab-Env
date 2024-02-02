@@ -28,6 +28,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             DnsServerAddress            = '1.1.1.1'
 
             # Firewall settings to enable
+
             FirewallRuleNames           = @(
                 'FPS-ICMP4-ERQ-In',
                 'FPS-ICMP6-ERQ-In',
@@ -50,7 +51,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Lability_Media              = '2022_x64_Standard_EN_Core_Eval'
 
             },
-            <#    
+            <#
             Available Roles for computers
             DC = Domain Controller
             DHCP = Dynamic Host Configuration Protocol
@@ -64,12 +65,13 @@ This example code is provided without copyright and AS IS.  It is free for you t
         @{
             NodeName                = 'SERVER1'
             IPAddress               = '192.168.3.22'
+            Role                   = @('RDP')
             Lability_BootOrder      = 20
             Lability_Media          = '2022_x64_Standard_EN_Core_Eval'
             Lability_ProcessorCount = 1
             Lability_StartupMemory  = 2147483648
         }
-     ) #all nodes
+        ) #all nodes
 
     NonNodeData = @{
         Lability = @{

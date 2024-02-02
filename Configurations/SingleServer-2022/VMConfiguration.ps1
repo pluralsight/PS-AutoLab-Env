@@ -96,6 +96,31 @@ Configuration AutoLab {
     } #end Firewall Rules
     #endregion
 
+    #region RDP config
+    node $AllNodes.Where( { $_.Role -eq 'RDP' }).NodeName {
+        # Adds RDP support and opens Firewall rules
+
+        Registry RDP {
+            Key       = 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
+            ValueName = 'fDenyTSConnections'
+            ValueType = 'Dword'
+            ValueData = '0'
+            Ensure    = 'Present'
+        }
+        foreach ($Rule in @(
+                'RemoteDesktop-UserMode-In-TCP',
+                'RemoteDesktop-UserMode-In-UDP',
+                'RemoteDesktop-Shadow-In-TCP'
+            )) {
+            xFirewall $Rule {
+                Name      = $Rule
+                Enabled   = 'True'
+                DependsOn = '[Registry]RDP'
+            }
+        } # End RDP
+    }
+    #endregion
+
 } # End AllNodes
 #endregion
 
