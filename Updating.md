@@ -2,7 +2,7 @@
 
 This module and its dependencies will be installed and updated from the PowerShell Gallery. It is strongly recommended that you __do not__ upgrade  the module if you have configured labs and virtual machines. If AutoLab is in use now, you can wait until you are finished with the lab configuration. Otherwise, use the `Wipe-Lab` command in any configuration folder that has MOF files with virtual machines.
 
-__Note:__ The terms `AutoLab` and `PSAutoLab` are used interchangeably. PSAutoLab is technically the PowerShell module that manages your AutoLab configuration.
+__Note:__ The terms `AutoLab` and `PSAutolab` are used interchangeably. PSAutolab is technically the PowerShell module that manages your AutoLab configuration.
 
 You should be able to run
 
@@ -29,14 +29,14 @@ Update-Module PSAutolab
 If you *still* have issues, the best course of action is to uninstall the modules and re-install.
 
 ```powershell
-get-module psautolab -ListAvailable | uninstall-module
-get-module lability -ListAvailable | uninstall-module
+Get-Module PSAutolab -ListAvailable | Uninstall-Module
+Get-Module lability -ListAvailable | Uninstall-Module
 ```
 
 You might need to repeat this process until this command shows no modules.
 
 ```powershell
-get-module lability,PSAutoLab -ListAvailable
+Get-Module lability,PSAutolab -ListAvailable
 ```
 
 With a clean slate run:
@@ -54,7 +54,7 @@ If you have been using PSAutolab for awhile, are updating it and plan to continu
 You should only refresh disk images if __you have no configured virtual machines__.
 
 ```powershell
-Get-childitem C:\autolab\VMVirtualHardDisks
+Get-ChildItem C:\autolab\VMVirtualHardDisks
 ```
 
 If this directory is empty, then you can proceed.

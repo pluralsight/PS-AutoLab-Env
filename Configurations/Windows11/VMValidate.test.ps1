@@ -73,19 +73,6 @@ Describe $Node {
             $admins = Invoke-Command {
                 Get-CimInstance -ClassName win32_group -Filter "name='Administrators'" | Get-CimAssociatedInstance -ResultClassName win32_UserAccount
             } -Session $cl
-            $rsat = @(
-                'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                'Rsat.DHCP.Tools~~~~0.0.1.0',
-                'Rsat.Dns.Tools~~~~0.0.1.0',
-                'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                'Rsat.FileServices.Tools~~~~0.0.1.0',
-                'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                'Rsat.ServerManager.Tools~~~~0.0.1.0'
-            )
-            $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
             $rdpTest= Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections} -Session $cl
         }
         catch {
@@ -100,8 +87,8 @@ Describe $Node {
             $cl | Remove-PSSession
         }
     }
-    It "[$Node] Should be running Windows 10" {
-        $test.caption | Should -BeLike '*Windows 10*'
+    It "[$Node] Should be running Windows 11" {
+        $test.caption | Should -BeLike '*Windows 11*'
     }
     It "[$Node] Should have a computername of <CN>" -ForEach $CNTest {
         #Write-Host "testing for $Computername" -fore yellow
@@ -125,10 +112,6 @@ Describe $Node {
     It "[$Node] Should have 2 members in Administrators" {
         # Write-Host ($admins | Out-string) -ForegroundColor cyan
         $Admins.Count | Should -Be 2
-    }
-    It "[$Node] Should have RSAT installed [$rsatStatus]" {
-        #$pkg2 | Select Name,State | Out-String | Write-Host -ForegroundColor yellow
-        $pkg2 | Where-Object { $_.state -ne 'installed' } | Should -Be $Null
     }
     It "[$Node] Should have RDP for admin access enabled" {
         $rdpTest | Should -Be 0

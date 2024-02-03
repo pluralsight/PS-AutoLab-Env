@@ -6,4 +6,4 @@ Most of the commands in the module use a domain-specific language (DSL), or a se
 Get-Command -module PSAutolab
 ```
 
-Experienced users are welcome to use the proper command names if they wish.
+Experienced PowerShell users are welcome to use the proper command names if they wish.
