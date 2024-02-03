@@ -36,11 +36,11 @@ This example code is provided without copyright and AS IS.  It is free for you t
             )
 
             # Domain and Domain Controller information
-            DomainName                  = "Company.Pri"
-            DomainDN                    = "DC=Company,DC=Pri"
-            DCDatabasePath              = "C:\NTDS"
-            DCLogPath                   = "C:\NTDS"
-            SysvolPath                  = "C:\Sysvol"
+            DomainName                  = 'Company.Pri'
+            DomainDN                    = 'DC=Company,DC=Pri'
+            DCDatabasePath              = 'C:\NTDS'
+            DCLogPath                   = 'C:\NTDS'
+            SysvolPath                  = 'C:\Sysvol'
             PSDscAllowPlainTextPassword = $true
             PSDscAllowDomainUser        = $true
 
@@ -58,9 +58,9 @@ This example code is provided without copyright and AS IS.  It is free for you t
 
             # ADCS Certificate Services information
             CACN                        = 'Company.Pri'
-            CADNSuffix                  = "C=US,L=Phoenix,S=Arizona,O=Company"
-            CADatabasePath              = "C:\windows\system32\CertLog"
-            CALogPath                   = "C:\CA_Logs"
+            CADNSuffix                  = 'C=US,L=Phoenix,S=Arizona,O=Company'
+            CADatabasePath              = 'C:\windows\system32\CertLog'
+            CALogPath                   = 'C:\CA_Logs'
             ADCSCAType                  = 'EnterpriseRootCA'
             ADCSCryptoProviderName      = 'RSA#Microsoft Software Key Storage Provider'
             ADCSHashAlgorithmName       = 'SHA256'
@@ -83,12 +83,12 @@ This example code is provided without copyright and AS IS.  It is free for you t
         Web = Basic web server
         RSAT = Remote Server Administration Tools for the client
         RDP = enables RDP and opens up required firewall rules
-        DomainJoin = joions a computer to the domain
+        DomainJoin = joins a computer to the domain
 #>
         @{
             NodeName                = 'DC1'
             IPAddress               = '192.168.3.10'
-            Role                    = @('DC', 'DHCP', 'ADCS')
+            Role                    = @('DC', 'DHCP', 'ADCS', 'RDP')
             Lability_BootOrder      = 10
             Lability_BootDelay      = 60 # Number of seconds to delay before others
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -105,22 +105,11 @@ This example code is provided without copyright and AS IS.  It is free for you t
             NodeName           = 'S1'
             IPAddress          = '192.168.3.50'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role               = @('DomainJoin', 'Web')
+            Role               = @('DomainJoin', 'Web', 'RDP')
             Lability_BootOrder = 20
             Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media     = '2016_x64_Standard_Core_EN_Eval'
         }
-        <#
-@{
-    NodeName                = 'N1'
-    IPAddress               = '192.168.3.60'
-    #Role = 'Nano'
-    Lability_BootOrder      = 20
-    Lability_Media          = '2016_x64_Standard_Nano_DSC_EN_Eval'
-    Lability_ProcessorCount = 1
-    Lability_StartupMemory  = 1GB
-}
-#>
 
         @{
             NodeName                = 'Cli1'
@@ -128,7 +117,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Role                    = @('domainJoin', 'RSAT', 'RDP')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory  = 2GB
-            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_22H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()
@@ -150,31 +139,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
 
             #EnvironmentPrefix = 'AutoLab-'
             Media       = (
-                @{
-                    <#
-                    ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
-                    ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
-                    Id              = '2016_x64_Standard_Nano_DSC_EN_Eval'
-                    Filename        = '2016_x64_EN_Eval.iso'
-                    Description     = 'Windows Server 2016 Standard Nano 64bit English Evaluation'
-                    Architecture    = 'x64'
-                    ImageName       = 'Windows Server 2016 SERVERSTANDARDNANO'
-                    MediaType       = 'ISO'
-                    OperatingSystem = 'Windows'
-                    Uri             = 'http://download.microsoft.com/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
-                    Checksum        = '18A4F00A675B0338F3C7C93C4F131BEB'
-                    CustomData      = @{
-                        SetupComplete = 'CoreCLR'
-                        PackagePath   = '\NanoServer\Packages'
-                        PackageLocale = 'en-US'
-                        WimPath       = '\NanoServer\NanoServer.wim'
-                        Package       = @(
-                            'Microsoft-NanoServer-Guest-Package',
-                            'Microsoft-NanoServer-DSC-Package'
-                            )
-                        }
-                        #>
-                }
+                @{    }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
                 @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
@@ -184,7 +149,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
                 @{ Name = 'xActiveDirectory'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xDhcpServer'; RequiredVersion = '3.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xDhcpServer'; RequiredVersion = '3.1.1'; Provider = 'PSGallery' },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery' }
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' }

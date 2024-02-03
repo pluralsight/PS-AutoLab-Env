@@ -12,7 +12,7 @@ $credential = New-Object -typename PSCredential -ArgumentList Administrator, $se
     Import-DSCResource -ModuleName "xActiveDirectory" -ModuleVersion  "3.0.0.0"
     Import-DSCResource -ModuleName "xComputerManagement" -ModuleVersion  "4.1.0.0"
     Import-DSCResource -ModuleName "xNetworking" -ModuleVersion  "5.7.0.0"
-    Import-DSCResource -ModuleName "xDhcpServer" -ModuleVersion  "3.0.0"
+    Import-DSCResource -ModuleName "xDhcpServer" -ModuleVersion  "3.1.1"
     Import-DSCResource -ModuleName 'xWindowsUpdate' -ModuleVersion  '2.8.0.0'
     Import-DSCResource -ModuleName 'xADCSDeployment' -ModuleVersion  '1.4.0.0'
     Import-DSCResource -ModuleName 'xDnsServer' -ModuleVersion  '1.16.0.0'
