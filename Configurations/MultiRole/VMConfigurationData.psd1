@@ -142,29 +142,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             #EnvironmentPrefix = 'AutoLab-'
             Media       = (
                 @{
-                    <#
-                    ## This media is a replica of the default '2016_x64_Standard_Nano_EN_Eval' media
-                    ## with the additional 'Microsoft-NanoServer-DSC-Package' package added.
-                    Id              = '2016_x64_Standard_Nano_DSC_EN_Eval';
-                    Filename        = '2016_x64_EN_Eval.iso';
-                    Description     = 'Windows Server 2016 Standard Nano 64bit English Evaluation';
-                    Architecture    = 'x64';
-                    ImageName       = 'Windows Server 2016 SERVERSTANDARDNANO';
-                    MediaType       = 'ISO';
-                    OperatingSystem = 'Windows';
-                    Uri             = 'http://download.microsoft.com/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO';
-                    Checksum        = '18A4F00A675B0338F3C7C93C4F131BEB';
-                    CustomData      = @{
-                        SetupComplete = 'CoreCLR';
-                        PackagePath   = '\NanoServer\Packages';
-                        PackageLocale = 'en-US';
-                        WimPath       = '\NanoServer\NanoServer.wim';
-                        Package       = @(
-                            'Microsoft-NanoServer-Guest-Package',
-                            'Microsoft-NanoServer-DSC-Package'
-                            )
-                        }
-                    #>
+
                 }
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
@@ -179,7 +157,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery' },
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xDnsServer'; RequiredVersion = "1.16.0.0"; Provider = 'PSGallery' }
+                @{ Name = 'xDnsServer'; RequiredVersion = "2.0.0"; Provider = 'PSGallery' }
 
             )
             Resource    = @(

@@ -156,7 +156,6 @@ Describe DC1 {
         It '[DC1] Should have a computer account for S1' {
             $computer.name -contains 'S1' | Should -Be $True
         }
-
     }
 
     Context DNS {
