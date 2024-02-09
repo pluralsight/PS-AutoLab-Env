@@ -1,6 +1,6 @@
 # Lab Definition
 
-This is an updated and revised configuration of the now retired POC-Multirole.
+This is an updated and revised configuration of the now retired POC-MultiRole.
 If you were instructed to use that configuration, this one should work for you.
 The NanoServer images has been removed from this configuration because it is no longer a valid platform.
 
@@ -8,18 +8,18 @@ The lab builds the following:
 
     Computername : DC1
     Description  : Windows Server 2019 Standard 64bit English Evaluation
-    Role         : {DC, DHCP, ADCS}
+    Role         : {DC, DHCP, ADCS,RDP}
     IPAddress    : 192.168.3.10
     MemoryGB     : 2
 
     Computername : S1
     Description  : Windows Server 2019 Standard 64bit English Evaluation
-    Role         : {DomainJoin, Web}
+    Role         : {DomainJoin, Web,RDP}
     IPAddress    : 192.168.3.50
     MemoryGB     : 1
 
     Computername : Cli1
-    Description  : Windows 10 64bit Enterprise 2109/21H2 English Evaluation
+    Description  : Windows 10 64-bit Enterprise 2209/22H2 English Evaluation
     Role         : {domainJoin, RSAT, RDP}
     IPAddress    : 192.168.3.100
     MemoryGB     : 2

@@ -37,11 +37,11 @@ This example code is provided without copyright and AS IS.  It is free for you t
             )
 
             # Domain and Domain Controller information
-            DomainName                  = "Company.Pri"
-            DomainDN                    = "DC=Company,DC=Pri"
-            DCDatabasePath              = "C:\NTDS"
-            DCLogPath                   = "C:\NTDS"
-            SysvolPath                  = "C:\Sysvol"
+            DomainName                  = 'Company.Pri'
+            DomainDN                    = 'DC=Company,DC=Pri'
+            DCDatabasePath              = 'C:\NTDS'
+            DCLogPath                   = 'C:\NTDS'
+            SysvolPath                  = 'C:\Sysvol'
             PSDscAllowPlainTextPassword = $true
             PSDscAllowDomainUser        = $true
 
@@ -59,9 +59,9 @@ This example code is provided without copyright and AS IS.  It is free for you t
 
             # ADCS Certificate Services information
             CACN                        = 'Company.Pri'
-            CADNSuffix                  = "C=US,L=Phoenix,S=Arizona,O=Company"
-            CADatabasePath              = "C:\windows\system32\CertLog"
-            CALogPath                   = "C:\CA_Logs"
+            CADNSuffix                  = 'C=US,L=Phoenix,S=Arizona,O=Company'
+            CADatabasePath              = 'C:\windows\system32\CertLog'
+            CALogPath                   = 'C:\CA_Logs'
             ADCSCAType                  = 'EnterpriseRootCA'
             ADCSCryptoProviderName      = 'RSA#Microsoft Software Key Storage Provider'
             ADCSHashAlgorithmName       = 'SHA256'
@@ -85,12 +85,12 @@ This example code is provided without copyright and AS IS.  It is free for you t
         Web = Basic web server
         RSAT = Remote Server Administration Tools for the client
         RDP = enables RDP and opens up required firewall rules
-        DomainJoin = joions a computer to the domain
+        DomainJoin = joins a computer to the domain
 #>
         @{
             NodeName                = 'DC1'
             IPAddress               = '192.168.3.10'
-            Role                    = @('DC', 'DHCP', 'ADCS')
+            Role                    = @('DC', 'DHCP', 'ADCS', 'RDP')
             Lability_BootOrder      = 10
             Lability_BootDelay      = 60 # Number of seconds to delay before others
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
@@ -107,7 +107,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             NodeName           = 'S1'
             IPAddress          = '192.168.3.50'
             #Role = 'DomainJoin' # example of multiple roles @('DomainJoin', 'Web')
-            Role               = @('DomainJoin', 'Web')
+            Role               = @('DomainJoin', 'Web', 'RDP')
             Lability_BootOrder = 20
             Lability_timeZone  = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Media     = '2019_x64_Standard_EN_Core_Eval'
@@ -119,7 +119,7 @@ This example code is provided without copyright and AS IS.  It is free for you t
             Role                    = @('domainJoin', 'RSAT', 'RDP')
             Lability_ProcessorCount = 2
             Lability_MinimumMemory  = 2GB
-            Lability_Media          = 'WIN10_x64_Enterprise_21H2_EN_Eval'
+            Lability_Media          = 'WIN10_x64_Enterprise_22H2_EN_Eval'
             Lability_BootOrder      = 20
             Lability_timeZone       = 'US Mountain Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
             Lability_Resource       = @()
@@ -141,23 +141,21 @@ This example code is provided without copyright and AS IS.  It is free for you t
 
             #EnvironmentPrefix = 'AutoLab-'
             Media       = (
-                @{
-
-                }
+                @{}
             ) # Custom media additions that are different than the supplied defaults (media.json)
             Network     = @( # Virtual switch in Hyper-V
                 @{ Name = 'LabNet'; Type = 'Internal'; NetAdapterName = 'Ethernet'; AllowManagementOS = $true }
             )
             DSCResource = @(
                 ## Download published version from the PowerShell Gallery or Github
-                @{ Name = 'xActiveDirectory'; RequiredVersion = "3.0.0.0"; Provider = 'PSGallery' },
+                @{ Name = 'xActiveDirectory'; RequiredVersion = '3.0.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xComputerManagement'; RequiredVersion = '4.1.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xNetworking'; RequiredVersion = '5.7.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xDhcpServer'; RequiredVersion = '3.0.0'; Provider = 'PSGallery' },
+                @{ Name = 'xDhcpServer'; RequiredVersion = '3.1.1'; Provider = 'PSGallery' },
                 @{ Name = 'xWindowsUpdate' ; RequiredVersion = '2.8.0.0'; Provider = 'PSGallery' },
                 @{ Name = 'xPSDesiredStateConfiguration'; RequiredVersion = '9.1.0'; Provider = 'PSGallery' },
                 @{ Name = 'xADCSDeployment'; RequiredVersion = '1.4.0.0'; Provider = 'PSGallery' },
-                @{ Name = 'xDnsServer'; RequiredVersion = "2.0.0"; Provider = 'PSGallery' }
+                @{ Name = 'xDnsServer'; RequiredVersion = '2.0.0'; Provider = 'PSGallery' }
 
             )
             Resource    = @(
