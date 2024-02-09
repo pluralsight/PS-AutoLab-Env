@@ -4,19 +4,19 @@ This lab builds the following:
 
     Computername : DC1
     Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-    Role         : {DC, DHCP, ADCS}
+    Role         : {DC, DHCP, ADCS,RDP}
     IPAddress    : 192.168.3.10
     MemoryGB     : 2
 
     Computername : S1
     Description  : Windows Server 2016 Standard Core 64bit English Evaluation
-    Role         : {DomainJoin, Web}
+    Role         : {DomainJoin, Web,RDP}
     IPAddress    : 192.168.3.50
     MemoryGB     : 1
 
     Computername : Cli1
-    Description  : Windows 10 64bit Enterprise 2109/21H2 English Evaluation
-    Role         : {domainJoin, RSAT, RDP}
+    Description  : Windows 10 64-bit Enterprise 2209/22H2 English Evaluation
+    Role         : {domainJoin, RSAT, RDP,RDP}
     IPAddress    : 192.168.3.100
     MemoryGB     : 2
 

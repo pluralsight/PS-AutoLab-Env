@@ -381,7 +381,7 @@ Configuration AutoLab {
         # Adds RDP support and opens Firewall rules
 
         Registry RDP {
-            Key       = 'HKLM:\System\ControlSet001\Control\Terminal Server'
+            Key       = 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
             ValueName = 'fDenyTSConnections'
             ValueType = 'Dword'
             ValueData = '0'
