@@ -1,5 +1,7 @@
 # Updating the PSAutolab Module
 
+> *This document was written to support updating from older versions of this module to version 4.x. It is being retained for archive and information purposes. If you are updating from version 4.x to a later version, please refer to the [latest update documentation](update-v5.md)*.
+
 This module and its dependencies will be installed and updated from the PowerShell Gallery. It is strongly recommended that you __do not__ upgrade  the module if you have configured labs and virtual machines. If AutoLab is in use now, you can wait until you are finished with the lab configuration. Otherwise, use the `Wipe-Lab` command in any configuration folder that has MOF files with virtual machines.
 
 __Note:__ The terms `AutoLab` and `PSAutolab` are used interchangeably. PSAutolab is technically the PowerShell module that manages your AutoLab configuration.

@@ -2,244 +2,412 @@
 
 #test if VM setup is complete
 
-#The password will be passed by the control script WaitforVM.ps1
-#You can manually set it while developing this Pester test
-$LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
-$Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-$Domain = "company"
-$cred = New-Object PSCredential "Company\Administrator", $Secure
+BeforeDiscovery {
+    #Write-Host "Pester Test development v2.0.0" -ForegroundColor Yellow
+    $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\VMConfigurationData.psd1
+    $Domain = $LabData.AllNodes.DomainName
+    $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+    $cred = New-Object PSCredential "$Domain\Administrator", $Secure
+    #TODO - Add test for firewall rules
+    $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+    $cl = New-PSSession -VMName Cli1 -Credential $Cred -ErrorAction Stop
+    $rsat = @(
+        'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+        'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+        'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+        'Rsat.DHCP.Tools~~~~0.0.1.0',
+        'Rsat.Dns.Tools~~~~0.0.1.0',
+        'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+        'Rsat.FileServices.Tools~~~~0.0.1.0',
+        'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+        'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+        'Rsat.ServerManager.Tools~~~~0.0.1.0'
+    )
+    $pkg = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
 
-#The prefix only changes the name of the VM not the guest computername
-$prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+    $rsatStatus = '{0}/{1}' -f ($pkg.where({ $_.state -eq 'installed' }).Name).count, $rsat.count
 
-$all = @()
-
+    if ($cl) {
+        $cl | Remove-PSSession
+    }
+}
 Describe DC1 {
+    BeforeAll {
+        Try {
+            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+            $Computername = $LabData.AllNodes[1].NodeName
+            $Domain = $LabData.AllNodes.DomainName
+            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-    $VMName = "$($prefix)DC1"
-    Try {
-        $dc = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
-        $all += $dc
 
-        #set error action preference to suppress all error messages
-        Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $dc
+            #The prefix only changes the name of the VM not the guest computername
+            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+            $VMName = "$($prefix)$Computername"
 
-        It "[DC1] Should accept domain admin credential" {
-            $dc.Count | Should Be 1
-        }
-
-        #test for features
-        $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed} -session $dc
-        $needed = 'AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
-        'RSAT-AD-PowerShell'
-        foreach ($item in $needed) {
-            It "[DC1] Should have feature $item installed" {
-                $feat.Name -contains $item | Should Be "True"
+            #set error action preference to suppress all error messages which would be normal while configurations are converging
+            #turn off progress bars
+            $prep = {
+                $ProgressPreference = 'SilentlyContinue'
+                $errorActionPreference = 'SilentlyContinue'
             }
-        }
 
-        It "[DC1] Should have an IP address of 192.168.3.10" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $dc
-            $i.ipv4Address | Should be '192.168.3.10'
-        }
+            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+            Invoke-Command $prep -Session $VMSess
 
-        It "[DC1] Should have a domain name of $domain" {
-            $r = Invoke-Command {
+            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+            $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+            $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $VMSess
+
+            $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+            $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+            ForEach-Object -Begin {$tmp=@{}} -Process { $tmp.Add($_.Name,$_.Enabled)} -end { $tmp }
+
+            $rsat = @(
+                'DNS',
+                'AD-Domain-Services',
+                'RSAT-AD-Tools',
+                'RSAT-AD-PowerShell'
+            )
+            $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $VMSess
+            $computer = Invoke-Command {
+                Try {
+                    Get-ADComputer -Filter * -ErrorAction SilentlyContinue
+                }
+                Catch {
+                    #ignore the error - Domain still spinning up
+                }
+            } -Session $VMSess
+            $users = Invoke-Command {
+                Try {
+                    Get-ADUser -Filter * -ErrorAction Stop
+                }
+                Catch {
+                    #ignore the error - Domain still spinning up
+                }
+            } -Session $VMSess
+            $groups = Invoke-Command {
+                Try {
+                    Get-ADGroup -Filter * -ErrorAction Stop
+                }
+                Catch {
+                    #ignore the error - Domain still spinning up
+                }
+            } -Session $VMSess
+            $ADDomain = Invoke-Command {
                 Try {
                     Get-ADDomain -ErrorAction Stop
                 }
                 Catch {
                     #ignore the error - Domain still spinning up
                 }
-            } -session $dc
-            $r.name | Should Be $domain
+            } -Session $VMSess
+            $OUs = Invoke-Command {
+                Try {
+                    Get-ADOrganizationalUnit -Filter * -ErrorAction Stop
+                }
+                Catch {
+                    #ignore the error - Domain still spinning up
+                }
+            } -Session $VMSess
+            $admins = Invoke-Command { Get-ADGroupMember 'Domain Admins'-ErrorAction SilentlyContinue } -Session $VMSess
+            $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
         }
-
-        $OUs = Invoke-Command {
-            Try {
-                Get-ADOrganizationalUnit -filter * -ErrorAction Stop
-            }
-            Catch {
-                #ignore the error - Domain still spinning up
-            }
-        } -session $dc
-
-        $needed = 'IT', 'Dev', 'Marketing', 'Sales', 'Accounting', 'JEA_Operators'
-        foreach ($item in $needed) {
-            It "[DC1] Should have organizational unit $item" {
-                $OUs.name -contains $item | Should Be "True"
-            }
-        }
-
-        $groups = Invoke-Command {
-            Try {
-                Get-ADGroup -filter * -ErrorAction Stop
-            }
-            Catch {
-                #ignore the error - Domain still spinning up
-            }
-        } -session $DC
-
-        $target = "IT", "Sales", "Marketing", "Accounting", "JEA Operators"
-        foreach ($item in $target) {
-
-            It "[DC1] Should have a group called $item" {
-                $groups.Name -contains $item | Should Be "True"
-            }
-        }
-
-        $users = Invoke-Command {
-            Try {
-                Get-ADUser -filter * -ErrorAction Stop
-            }
-            Catch {
-                #ignore the error - Domain still spinning up
-            }
-        } -session $dc
-
-        It "[DC1] Should have at least 15 user accounts" {
-            $users.count | Should BeGreaterThan 15
-        }
-
-        $computer = Invoke-Command {
-            Try {
-                Get-ADComputer -filter * -ErrorAction SilentlyContinue
-            }
-            Catch {
-                #ignore the error - Domain still spinning up
-            }
-        } -session $dc
-
-        It "[DC1] Should have a computer account for Cli1" {
-            $computer.name -contains "cli1" | Should Be "True"
-        }
-
-        It "[DC1] Should have a computer account for Cli2" {
-            $computer.name -contains "cli2" | Should Be "True"
-        }
-        It "[DC1] Should have a computer account for S1" {
-            $computer.name -contains "S1" | Should Be "True"
+        catch {
+            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
+                $false | Should -Be $True
+            } #>
         }
     }
-    Catch {
-        It "[DC1] Should allow a PSSession but got error: $($_.exception.message)" {
-            $false | Should Be $True
+    AfterAll {
+        if ($VMSess) {
+            $VMSess | Remove-PSSession
         }
     }
-} #DC
 
+    It '[DC1] Should Be running Windows Server 2016' {
+        $OS.caption | Should -BeLike '*2016*'
+    }
+    It '[DC1] Should have feature <_> installed' -ForEach @('AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
+        'RSAT-AD-PowerShell') {
+        $feat.Name -contains $_ | Should -Be $True
+    }
+    It "[DC1] Should have firewall rule <_> enabled" -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
+    It '[DC1] Should have an IP address of 192.168.3.10' {
+        $if.ipv4Address | Should -Be '192.168.3.10'
+    }
+    It "[DC1] Should Belong to the $domain domain" {
+        $sys.domain | Should -Be $domain
+    }
+
+    It '[DC1] Should have RDP for admin access enabled' {
+        $rdpTest | Should -Be 0
+    }
+
+
+    Context ActiveDirectory {
+
+        It "[DC1] Should have a domain name of $domain" {
+            $ADDomain.DNSRoot | Should -Be $domain
+        }
+        It '[DC1] Should have organizational unit <_>' -ForEach @('IT', 'Dev', 'Marketing', 'Sales', 'Accounting', 'JEA_Operators', 'Servers') {
+            $OUs.name -contains $_ | Should -Be $True
+        }
+        It '[DC1] Should have a group called <_>' -ForEach @('IT', 'Sales', 'Marketing', 'Accounting', 'JEA Operators') {
+            $groups.Name -contains $_ | Should -Be $True
+        }
+        It '[DC1] Should have at least 15 user accounts' {
+            $users.count | Should -BeGreaterThan 15
+        }
+        It '[DC1] Should have a computer account for Cli1' {
+            $computer.name -contains 'Cli1' | Should -Be $True
+        }
+        It '[DC1] Should have a computer account for Cli2' {
+            $computer.name -contains 'Cli2' | Should -Be $True
+        }
+        It '[DC1] Should have a computer account for S1' {
+            $computer.name -contains 'S1' | Should -Be $True
+        }
+    }
+
+    Context DNS {
+        It '[DC1] Should Be able to resolve an internet address' {
+            $resolve.name | Should -Be 'www.pluralsight.com'
+        }
+        It '[DC1] Should have a DNS server configuration of 192.168.3.10' {
+            $dns.ServerAddresses -contains '192.168.3.10' | Should -Be $True
+        }
+    }
+
+} #DC1
 Describe S1 {
+    BeforeAll {
+        Try {
+            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+            $Computername = $LabData.AllNodes[2].NodeName
+            $Domain = $LabData.AllNodes.DomainName
+            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-    $VMName = "$($prefix)S1"
-    Try {
+            #The prefix only changes the name of the VM not the guest computername
+            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+            $VMName = "$($prefix)$Computername"
 
-        $s1 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
-        $all += $s1
+            #set error action preference to suppress all error messages which would be normal while configurations are converging
+            #turn off progress bars
+            $prep = {
+                $ProgressPreference = 'SilentlyContinue'
+                $errorActionPreference = 'SilentlyContinue'
+            }
 
-        #set error action preference to suppress all error messages
-        Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $s1
+            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+            Invoke-Command $prep -Session $VMSess
 
-        It "[S1] Should accept domain admin credential" {
-            $s1.Count | Should Be 1
+            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+            $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+            #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+            $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+            $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+            ForEach-Object -Begin {$tmp=@{}} -Process { $tmp.Add($_.Name,$_.Enabled)} -end { $tmp }
+            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
         }
-
-        It "[S1] Should have an IP address of 192.168.3.50" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -Session $S1
-            $i.ipv4Address | Should be '192.168.3.50'
-        }
-        $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $s1
-        It "[S1] Should have a DNS server configuration of 192.168.3.10" {
-            $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
+        catch {
+            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
+                $false | Should -Be $True
+            } #>
         }
     }
-    Catch {
-        It "[S1] Should allow a PSSession but got error: $($_.exception.message)" {
-            $false | Should Be $True
+    AfterAll {
+        if ($VMSess) {
+            $VMSess | Remove-PSSession
         }
+    }
+
+    It "[S1] Should Belong to the $domain domain" {
+        $sys.domain | Should -Be $domain
+    }
+    It '[S1] Should have an IP address of 192.168.3.50' {
+        $if.ipv4Address | Should -Be '192.168.3.50'
+    }
+    It '[S1] Should have a DNS server configuration of 192.168.3.10' {
+        $dns.ServerAddresses -contains '192.168.3.10' | Should -Be 'True'
+    }
+    It '[S1] Should Be running Windows Server 2016' {
+        $OS.caption | Should -BeLike '*2016*'
+    }
+    It '[S1] Should have RDP for admin access enabled' {
+        $rdpTest | Should -Be 0
+    }
+    It '[S1] Should Be able to resolve an internet address' {
+        $resolve.name | Should -Be 'www.pluralsight.com'
+    }
+    It "[S1] Should have firewall rule <_> enabled" -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
     }
 } #S1
-
 Describe Cli1 {
+    BeforeAll {
+        Try {
+            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+            $Computername = $LabData.AllNodes[3].NodeName
+            $Domain = $LabData.AllNodes.DomainName
+            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-    $VMName = "$($prefix)Cli1"
-    $rsat = @(
-                    'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                    'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                    'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                    'Rsat.DHCP.Tools~~~~0.0.1.0',
-                    'Rsat.Dns.Tools~~~~0.0.1.0',
-                    'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                    'Rsat.FileServices.Tools~~~~0.0.1.0',
-                    'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                    'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                    'Rsat.ServerManager.Tools~~~~0.0.1.0'
-                )
-    Try {
+            #The prefix only changes the name of the VM not the guest computername
+            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+            $VMName = "$($prefix)$Computername"
 
-        $cl = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
-        $all += $cl
+            #set error action preference to suppress all error messages which would be normal while configurations are converging
+            #turn off progress bars
+            $prep = {
+                $ProgressPreference = 'SilentlyContinue'
+                $errorActionPreference = 'SilentlyContinue'
+            }
 
-        #set error action preference to suppress all error messages
-        Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $cl
+            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+            Invoke-Command $prep -Session $VMSess
 
-        It "[CLI1]] Should accept domain admin credential" {
-            $cl.Count | Should Be 1
+            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+            $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+            #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+            $rsat = @(
+                'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+                'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+                'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+                'Rsat.DHCP.Tools~~~~0.0.1.0',
+                'Rsat.Dns.Tools~~~~0.0.1.0',
+                'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+                'Rsat.FileServices.Tools~~~~0.0.1.0',
+                'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+                'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+                'Rsat.ServerManager.Tools~~~~0.0.1.0'
+            )
+            $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $VMSess
+            $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+            $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+            ForEach-Object -Begin {$tmp=@{}} -Process { $tmp.Add($_.Name,$_.Enabled)} -end { $tmp }
+
         }
-
-        It "[CLI1]] Should have an IP address of 192.168.3.100" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -session $cl
-            $i.ipv4Address | Should be '192.168.3.100'
-        }
-
-        $pkg = Invoke-Command { $using:rsat | foreach-object {Get-WindowsCapability -Online -Name $_}} -Session $cl
-        $RSATStatus = "{0}/{1}" -f ($pkg.where({$_.state -eq "installed"}).Name).count,$rsat.count
-        It "[Cli1] Should have RSAT installed [$RSATStatus]" {
-            # write-host ($pkg | Select-object Name,DisplayName,State | format-list | Out-String) -ForegroundColor cyan
-            $pkg | Where-Object { $_.state -ne "installed" } | Should be $Null
-        }
-
-        $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl
-        It "[CLI1]] Should have a DNS server configuration of 192.168.3.10" {
-            $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
+        catch {
+            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
+                $false | Should -Be $True
+            } #>
         }
     }
-    Catch {
-        It "[CLI1] Should allow a PSSession but got error: $($_.exception.message)" {
-            $false | Should Be $True
+    AfterAll {
+        if ($VMSess) {
+            $VMSess | Remove-PSSession
         }
     }
-} #cli1
 
+    It "[Cli1] Should Belong to the $Domain domain" {
+        $sys.domain | Should -Be $Domain
+    }
+    It '[Cli1] Should Be running Windows 10 Enterprise' {
+        $OS.caption | Should -BeLike '*Enterprise*'
+    }
+    It '[Cli1] Should have an IP address of 192.168.3.100' {
+        $if.ipv4Address | Should -Be '192.168.3.100'
+    }
+    It '[Cli1] Should have a DNS server configuration of 192.168.3.10' {
+        $dns.ServerAddresses -contains '192.168.3.10' | Should -Be $True
+    }
+    It '[Cli1] Should have RDP for admin access enabled' {
+        $rdpTest | Should -Be 0
+    }
+    It '[Cli1] Should Be able to resolve an internet address' {
+        $resolve.name | Should -Be 'www.pluralsight.com'
+    }
+    It "[Cli1] Should have RSAT installed [$rsatStatus]" {
+        $pkg2 | Where-Object { $_.state -ne 'installed' } | Should -Be $Null
+    }
+    It "[Cli1] Should have firewall rule <_> enabled" -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
+} #Cli1
 Describe Cli2 {
+    BeforeAll {
+        Try {
+            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+            $Computername = $LabData.AllNodes[4].NodeName
+            $Domain = $LabData.AllNodes.DomainName
+            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-    $VMName = "$($prefix)Cli2"
+            #The prefix only changes the name of the VM not the guest computername
+            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+            $VMName = "$($prefix)$Computername"
 
-    Try {
+            #set error action preference to suppress all error messages which would be normal while configurations are converging
+            #turn off progress bars
+            $prep = {
+                $ProgressPreference = 'SilentlyContinue'
+                $errorActionPreference = 'SilentlyContinue'
+            }
 
-        $cl2 = New-PSSession -VMName $VMName -Credential $cred -ErrorAction Stop
-        $all += $cl2
+            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+            Invoke-Command $prep -Session $VMSess
 
-        #set error action preference to suppress all error messages
-        Invoke-Command { $errorActionPreference = 'silentlyContinue'} -session $cl2
-        It "[CLI2] Should accept domain admin credential" {
-            $cl2.Count | Should Be 1
+            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+            $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+            #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+            $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+            $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+            ForEach-Object -Begin {$tmp=@{}} -Process { $tmp.Add($_.Name,$_.Enabled)} -end { $tmp }
         }
-
-        It "[CLI2] Should have an IP address of 192.168.3.101" {
-            $i = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4} -session $cl2
-            $i.ipv4Address | Should be '192.168.3.101'
-        }
-
-        $dns = Invoke-Command {Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4} -session $cl2
-        It "[CLI2] Should have a DNS server configuration of 192.168.3.101" {
-            $dns.ServerAddresses -contains '192.168.3.10' | Should Be "True"
+        catch {
+            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
+                $false | Should -Be $True
+            } #>
         }
     }
-    Catch {
-        It "[CLI2] Should allow a PSSession but got error: $($_.exception.message)" {
-            $false | Should Be $True
+    AfterAll {
+        if ($VMSess) {
+            $VMSess | Remove-PSSession
         }
     }
-} #cli2
 
-$all | Remove-PSSession
+    It "[Cli2] Should Belong to the $Domain domain" {
+        $sys.domain | Should -Be $Domain
+    }
+    It '[Cli2] Should Be running Windows 10 Enterprise' {
+        $OS.caption | Should -BeLike '*Enterprise*'
+    }
+    It '[Cli2] Should have an IP address of 192.168.3.101' {
+        $if.ipv4Address | Should -Be '192.168.3.101'
+    }
+    It '[Cli2] Should have a DNS server configuration of 192.168.3.10' {
+        $dns.ServerAddresses -contains '192.168.3.10' | Should -Be $True
+    }
+    It '[Cli2] Should have RDP for admin access enabled' {
+        $rdpTest | Should -Be 0
+    }
+    It '[Cli2] Should Be able to resolve an internet address' {
+        $resolve.name | Should -Be 'www.pluralsight.com'
+    }
+    It "[Cli2] Should have firewall rule <_> enabled" -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
+
+
+} #Cli2
+
+

@@ -61,6 +61,15 @@ Function Invoke-ValidateLab {
         Microsoft.PowerShell.Utility\Write-Host $msg  -ForegroundColor Cyan
     }
 
+    #make sure all VMs are running
+    Hyper-V\Get-VM -VMName ($cnHash.keys -as [array]) | Where-Object {$_.state -eq 'Off'} |
+    ForEach-Object {
+        Write-Warning "Starting virtual machine $($_.name)"
+        $_ | Start-VM
+        #give the VM a chance to change state
+        Start-Sleep -Seconds 5
+    }
+
     $Complete = $False
 
     #define a resolved path to the test file
@@ -73,7 +82,8 @@ Function Invoke-ValidateLab {
     do {
         $i++
         Write-Verbose "Validation pass $i"
-        $test = Invoke-Pester -Script $TestPath -Show none -PassThru -WarningAction SilentlyContinue
+        # 10 Feb 2024 Modified to reflect Pester v5 parameters
+        $test = Invoke-Pester -Script $TestPath -Show None -PassThru -WarningAction SilentlyContinue
 
         if ($test.FailedCount -eq 0) {
             $Complete = $True
@@ -83,7 +93,9 @@ Function Invoke-ValidateLab {
             if ($i -ge 2) {
 
                 #get names of VMs with failing tests
-                $failedVMs = $test.TestResult.where({-Not $_.passed}).Describe | Get-Unique | ForEach-Object {$cnHash[$_]}
+                #10 Feb 2024 Modified to reflect Pester v5 output
+                # $failedVMs = $test.TestResult.where({-Not $_.passed}).Describe | Get-Unique | ForEach-Object {$cnHash[$_]}
+                $failedVMs = $test.Failed.Block.Name | Select-Object -Unique | Where-Object {$cnHash.ContainsKey($_)} | ForEach-Object {$cnHash[$_]}
 
                 if ( ($i -eq 4 -OR $i -eq 7)-AND $failedVMs) {
                     #restart VMs that are still failing
@@ -97,12 +109,21 @@ Function Invoke-ValidateLab {
                 } #restart
 
                 #restart any stopped VMs that are failing tests
-                if ($failedVMs) {
+                # Modified 10 Feb 2024 to check all VMs to verify they are running
+                <#          if ($failedVMs) {
                     Get-VM $failedVMs | Where-Object {$_.state -eq 'Off'} |
                     ForEach-Object {
                         Write-Warning "Starting virtual machine $($_.name)"
                         $_ | Start-VM
                     }
+                } #>
+
+                Hyper-V\Get-VM -VMName ($cnHash.keys -as [array]) | Where-Object {$_.state -eq 'Off'} |
+                ForEach-Object {
+                    Write-Warning "Starting virtual machine $($_.name)"
+                    $_ | Start-VM
+                    #give the VM a chance to change state
+                    Start-Sleep -Seconds 5
                 }
 
                 $prog = @{

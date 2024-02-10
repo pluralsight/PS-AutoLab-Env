@@ -117,7 +117,7 @@ Describe DC1 {
         }
     }
 
-    It '[DC1] Should Be running Windows Server 206' {
+    It '[DC1] Should Be running Windows Server 2016' {
         $OS.caption | Should -BeLike '*2016*'
     }
     It '[DC1] Should have feature <_> installed' -ForEach @('AD-Domain-Services', 'DNS', 'RSAT-AD-Tools',
@@ -230,8 +230,7 @@ Describe S1 {
     It '[S1] Should Be able to resolve an internet address' {
         $resolve.name | Should -Be 'www.pluralsight.com'
     }
-}
-
+} #S1
 
 Describe Cli1 {
     BeforeAll {
@@ -311,4 +310,4 @@ Describe Cli1 {
     It "[Cli1] Should have RSAT installed [$rsatStatus]" {
         $pkg2 | Where-Object { $_.state -ne 'installed' } | Should -Be $Null
     }
-}
+} #Cli1
