@@ -32,7 +32,7 @@ You must have administrator access and be able to update the `TrustedHosts` sett
 
 ### Pester Requirement
 
-The module uses a standard PowerShell tool called Pester to validate lab configurations. It is a module dependency and the latest version should be installed with the PSAutolab module. Previous versions of this module required Pester version 4.10. Beginning with version 5.0 of this module, all Pester tests have been revised to support Pester 5.x.
+The module uses a standard PowerShell tool called Pester to validate lab configurations. It is a module dependency and the latest version should be installed with the PSAutolab module. Previous versions of this module required Pester version 4.10. Beginning with version 5.0 of this module, all Pester tests have been revised to support Pester version 5.
 
 ## Installation
 
@@ -50,11 +50,11 @@ If you are using the `Microsoft.PowerShell.PSResourceGet`module run:
 Install-PSResource PSAutoLab -Force
 ```
 
-The installation should install the required dependencies of Lability and Pester.
+The installation should install the required dependencies of the Lability and Pester modules.
 
-If prompted, answer yes to update the Nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted. If you have an old copy of this module from before Pluralsight took ownership, you will get an error. Manually remove the old module files and try again. See [this update document](update.md) for more information.
+If prompted, answer yes to update the Nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted. If you have an old copy of this module from before Pluralsight took ownership, you will get an error. Manually remove the old module files and try again. See [this document](update.md) for more information.
 
-**Do not download or use any of the release packages from this Github repository. You must install this module from the PowerShell Gallery.**
+**Do not download or use any of the release packages from this GitHub repository. You must install this module from the PowerShell Gallery.**
 
 See the [Changelog](https://github.com/pluralsight/PS-AutoLab-Env/blob/master/changelog.md) for update and version details.
 
@@ -97,7 +97,7 @@ Store                            : Local
 Active                           : True
 ```
 
-The `Instructions.md` file in each configuration folder should provide an indication of what VMs will be created. You can also check the `VMConfigurationData.psd1` file.
+The `Instructions` file in each configuration folder documents VMs will be created. You can also check the `VMConfigurationData.psd1` file.
 
 ```powershell
 PS C:\Autolab\Configurations\MultiRole\> (Import-PowerShellDataFile .\VMConfigurationData.psd1).AllNodes.NodeName
@@ -140,7 +140,7 @@ To identify the module location. Use this information to delete the PSAutoLab fo
 
 ### Upgrading from v4.x
 
-Please read [this update document](update-v5.md) for more information on the steps to follow to update this module from version 4.x to 5.x
+Please read [this document](update-v5.md) for more information on the steps to follow to update this module from version `4.x` to `5.x`
 
 ### Note for VMware Users
 
@@ -193,7 +193,7 @@ Some of your values may be different. Please include this information when repor
 
 ### Lab Summary
 
-Once the host setup is complete, you can use the module's [Get-LabSummary](docs/Get-LabSummary.md) command to better understand what the lab configuration will setup. Run the command in the configuration folder.
+Once the host setup is complete, you can use the module's [Get-LabSummary](docs/Get-LabSummary.md) command to better understand what the lab configuration will set up. Run the command in the configuration folder.
 
 ```powershell
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Get-LabSummary
@@ -231,11 +231,16 @@ The `Computername` and `VMName` properties might differ if you are using an envi
 
 ## Creating a Lab
 
-Lab information is stored under the AutoLab Configurations folder, which is `C:\AutoLab\Configurations` by default. Open an elevated PowerShell prompt and change location to the desired configuration folder. View the `Instructions.md` and/or `README.md` files in the folder to learn more about the configuration. Where possible information about what course goes with a particular Pluralsight course will be indicated.
+Lab information is stored under the AutoLab Configurations folder, which is `C:\AutoLab\Configurations` by default. Open an elevated PowerShell prompt and change your location to the desired configuration folder. View the `Instructions` and/or `README` markdown files in the folder to learn more about the configuration.
+
+You can also run `Get-LabSummary` in the lab configuration folder to see what the configuration will create.
+
+```powershell
+Where possible, information about what course goes with a particular Pluralsight course will be indicated.
 
 ### A Note on Pluralsight Labs
 
-_This module started several years ago and there are several Pluralsight courses that rely on configurations that may no longer exist. Configurations that were named as `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case. If you are trying to set up a lab for a specific course, and can't find the configuration the instructor calls for, please post an issue indicating the configuration you are looking for and the title of the Pluralsight course. Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration. In some cases, the course may assume a different password. All configurations use `P@ssw0rd` for all passwords._
+_This module started several years ago and there are several Pluralsight courses that rely on configurations that may no longer exist. Configurations that were named with `Test` or `POC` were not assumed to be used in any courses. But that is turning out to not be the case. If you are trying to set up a lab for a specific course, and can't find the configuration the instructor calls for, please post an issue indicating the configuration you are looking for and the title of the Pluralsight course. Hopefully, there is an existing configuration you can use. Or the module can be updated with an appropriate lab configuration. In some cases, the course may assume a different password. All configurations use `P@ssw0rd` for all passwords._
 
 The first time you set up a lab, Lability will download evaluation versions of required operating systems in ISO format. This may take some time depending on your Internet connection. These downloads only happen when the required ISO is not found locally. When you wipe and rebuild a lab it won't download files a second time.
 
@@ -269,7 +274,7 @@ As an alternative, you can set up a lab environment with minimal prompting.
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab
 ```
 
-Assuming you don't need to install a newer version of `Nuget`, you can leave the setup alone. It will run all of the manual steps for you. Beginning in version `4.3.0` you also have the option to run the unattended set up in a PowerShell background job.
+Assuming you don't need to install a newer version of `Nuget`, you can leave the setup alone. It will run all of the manual steps for you. Beginning in version `4.3.0` you also have the option to run the unattended setup in a PowerShell background job.
 
 ```powershell
 PS C:\Autolab\Configurations\SingleServer\> Unattend-Lab -AsJob
@@ -324,7 +329,7 @@ PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab
 This will remove the virtual machines and DSC configuration files. If you intend to rebuild the lab or another configuration, you can keep the `LabNat` virtual switch. This is the default behavior. If you want to remove everything you would need to run a command like this:
 
 ```powershell
-PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -removeswitch
+PS C:\Autolab\Configurations\SingleServer\> Wipe-Lab -force -RemoveSwitch
 ```
 
 ### Customizing a Lab
@@ -389,7 +394,7 @@ Several lab configurations that include a Windows 10 client will also install RS
 * BitLocker
 +*CertificateServices
 * DHCP
-* Dns
+* DNS
 * FailoverCluster
 * FileServices
 * GroupPolicy
@@ -402,7 +407,7 @@ This change has improved setup performance and module stability.
 
 ## Windows Updates
 
-When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use [Update-Lab](docs/Update-Lab.md) to start the Windows update process on all lab members. This can be a time-consuming process, so you have an option to run the updates as a background job. Just be sure not to close your PowerShell session before the jobs complete.
+When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use [Update-Lab](docs/Update-Lab.md) to start the Windows update process on all lab members. This can be a time-consuming process. You have an option to run the updates as a background job. Do not close your PowerShell session before the jobs are complete or the build process will be interrupted.
 
 ```powershell
 PS C:\Autolab\Configurations\PowerShellLab\> update-lab -AsJob
@@ -525,7 +530,7 @@ Start-VM Win10
 
 Sometimes even if the virtual machine is running, manually shutting it down and restarting it can resolve the problem. Remember to wait at least 5 minutes before manually running the validation test again when restarting any virtual machine.
 
-As a last resort, manually break out of any testing loop, wipe the lab and start all-over.
+As a last resort, manually break out of any testing loop, wipe the lab, and restart the test.
 
 If you _still_ are having problems, wipe the lab and try a different configuration. This will help determine if the problem is with the configuration or a larger compatibility problem.
 
@@ -549,7 +554,7 @@ Get-Module Pester | Remove-Module
 
 Then import this module again.
 
-### _I get an error trying to update Lability_
+### _I get an error attempting to update the Lability module_
 
 If you try to run `Refresh-Host` you might see an error about a certificate mismatch. Between v0.18.0 and v0.19.0 the Lability module changed code signing certificates. If you encounter this problem, run
 
