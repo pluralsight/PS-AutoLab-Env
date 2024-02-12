@@ -27,7 +27,9 @@ Normally when you set up an Autolab configuration, you can do it manually by run
 * Enable-Internet
 * Validate-Lab
 
-Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe otherwise the installation should run unattended. Note that the validation will loop until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test.
+Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe otherwise the installation should run unattended.
+
+The installation process will wait for five minutes before starting the testing loop. Note that the validation will loop until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test. You can run Run-Pester at any time to manually run the Pester test.
 
 You should run this command from within the configuration folder.
 
@@ -151,3 +153,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Setup-Lab](Invoke-SetupLab.md)
+
+[Run-Lab](Invoke-RunLab.md)
+
+[Run-Pester](Invoke-Pester.md)

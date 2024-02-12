@@ -1661,7 +1661,8 @@ This process will not remove any configurations that have been deleted from the 
       <maml:para>* Enable-Internet</maml:para>
       <maml:para>* Validate-Lab</maml:para>
       <maml:para></maml:para>
-      <maml:para>Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe otherwise the installation should run unattended. Note that the validation will loop until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test.</maml:para>
+      <maml:para>Or you can use this command which will string all of these commands together. You may need to answer an initial prompt to update the version of nuget.exe otherwise the installation should run unattended.</maml:para>
+      <maml:para>The installation process will wait for five minutes before starting the testing loop. Note that the validation will loop until the configurations are finalized and converged. You can press Ctrl+C at any time to break out of the test. You can run Run-Pester at any time to manually run the Pester test.</maml:para>
       <maml:para>You should run this command from within the configuration folder.</maml:para>
       <maml:para>You will typically use the Unattend-Lab alias.</maml:para>
     </maml:description>
@@ -1838,6 +1839,14 @@ This process will not remove any configurations that have been deleted from the 
         <maml:linkText>Setup-Lab</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Run-Lab</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Run-Pester</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -1851,7 +1860,7 @@ This process will not remove any configurations that have been deleted from the 
     </command:details>
     <maml:description>
       <maml:para>Lab configurations in Autolab use Desired State Configuration. These configurations can take some time to finish and converge. This command will validate that all virtual machines in the configuration are properly configured. It will loop through every 5 minutes running a Pester test suite for the configuration. Once all tests pass, the command will run the test one more time to display the results. You will see errors until all tests have passed. Depending on the configuration, this test could take up to 60 minutes to complete. You can press Ctrl+C at any time to break out of the test. If you prefer, you can also manually run the Pester test.</maml:para>
-      <maml:para>PS C:\Autolab\Configurations\PowerShellLab&gt; Invoke-Pester .\VMvalidate.test.ps1</maml:para>
+      <maml:para>PS C:\Autolab\Configurations\PowerShellLab&gt; Run-Pester</maml:para>
       <maml:para>You will typically use the Validate-Lab alias.</maml:para>
       <maml:para>Note that beginning in v4.21.0, this validation command will keep track of the number of testing loops. After 2 loops it will check for any virtual machine that is failing a test to see if it has stopped. If so, it will be started. After 4 loops and virtual machine that is still failing tests will be restarted. Ideally, Validation should complete in 30 minutes or less. The validation process will abort after 65 minutes.</maml:para>
       <maml:para>Run Validate-Lab -Verbose to see details about the number of testing loops and which virtual machines are started or restarted.</maml:para>

@@ -21,7 +21,7 @@ Function Invoke-UnattendLab {
         Param([String]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [String]$VerboseAction)
 
         #uncomment for testing and development
-        Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
+        #Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
 
         $VerbosePreference = $VerboseAction
         if ($VerboseAction -eq "Continue") {
@@ -63,6 +63,15 @@ Function Invoke-UnattendLab {
             PSAutolab\Invoke-RunLab @PSBoundParameters
         }
         if ($PSCmdlet.ShouldProcess("Validate-Lab", "Run Unattended")) {
+            #12 Feb 2024 Adding a sleep interval to allow the lab to finish merging
+            $msg = @"
+
+            Sleeping for five minutes to allow time for the lab configurations to merge.
+            You can abort waiting with Ctrl+C. The lab will continue to run. Later,
+            you can run Run-Pester to validate the lab.
+"@
+            Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
+            Start-Sleep -Seconds 300
             Write-Verbose "Validate-Lab"
             PSAutolab\Invoke-ValidateLab @PSBoundParameters
         }

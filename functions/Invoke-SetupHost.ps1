@@ -22,7 +22,7 @@ Function Invoke-SetupHost {
     * For PowerShell Remoting, configure the host 'TrustedHosts' value to *
     * Install the Lability module from PSGallery (if necessary)
     * Update the Pester module (if necessary)
-    * Install Hyper-V
+    * Install Hyper-V (if necessary)
     * Create the $DestinationPath folder (DO NOT DELETE)
     * Copy configurations and resources to $DestinationPath
     * You will then need to reboot the host before continuing

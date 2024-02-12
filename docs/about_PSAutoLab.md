@@ -46,19 +46,13 @@ Most, if not all, configurations should follow the same manual process. Run each
 * `Run-Lab`
 * `Enable-Internet`
 
-To verify that all virtual machines are properly configured you can run `Validate-Lab`. This will invoke a set of tests and loop until everything passes. Due to the nature of DSC and the complexity of some configurations this could take 60-90 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
+To verify that all virtual machines are properly configured you can run `Validate-Lab`. This will invoke a set of tests and loop until everything passes. Due to the nature of DSC and the complexity of some configurations, this could take 60-90 minutes. You can use `Ctrl+C` to break out of the testing loop at any time. You can manually run the test one time to see the current state of the configuration.
 
 ```powershell
 Invoke-Pester VMValidate.test.ps1
 ```
 
 This can be useful for troubleshooting.
-
-#### An Important Pester Note
-
-**If you are running Pester v5.x you need to be running at least version 4.11.0 of this module.**
-
-The validation tests for each configuration are written for the Pester module. This is a widely adopted testing tool. In June of 2020, Pester version 5 was released. This version of Pester introduced several breaking changes to how tests are written. The tests in this module are **incompatible** with Pester 5.0 and eventually will need to be re-written. As an interim step, this module will test for Pester v 4.10.1. If you don't have that version it will be installed when you run `Setup-Host`. Or if you've already setup Autolab you can run `Refresh-Host`. If you have Pester 5.x, it will not be uninstalled, but it will be removed from the current PowerShell session.
 
 ### UNATTENDED SETUP
 
@@ -68,7 +62,7 @@ As an alternative, you can setup a lab environment with minimal prompting.
 Unattend-Lab
 ```
 
-Assuming you don't need to install a newer version of the *nuget* provider, you can leave the setup alone. It will run all of the manual steps for you.
+Assuming you don't need to install a newer version of the *Nuget* provider, you can leave the setup alone. It will run all of the manual steps for you.
 
 ### STOPPING A LAB
 
@@ -118,7 +112,7 @@ This will remove the virtual machines and DSC configuration files. If you intend
 
 When you build a lab, you are creating Windows virtual machines based on evaluation software. You might still want to make sure the virtual machines are up to date with security patches and updates. You can use `Update-Lab` to invoke Windows update on all lab members.
 
-This can be a time-consuming process, so you have an option to run the updates as a background job. Be sure not to close your PowerShell session before the jobs complete.
+This can be a time-consuming process, so you have an option to run the updates as a background job. Be sure not to close your PowerShell session before the jobs have completed.
 
 ```powershell
 PS C:\AutoLab\Configurations\PowerShellLab\> update-lab -AsJob
@@ -132,8 +126,8 @@ Id     Name            PSJobTypeName   State         HasMoreData     Location   
 30     WUUpdate        RemoteJob       Running       True            WIN10      WUUpdate
 
 PS C:\AutoLab\Configurations\PowerShellLab\> receive-job -id 27 -Keep
-[11/22/2020 12:05:43] Found 5 updates to install on SRV3
-[11/22/2020 12:25:13] Update process complete on SRV3
+[11/22/2023 12:05:43] Found 5 updates to install on SRV3
+[11/22/2023 12:25:13] Update process complete on SRV3
 WARNING: SRV3 requires a reboot
 ```
 
@@ -161,14 +155,14 @@ If you update, it is recommended that you update the computer running AutoLab by
 Refresh-Host
 ```
 
-This will update Lability if required and copy all-new configuration files to your AutoLab\Configurations folder. It will NOT delete any files.
+This will update Lability if required and copy all-new configuration files to your AutoLab\Configurations folder. It will NOT delete any files or folders
 
 ## TROUBLESHOOTING
 
 The commands and configurations in this module are not foolproof. During testing a lab configuration will run quickly and without error on one Windows 10 desktop but fail or take much longer on a different Windows 10 desktop. Most setups should be complete in under an hour. If validation is failing, manually run the validation test in the configuration folder.
 
 ```powershell
-Invoke-Pester VMValidate.test.ps1
+Run-Pester
 ```
 
 Take note of which virtual machines are generating errors. Verify the virtual machine is running in Hyper-V. On occasion for reasons still undetermined, sometimes a virtual machine will shut down and not reboot. This often happens with the client nodes of the lab configuration. Verify that all virtual machines are running and manually start those that have stopped using the Hyper-V manager or cmdlets.

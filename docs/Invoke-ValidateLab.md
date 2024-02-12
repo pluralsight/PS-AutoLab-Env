@@ -22,7 +22,7 @@ Invoke-ValidateLab [[-Path] <String>] [<CommonParameters>]
 Lab configurations in Autolab use Desired State Configuration. These configurations can take some time to finish and converge. This command will validate that all virtual machines in the configuration are properly configured.
 It will loop through every 5 minutes running a Pester test suite for the configuration. Once all tests pass, the command will run the test one more time to display the results. You will see errors until all tests have passed. Depending on the configuration, this test could take up to 60 minutes to complete. You can press Ctrl+C at any time to break out of the test. If you prefer, you can also manually run the Pester test.
 
-PS C:\Autolab\Configurations\PowerShellLab> Invoke-Pester .\VMvalidate.test.ps1
+PS C:\Autolab\Configurations\PowerShellLab> Run-Pester
 
 You will typically use the Validate-Lab alias.
 

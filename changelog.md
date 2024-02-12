@@ -14,6 +14,7 @@ This is a **major** update to the module. It is recommended that you finish and 
 - Updated Windows 10 configurations to use `WIN10_x64_Enterprise_22H2_EN_Eval`.
 - Revised `Invoke-ValidateLab` to reflect changes in Pester 5.x. __This is a breaking change__.
 - Updated the private Pester check helper function to install or update Pester as needed.
+- Inserted a five minute delay in the `Invoke-ValidateLab` function to allow time for the lab to fully boot.
 - Documentation updates.
 
 ### Added
