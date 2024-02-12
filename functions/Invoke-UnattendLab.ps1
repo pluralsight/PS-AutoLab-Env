@@ -21,7 +21,7 @@ Function Invoke-UnattendLab {
         Param([String]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [String]$VerboseAction)
 
         #uncomment for testing and development
-        #Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
+        Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
 
         $VerbosePreference = $VerboseAction
         if ($VerboseAction -eq "Continue") {

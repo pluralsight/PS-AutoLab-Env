@@ -11,6 +11,7 @@ BeforeDiscovery {
     $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
     $cred = New-Object PSCredential "$Domain\Administrator", $Secure
     $cl = New-PSSession -VMName WIN10 -Credential $Cred -ErrorAction Stop
+    $FireWallRules = $LabData.AllNodes.FirewallRuleNames
     $rsat = @(
         'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
         'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
@@ -34,83 +35,79 @@ BeforeDiscovery {
 
 Describe DOM1 {
     BeforeAll {
-        Try {
-            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-            $Computername = $LabData.AllNodes[1].NodeName
-            $Domain = $LabData.AllNodes.DomainName
-            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
+        $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+        $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+        $Computername = $LabData.AllNodes[1].NodeName
+        $Domain = $LabData.AllNodes.DomainName
+        $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-            #The prefix only changes the name of the VM not the guest computername
-            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
-            $VMName = "$($prefix)$Computername"
+        #The prefix only changes the name of the VM not the guest computername
+        $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+        $VMName = "$($prefix)$Computername"
 
-            #set error action preference to suppress all error messages which would be normal while configurations are converging
-            #turn off progress bars
-            $prep = {
-                $ProgressPreference = 'SilentlyContinue'
-                $errorActionPreference = 'SilentlyContinue'
+        #set error action preference to suppress all error messages which would be normal while configurations are converging
+        #turn off progress bars
+        $prep = {
+            $ProgressPreference = 'SilentlyContinue'
+            $errorActionPreference = 'SilentlyContinue'
+        }
+
+        $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+        Invoke-Command $prep -Session $VMSess
+
+        $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+        $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+        $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+        $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+        $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $VMSess
+        $rec = Invoke-Command { Resolve-DnsName Srv3.company.pri } -Session $VMSess
+        $computer = Invoke-Command {
+            Try {
+                Get-ADComputer -Filter * -ErrorAction SilentlyContinue
             }
-
-            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-            Invoke-Command $prep -Session $VMSess
-
-            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
-            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
-            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
-            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
-            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
-            $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $VMSess
-            $rec = Invoke-Command { Resolve-DnsName Srv3.company.pri } -Session $VMSess
-            $computer = Invoke-Command {
-                Try {
-                    Get-ADComputer -Filter * -ErrorAction SilentlyContinue
-                }
-                Catch {
-                    #ignore the error - Domain still spinning up
-                }
-            } -Session $VMSess
-            $users = Invoke-Command {
-                Try {
-                    Get-ADUser -Filter * -ErrorAction Stop
-                }
-                Catch {
-                    #ignore the error - Domain still spinning up
-                }
-            } -Session $VMSess
-            $groups = Invoke-Command {
-                Try {
-                    Get-ADGroup -Filter * -ErrorAction Stop
-                }
-                Catch {
-                    #ignore the error - Domain still spinning up
-                }
-            } -Session $VMSess
-            $ADDomain = Invoke-Command {
-                Try {
-                    Get-ADDomain -ErrorAction Stop
-                }
-                Catch {
-                    #ignore the error - Domain still spinning up
-                }
-            } -Session $VMSess
-            $OUs = Invoke-Command {
-                Try {
-                    Get-ADOrganizationalUnit -Filter * -ErrorAction Stop
-                }
-                Catch {
-                    #ignore the error - Domain still spinning up
-                }
-            } -Session $VMSess
-            $admins = Invoke-Command { Get-ADGroupMember 'Domain Admins'-ErrorAction SilentlyContinue } -Session $VMSess
-            $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
-            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
-        }
-        catch {
-            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
-                $false | Should -Be $True
-            } #>
-        }
+            Catch {
+                #ignore the error - Domain still spinning up
+            }
+        } -Session $VMSess
+        $users = Invoke-Command {
+            Try {
+                Get-ADUser -Filter * -ErrorAction Stop
+            }
+            Catch {
+                #ignore the error - Domain still spinning up
+            }
+        } -Session $VMSess
+        $groups = Invoke-Command {
+            Try {
+                Get-ADGroup -Filter * -ErrorAction Stop
+            }
+            Catch {
+                #ignore the error - Domain still spinning up
+            }
+        } -Session $VMSess
+        $ADDomain = Invoke-Command {
+            Try {
+                Get-ADDomain -ErrorAction Stop
+            }
+            Catch {
+                #ignore the error - Domain still spinning up
+            }
+        } -Session $VMSess
+        $OUs = Invoke-Command {
+            Try {
+                Get-ADOrganizationalUnit -Filter * -ErrorAction Stop
+            }
+            Catch {
+                #ignore the error - Domain still spinning up
+            }
+        } -Session $VMSess
+        $admins = Invoke-Command { Get-ADGroupMember 'Domain Admins'-ErrorAction SilentlyContinue } -Session $VMSess
+        $feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+        $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+        $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+        ForEach-Object -Begin { $tmp = @{} } -Process { $tmp.Add($_.Name, $_.Enabled) } -End { $tmp }
     }
     AfterAll {
         if ($VMSess) {
@@ -131,11 +128,12 @@ Describe DOM1 {
     It "[DOM1] Should Belong to the $domain domain" {
         $sys.domain | Should -Be $domain
     }
-
     It '[DOM1] Should have RDP for admin access enabled' {
         $rdpTest | Should -Be 0
     }
-
+    It '[DOM1] Should have firewall rule <_> enabled' -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
 
     Context ActiveDirectory {
 
@@ -146,7 +144,7 @@ Describe DOM1 {
             $OUs.name -contains $_ | Should -Be $True
         }
         It '[DOM1] Should have a group called <_>' -ForEach @('IT', 'Sales', 'Marketing', 'Accounting', 'JEA Operators') {
-            $groups.Name -contains $_| Should -Be $True
+            $groups.Name -contains $_ | Should -Be $True
         }
         It '[DOM1] Should have at least 15 user accounts' {
             $users.count | Should -BeGreaterThan 15
@@ -185,40 +183,37 @@ Describe DOM1 {
 
 Describe SRV1 {
     BeforeAll {
-        Try {
-            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-            $Computername = $LabData.AllNodes[2].NodeName
-            $Domain = $LabData.AllNodes.DomainName
-            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
+        $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+        $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+        $Computername = $LabData.AllNodes[2].NodeName
+        $Domain = $LabData.AllNodes.DomainName
+        $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-            #The prefix only changes the name of the VM not the guest computername
-            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
-            $VMName = "$($prefix)$Computername"
+        #The prefix only changes the name of the VM not the guest computername
+        $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+        $VMName = "$($prefix)$Computername"
 
-            #set error action preference to suppress all error messages which would be normal while configurations are converging
-            #turn off progress bars
-            $prep = {
-                $ProgressPreference = 'SilentlyContinue'
-                $errorActionPreference = 'SilentlyContinue'
-            }
-
-            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-            Invoke-Command $prep -Session $VMSess
-
-            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
-            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
-            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
-            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
-            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
-            #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
-            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        #set error action preference to suppress all error messages which would be normal while configurations are converging
+        #turn off progress bars
+        $prep = {
+            $ProgressPreference = 'SilentlyContinue'
+            $errorActionPreference = 'SilentlyContinue'
         }
-        catch {
-            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
-                $false | Should -Be $True
-            } #>
-        }
+
+        $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+        Invoke-Command $prep -Session $VMSess
+
+        $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+        $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+        $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+        $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+        #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+        $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+        $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+        ForEach-Object -Begin { $tmp = @{} } -Process { $tmp.Add($_.Name, $_.Enabled) } -End { $tmp }
+
     }
     AfterAll {
         if ($VMSess) {
@@ -235,6 +230,9 @@ Describe SRV1 {
     It '[SRV1] Should have a DNS server configuration of 192.168.3.10' {
         $dns.ServerAddresses -contains '192.168.3.10' | Should -Be 'True'
     }
+    It '[SRV1] Should have firewall rule <_> enabled' -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
     It '[SRV1] Should Be running Windows Server 2019' {
         $OS.caption | Should -BeLike '*2019*'
     }
@@ -248,42 +246,39 @@ Describe SRV1 {
 
 Describe SRV2 {
     BeforeAll {
-        Try {
-            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-            $Computername = $LabData.AllNodes[3].NodeName
-            $Domain = $LabData.AllNodes.DomainName
-            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
+        $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+        $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+        $Computername = $LabData.AllNodes[3].NodeName
+        $Domain = $LabData.AllNodes.DomainName
+        $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-            #The prefix only changes the name of the VM not the guest computername
-            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
-            $VMName = "$($prefix)$Computername"
+        #The prefix only changes the name of the VM not the guest computername
+        $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+        $VMName = "$($prefix)$Computername"
 
-            #set error action preference to suppress all error messages which would be normal while configurations are converging
-            #turn off progress bars
-            $prep = {
-                $ProgressPreference = 'SilentlyContinue'
-                $errorActionPreference = 'SilentlyContinue'
-            }
-
-            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-            Invoke-Command $prep -Session $VMSess
-
-            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
-            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
-            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
-            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
-            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
-            $feature = Invoke-Command { Get-WindowsFeature -Name web-server } -Session $VMSess
-            $file = Invoke-Command { Get-Item C:\MyWebServices\firstservice.asmx } -Session $VMSess
-            $app = Invoke-Command { Try { Get-WebApplication -Name MyWebServices -ErrorAction stop } Catch {} } -Session $VMSess
-            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        #set error action preference to suppress all error messages which would be normal while configurations are converging
+        #turn off progress bars
+        $prep = {
+            $ProgressPreference = 'SilentlyContinue'
+            $errorActionPreference = 'SilentlyContinue'
         }
-        catch {
-            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
-                $false | Should -Be $True
-            } #>
-        }
+
+        $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+        Invoke-Command $prep -Session $VMSess
+
+        $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+        $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+        $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+        $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+        $feature = Invoke-Command { Get-WindowsFeature -Name web-server } -Session $VMSess
+        $file = Invoke-Command { Get-Item C:\MyWebServices\firstservice.asmx } -Session $VMSess
+        $app = Invoke-Command { Try { Get-WebApplication -Name MyWebServices -ErrorAction stop } Catch {} } -Session $VMSess
+        $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+        $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+        ForEach-Object -Begin { $tmp = @{} } -Process { $tmp.Add($_.Name, $_.Enabled) } -End { $tmp }
+
     }
     AfterAll {
         if ($VMSess) {
@@ -299,6 +294,9 @@ Describe SRV2 {
     }
     It '[SRV2] Should have a DNS server configuration of 192.168.3.10' {
         $dns.ServerAddresses -contains '192.168.3.10' | Should -Be $True
+    }
+    It '[SRV2] Should have firewall rule <_> enabled' -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
     }
     It '[SRV2] Should Be running Windows Server 2019' {
         $OS.caption | Should -BeLike '*2019*'
@@ -325,41 +323,37 @@ Describe SRV2 {
 }
 
 Describe SRV3 {
-#this is a workgroup server
+    #this is a workgroup server
     BeforeAll {
-        Try {
-            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-            $Computername = $LabData.AllNodes[4].NodeName
-            $Domain = $Computername
-            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
+        $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+        $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+        $Computername = $LabData.AllNodes[4].NodeName
+        $Domain = $Computername
+        $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-            #The prefix only changes the name of the VM not the guest computername
-            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
-            $VMName = "$($prefix)$Computername"
+        #The prefix only changes the name of the VM not the guest computername
+        $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+        $VMName = "$($prefix)$Computername"
 
-            #set error action preference to suppress all error messages which would be normal while configurations are converging
-            #turn off progress bars
-            $prep = {
-                $ProgressPreference = 'SilentlyContinue'
-                $errorActionPreference = 'SilentlyContinue'
-            }
-
-            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-            Invoke-Command $prep -Session $VMSess
-
-            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
-            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
-            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
-            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
-            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
-            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        #set error action preference to suppress all error messages which would be normal while configurations are converging
+        #turn off progress bars
+        $prep = {
+            $ProgressPreference = 'SilentlyContinue'
+            $errorActionPreference = 'SilentlyContinue'
         }
-        catch {
-            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
-                $false | Should -Be $True
-            } #>
-        }
+
+        $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+        Invoke-Command $prep -Session $VMSess
+
+        $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+        $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+        $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+        $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+        $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+        $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+        ForEach-Object -Begin { $tmp = @{} } -Process { $tmp.Add($_.Name, $_.Enabled) } -End { $tmp }
     }
     AfterAll {
         if ($VMSess) {
@@ -379,6 +373,9 @@ Describe SRV3 {
     It '[SRV3] Should have RDP for admin access enabled' {
         $rdpTest | Should -Be 0
     }
+    It '[SRV3] Should have firewall rule <_> enabled' -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
     It '[SRV3] Should have a DNS server configuration of 192.168.3.10' {
         $dns.ServerAddresses -contains '192.168.3.10' | Should -Be $True
     }
@@ -389,54 +386,49 @@ Describe SRV3 {
 
 Describe Win10 {
     BeforeAll {
-        Try {
-            $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
-            $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
-            $Computername = $LabData.AllNodes[5].NodeName
-            $Domain = $LabData.AllNodes.DomainName
-            $cred = New-Object PSCredential "$Domain\Administrator", $Secure
+        $LabData = Import-PowerShellDataFile -Path $PSScriptRoot\*.psd1
+        $Secure = ConvertTo-SecureString -String "$($LabData.AllNodes.LabPassword)" -AsPlainText -Force
+        $Computername = $LabData.AllNodes[5].NodeName
+        $Domain = $LabData.AllNodes.DomainName
+        $cred = New-Object PSCredential "$Domain\Administrator", $Secure
 
-            #The prefix only changes the name of the VM not the guest computername
-            $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
-            $VMName = "$($prefix)$Computername"
+        #The prefix only changes the name of the VM not the guest computername
+        $prefix = $LabData.NonNodeData.Lability.EnvironmentPrefix
+        $VMName = "$($prefix)$Computername"
 
-            #set error action preference to suppress all error messages which would be normal while configurations are converging
-            #turn off progress bars
-            $prep = {
-                $ProgressPreference = 'SilentlyContinue'
-                $errorActionPreference = 'SilentlyContinue'
-            }
-
-            $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
-            Invoke-Command $prep -Session $VMSess
-
-            $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
-            $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
-            $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
-            $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
-            $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
-            #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
-            $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
-            $rsat = @(
-                'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
-                'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
-                'Rsat.CertificateServices.Tools~~~~0.0.1.0',
-                'Rsat.DHCP.Tools~~~~0.0.1.0',
-                'Rsat.Dns.Tools~~~~0.0.1.0',
-                'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
-                'Rsat.FileServices.Tools~~~~0.0.1.0',
-                'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
-                'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
-                'Rsat.ServerManager.Tools~~~~0.0.1.0'
-            )
-            $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
-
+        #set error action preference to suppress all error messages which would be normal while configurations are converging
+        #turn off progress bars
+        $prep = {
+            $ProgressPreference = 'SilentlyContinue'
+            $errorActionPreference = 'SilentlyContinue'
         }
-        catch {
-            <#     It "[$Node] Should allow a PSSession but got error: $($_.exception.message)" {
-                $false | Should -Be $True
-            } #>
-        }
+
+        $VMSess = New-PSSession -VMName $VMName -Credential $Cred -ErrorAction Stop
+        Invoke-Command $prep -Session $VMSess
+
+        $OS = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
+        $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
+        $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
+        $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+        $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
+        #$feat = Invoke-Command { Get-WindowsFeature | Where-Object installed } -Session $VMSess
+        $rdpTest = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\' -Name fDenyTSConnections } -Session $VMSess
+        $rsat = @(
+            'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0',
+            'Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0',
+            'Rsat.CertificateServices.Tools~~~~0.0.1.0',
+            'Rsat.DHCP.Tools~~~~0.0.1.0',
+            'Rsat.Dns.Tools~~~~0.0.1.0',
+            'Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0',
+            'Rsat.FileServices.Tools~~~~0.0.1.0',
+            'Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0',
+            'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
+            'Rsat.ServerManager.Tools~~~~0.0.1.0'
+        )
+        $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
+        $FireWallRules = $LabData.AllNodes.FirewallRuleNames
+        $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |
+        ForEach-Object -Begin { $tmp = @{} } -Process { $tmp.Add($_.Name, $_.Enabled) } -End { $tmp }
     }
     AfterAll {
         if ($VMSess) {
@@ -450,10 +442,13 @@ Describe Win10 {
     It '[WIN10] Should Be running Windows 10 Enterprise' {
         $OS.caption | Should -BeLike '*Enterprise*'
     }
-    It '[Win10] Should have an IP address of 192.168.3.100' {
+    It '[WIN10] Should have an IP address of 192.168.3.100' {
         $if.ipv4Address | Should -Be '192.168.3.100'
     }
-    It '[Win10] Should have a DNS server configuration of 192.168.3.10' {
+    It '[WIN10] Should have firewall rule <_> enabled' -ForEach $FireWallRules {
+        $fw[$_] | Should -Be $True
+    }
+    It '[WIN10] Should have a DNS server configuration of 192.168.3.10' {
         $dns.ServerAddresses -contains '192.168.3.10' | Should -Be $True
     }
     It '[WIN10] Should have RDP for admin access enabled' {
@@ -465,5 +460,4 @@ Describe Win10 {
     It "[WIN10] Should have RSAT installed [$rsatStatus]" {
         $pkg2 | Where-Object { $_.state -ne 'installed' } | Should -Be $Null
     }
-
 }
