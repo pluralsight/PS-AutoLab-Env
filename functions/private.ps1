@@ -8,12 +8,15 @@ Function _PesterCheck {
     Param()
 
     #1/31/2024 Revised to check for the latest version of Pester
-    $currentPester = Get-Module Pester -ListAvailable | Where-Object  version -ge $PesterVersion
+    $currentPester = (Get-Module Pester -ListAvailable)[0]
     #Get-Module -FullyQualifiedName @{ModuleName = "Pester"; ModuleVersion = "$pesterVersion"} -ListAvailable
-    if (-not $CurrentPester) {
-        #Update-Module -Name Pester -RequiredVersion $PesterVersion -Force -SkipPublisherCheck
-        #Install the latest version of Pester
-        Update-Module -Name Pester -Force -SkipPublisherCheck
+    if ($currentPester.Version -eq '3.4.0') {
+        Write-Warning "Pester v3.4.0 is installed and has never been updated. Installing the latest version of Pester"
+        Install-Module -Name Pester -Force -SkipPublisherCheck
+    }
+    elseif ($currentPester.Version -lt $PesterVersion) {
+        Write-Warning "Pester v5.0.0 or later is required. Updating to  the latest version of Pester"
+        Update-Module -Name Pester
     }
     else {
         Write-Host "Pester verified" -ForegroundColor green

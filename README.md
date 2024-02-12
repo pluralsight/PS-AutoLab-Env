@@ -41,7 +41,7 @@ This module has been published in the PowerShell Gallery. It is recommended that
 Open an elevated PowerShell prompt and run:
 
 ```powershell
-Install-Module PSAutoLab -Force
+Install-Module PSAutoLab -Force -Sk0pPublisherCheck
 ```
 
 If you are using the `Microsoft.PowerShell.PSResourceGet`module run:
@@ -50,7 +50,7 @@ If you are using the `Microsoft.PowerShell.PSResourceGet`module run:
 Install-PSResource PSAutoLab -Force
 ```
 
-The installation should install the required dependencies of the Lability and Pester modules.
+The installation should install the required dependencies of the Lability and Pester modules.** You must include the `-SkipPublisherCheck` to ensure the Pester module is installed**.
 
 If prompted, answer yes to update the Nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted. If you have an old copy of this module from before Pluralsight took ownership, you will get an error. Manually remove the old module files and try again. See [this document](update.md) for more information.
 

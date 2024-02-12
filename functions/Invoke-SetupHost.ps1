@@ -20,8 +20,8 @@ Function Invoke-SetupHost {
     This is the Setup-Host script. This script will perform the following:
 
     * For PowerShell Remoting, configure the host 'TrustedHosts' value to *
-    * Install the Lability module from PSGallery
-    * Update the Pester module if necessary
+    * Install the Lability module from PSGallery (if necessary)
+    * Update the Pester module (if necessary)
     * Install Hyper-V
     * Create the $DestinationPath folder (DO NOT DELETE)
     * Copy configurations and resources to $DestinationPath

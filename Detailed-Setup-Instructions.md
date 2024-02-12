@@ -45,7 +45,7 @@ You need to ensure you can run PowerShell scripts on your computer. Run `Get-Exe
 Set-ExecutionPolicy RemoteSigned -force
 ```
 
-Note, that some organizations may have implemeneted a Group Policy to restrict this setting. If yoiu can't change the policy to something other than `Restricted` you won't be able to use this or any PowerShell module. If the policy is `AllSigned` then you will have to sign the downloaded files with a code signing certificate trusted by your computer. If you are in a corporate environment, you may need to work with your IT department to sort that out.
+Note, that some organizations may have implemented a Group Policy to restrict this setting. If you can't change the policy to something other than `Restricted` you won't be able to use this or any PowerShell module. If the policy is `AllSigned` then you will have to sign the downloaded files with a code signing certificate trusted by your computer. If you are in a corporate environment, you may need to work with your IT department to sort that out.
 
 ### PowerShell Remoting
 
@@ -98,10 +98,16 @@ Get-Module Pester -ListAvailable
 If the _only_ result you get is for version `3.4.0`, then you must run:
 
 ```powershell
-Install-Module pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
+Install-Module Pester -Force -SkipPublisherCheck
 ```
 
-Re-run the `Get-Module` to verify version `4.10.1` is installed. If you have newer versions installed, that will have no effect on this module. Once you have verified Pester version 4.10.1 you can install the PSAutolab module.
+Re-run the `Get-Module` to verify version `5.5.0` or greater is installed. If you do not have an updated version of the Pester module, you will see a warning when you import this module.
+
+If you are running a version of Pester greater than `3.4.0` but less than `5.5.0`, you must update the Pester module.
+
+```powershell
+Update-Module Pester
+```
 
 ## Installation and Configuration
 
@@ -123,7 +129,7 @@ PS C:\> Get-Module PSAutoLab -list
 
 ModuleType Version    Name                       ExportedCommands
 ---------- -------    ----                       ----------------
-Script     4.19.0      PSAutoLab                 {Enable-Internet, Invoke-RefreshLab, Invoke-Run...
+Script     5.0.0      PSAutoLab                 {Enable-Internet, Invoke-RefreshLab, Invoke-Run...
 ```
 
 You may see a newer version number than what is indicated here. The `README` file in the GitHub repository indicates the current version in the PowerShell Gallery.
@@ -150,21 +156,21 @@ To verify your configuration, run `Get-PSAutolabSetting`.
 PS C:\> Get-PSAutoLabSetting
 
 AutoLab                     : C:\Autolab
-PSVersion                   : 5.1.18362.752
+PSVersion                   : 5.1.22621.2506
 PSEdition                   : Desktop
-OS                          : Microsoft Windows 10 Pro
+OS                          : Microsoft Windows 11 Pro
 FreeSpaceGB                 : 365.45
-MemoryGB                    : 32
+MemoryGB                    : 3642
 PctFreeMemory               : 59.71
-Processor                   : Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+Processor                   : Intel(R) Core(TM) i9-10900T CPU @ 1.90GHz
 IsElevated                  : True
 RemotingEnabled             : True
 NetConnectionProfile        : Private
-HyperV                      : 10.0.18362.1
-PSAutolab                   : 4.19.0
-Lability                    : {0.19.1, 0.19.0, 0.18.0}
-Pester                      : {5.0.2, 4.10.1, 4.9.0, 4.8.1...}
-PowerShellGet               : 2.2.4.1
+HyperV                      : 10.0.22621.1
+PSAutolab                   : 5.0.0
+Lability                    : 0.25
+Pester                      : {5.5.0, 5.4.1, 5.3.3, 5.3.1...}
+PowerShellGet               : 2.2.5
 PSDesiredStateConfiguration : 1.1
 ```
 
@@ -228,7 +234,7 @@ The `Write-Progress` display will provide feedback on the process.
 Beginning with v4.21.0, the validation command will restart virtual machines that have stopped and restart-virtual machines that appear to be failing. You will see this as warning messages. Validation will abort after 65 minutes if it hasn't completed. At which point you can manually test to see if the configuration has converged.
 
 ```powershell
-Invoke-Pester .\vmvalidate.test.ps1
+Run-Pester
 ```
 
 Depending on the error, you might simply ignore it or manually attempt to resolve it. Often the best approach is to run `Wipe-Lab -force` and start all over.
@@ -283,14 +289,14 @@ Another good test is to try an setup another simple configuration. Run `Wipe-Lab
 
 ### Manually Apply the Configuration
 
-As a last resort, you can try to manually re-apply a configuration to a virtual machine. If you run `Invoke-Pester .\vmvalidate.test.ps1` you be able to discover what virtual machine is failing. For the sake of demonstration let's say it is a virtual machine called WIN10. To re-apply the configuration, you need to create a remoting session to it.
+As a last resort, you can try to manually re-apply a configuration to a virtual machine. If you run `Run-Pester` you be able to discover what virtual machine or test is failing. For the sake of demonstration let's say it is a virtual machine called WIN10. To re-apply the configuration, you need to create a remoting session to it.
 
 First, you need the lab password to create a credential object.
 
 ```powershell
 $data = Import-PowerShellDataFile .\VMConfigurationData.psd1
 $pass = ConvertTo-SecureString -AsPlainText -String $data.AllNodes.LabPassword -force
-$cred = new-object PSCredential -ArgumentList administrator, $pass
+$cred = New-Object PSCredential -ArgumentList administrator, $pass
 ```
 
 Note that if the lab has a mix of domain and workgroup machines, you will need to look at the VMConfigurationData file to discover the correct password. Almost always they will be same.

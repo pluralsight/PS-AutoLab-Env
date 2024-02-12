@@ -42,7 +42,7 @@ Function Invoke-ValidateLab {
     If you feel the test is taking too long, break out of the testing loop
     and manually run the test:
 
-        Invoke-Pester .\vmvalidate.test.ps1 -Show All -WarningAction SilentlyContinue
+        Run-Pester
 
     Make sure you are using version 5.x of the Pester module.
 

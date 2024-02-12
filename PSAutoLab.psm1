@@ -10,7 +10,14 @@ $ConfigurationPath = Join-Path -Path $PSScriptRoot -ChildPath Configurations
 #declare the currently supported version of Pester
 #Pester v5 is supported with v5.0.0 of this module
 
-$PesterVersion = "5.4.0"
+$PesterVersion = "5.5.0"
+
+#validate Pester version on module import. Even though it is marked as a required module,
+#But it won't be installed unless using -SkipPublisherCheck
+#This code is a failsafe to ensure the correct version is installed
+if (-not ((Get-Module pester -ListAvailable)[0].version -ge $PesterVersion)) {
+    Write-Warning "Pester v$PesterVersion or later is required to use this module. Please install it from the PowerShell Gallery: Install-Module Pester -Force -SkipPublisherCheck"
+}
 
 #declare the currently supported version of Lability
 $LabilityVersion = "0.25.0"
