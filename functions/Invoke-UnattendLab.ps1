@@ -20,6 +20,7 @@ Function Invoke-UnattendLab {
         [CmdletBinding()]
         Param([String]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [String]$VerboseAction)
 
+        Import-Module PSAutoLab
         #uncomment for testing and development
         #Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
 
@@ -40,8 +41,8 @@ Function Invoke-UnattendLab {
 
             $msg = @"
 
-            This runs Setup-Lab, Run-Lab, and Validate-Lab commands.
-            Starting the lab environment
+        This runs Setup-Lab, Run-Lab, and Validate-Lab commands.
+        Starting the lab environment
 "@
 
             Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
@@ -70,9 +71,10 @@ Function Invoke-UnattendLab {
             You can abort waiting with Ctrl+C. The lab will continue to run. Later,
             you can run Run-Pester to validate the lab.
 "@
-            Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Green
-            Start-Sleep -Seconds 300
-            Write-Verbose "Validate-Lab"
+            Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Yellow
+            #calling a private function to display a progress bar
+            _SleepProgress -Minutes 5
+            Write-Verbose "Invoking Validate-Lab"
             PSAutolab\Invoke-ValidateLab @PSBoundParameters
         }
 

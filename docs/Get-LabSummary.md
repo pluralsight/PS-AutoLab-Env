@@ -32,7 +32,6 @@ Run Test-LabDSCResource from the configuration directory to see what DSC resourc
 ```powershell
 PS C:\Autolab\Configurations\Windows10> Get-LabSummary
 
-
    Computername: Win10Ent VMName: Win10Ent
 
 Lab           IPAddress       MemGB Procs Role            Description

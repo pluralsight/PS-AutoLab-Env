@@ -48,7 +48,7 @@ Describe $Node {
         $test = Invoke-Command { Get-CimInstance -ClassName win32_OperatingSystem -Property caption, csname } -Session $VMSess
         $dns = Invoke-Command { Get-DnsClientServerAddress -InterfaceAlias ethernet -AddressFamily IPv4 } -Session $VMSess
         $sys = Invoke-Command { Get-CimInstance Win32_ComputerSystem } -Session $VMSess
-        $if = Invoke-Command -Scriptblock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
+        $if = Invoke-Command -ScriptBlock { Get-NetIPAddress -InterfaceAlias 'Ethernet' -AddressFamily IPv4 } -Session $VMSess
         $installType = Invoke-Command { Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\windows nt\currentversion' -Name InstallationType } -Session $VMSess
         $resolve = Invoke-Command { Resolve-DnsName www.pluralsight.com -Type A | Select-Object -First 1 } -Session $VMSess
         $PS2Test = Invoke-Command { (Get-WindowsFeature -Name 'PowerShell-V2').Installed } -Session $VMSess
@@ -68,7 +68,7 @@ Describe $Node {
     It "[$Node] Should Belong to a Workgroup" {
         $sys.Domain | Should -Be 'Workgroup'
     }
-    It"'[$Node] Should have firewall rule <_> enabled" -ForEach $FireWallRules {
+    It "[$Node] Should have firewall rule <_> enabled" -ForEach $FireWallRules {
         $fw[$_] | Should -Be $True
     }
     It "[$Node] Should Be running Windows Server 2019" {

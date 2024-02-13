@@ -263,7 +263,7 @@ Describe Cli1 {
             'Rsat.IPAM.Client.Tools~~~~0.0.1.0',
             'Rsat.ServerManager.Tools~~~~0.0.1.0'
         )
-        $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $cl
+        $pkg2 = Invoke-Command { $using:rsat | ForEach-Object { Get-WindowsCapability -Online -Name $_ } } -Session $VMSess
 
         $FireWallRules = $LabData.AllNodes.FirewallRuleNames
         $fw = Invoke-Command { Get-NetFirewallRule -Name $using:FireWallRules } -Session $VMSess |

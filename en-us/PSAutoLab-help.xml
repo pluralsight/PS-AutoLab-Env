@@ -312,7 +312,6 @@ S1     PreInstall    Standard      9/11/2020 12:06:51 PM</dev:code>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\Autolab\Configurations\Windows10&gt; Get-LabSummary
 
-
    Computername: Win10Ent VMName: Win10Ent
 
 Lab           IPAddress       MemGB Procs Role            Description

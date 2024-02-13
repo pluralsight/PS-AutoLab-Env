@@ -38,8 +38,9 @@ Function Invoke-SetupLab {
         Note! If this is the first time you have run this, it can take several
         hours to download the ISO files and resources depending on the configuration.
         You may also see new drives being added and removed as the ISO is mounted
-        and converted. This step should only happen the first time you run this
-        command.
+        and converted. You can ignore these activities.
+
+        This step should only happen the first time you run this command.
 
         ** Possible problem
         If the downloads finish but the script doesn't continue (pauses),
@@ -80,7 +81,7 @@ Function Invoke-SetupLab {
 
     If (-Not $NoMessages) {
         Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Cyan -Object 'Installing required DSCResource modules from PSGallery'
-        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider'
+        Microsoft.PowerShell.Utility\Write-Host -ForegroundColor Yellow -Object 'You may need to say "yes" to a Nuget Provider prompt.'
     }
     #force updating/installing nuget to bypass the prompt
     [void](Install-PackageProvider -Name nuget -Force -ForceBootstrap)
