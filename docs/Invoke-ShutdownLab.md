@@ -14,8 +14,7 @@ Shutdown an Autolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-ShutdownLab [[-Path] <String>] [-WhatIf] [-Confirm]
-[<CommonParameters>]
+Invoke-ShutdownLab [[-Path] <String>] [-NoMessages] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,6 +74,21 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoMessages
+Run the command but suppress all status messages.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: Quiet
 
 Required: False
 Position: Named

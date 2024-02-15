@@ -297,6 +297,7 @@ Describe Cli1 {
         $resolve.name | Should -Be 'www.pluralsight.com'
     }
     It "[Cli1] Should have RSAT installed [$rsatStatus]" {
-        $pkg2 | Where-Object { $_.state -ne 'installed' } | Should -Be $Null
+        #$pkg | out-string | write-host -ForegroundColor cyan
+        $pkg | Where-Object { $_.state -ne 'installed' } | Should -Be $Null
     }
 }

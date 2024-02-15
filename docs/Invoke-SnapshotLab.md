@@ -14,8 +14,7 @@ Create virtual machine snapshots of your Autolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-SnapshotLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf]
-[-Confirm] [<CommonParameters>]
+Invoke-SnapshotLab [[-Path] <String>] [-SnapshotName <String>] [-NoMessages] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -95,6 +94,21 @@ Aliases:
 Required: False
 Position: Named
 Default value: LabConfigured
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoMessages
+Run the command but suppress all status messages.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: Quiet
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

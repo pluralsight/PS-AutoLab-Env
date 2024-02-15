@@ -2,6 +2,10 @@
 
 [![PSGallery Version](https://img.shields.io/powershellgallery/v/PSAutoLab.png?style=for-the-badge&logo=powershell&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/PSAutoLab/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/PSAutoLab.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/PSAutoLab/)
 
+## Version 5.0.0
+
+This is a **major** update to the module with many breaking changes. It is recommended that you finish and remove all lab configurations before installing this update. Read the [documentation on upgrading to version 5](update-v5.md) for more information.
+
 ## Overview
 
 This project serves as a set of "wrapper" commands that utilize the [Lability](https://github.com/VirtualEngine/Lability) module which is a terrific tool for creating a lab environment of Windows-based systems. The downside is that it is a difficult module for less experienced PowerShell users. The configurations and control commands for the Hyper-V virtual machines in this module are written in PowerShell using `Desired State Configuration (DSC)` and deployed via Lability commands. If you feel sufficiently skilled, you can skip using this project and use the Lability module on your own. Note that the Lability module is not owned or managed by Pluralsight. This project and all files are released under an MIT License - meaning you can copy and use as your own, modify, borrow, steal - whatever you want.
@@ -9,6 +13,10 @@ This project serves as a set of "wrapper" commands that utilize the [Lability](h
 **While this project is under the Pluralsight banner, it is offered AS-IS as a free tool with no official support from Pluralsight. Pluralsight makes no guarantees or warranties. This project is intended to be used for educational purposes only.**
 
 Beginning with module version 4.17.0, you can run [Open-PSAutoLabHelp](docs/Open-PSAutoLabHelp.md) to view a local PDF version of the module's documentation.
+
+```powershell
+PS C:\> Open-PSAutoLabHelp
+```
 
 ## Requirements
 
@@ -41,7 +49,7 @@ This module has been published in the PowerShell Gallery. It is recommended that
 Open an elevated PowerShell prompt and run:
 
 ```powershell
-Install-Module PSAutoLab -Force -Sk0pPublisherCheck
+Install-Module PSAutoLab -Force -SkipPublisherCheck
 ```
 
 If you are using the `Microsoft.PowerShell.PSResourceGet`module run:
@@ -52,7 +60,7 @@ Install-PSResource PSAutoLab -Force
 
 The installation should install the required dependencies of the Lability and Pester modules.** You must include the `-SkipPublisherCheck` to ensure the Pester module is installed**.
 
-If prompted, answer yes to update the Nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted. If you have an old copy of this module from before Pluralsight took ownership, you will get an error. Manually remove the old module files and try again. See [this document](update.md) for more information.
+If prompted, answer yes to update the Nuget version and to install from an untrusted repository, unless you've already marked the PSGallery as trusted. If you have an old copy of this module from before Pluralsight took ownership, you will get an error. Manually remove the old module files and try again. See [this document](Updating.md) for more information.
 
 **Do not download or use any of the release packages from this GitHub repository. You must install this module from the PowerShell Gallery.**
 

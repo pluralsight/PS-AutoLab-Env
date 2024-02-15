@@ -10,6 +10,7 @@ Function Invoke-UnattendLab {
         [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
         [Switch]$UseLocalTimeZone,
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [Alias("Quiet")]
         [Switch]$NoMessages
     )
     Write-Verbose "Starting $($MyInvocation.MyCommand)"
@@ -20,6 +21,29 @@ Function Invoke-UnattendLab {
         [CmdletBinding()]
         Param([String]$Path, [bool]$UseLocalTimeZone, [bool]$NoMessages, [bool]$WhatIf, [String]$VerboseAction)
 
+        #Not sure why this private function isn't being detected in the script block
+        #so I'll make a copy here
+        Function _SleepProgress {
+            [cmdletBinding()]
+            Param(
+                [int]$Minutes = 1
+            )
+
+            $Status = 'The lab will continue to run if you cancel. You can validate the lab later by running Run-Pester'
+            $Seconds = $Minutes * 60
+            $i = 0
+            $TS = New-TimeSpan -Minutes $minutes
+            do {
+                [string]$Activity = "Waiting $minutes minute for lab configuration to merge or press Ctrl+C to cancel waiting."
+                $i++
+                $TS = $TS.subtract('0:0:1')
+
+                Write-Progress -Activity $Activity -Status $status -CurrentOperation $TS
+                Start-Sleep -Seconds 1
+            } until ($i -ge $Seconds)
+
+            Write-Progress -Activity $Activity -Completed
+        }
         Import-Module PSAutoLab
         #uncomment for testing and development
         #Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force

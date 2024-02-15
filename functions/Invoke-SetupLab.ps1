@@ -10,6 +10,7 @@ Function Invoke-SetupLab {
         [Parameter(HelpMessage = "Override any configuration specified time zone and use the local time zone on this computer.")]
         [Switch]$UseLocalTimeZone,
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [Alias("Quiet")]
         [Switch]$NoMessages
     )
 

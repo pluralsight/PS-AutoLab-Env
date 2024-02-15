@@ -10,6 +10,7 @@ Function Invoke-RefreshLab {
         [ValidateNotNullOrEmpty()]
         [String]$SnapshotName = "LabConfigured",
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [Alias("Quiet")]
         [Switch]$NoMessages
     )
 

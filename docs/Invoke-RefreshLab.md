@@ -14,8 +14,7 @@ Refresh a PSAutolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-RefreshLab [[-Path] <String>] [-SnapshotName <String>] [-WhatIf]
-[-Confirm] [<CommonParameters>]
+Invoke-RefreshLab [[-Path] <String>] [-SnapshotName <String>] [-NoMessages] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -91,6 +90,21 @@ Specify a name for the virtual machine checkpoint
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoMessages
+Run the command but suppress all status messages.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: Quiet
 
 Required: False
 Position: Named

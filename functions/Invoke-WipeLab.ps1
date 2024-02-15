@@ -11,6 +11,7 @@ Function Invoke-WipeLab {
         [Parameter(HelpMessage = "Remove lab elements with no prompting.")]
         [Switch]$Force,
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [Alias("Quiet")]
         [Switch]$NoMessages
     )
 

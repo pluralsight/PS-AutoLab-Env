@@ -44,21 +44,30 @@ Script     5.0.0      PSAutoLab                {Enable-Internet, Get-LabSnaps...
 
 ## Update the Host
 
-Version 5.0 uses updated ISO images and lab configurations. You should take the following steps to update your host after importing the updated module.
+Version 5.0 uses updated ISO images and lab configurations. You should take the following steps to update your host **after importing the updated module**.
 
-First, in your PowerShell session run `Refresh-Host` to update the lab configurations and install updates to Lability or Pester as needed.
+```powershell
+Import-Module PSAutoLab -Force
+```
 
-Next, change to your AutoLab folder, and delete all ISO images.
+First, in your Windows PowerShell 5.1 session run `Refresh-Host` to update the lab configurations and install updates to Lability or Pester as needed.
+
+```powershell
+Refresh-Host
+```
+
+Next, change location to your AutoLab folder, and delete all ISO images.
 
 ```PowerShell
-PS C:\AutoLab> Get-ChildItem ISOs | Remove-Item
+PS C:\ cd c:\AutoLab
+PS C:\AutoLab> Get-ChildItem .\ISOs | Remove-Item
 ```
 You will download new ISO images as needed when you build a lab.
 
 Do the same thing with the master virtual disks. Make sure you have no running VMs that might be using them.
 
 ```PowerShell
-PS C:\AutoLab> Get-ChildItem MasterVirtualHardDisks | Remove-Item
+PS C:\AutoLab> Get-ChildItem .\MasterVirtualHardDisks | Remove-Item
 ```
 
 These images will be rebuilt as needed when you build a lab.

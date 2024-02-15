@@ -791,6 +791,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -841,6 +852,18 @@ This process will not remove any configurations that have been deleted from the 
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -938,6 +961,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -969,6 +1003,18 @@ This process will not remove any configurations that have been deleted from the 
         <maml:name>WhatIf</maml:name>
         <maml:description>
           <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -1237,6 +1283,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1292,6 +1349,18 @@ This process will not remove any configurations that have been deleted from the 
         <maml:name>UseLocalTimeZone</maml:name>
         <maml:description>
           <maml:para>Override any configuration specified time zone and use the local time zone on this computer.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -1396,6 +1465,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1427,6 +1507,18 @@ This process will not remove any configurations that have been deleted from the 
         <maml:name>WhatIf</maml:name>
         <maml:description>
           <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -1543,6 +1635,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>LabConfigured</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1593,6 +1696,18 @@ This process will not remove any configurations that have been deleted from the 
           <maml:uri />
         </dev:type>
         <dev:defaultValue>LabConfigured</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -1724,6 +1839,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1779,6 +1905,18 @@ This process will not remove any configurations that have been deleted from the 
         <maml:name>UseLocalTimeZone</maml:name>
         <maml:description>
           <maml:para>Override any configuration specified time zone and use the local time zone on this computer.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -1879,6 +2017,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>Current Directory</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1893,6 +2042,18 @@ This process will not remove any configurations that have been deleted from the 
           <maml:uri />
         </dev:type>
         <dev:defaultValue>Current Directory</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -1935,7 +2096,7 @@ This process will not remove any configurations that have been deleted from the 
         <maml:uri>https://github.com/pluralsight/PS-AutoLab-Env/blob/master/docs/Invoke-ValidateLab.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
-        <maml:linkText>Invoke-Pester</maml:linkText>
+        <maml:linkText>Invoke-PesterTest</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2014,6 +2175,17 @@ This process will not remove any configurations that have been deleted from the 
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+          <maml:name>NoMessages</maml:name>
+          <maml:description>
+            <maml:para>Run the command but suppress all status messages.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -2069,6 +2241,18 @@ This process will not remove any configurations that have been deleted from the 
         <maml:name>RemoveSwitch</maml:name>
         <maml:description>
           <maml:para>Remove the VM Switch. It is retained by default.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Quiet">
+        <maml:name>NoMessages</maml:name>
+        <maml:description>
+          <maml:para>Run the command but suppress all status messages.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>

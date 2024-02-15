@@ -7,6 +7,7 @@ Function Invoke-ShutdownLab {
         [ValidateScript( { Test-Path $_ })]
         [String]$Path = ".",
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [Alias("Quiet")]
         [Switch]$NoMessages
     )
 

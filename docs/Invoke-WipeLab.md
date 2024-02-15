@@ -14,7 +14,7 @@ Remove an Autolab configuration.
 ## SYNTAX
 
 ```yaml
-Invoke-WipeLab [[-Path] <String>] [-RemoveSwitch] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-WipeLab [[-Path] <String>] [-RemoveSwitch] [-Force] [-NoMessages] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -119,6 +119,21 @@ Remove the VM Switch. It is retained by default.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoMessages
+Run the command but suppress all status messages.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: Quiet
 
 Required: False
 Position: Named

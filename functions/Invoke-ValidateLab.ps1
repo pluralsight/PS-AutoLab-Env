@@ -8,6 +8,7 @@ Function Invoke-ValidateLab {
             {Test-Path $_ })]
         [String]$Path = ".",
         [Parameter(HelpMessage = "Run the command but suppress all status messages.")]
+        [Alias("Quiet")]
         [Switch]$NoMessages
     )
 
@@ -170,7 +171,7 @@ Function Invoke-ValidateLab {
 Validation testing aborted. One or more virtual machines are not working properly.
 It is recommended that you run this command:
 
-Invoke-Pester .\vmvalidate.test.ps1 -show all -WarningAction SilentlyContinue
+Run-Pester
 
 To see what tests are failing. Depending on the error, you may be able to manually
 resolve it in the virtual machine, or feel you can ignore it. Otherwise, use Get-VM

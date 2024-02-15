@@ -13,9 +13,9 @@ Create an Autolab configuration unattended.
 
 ## SYNTAX
 
-```yaml
-Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-UseLocalTimeZone] [-WhatIf]
-[-Confirm] [<CommonParameters>]
+```
+Invoke-UnattendLab [[-Path] <String>] [-AsJob] [-UseLocalTimeZone] [-NoMessages] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -128,6 +128,21 @@ Override any configuration specified time zone and use the local time zone on th
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoMessages
+Run the command but suppress all status messages.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: Quiet
 
 Required: False
 Position: Named
