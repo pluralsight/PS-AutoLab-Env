@@ -27,7 +27,7 @@ Note that if you want to remove a snapshot, use the Hyper-V Manager or PowerShel
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\SingleServer> Get-LabSnapshot
 
 All VMs in the configuration should belong to the same snapshot.

@@ -25,7 +25,7 @@ This is a troubleshooting command for the PSAutoLab module. It is designed to be
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\autolab\Configurations\MultiRole> Test-LabDSCResource
 
 

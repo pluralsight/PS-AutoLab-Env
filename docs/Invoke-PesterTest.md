@@ -27,7 +27,7 @@ Invoke-Pester .\vmValidate.test.ps1 -Show All -WarningAction SilentlyContinue
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\> Run-Pester
 ```
 

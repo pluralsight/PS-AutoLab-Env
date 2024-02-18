@@ -34,7 +34,7 @@ Run Validate-Lab -Verbose to see details about the number of testing loops and w
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\AutoLab\Configurations\Windows10> Validate-Lab -verbose
 ```
 

@@ -114,7 +114,7 @@ When you build a lab, you are creating Windows virtual machines based on evaluat
 
 This can be a time-consuming process, so you have an option to run the updates as a background job. Be sure not to close your PowerShell session before the jobs have completed.
 
-```powershell
+```shell
 PS C:\AutoLab\Configurations\PowerShellLab\> update-lab -AsJob
 
 Id     Name            PSJobTypeName   State         HasMoreData     Location    Command
@@ -185,13 +185,13 @@ Once the files have been copied, use your script editor to modify the files. Don
 
 Due to what is probably a bug in the current implementation of Desired State Configuration in Windows, if you have multiple versions of the same resource, a previous version might be used instead of the required on. You might especially see this with the `xNetworking` module and the `xIPAddress` resource. If you have any version older than 5.7.0.0 you might encounter problems. Run this command to see what you have installed:
 
-```powershell
+```shell
 PS C:\> Get-DSCResource xIPAddress
 ```
 
 If you have older versions of the module, uninstall them if you can.
 
-```powershell
+```shell
 PS C:\> Uninstall-Module xNetworking -RequiredVersion 3.0.0.0
 ```
 

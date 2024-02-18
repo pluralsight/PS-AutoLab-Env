@@ -25,7 +25,7 @@ Use this command to restore your Autolab configuration from the last checkpoint.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\Windows10> Refresh-Lab
 ```
 

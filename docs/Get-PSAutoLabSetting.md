@@ -25,7 +25,7 @@ If you need to report a problem with AutoLab, use this command to get relevant c
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\> Get-PSAutoLabSetting
 
 AutoLab                     : C:\Autolab

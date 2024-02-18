@@ -27,7 +27,7 @@ You will typically use the Run-Lab alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\AutoLab\Configurations\Windows10> Run-Lab
 ```
 

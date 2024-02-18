@@ -27,7 +27,7 @@ This command was introduced in version 4.17.0 of the PSAutoLab module.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\> Open-PSAutoLabHelp
 ```
 

@@ -8,7 +8,7 @@ This guide is intended for people who are creating their own lab configurations.
 
 First, find the node information in the VMConfigurationData.psd1 file.
 
-```powershell
+```shell
 @{
     NodeName           = 'S1'
     IPAddress          = '192.168.3.50'
@@ -51,7 +51,7 @@ Normally, when you run `Wipe-Lab` that should handle everything for you. But if 
 
 1. First, find your desired timezone using one of these PowerShell commands:
 
-```powershell
+```shell
 # Filter all timezones, take the Id property from the desired timezone:
 [System.TimeZoneInfo]::GetSystemTimeZones().Where({$_.Id -like '*Eastern*'})
 

@@ -28,7 +28,7 @@ You will typically use the Refresh-Host alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\> Refresh-Host
 Version 0.19.1 of Lability is already installed
 Updating configuration files from C:\Program Files\WindowsPowerShell\Modules\PSAutoLab\4.19.0\Configurations

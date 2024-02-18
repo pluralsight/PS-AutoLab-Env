@@ -22,19 +22,19 @@ Lab configurations for Windows Server 2012R2 have been archived and are no longe
 
 The module is available from the PowerShell Gallery. You can update the module from the PowerShell console. This module still only works in Windows PowerShell.
 
-```powershell
+```shell
 Update-Module -Name PSAutoLab -Force
 ```
 
 Restart your Windows PowerShell session and import the module.
 
-```powershell
+```shell
 Import-Module PSAutoLab
 ```
 
 You should have at least version `5.0.0`.
 
-```powershell
+```shell
 PS C:\> Get-Module PSAutoLab
 
 ModuleType Version    Name                     ExportedCommands
@@ -46,19 +46,19 @@ Script     5.0.0      PSAutoLab                {Enable-Internet, Get-LabSnaps...
 
 Version 5.0 uses updated ISO images and lab configurations. You should take the following steps to update your host **after importing the updated module**.
 
-```powershell
+```shell
 Import-Module PSAutoLab -Force
 ```
 
 First, in your Windows PowerShell 5.1 session run `Refresh-Host` to update the lab configurations and install updates to Lability or Pester as needed.
 
-```powershell
+```shell
 Refresh-Host
 ```
 
 Next, change location to your AutoLab folder, and delete all ISO images.
 
-```PowerShell
+```shell
 PS C:\ cd c:\AutoLab
 PS C:\AutoLab> Get-ChildItem .\ISOs | Remove-Item
 ```
@@ -66,7 +66,7 @@ You will download new ISO images as needed when you build a lab.
 
 Do the same thing with the master virtual disks. Make sure you have no running VMs that might be using them.
 
-```PowerShell
+```shell
 PS C:\AutoLab> Get-ChildItem .\MasterVirtualHardDisks | Remove-Item
 ```
 
@@ -76,7 +76,7 @@ Finally, if you don't have any running lab configurations, the VMVirtualHardDisk
 
 Since Windows Server 2012 R2 labs have been removed, you might want to delete the lab configurations.
 
-```PowerShell
+```shell
 PS C:\AutoLab> Get-ChildItem .\Configurations\*2012* | Remove-Item -Recurse -Force
 ```
 

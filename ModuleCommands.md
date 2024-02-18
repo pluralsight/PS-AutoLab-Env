@@ -2,7 +2,7 @@
 
 Most of the commands in the module use a domain-specific language (DSL), or a set of aliases, such as `Run-Lab,` to reference the actual commands (e.g. `Invoke-Runlab`). This DSL is intended to make it easier for beginner PowerShell users to use this module.
 
-```powershell
+```shell
 Get-Command -module PSAutolab
 ```
 

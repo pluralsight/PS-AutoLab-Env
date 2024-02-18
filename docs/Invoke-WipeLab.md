@@ -31,7 +31,7 @@ You will typically use the Wipe-Lab alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\AutoLab\Configurations\Windows10> Wipe-Lab
 ```
 
@@ -39,7 +39,7 @@ Follow any on-screen prompts or instructions.
 
 ### Example 2
 
-```powershell
+```shell
 PS C:\AutoLab\Configurations\SingleServer> Wipe-Lab -force -RemoveSwitch
 ```
 

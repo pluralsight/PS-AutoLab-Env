@@ -28,7 +28,7 @@ You will typically use the Setup-Host alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\> Setup-Host
 ```
 
@@ -36,7 +36,7 @@ Follow the on-screen prompts. If you have to install the Hyper-V feature you def
 
 ### Example 2
 
-```powershell
+```shell
 PS C:\> Setup-Host -destination D:\Autolab
 ```
 

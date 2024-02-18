@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [5.1.0] - 2024-02-18
+
+### Changed
+
+- Changed unattended sleep window to 20 minutes.
+- Updated documentation formatting and internal links.
+
 ## [5.0.0] - 2024-02-15
 
 This is a **major** update to the module. It is recommended that you finish and remove all lab configurations before installing this update. Read the [update documentation](update-v5.md) for more information.
@@ -99,7 +106,8 @@ This release contains changes to lab configuration files. If you are updating th
 - Updated configurations to use version 3.0.0 of the xDHCPServer module for DSC configurations. This deprecated the `xDCHPServerOption` resource.
 - Updated `README.md`.
 
-[Unreleased]: https://github.com/pluralsight/PS-AutoLab-Env/compare/v5.0.0..HEAD
+[Unreleased]: https://github.com/pluralsight//PS-AutoLab-Env/compare/v5.1.0..HEAD
+[5.1.0]: https://github.com/pluralsight//PS-AutoLab-Env/compare/v5.0.0..v5.1.0
 [5.0.0]: https://github.com/pluralsight/PS-AutoLab-Env/compare/v4.22.1..v5.0.0
 [4.22.1]: https://github.com/pluralsight/PS-AutoLab-Env/compare/v4.22.0..v4.22.1
 [4.22.0]: https://github.com/pluralsight/PS-AutoLab-Env/compare/v4.21.0..v4.22.0

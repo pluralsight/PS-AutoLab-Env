@@ -27,7 +27,7 @@ You will typically use the `Setup-Lab` alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\Windows10\> Setup-Lab
 ```
 

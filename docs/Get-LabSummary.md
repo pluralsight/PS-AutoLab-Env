@@ -29,7 +29,7 @@ Run Test-LabDSCResource from the configuration directory to see what DSC resourc
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\Windows10> Get-LabSummary
 
    Computername: Win10Ent VMName: Win10Ent
@@ -45,8 +45,8 @@ Get the configuration for the Windows 10 lab. The command has an associated form
 
 ### Example 2
 
-```powershell
-PS C:\Autolab\Configurations\> Get-Childitem -Directory | Get-LabSummary |
+```shell
+PS C:\Autolab\Configurations\> Get-ChildItem -Directory | Get-LabSummary |
 Select-Object * | Out-GridView
 ```
 

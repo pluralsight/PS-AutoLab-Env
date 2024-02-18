@@ -10,13 +10,13 @@ If you try to run `Refresh-Host` you might see an error about a certificate mism
 
 The module commands must be able to use PowerShell remoting to configure and test the virtual machines within a configuration. Because there is no Kerberos authentication between the local host and the virtual machines, you need to configure TrustedHosts. If TrustedHosts can't be configured, you will likely encounter errors. You should make sure remoting is enabled on the localhost. Run this command.
 
-```powershell
+```shell
 Test-WSMan
 ```
 
 If you get errors, you may need to enable PowerShell remoting.
 
-```powershell
+```shell
 Enable-PSRemoting
 ```
 
@@ -37,7 +37,7 @@ At line:116 char:17
 
 To solve this you can try to modify the connection profile.
 
-```powershell
+```shell
 # Find connections with a NetworkCategory set to Public
 Get-NetConnectionProfile
 
@@ -71,19 +71,19 @@ Refer to this article for help on creating NAT networks: [https://msdn.microsoft
 
 Run this command to list NAT networks, take note of the IP range and subnet
 
-```powershell
+```shell
 Get-NetNat
 ```
 
 If you have an existing that is conflicting, _and that no longer need_, remove it . Here's an example removing an existing NAT network called DockerNAT
 
-```powershell
+```shell
 Remove-NetNat DockerNAT
 ```
 
 You can then create a NAT network using the corresponding subnet.
 
-```powershell
+```shell
 New-NetNat -Name DockerAndLabilityNAT -InternalIPInterfaceAddressPrefix "192.168.3.0/24"
 ```
 
@@ -93,7 +93,7 @@ Docker for Windows network settings can be updated from the windows tray icon. L
 
 First, find your desired timezone using one of these techniques:
 
-```powershell
+```shell
 # Filter all timezones, take the Id property from the desired timezone:
 [System.TimeZoneInfo]::GetSystemTimeZones()
 [System.TimeZoneInfo]::GetSystemTimeZones().Where({$_.Id -like '*Eastern*'})
@@ -104,18 +104,18 @@ First, find your desired timezone using one of these techniques:
 
 Next, open the lab's `VMConfigurationData.psd1` in your script editor and change `Lability_timeZone` per Node.
 
-```powershell
+```shell
  @{
-            NodeName                = 'Win10Ent'
-            IPAddress               = '192.168.3.101'
-            Role                    = @('RSAT','RDP')
-            Lability_ProcessorCount = 2
-            Lability_MinimumMemory  = 2GB
-            Lability_Media          = 'WIN10_x64_Enterprise_EN_Eval'
-            Lability_BootOrder      = 20
-            Lability_timeZone       = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
-            Lability_Resource       = @()
-        }
+    NodeName                = 'Win10Ent'
+    IPAddress               = '192.168.3.101'
+    Role                    = @('RSAT','RDP')
+    Lability_ProcessorCount = 2
+    Lability_MinimumMemory  = 2GB
+    Lability_Media          = 'WIN10_x64_Enterprise_EN_Eval'
+    Lability_BootOrder      = 20
+    Lability_timeZone       = 'Central Standard Time' #[System.TimeZoneInfo]::GetSystemTimeZones()
+    Lability_Resource       = @()
+}
 ```
 
 Or, when you run `Setup-Lab` or `Unattend-Lab` you can use the `UseLocalTimeZone` parameter to set the time zone for all lab members to use the same time zone as the local host.
@@ -148,7 +148,7 @@ You should keep the same file names.
 
 First, find the node information in the VMConfigurationData.psd1 file.
 
-```powershell
+```shell
 @{
     NodeName           = 'S1'
     IPAddress          = '192.168.3.50'

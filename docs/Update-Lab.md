@@ -29,8 +29,8 @@ It is recommended that you reboot all the lab virtual machines after updating.
 
 ### Example 1
 
-```powershell
-PS C:\Autolab\Configurations\PowerShellLab> update-lab -AsJob
+```shell
+PS C:\Autolab\Configurations\PowerShellLab> Update-Lab -AsJob
 
 Id     Name       PSJobTypeName   State     HasMoreData     Location   Command
 --     ----       -------------   -----     -----------     --------   -------

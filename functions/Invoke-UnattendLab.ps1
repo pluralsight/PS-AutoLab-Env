@@ -44,9 +44,10 @@ Function Invoke-UnattendLab {
 
             Write-Progress -Activity $Activity -Completed
         }
-        Import-Module PSAutoLab
+
         #uncomment for testing and development
         #Import-Module C:\scripts\PSAutoLab\PSAutoLab.psd1 -force
+        Import-Module PSAutoLab
 
         $VerbosePreference = $VerboseAction
         if ($VerboseAction -eq "Continue") {
@@ -91,13 +92,13 @@ Function Invoke-UnattendLab {
             #12 Feb 2024 Adding a sleep interval to allow the lab to finish merging
             $msg = @"
 
-            Sleeping for five minutes to allow time for the lab configurations to merge.
+            Sleeping for 20 minutes to allow time for the lab configurations to merge.
             You can abort waiting with Ctrl+C. The lab will continue to run. Later,
-            you can run Run-Pester to validate the lab.
+            you can use Run-Pester to validate the lab.
 "@
             Microsoft.PowerShell.Utility\Write-Host $msg -ForegroundColor Yellow
             #calling a private function to display a progress bar
-            _SleepProgress -Minutes 5
+            _SleepProgress -Minutes 20
             Write-Verbose "Invoking Validate-Lab"
             PSAutolab\Invoke-ValidateLab @PSBoundParameters
         }

@@ -27,7 +27,7 @@ ISO image files are only downloaded once during setup. If any of the ISO images 
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\> Test-ISOImage
 
 Path                                           Valid Size

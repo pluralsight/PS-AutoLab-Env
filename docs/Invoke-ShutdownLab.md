@@ -27,7 +27,7 @@ You will typically use the Shutdown-Lab alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\PowerShellLab> Shutdown-Lab
 ```
 

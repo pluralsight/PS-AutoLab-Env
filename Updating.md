@@ -8,7 +8,7 @@ __Note:__ The terms `AutoLab` and `PSAutolab` are used interchangeably. PSAutola
 
 You should be able to run
 
-```powershell
+```shell
 Update-Module PSAutolab
 ```
 
@@ -16,34 +16,34 @@ Update-Module PSAutolab
 
 However, there is the potential for issues with required Lability module. You can always try this:
 
-```powershell
+```shell
 Update-Module Lability
 Update-Module PSAutolab
 ```
 
 In certain situations, the Lability module may encounter a security validation bug between versions. You can try this sequence of commands.
 
-```powershell
+```shell
 Install-Module Lability -SkipPublisherCheck -force
 Update-Module PSAutolab
 ```
 
 If you *still* have issues, the best course of action is to uninstall the modules and re-install.
 
-```powershell
+```shell
 Get-Module PSAutolab -ListAvailable | Uninstall-Module
 Get-Module lability -ListAvailable | Uninstall-Module
 ```
 
 You might need to repeat this process until this command shows no modules.
 
-```powershell
+```shell
 Get-Module lability,PSAutolab -ListAvailable
 ```
 
 With a clean slate run:
 
-```powershell
+```shell
 Install-Module PSAutolab -SkipPublisherCheck -Force
 ```
 
@@ -55,13 +55,13 @@ If you have been using PSAutolab for awhile, are updating it and plan to continu
 
 You should only refresh disk images if __you have no configured virtual machines__.
 
-```powershell
+```shell
 Get-ChildItem C:\autolab\VMVirtualHardDisks
 ```
 
 If this directory is empty, then you can proceed.
 
-```powershell
+```shell
 Get-ChildItem D:\Autolab\MasterVirtualHardDisks\ | Remove-Item
 ```
 

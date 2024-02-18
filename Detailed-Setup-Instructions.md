@@ -12,7 +12,7 @@ You can run these commands to verify your computer meets the minimum requirement
 
 ### Operating System and Memory
 
-```text
+```shell
 PS C:\> Get-CimInstance -ClassName Win32_OperatingSystem |
 Select-Object -property Caption,
 @{Name="MemoryGB";Expression={$_.TotalVisibleMemorySize/1mb -as [int]}}
@@ -26,7 +26,7 @@ If the Caption shows anything other than Pro or Enterprise this module may not w
 
 The memory size should be at least 12GB. 16GB or greater is recommended. If the number is less than 12, **STOP**. It is unlikely you have enough installed memory. Depending on the configuration you want to run, it *might* be possible to proceed with less memory. Open an Issue and ask for guidance indicating your memory settings from this command:
 
-```text
+```shell
 PS C:\> Get-CimInstance Win32_OperatingSystem |
 Select-Object -property FreePhysicalMemory,TotalVisibleMemorySize
 
@@ -41,7 +41,7 @@ Also indicate what lab configuration you are hoping to run.
 
 You need to ensure you can run PowerShell scripts on your computer. Run `Get-ExecutionPolicy` to view your current settings. If it shows `Restricted`, then run this command in an elevated PowerShell session.
 
-```powershell
+```shell
 Set-ExecutionPolicy RemoteSigned -force
 ```
 
@@ -51,7 +51,7 @@ Note, that some organizations may have implemented a Group Policy to restrict th
 
 The module relies on Windows PowerShell remoting which should be enabled **before** installing and using this module.
 
-```text
+```shell
 PS C:\> test-wsman
 
 wsmid           : http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd
@@ -62,7 +62,7 @@ ProductVersion  : OS: 0.0.0 SP: 0.0 Stack: 3.0
 
 This is what you should see as a result. Any errors mean that PowerShell remoting is disabled. Enable it from your **elevated** PowerShell session. This will fail if your only network connection is over a public network.
 
-```powershell
+```shell
 Enable-PSRemoting -force
 ```
 
@@ -72,7 +72,7 @@ If this fails, **STOP**. Do not proceed with this module until this is working a
 
 The module requires a lot of disk space for the virtual machines, snapshots and ISO files. Run this command to see how much free space you have.
 
-```text
+```shell
 PS C:\> Get-Volume
 
 Drive  SizeGB  FreeGB PercentFree HealthStatus
@@ -91,13 +91,13 @@ The module requires the Hyper-V feature on Windows 10. Please refer to the docum
 
 The module uses a standard PowerShell tool called Pester to validate lab configurations. Without getting into technical details, if you are running the out-of-the-box version of Pester on Windows 10, **you need to manually update Pester** before attempting to install this module. In an elevated Windows PowerShell session run this command:
 
-```powershell
+```shell
 Get-Module Pester -ListAvailable
 ```
 
 If the _only_ result you get is for version `3.4.0`, then you must run:
 
-```powershell
+```shell
 Install-Module Pester -Force -SkipPublisherCheck
 ```
 
@@ -105,7 +105,7 @@ Re-run the `Get-Module` to verify version `5.5.0` or greater is installed. If yo
 
 If you are running a version of Pester greater than `3.4.0` but less than `5.5.0`, you must update the Pester module.
 
-```powershell
+```shell
 Update-Module Pester
 ```
 
@@ -115,13 +115,13 @@ Update-Module Pester
 
 If you meet the requirements, you are ready to download and install this module. **Do not download anything from this GitHub repository.** In your PowerShell session run this command:
 
-```powershell
+```shell
 Install-Module PSAutolab -force -SkipPublisherCheck
 ```
 
 You may be prompted to update to a newer version of `nuget`. Answer "yes". You might also be prompted about installing from an untrusted source. Again, you will need to say "yes". After installation you can verify using `Get-Module`.
 
-```text
+```shell
 PS C:\> Get-Module PSAutoLab -list
 
     Directory: C:\Program Files\WindowsPowerShell\Modules
@@ -138,13 +138,13 @@ You may see a newer version number than what is indicated here. The `README` fil
 
 There is a one-time step to setup your computer for the AutoLab environment. In your elevated PowerShell session run this command:
 
-```powershell
+```shell
 Setup-Host
 ```
 
 This command will create a directory structure for the module and all of its files. The default is `C:\Autolab` which you should be able to accept. If you are low on space or want to use an alternate drive, then you can specify an alternative top-level path.
 
-```powershell
+```shell
 Setup-Host -DestinationPath D:\Autolab
 ```
 
@@ -152,7 +152,7 @@ If you select a drive other than C:\ it is recommended you still use the `Autola
 
 To verify your configuration, run `Get-PSAutolabSetting`.
 
-```text
+```shell
 PS C:\> Get-PSAutoLabSetting
 
 AutoLab                     : C:\Autolab
@@ -180,14 +180,14 @@ If Hyper-V is not installed you will see errors. Any errors indicate a problem w
 
 In an elevated PowerShell session, **change directory** to the configuration folder that you want to use.
 
-```text
+```shell
 PS C:\> cd C:\Autolab\Configurations\SingleServer-GUI-2016
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\>
 ```
 
 You can look at the `instructions.md` file in the folder to get more information about the configuration.
 
-```text
+```shell
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> get-content .\Instructions.md
 ```
 
@@ -199,7 +199,7 @@ Another option is to use the `Get-LabSummary` command. This will show you what c
 
 You can run `Unattend-Lab` for a completely hands-free experience.
 
-```text
+```shell
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> unattend-lab
 ```
 
@@ -207,7 +207,7 @@ The very first time you setup a lab, the command will download ISO images of eva
 
 Note that during the validation phase you may see errors. This is to be expected until all of the configurations merge. You can press `Ctrl+C` to break out of the testing. The virtual machines will continue to prepare themselves. Later, you can manually validate the lab:
 
-```text
+```shell
 PS C:\Autolab\Configurations\SingleServer-GUI-2016\> Invoke-Pester .\vmvalidate.test.ps1
 ```
 
@@ -223,7 +223,7 @@ Errors that affect setup should happen in one of these steps. If so, open an iss
 
 After about 10 minutes, you can run the validation command:
 
-```powershell
+```shell
 Validate-Lab
 ```
 
@@ -233,7 +233,7 @@ The `Write-Progress` display will provide feedback on the process.
 
 Beginning with v4.21.0, the validation command will restart virtual machines that have stopped and restart-virtual machines that appear to be failing. You will see this as warning messages. Validation will abort after 65 minutes if it hasn't completed. At which point you can manually test to see if the configuration has converged.
 
-```powershell
+```shell
 Run-Pester
 ```
 
@@ -243,7 +243,7 @@ Depending on the error, you might simply ignore it or manually attempt to resolv
 
 All of the commands in this module have help and examples. You are also encouraged to read the about help topic.
 
-```powershell
+```shell
 help about_PSAutoLab
 ```
 
@@ -253,7 +253,7 @@ In the `VMConfigurationData.psd1` file for each lab, you will see a commented ou
 
 If you must use this feature, open the `VMConfigurationData.psd1` file in a text or code editor. Scroll down to the `NonNodeData` section.
 
-```powershell
+```shell
 NonNodeData = @{
     Lability = @{
 
@@ -273,13 +273,13 @@ This setting should only be used in special situations as it can be confusing. W
 
 Occasionally, things can go wrong for no apparent reason. If you ran through the manual steps to setup a lab but the validation tests are still failing, you may need to stop and restart the virtual machine that is causing problems. For example, *sometimes* the SRV2 member in the `PowerShellLab` configuration simply won't pass validation, often because it can't be connected to. The best solution is to shut down the virtual machine in either the Hyper-V Manager or from PowerShell.
 
-```powershell
+```shell
 Stop-VM srv2 -force
 ```
 
 Then start it back up.
 
-```powershell
+```shell
 Start-VM srv2
 ```
 
@@ -293,7 +293,7 @@ As a last resort, you can try to manually re-apply a configuration to a virtual 
 
 First, you need the lab password to create a credential object.
 
-```powershell
+```shell
 $data = Import-PowerShellDataFile .\VMConfigurationData.psd1
 $pass = ConvertTo-SecureString -AsPlainText -String $data.AllNodes.LabPassword -force
 $cred = New-Object PSCredential -ArgumentList administrator, $pass
@@ -303,19 +303,19 @@ Note that if the lab has a mix of domain and workgroup machines, you will need t
 
 Next, create a CIMSession to the virtual machine.
 
-```powershell
+```shell
 $cim = New-CimSession -ComputerName win10 -Credential $cred
 ```
 
 Now, you can apply the DSC configuration. You need run this from the lab configuration folder.
 
-```powershell
+```shell
 Start-DscConfiguration -CimSession $cim -Path . -wait -Force -verbose
 ```
 
 You will be able to watch the process. Wait a minute or two for any background processing to finish and then test:
 
-```powershell
+```shell
 Test-DscConfiguration -CimSession $cim -Detailed
 ```
 

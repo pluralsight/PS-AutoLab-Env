@@ -27,7 +27,7 @@ You will typically use the Snapshot-Lab alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\Windows10> Snapshot-Lab
 ```
 

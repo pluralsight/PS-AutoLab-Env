@@ -39,7 +39,7 @@ You will typically use the Unattend-Lab alias.
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\PowerShellLab> Unattend-Lab
 ```
 
@@ -47,7 +47,7 @@ Follow any on-screen instructions or prompts.
 
 ### Example 2
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\MultiRole> Unattend-Lab -AsJob
 ```
 

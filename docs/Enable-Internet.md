@@ -26,7 +26,7 @@ This command should be run from the configuration directory after the virtual ma
 
 ### Example 1
 
-```powershell
+```shell
 PS C:\Autolab\Configurations\Windows10> Enable-Internet
 ```
 
